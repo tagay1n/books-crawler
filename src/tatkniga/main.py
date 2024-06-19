@@ -1,7 +1,8 @@
 import yadisk
 
 import books_downloader
-from utils import create_files_if_not_exists, get_real_path
+from src.tatkniga import book_pages_collector, book_pages_visitor
+from utils import create_files_if_not_exists, get_real_path, DOMAIN, BOOKS_PAGE_MASK, SKIP_FILTERS, ENTRY_POINTS
 
 
 def main():
@@ -14,17 +15,16 @@ def main():
         downloaded_files,
         downloads_folder
     ) = create_files_if_not_exists()
-    configs = read_config()
 
     # phase 1: collect list of the links of book's pages and store them in the file
-    # book_pages_collector.collect(book_pages_sink, visited_non_book_pages_sink, DOMAIN, BOOKS_PAGE_MASK, SKIP_FILTERS)
+    book_pages_collector.collect(book_pages_sink, visited_non_book_pages_sink, DOMAIN, ENTRY_POINTS, BOOKS_PAGE_MASK, SKIP_FILTERS)
 
     # phase 2: visit the book's pages and collect the meta information about the books
-    # book_pages_visitor.visit()
+    book_pages_visitor.visit()
 
     # phase 3: download the books using the collected meta information, then upload them to Yandex.Disk and upload meta
     # information to the Google Sheets
-    books_downloader.download(downloaded_files, configs)
+    # books_downloader.download(downloaded_files, read_config())
 
 
 def read_config():
@@ -32,7 +32,7 @@ def read_config():
     with open(get_real_path("../../config.yaml")) as f:
         data_map = yaml.safe_load(f)
 
-    if oauth := data_map['yandex-oauth']:
+    if oauth := data_map['yandex']['oauth_token']:
         y = yadisk.YaDisk(token=oauth)
         if not y.check_token():
             raise Exception("Invalid Yandex Disk OAuth token")

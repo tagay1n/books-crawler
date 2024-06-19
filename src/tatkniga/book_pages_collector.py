@@ -3,18 +3,19 @@ from selenium.common.exceptions import StaleElementReferenceException
 from utils import load_visited_pages, load_books_pages, get_element, create_driver, get_hostname, write_if_new
 
 
-def collect(books_pages_sink, visited_pages_sink, entry_point, books_page_mask, skip_filters):
+def collect(books_pages_sink, visited_pages_sink, domain, entry_points, books_page_mask, skip_filters):
     """
     This function collects the links to the book's pages and stores them in the file.
 
     :param books_pages_sink: file to store the links to the book's pages
     :param visited_pages_sink: file to store the visited pages
-    :param entry_point: the page to start crawling
+    :param domain: the page to start crawling
+    :param entry_points: the list of the pages to start crawling
     :param books_page_mask: the mask for the pages that we are interested in
     :param skip_filters: the mask for the pages that we are not interested in
     :return:
     """
-    hostname_filter = get_hostname(entry_point)
+    hostname_filter = domain
 
     # Load the visited pages we can skip at the time of crawling and add new ones during the crawling
     # This is needed to resume crawling after the crash
@@ -84,4 +85,6 @@ def collect(books_pages_sink, visited_pages_sink, entry_point, books_page_mask, 
             if link not in visited_links:
                 crawl(link, visited_links, book_pages)
 
-    crawl(entry_point, vps, bps)
+    # Start crawling from the entry points
+    for entry_point in entry_points:
+        crawl(entry_point, vps, bps)

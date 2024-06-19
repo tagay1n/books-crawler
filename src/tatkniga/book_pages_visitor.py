@@ -1,4 +1,6 @@
 import json
+import csv
+
 
 from selenium.webdriver.common.by import By
 
@@ -33,13 +35,10 @@ def _visit_page(link, visited_books_pages, book_metas):
 
     # get price
     element = get_element("//span[@class='sale-price']", driver)
-    if not element or ("Бесплатно" not in (price := "".join(map(lambda x: x.text.strip(), element)))):
-        print(f"Skipping page {link} due to price: {price if element else 'None'}")
-        driver.quit()
-        write_if_new(link, visited_books_pages, get_real_path(VISITED_BOOK_PAGES))
-        return
+    price = "".join(map(lambda x: x.text.strip() if x else "", element))
+    if price:
+        meta["price"] = price[:price.index("₽")] if "₽" in price else price
 
-    # get title
     authors = driver.find_element(By.XPATH, "//div[@class='author-info']/span")
     authors = ", ".join(
         filter(
@@ -84,6 +83,10 @@ def _visit_page(link, visited_books_pages, book_metas):
         ty = "".join(map(lambda x: x.get_attribute("textContent").strip(), element))
         if ty == 'Аудио':
             meta["type"] = 'audio'
+        elif ty == 'Электронная':
+            meta["type"] = 'ebook'
+        elif ty == 'Печатная':
+            meta["type"] = 'paper'
         elif ty == "":
             meta["type"] = 'book'
         else:
@@ -135,12 +138,21 @@ def _visit_page(link, visited_books_pages, book_metas):
 
     driver.quit()
     if meta not in book_metas:
-        book_metas.append(meta)
-        with open(BOOKS_METAS, "w") as f:
-            json.dump(book_metas, f, indent=4, ensure_ascii=False)
-            f.flush()
+        if 'Бесплатно' in meta["price"]:
+            book_metas.append(meta)
+            with open(BOOKS_METAS, "w") as f:
+                json.dump(book_metas, f, indent=4, ensure_ascii=False)
+                f.flush()
+        elif meta["price"]:
+            if meta["type"] == "ebook":
+                if "атарский" in meta["language"]:
+                    meta['description'] = meta.get('description', "").replace("\n", "")
+                    print(f"Tatar ebook found: {meta}")
+                    with open("paid_files.csv", "a+", newline="") as f:
+                        w = csv.DictWriter(f, meta.keys())
+                        w.writerow(meta)
+
     mark_visited_book_page(link)
-    print(meta)
 
 
 def _create_full_title(author, title):
