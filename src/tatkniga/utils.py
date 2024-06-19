@@ -15,6 +15,15 @@ from webdriver_manager.chrome import ChromeDriverManager
 # entering point for the crawling and mask for the pages to visit,
 DOMAIN = "https://tatkniga.ru"
 
+ENTRY_POINTS = [
+    "https://tatkniga.ru",
+    "https://tatkniga.ru/store",
+    "https://tatkniga.ru/sales",
+    "https://tatkniga.ru/library",
+    "https://tatkniga.ru/audio-books/",
+    "https://tatkniga.ru/authors",
+]
+
 # This is the mask for the books pages - mask for the pages that we are interested in.
 BOOKS_PAGE_MASK = "https://tatkniga.ru/books/"
 
@@ -28,6 +37,7 @@ SKIP_FILTERS = [
     "https://tatkniga.ru/account",
     "https://tatkniga.ru/about",
     "https://tatkniga.ru/cart",
+    "https://tatkniga.ru/books/our-stores",
 ]
 
 # Name of the file where we store the visited non-book pages. We need it to resume crawling after the crash
@@ -87,6 +97,7 @@ def get_element(xpath, driver, timeout=30):
 def create_driver():
     options = webdriver.ChromeOptions()
     options.headless = True
+    options.add_argument("--headless")
     return webdriver.Chrome(
         service=ChromeService(ChromeDriverManager().install()),
         options=options
@@ -149,3 +160,11 @@ def write_if_new(element, collector, file):
             f.flush()
         return True
     return False
+
+
+def read_config():
+    import yaml
+    with open(get_real_path("../../config.yaml")) as f:
+        data_map = yaml.safe_load(f)
+
+    return data_map
