@@ -1,0 +1,4 @@
+src/tatkniga/workdir/*
+.idea
+src/tatkniga/__pycache__/*
+src/__pycache__/*
