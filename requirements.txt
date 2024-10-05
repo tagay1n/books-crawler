@@ -1,7 +1,14 @@
 google-auth-httplib2
 google-auth-oauthlib
 selenium
+selenium-wire
+blinker==1.7.0
 webdriver-manager==4.0.2
 yadisk
 PyYAML
-pyairtable
+requests
+beautifulsoup4
+rich
+pymupdf
+pillow
+pyyaml
