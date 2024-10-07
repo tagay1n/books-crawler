@@ -1,7 +1,9 @@
 src/tatkniga/workdir/*
 .idea
-src/tatkniga/__pycache__/*
-src/__pycache__/*
 .venv
 token.json
 credentials.json
+src/litres/artifacts/*
+src/litres/__pycache__/*
+src/__pycache__/*
+src/tatkniga/__pycache__/*
