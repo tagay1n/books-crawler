@@ -3,6 +3,7 @@ import os.path
 
 from monocorpus_models import Session, Document
 from rich.progress import track
+from sqlalchemy import text
 from yadisk_client import YaDisk
 
 from utils import get_in_workdir, read_config
@@ -18,9 +19,10 @@ def upload_pdfs():
     config = read_config()
     client = YaDisk(config['yandex.oauth_token'])
     session = Session()
+    # stupid trick to avoid segmentation fault
+    session.select(text("SELECT 1"))
 
-    for doc in track([d for d in _all_docs.values() if d['content_type'] == 'pdf'],
-                     description="Uploading documents"):
+    for doc in track([d for d in _all_docs.values() if d['content_type'] == 'pdf' and 'pdf_file' in d], description="Uploading documents"):
         file = doc['pdf_file']
         remote_path, md5 = client.upload_or_replace(file, remote_dir=REMOTE_DIR)
         client.publish(remote_path, fields=['public_key', 'public_url'])
