@@ -48,5 +48,14 @@ def upload():
     upload_books.upload_pdfs()
 
 
+@app.command()
+def metadata():
+    """
+    Scrap metadata for the books
+    """
+    import metadata
+    metadata.scrap_metadata()
+
+
 if __name__ == "__main__":
     app()
