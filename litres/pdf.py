@@ -21,7 +21,7 @@ def visit_pdf_books_pages():
 
     Visit pdf books pages, download their pages separately and create pdf from them
     """
-    path_to_idx = get_in_workdir("artifacts/books-index.json")
+    path_to_idx = get_in_workdir("../__artifacts/litres/books-index.json")
     with open(path_to_idx, "r") as f:
         all_books = json.load(f)
 
@@ -92,8 +92,7 @@ def _download_book_pages(file_id, page_extensions):
     """
     Download all pages for the book
     """
-    artifacts_dir = get_in_workdir(os.path.join("artifacts", "images", file_id))
-
+    artifacts_dir = get_in_workdir(f"../__artifacts/litres/images/{file_id}")
     os.makedirs(artifacts_dir, exist_ok=True)
 
     p = page_extensions['pages'][0]['p']
@@ -118,8 +117,8 @@ def _create_pdf(book):
     Create pdf from downloaded pages images
     """
     file_id = book['file_id']
-    artifacts_dir = get_in_workdir(os.path.join("artifacts", "images", file_id))
-    pdf_dir = get_in_workdir("artifacts/docs")
+    artifacts_dir = get_in_workdir(f"../__artifacts/litres/images/{file_id}")
+    pdf_dir = get_in_workdir("../__artifacts/litres/docs")
     os.makedirs(pdf_dir, exist_ok=True)
 
     name_with_ext = f"{book['full_name']}.pdf"

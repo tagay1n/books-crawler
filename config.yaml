@@ -1,4 +1,0 @@
-  # Yandex OAuth token.
-  # If you don't have one, check this page https://yandex.com/dev/disk-api/doc/en/concepts/quickstart#oauth
-  # If you registered your app in Yandex, you can get the token here https://oauth.yandex.com/authorize?response_type=token&client_id=38284730a4f8475990e8a59680f7158f
-yandex-oauth:
