@@ -35,7 +35,6 @@ def visit_pdf_books_pages():
             file_id = book.get('file_id') or _get_file_id(url)
             print(f"Visiting book page: {file_id}")
             page_extensions = book.get('ext') or _get_page_extensions(file_id)
-            download_page_images(file_id, page_extensions)
 
             if file_id != book.get('file_id') or page_extensions != book.get('ext'):
                 book['file_id'] = file_id
@@ -43,7 +42,8 @@ def visit_pdf_books_pages():
                 with open(path_to_idx, "w") as f:
                     json.dump(all_books, f, indent=4, ensure_ascii=False)
 
-            _create_pdf(book)
+            download_page_images(file_id, page_extensions)
+            book['pdf_file'] = _create_pdf(book)
         except Exception as e:
             print(f"Error processing book: {url}")
             print(e)
@@ -121,17 +121,16 @@ def _create_pdf(book):
 
     name_with_ext = f"{book['full_name']}.pdf"
     pdf_file = os.path.join(pdf_dir, name_with_ext)
-    if os.path.exists(pdf_file):
-        return
+    if not os.path.exists(pdf_file):
+        with pymupdf.open() as doc:
+            # sort pages by number
+            images = sorted([f for f in os.listdir(artifacts_dir)], key=lambda x: int(x.split(".")[0]))
+            for page in track(images, description=f"Creating pdf for file: {file_id}"):
+                with pymupdf.open(os.path.join(artifacts_dir, page)) as img:
+                    rect = img[0].rect  # pic dimension
+                    img_pdf = pymupdf.open("pdf", img.convert_to_pdf())  # open stream as PDF
+                    page = doc.new_page(width=rect.width, height=rect.height)
+                    page.show_pdf_page(rect, img_pdf, 0)  # image fills the page
 
-    with pymupdf.open() as doc:
-        # sort pages by number
-        images = sorted([f for f in os.listdir(artifacts_dir)], key=lambda x: int(x.split(".")[0]))
-        for page in track(images, description=f"Creating pdf for file: {file_id}"):
-            with pymupdf.open(os.path.join(artifacts_dir, page)) as img:
-                rect = img[0].rect  # pic dimension
-                img_pdf = pymupdf.open("pdf", img.convert_to_pdf())  # open stream as PDF
-                page = doc.new_page(width=rect.width, height=rect.height)
-                page.show_pdf_page(rect, img_pdf, 0)  # image fills the page
-
-        doc.save(pdf_file)
+            doc.save(pdf_file)
+    return pdf_file
