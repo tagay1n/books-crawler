@@ -47,8 +47,8 @@ def scrap_metadata():
                     metadata[key] = value.get_text(strip=True)
 
             if summary := soup.select_one(
-                    'div[class^="BookCard_book__mainInfo__block__"] div[class^="BookCard_truncate__"] p'):
-                metadata['summary'] = summary.get_text(strip=True)
+                    'div[class^="BookCard_book__mainInfo__block__"] div[class^="BookCard_truncate__"] p'
+            ): metadata['summary'] = summary.get_text(strip=True)
 
         b['metadata'] = metadata
 
