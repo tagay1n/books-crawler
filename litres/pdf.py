@@ -1,15 +1,20 @@
 import io
 import json
 import os.path
+from concurrent import futures
+from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlparse, parse_qs
 
 import pymupdf
 import requests
+import typer
 from PIL import Image
 from rich.progress import track
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+import time
+from random import randrange
 
 from consts import domain
 from utils import get_sid, get_in_workdir, create_driver
@@ -31,21 +36,19 @@ def visit_pdf_books_pages():
 
     for book in pdf_books[:]:
         url = book['url']
-        print(f"Visiting book page: {url}")
-        try:
-            file_id = book.get('file_id') or _get_file_id(url)
-            page_extensions = book.get('ext') or _get_page_extensions(file_id)
-            _download_book_pages(file_id, page_extensions)
+        print(f"Visiting book page: {book['file_id']}")
+        file_id = book.get('file_id') or _get_file_id(url)
+        page_extensions = book.get('ext') or _get_page_extensions(file_id)
+        for _ in download_page_images(file_id, page_extensions):
+            pass
 
+        if file_id != book.get('file_id') or page_extensions != book.get('ext'):
             book['file_id'] = file_id
             book['ext'] = page_extensions
             with open(path_to_idx, "w") as f:
                 json.dump(all_books, f, indent=4, ensure_ascii=False)
 
-            _create_pdf(book)
-        except Exception as e:
-            print(f"Error occurred while processing book: {url}")
-            print(e)
+        _create_pdf(book)
 
 
 def _get_file_id(book_page_url):
@@ -88,28 +91,48 @@ def _get_page_extensions(file_id):
                 """let PFURL = { pdf: { } };""" + r.text + "; return PFURL.pdf[" + file_id + "];")
 
 
-def _download_book_pages(file_id, page_extensions):
+def _download_page(url, result_file):
     """
-    Download all pages for the book
+    Download page image
+    :param url: url from which to download
+    :param result_file: file to save
     """
+    if not os.path.exists(result_file):
+        headers = {
+            "Cookie": f"SID={get_sid()};"
+        }
+        with requests.get(url, headers=headers, stream=True) as r:
+            r.raise_for_status()
+            with Image.open(io.BytesIO(r.content)) as img:
+                img.save(result_file, format="PNG", optimize=True, dpi=(300, 300))
+        # sleep to avoid getting 429 code
+        time.sleep(randrange(3, 6))
+
+def download_page_images(file_id, page_extensions, max_workers=8):
     artifacts_dir = get_in_workdir(f"../__artifacts/litres/images/{file_id}")
     os.makedirs(artifacts_dir, exist_ok=True)
-
     p = page_extensions['pages'][0]['p']
 
-    for page_no in track(range(0, len(p)), description=f"Downloading pages for file: {file_id}"):
-        ext = p[page_no]['ext']
-        w = p[page_no]['w']
-        file_name = os.path.join(artifacts_dir, f"{page_no}.{ext}")
-        if not os.path.exists(file_name):
-            url = f"{domain}/pages/get_pdf_page/?file={file_id}&page={page_no}&rt=w{w}&ft={ext}"
-            headers = {
-                "Cookie": f"SID={get_sid()};"
-            }
-            with requests.get(url, headers=headers, stream=True) as r:
-                r.raise_for_status()
-                with Image.open(io.BytesIO(r.content)) as img:
-                    img.save(file_name, quality=95, optimize=True, subsampling=0)
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        future_to_key = {
+            executor.submit(
+                _download_page,
+                url=f"{domain}/pages/get_pdf_page/?file={file_id}&page={page_no}&rt=w{p[page_no]['w']}&ft={p[page_no]['ext']}",
+                result_file=os.path.join(artifacts_dir, f"{page_no}.png")
+            ): page_no
+            for page_no
+            in range(0, len(p))
+        }
+
+        for future in track(futures.as_completed(future_to_key), description="Downloading files ",
+                            total=len(future_to_key)):
+            key = future_to_key[future]
+            if exception := future.exception():
+                executor.shutdown(wait=True, cancel_futures=True)
+                print(f"Failed to download {key}: {exception}")
+                raise typer.Abort()
+
+            yield future.result()
 
 
 def _create_pdf(book):
