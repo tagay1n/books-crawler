@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from urllib.parse import urlparse, parse_qs
 
 import requests
@@ -8,7 +9,7 @@ from rich.progress import track
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-import re
+
 from consts import domain
 from utils import get_in_workdir, create_driver, get_hash, get_sid
 
@@ -28,7 +29,6 @@ def visit_text_books_pages():
         with open(path_to_idx, "w") as f:
             json.dump(all_books, f, indent=4, ensure_ascii=False)
         _make_up_markdown(artifacts_dir, book)
-
 
 
 def _download_page_descriptions(book):
@@ -184,6 +184,7 @@ def textify(item, ctxt, prefix="", suffix=""):
         print(f"Item neither list, dict or str: {item}")
         raise typer.Abort()
     return accumulator
+
 
 def _clear_string(s):
     return s.replace('\xad', '').replace('\xa0', ' ').replace(' ', '').replace('*', '\*').replace('`', '\`')

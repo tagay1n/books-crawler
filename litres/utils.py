@@ -1,11 +1,12 @@
+import hashlib
 import os.path
 
 import requests
 import yaml
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service as ChromeService
 from seleniumwire import webdriver
-import hashlib
+from webdriver_manager.chrome import ChromeDriverManager
+
 
 def get_in_workdir(file):
     """Return file in the current directory where script file is located"""
@@ -38,6 +39,7 @@ def get_sid():
         print(f"Requested new SID: {sid}, consider updating config")
         return sid
 
+
 def create_driver():
     """
     Create a new Selenium driver instance with request interceptor
@@ -57,6 +59,7 @@ def create_driver():
     )
     driver.request_interceptor = _interceptor
     return driver
+
 
 def get_hash(src):
     """

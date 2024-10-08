@@ -1,6 +1,6 @@
 from selenium.common.exceptions import StaleElementReferenceException
 
-from utils import load_visited_pages, load_books_pages, get_element, create_driver, get_hostname, write_if_new
+from utils import load_visited_pages, load_books_pages, get_element, create_driver, write_if_new
 
 
 def collect(books_pages_sink, visited_pages_sink, domain, entry_points, books_page_mask, skip_filters):

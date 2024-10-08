@@ -1,7 +1,6 @@
 import yadisk
-
-import books_downloader
 from src.tatkniga import book_pages_collector, book_pages_visitor
+
 from utils import create_files_if_not_exists, get_real_path, DOMAIN, BOOKS_PAGE_MASK, SKIP_FILTERS, ENTRY_POINTS
 
 
@@ -17,7 +16,8 @@ def main():
     ) = create_files_if_not_exists()
 
     # phase 1: collect list of the links of book's pages and store them in the file
-    book_pages_collector.collect(book_pages_sink, visited_non_book_pages_sink, DOMAIN, ENTRY_POINTS, BOOKS_PAGE_MASK, SKIP_FILTERS)
+    book_pages_collector.collect(book_pages_sink, visited_non_book_pages_sink, DOMAIN, ENTRY_POINTS, BOOKS_PAGE_MASK,
+                                 SKIP_FILTERS)
 
     # phase 2: visit the book's pages and collect the meta information about the books
     book_pages_visitor.visit()

@@ -14,3 +14,4 @@ pillow
 pyyaml
 typer
 huggingface_hub
+git+https://github.com/tans1q/monocorpus-models
