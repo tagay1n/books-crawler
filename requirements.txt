@@ -4,7 +4,6 @@ selenium
 selenium-wire
 blinker==1.7.0
 webdriver-manager==4.0.2
-yadisk
 PyYAML
 requests
 beautifulsoup4
@@ -15,3 +14,5 @@ pyyaml
 typer
 huggingface_hub
 git+https://github.com/tans1q/monocorpus-models
+git+https://github.com/tans1q/yadisk-client
+
