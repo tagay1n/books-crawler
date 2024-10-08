@@ -6,9 +6,9 @@ import zipfile
 
 import requests
 from pyairtable.orm import Model, fields as F
-
 # from src.google_sheets import get_by_md5, Record, update, append, AUDIOBOOKS_SPREADSHEET_ID
 from src.yandex_disk import upload_to_yandex, create_public_link
+
 from utils import load_books_metas, DOWNLOADS_FOLDER, get_real_path, load_downloaded_files, write_if_new, read_config
 
 PATH_TO_BOOKS_IN_YDISK = "НейроТатарлар/kitaplar/tatkniga.ru"
@@ -24,6 +24,7 @@ def download(dfs, config):
     downloaded_files = load_downloaded_files()
     process_books(book_metas, downloaded_files, dfs, config)
     # process_audiobooks(book_metas, downloaded_files, dfs, config)
+
 
 class Document(Model):
     # MD5 hash of the file
@@ -83,11 +84,13 @@ class Document(Model):
             ensure_ascii=False
         )
 
+
 def get_all_md5s():
     all_md5s = set()
     for doc in Document.all(fields=["md5"]):
         all_md5s.add(doc.md5)
     return all_md5s
+
 
 def process_books(book_metas, downloaded_files, dfs, config):
     all_md5s = get_all_md5s()
@@ -175,17 +178,17 @@ def process_audiobooks(book_metas, downloaded_files, dfs, config):
         #     record = record.merge(Record.from_row(row))
         #     update(rng, record, spreadsheet_id=AUDIOBOOKS_SPREADSHEET_ID)
         # else:
-            # print(f"Uploading `{title}` to Yandex.Disk")
-            # for root, dirs, files in os.walk(unzipped_dir):
-            #     dir_path = os.path.relpath(root, unzipped_dir)
-            #     for file in files:
-            #         local_path = os.path.join(root, file)
-            #         remote_path = os.path.normpath(os.path.join(PATH_TO_AUDIOBOOKS_IN_YDISK, title, dir_path))
-            #         upload_to_yandex(local_path, config, remote_path)
-            #
-            # public_link = create_public_link(os.path.join(PATH_TO_AUDIOBOOKS_IN_YDISK, title), config)
-            # meta["ya_disk_link"] = public_link
-            # append(record, spreadsheet_id=AUDIOBOOKS_SPREADSHEET_ID)
+        # print(f"Uploading `{title}` to Yandex.Disk")
+        # for root, dirs, files in os.walk(unzipped_dir):
+        #     dir_path = os.path.relpath(root, unzipped_dir)
+        #     for file in files:
+        #         local_path = os.path.join(root, file)
+        #         remote_path = os.path.normpath(os.path.join(PATH_TO_AUDIOBOOKS_IN_YDISK, title, dir_path))
+        #         upload_to_yandex(local_path, config, remote_path)
+        #
+        # public_link = create_public_link(os.path.join(PATH_TO_AUDIOBOOKS_IN_YDISK, title), config)
+        # meta["ya_disk_link"] = public_link
+        # append(record, spreadsheet_id=AUDIOBOOKS_SPREADSHEET_ID)
 
         write_if_new(link, downloaded_files, dfs)
         # os.remove(zip_archive)

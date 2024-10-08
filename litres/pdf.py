@@ -8,8 +8,8 @@ import requests
 from PIL import Image
 from rich.progress import track
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 from consts import domain
 from utils import get_sid, get_in_workdir, create_driver
@@ -137,4 +137,3 @@ def _create_pdf(book):
                 page.show_pdf_page(rect, img_pdf, 0)  # image fills the page
 
         doc.save(pdf_file)
-

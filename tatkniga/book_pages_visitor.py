@@ -1,12 +1,10 @@
-import json
 import csv
-
+import json
 
 from selenium.webdriver.common.by import By
 
-from utils import DOMAIN, BOOKS_METAS, VISITED_BOOK_PAGES
-from utils import load_books_pages, load_visited_book_pages, load_books_metas, get_element, create_driver, write_if_new, \
-    get_real_path
+from utils import DOMAIN, BOOKS_METAS
+from utils import load_books_pages, load_visited_book_pages, load_books_metas, get_element, create_driver
 from utils import mark_visited_book_page
 
 
