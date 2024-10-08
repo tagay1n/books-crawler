@@ -1,20 +1,15 @@
 import io
 import json
 import os.path
-from concurrent import futures
-from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import urlparse, parse_qs
 
 import pymupdf
 import requests
-import typer
 from PIL import Image
 from rich.progress import track
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-import time
-from random import randrange
 
 from consts import domain
 from utils import get_sid, get_in_workdir, create_driver
@@ -36,19 +31,22 @@ def visit_pdf_books_pages():
 
     for book in pdf_books[:]:
         url = book['url']
-        print(f"Visiting book page: {book['file_id']}")
-        file_id = book.get('file_id') or _get_file_id(url)
-        page_extensions = book.get('ext') or _get_page_extensions(file_id)
-        for _ in download_page_images(file_id, page_extensions):
-            pass
+        try:
+            file_id = book.get('file_id') or _get_file_id(url)
+            print(f"Visiting book page: {file_id}")
+            page_extensions = book.get('ext') or _get_page_extensions(file_id)
+            download_page_images(file_id, page_extensions)
 
-        if file_id != book.get('file_id') or page_extensions != book.get('ext'):
-            book['file_id'] = file_id
-            book['ext'] = page_extensions
-            with open(path_to_idx, "w") as f:
-                json.dump(all_books, f, indent=4, ensure_ascii=False)
+            if file_id != book.get('file_id') or page_extensions != book.get('ext'):
+                book['file_id'] = file_id
+                book['ext'] = page_extensions
+                with open(path_to_idx, "w") as f:
+                    json.dump(all_books, f, indent=4, ensure_ascii=False)
 
-        _create_pdf(book)
+            _create_pdf(book)
+        except Exception as e:
+            print(f"Error processing book: {url}")
+            print(e)
 
 
 def _get_file_id(book_page_url):
@@ -83,6 +81,7 @@ def _get_page_extensions(file_id):
     print(f"Getting page extensions for file: {file_id}")
     headers = {
         "Cookie": f"SID={get_sid()};",
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
     }
     with requests.get(f"{domain}/pages/get_pdf_js/?file={file_id}", headers=headers) as r:
         r.raise_for_status()
@@ -91,48 +90,24 @@ def _get_page_extensions(file_id):
                 """let PFURL = { pdf: { } };""" + r.text + "; return PFURL.pdf[" + file_id + "];")
 
 
-def _download_page(url, result_file):
-    """
-    Download page image
-    :param url: url from which to download
-    :param result_file: file to save
-    """
-    if not os.path.exists(result_file):
-        headers = {
-            "Cookie": f"SID={get_sid()};"
-        }
-        with requests.get(url, headers=headers, stream=True) as r:
-            r.raise_for_status()
-            with Image.open(io.BytesIO(r.content)) as img:
-                img.save(result_file, format="PNG", optimize=True, dpi=(300, 300))
-        # sleep to avoid getting 429 code
-        time.sleep(randrange(3, 6))
-
-def download_page_images(file_id, page_extensions, max_workers=8):
+def download_page_images(file_id, page_extensions):
     artifacts_dir = get_in_workdir(f"../__artifacts/litres/images/{file_id}")
     os.makedirs(artifacts_dir, exist_ok=True)
     p = page_extensions['pages'][0]['p']
 
-    with ThreadPoolExecutor(max_workers=max_workers) as executor:
-        future_to_key = {
-            executor.submit(
-                _download_page,
-                url=f"{domain}/pages/get_pdf_page/?file={file_id}&page={page_no}&rt=w{p[page_no]['w']}&ft={p[page_no]['ext']}",
-                result_file=os.path.join(artifacts_dir, f"{page_no}.png")
-            ): page_no
-            for page_no
-            in range(0, len(p))
-        }
+    headers = {
+        "Cookie": f"SID={get_sid()};",
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+    }
+    for page_no in track(range(0, len(p)), description=f"Downloading pages for file: {file_id}"):
+        result_file = os.path.join(artifacts_dir, f"{page_no}.png")
+        if not os.path.exists(result_file):
+            url = f"{domain}/pages/get_pdf_page/?file={file_id}&page={page_no}&rt=w{p[page_no]['w']}&ft={p[page_no]['ext']}"
 
-        for future in track(futures.as_completed(future_to_key), description="Downloading files ",
-                            total=len(future_to_key)):
-            key = future_to_key[future]
-            if exception := future.exception():
-                executor.shutdown(wait=True, cancel_futures=True)
-                print(f"Failed to download {key}: {exception}")
-                raise typer.Abort()
-
-            yield future.result()
+            with requests.get(url, headers=headers, stream=True) as r:
+                r.raise_for_status()
+                with Image.open(io.BytesIO(r.content)) as img:
+                    img.save(result_file, format="PNG", dpi=(300, 300), optimize=True)
 
 
 def _create_pdf(book):

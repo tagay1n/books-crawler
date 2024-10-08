@@ -54,13 +54,17 @@ def _download_page_descriptions(book):
         resource_url = f"{domain}{base_url}json/"
         book['resource_url'] = resource_url
         counter = 0
+        headers = {
+            "Cookie": f"SID={get_sid()};",
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+        }
         while True:
             file_name = f"{'{:03d}'.format(counter)}.js"
             counter += 1
             output_path = os.path.join(incompleted_dir, file_name)
             if not os.path.exists(output_path):
                 file_url = f"{resource_url}{file_name}"
-                resp = requests.get(file_url, headers={"Cookie": f"SID={get_sid()};"})
+                resp = requests.get(file_url, headers=headers)
                 if resp.status_code == 404:
                     break
                 elif resp.status_code == 200:
@@ -133,8 +137,12 @@ def textify(item, ctxt, prefix="", suffix=""):
 
                 image_location = os.path.join(image_store_dir, item['s'])
                 image_url = f"{ctxt['book']['resource_url']}{item['s']}"
+                headers = {
+                    "Cookie": f"SID={get_sid()};",
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+                }
                 if not os.path.exists(image_location):
-                    with requests.get(image_url, headers={"Cookie": f"SID={get_sid()};"}) as r:
+                    with requests.get(image_url, headers=headers) as r:
                         r.raise_for_status()
                         with open(image_location, "wb") as f:
                             f.write(r.content)

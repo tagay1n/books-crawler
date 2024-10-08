@@ -19,12 +19,13 @@ def index():
     else:
         books = {}
 
+    headers = {
+        "Cookie": f"SID={get_sid()};",
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+    }
     for i in range(1, TOTAL_PAGES + 1):
         paginated_url = f"{entry_point}&page={i}"
         print(f"Processing page: {paginated_url}")
-        headers = {
-            "Cookie": f"SID={get_sid()};"
-        }
         with requests.get(paginated_url, headers=headers) as r:
             r.raise_for_status()
             soup = bs.BeautifulSoup(r.text, "html.parser")
