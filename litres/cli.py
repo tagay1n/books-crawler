@@ -18,9 +18,12 @@ def collect():
     """
     Collect book details from the website and save them to the file
     """
-    index = get_in_workdir("artifacts/books-index.json")
-    if os.path.exists(index):
-        with open(index, "r") as f:
+    index_file_name = "books-index.json"
+    index_dir = get_in_workdir("../__artifacts/litres")
+    os.makedirs(index_dir, exist_ok=True)
+    index_file = os.path.join(index_dir, index_file_name)
+    if os.path.exists(index_file):
+        with open(index_file, "r") as f:
             books = json.load(f)
     else:
         books = {}
@@ -54,7 +57,7 @@ def collect():
                 books[h] = details
 
 
-    with open(get_in_workdir("artifacts/books-index.json"), "w") as f:
+    with open(index_file, "w") as f:
         json.dump(books, f, indent=4, ensure_ascii=False)
 
     print(f"Collected {len(books)} books")
@@ -83,7 +86,7 @@ def upload():
     from huggingface_hub import HfApi
     api = HfApi()
     api.upload_folder(
-        folder_path=get_in_workdir("artifacts/markdown"),
+        folder_path=get_in_workdir("__artifacts/litres/markdown"),
         repo_id="neurotatarlar/tt-litres-books",
         repo_type="dataset",
     )

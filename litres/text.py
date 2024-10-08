@@ -14,7 +14,7 @@ from utils import get_in_workdir, create_driver, get_hash, get_sid
 
 
 def visit_text_books_pages():
-    path_to_idx = get_in_workdir("artifacts/books-index.json")
+    path_to_idx = get_in_workdir("../__artifacts/litres/books-index.json")
     with open(path_to_idx, "r") as f:
         all_books = json.load(f)
 
@@ -34,7 +34,7 @@ def visit_text_books_pages():
 def _download_page_descriptions(book):
     url = book['url']
     digest = book.get('hash') or get_hash(url)
-    artifacts_dir = get_in_workdir(os.path.join("artifacts", "js"))
+    artifacts_dir = get_in_workdir("../__artifacts/litres/js")
     os.makedirs(artifacts_dir, exist_ok=True)
     completed_dir = os.path.join(artifacts_dir, digest)
     if os.path.exists(completed_dir):
@@ -44,7 +44,7 @@ def _download_page_descriptions(book):
 
     with create_driver() as driver:
         driver.get(url)
-        read_button = WebDriverWait(driver, 120).until(
+        read_button = WebDriverWait(driver, 20).until(
             EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[class^="Button_textContainer__"]')))
         read_button.click()
         reader_url = driver.current_url
@@ -75,7 +75,7 @@ def _download_page_descriptions(book):
 
 def _make_up_markdown(input_dir, book):
     # directory for resulting markdown file
-    output_dir = get_in_workdir(os.path.join("artifacts", "markdown", book['full_name']))
+    output_dir = get_in_workdir(f"../__artifacts/litres/markdown/{book['full_name']}")
     os.makedirs(output_dir, exist_ok=True)
 
     # path to resulting markdown file
