@@ -1,10 +1,11 @@
 import json
 import os.path
+import re
 
 from monocorpus_models import Session, Document
 from rich.progress import track
 from sqlalchemy import text
-from yadisk_client import YaDisk
+from yadisk_client import YaDisk, ConflictResolution
 
 from utils import get_in_workdir, read_config
 
@@ -22,9 +23,11 @@ def upload_pdfs():
     # stupid trick to avoid segmentation fault
     session.select(text("SELECT 1"))
 
-    for doc in track([d for d in _all_docs.values() if d['content_type'] == 'pdf' and 'pdf_file' in d], description="Uploading documents"):
+    for doc in track([d for d in _all_docs.values() if d['content_type'] == 'pdf' and 'pdf_file' in d],
+                     description="Uploading documents"):
         file = doc['pdf_file']
-        remote_path, md5 = client.upload_or_replace(file, remote_dir=REMOTE_DIR)
+        remote_path, md5 = client.upload_or_replace(file, remote_dir=REMOTE_DIR,
+                                                    conflict_resolution=ConflictResolution.SKIP)
         client.publish(remote_path, fields=['public_key', 'public_url'])
 
         meta = client.get_meta(remote_path, fields=['public_key', 'public_url', 'resource_id'])
@@ -39,7 +42,7 @@ def upload_pdfs():
             names=os.path.basename(file),
             ocr='required',
             ya_public_url=ya_public_url,
-            ya_public_key=ya_public_key,
+            ya_public_key=re.sub(r'^\+', "'+", ya_public_key, count=1),
             ya_resource_id=ya_resource_id,
             publisher=_metadata.get('publisher'),
             author=doc.get('author') or _metadata.get('created_by'),
