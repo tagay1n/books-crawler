@@ -1,0 +1,11 @@
+aes:
+  # AES key used to encrypt the private RSA key
+  raw_key: <SET ME>
+  default_iv: <SET ME>
+  # salt used in AES encryption
+  salt: <SET ME>
+
+# server's RSA private key in PEM format, encrypted with AES, represented in base64.
+priv_key: <SET ME>
+# prefix added in front of all signatures
+sig_prefix: <SET ME>
