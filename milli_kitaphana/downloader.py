@@ -29,6 +29,7 @@ import bs4 as bs
 import re
 from urllib.parse import urlparse
 from upload_docs import upload_docs
+import shutil
 
 
 # Disable SSL warnings
@@ -45,34 +46,41 @@ def download():
     print(f"About to download {len(not_downloaded_docs)} documents")
     config = read_config()
     for card_path, meta in not_downloaded_docs.items():
-        _scrap_doc_card(card_path, meta)
-        context = {
-            "meta": meta,
-            "config": config
-        }
-        with ProgressWrapper(context) as pw:
-            _get_details(context)
-            _get_dh_params(context)
-            _dh_key_exchange(context)
-            path_to_pdf = _download_by_code(context)
+        try:
+            _scrap_doc_card(card_path, meta)
+            context = {
+                "meta": meta,
+                "config": config
+            }
+            with ProgressWrapper(context, card_path) as pw:
+                _get_details(context)
+                _get_dh_params(context)
+                _dh_key_exchange(context)
+                path_to_pdf = _download_by_code(context)
         
-            # save metadata
-            path_to_metadata = os.path.join(context['work_dir'], "metadata.json")
-            with open(path_to_metadata, "w") as m:
-                json.dump(context['meta'], m, ensure_ascii=False, indent=4)
-                
-            pw.main(f"Uploading artifacts to yandex disk")
-            upload_docs(
-                path_to_pdf=path_to_pdf,
-                path_to_texts_zip=f"{context["dec_texts_zip_path"]}.zip" if "dec_texts_zip_path" in context else None,
-                path_to_metadata=path_to_metadata,
-                config=config,
-                is_limited=meta["access"] == "limited"
-            )
+                # save metadata
+                path_to_metadata = os.path.join(context['work_dir'], "metadata.json")
+                with open(path_to_metadata, "w") as m:
+                    json.dump(context['meta'], m, ensure_ascii=False, indent=4)
+                    
+                pw.main(f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
+                upload_docs(
+                    path_to_pdf=path_to_pdf,
+                    path_to_texts_zip=f"{context["dec_texts_zip_path"]}.zip" if "dec_texts_zip_path" in context else None,
+                    path_to_metadata=path_to_metadata,
+                    config=config,
+                    is_limited=meta["access"] == "limited"
+                )
+        except KeyboardInterrupt:
+            exit(0)
+        except BaseException as e:
+            print("Exception:", e)
+            continue
+        meta["downloaded"] = True
+        dump_index(idx=index)
+        pw.main(f"Document processing complete --> {context['meta']['title']}")
             
-            meta["downloaded"] = True
-            dump_index(idx=index)
-            pw.main(f"Document processing complete --> {os.path.basename(path_to_pdf)}")
+        shutil.rmtree(context['work_dir'])
         
       
 
@@ -94,7 +102,6 @@ def _scrap_doc_card(card_path, meta):
         __m = re.sub(r"\[Электронный ресурс\]|NEW!!!", "", __m)
         
         if "Электронный ресурс" in __m:
-            print(__m)
             if udk := re.search('.*(УДК.*)', __m):
                 meta['classification'] =  udk.group(1).strip()
                 
@@ -112,8 +119,13 @@ def _scrap_doc_card(card_path, meta):
         return __m
     
     meta["integrated_description"] = [j for j in [__preprocess(i) for i in re.split(r"—|\n|;", record.text)] if j]
-    meta["doc_url"] = record.select_one("a")['href']
-    meta["download_code"] = urlparse(meta["doc_url"]).path[len('/dl/'):]
+    for i_ in record.select("a"):
+        if i_.text == 'Электронный ресурс':
+            meta["doc_url"] = i_['href']
+            break 
+    else:
+        raise ValueError("Could not parse document's url")
+    meta["download_code"] = urlparse(meta["doc_url"]).path[len('/dl/'):].strip("/")
     meta['doc_card_url'] = r.url
         
 class CheckBoxColumn(ProgressColumn):
@@ -131,10 +143,10 @@ class CheckBoxColumn(ProgressColumn):
         self.complete = complete
 
 class ProgressWrapper():
-    def __init__(self, context):
+    def __init__(self, context, card_path):
         main_progress = Progress(
             TimeElapsedColumn(),
-            TextColumn(f"[bold cyan]Document '{context["meta"]["download_code"]}':"),
+            TextColumn(f"[bold cyan]'{context["meta"]["download_code"]}({card_path})':"),
             TextColumn("[progress.description]{task.description}"),
             SpinnerColumn(spinner_name = "dots", style="bold cyan"),
         )
@@ -223,7 +235,7 @@ def _get_details(context):
     # path to the JSON file containing key details
     key_details = os.path.join(unzip_dir, "doc.json")
     
-    # generate a random token1 for the request
+    # generate a random token1 for the requestpwd
     token1 = ''.join(rnd.choice(string.ascii_lowercase) for _ in range(9))
 
     with _request("GET", DETAILS_URL, params={"code": code, "token1": token1}) as response:
@@ -409,7 +421,7 @@ def _download_by_code(context):
         acc.set_metadata(_metadata)
         
         # save the final pdf
-        file_name = f"{scribed_metadata["title"].strip().rstrip('.')}"
+        file_name = f"{scribed_metadata["title"].strip().rstrip('.').replace("/", "-")}"
         file_name = file_name if len(file_name) < 100 else f"{file_name[:97]}..."
         output_path = os.path.normpath(os.path.join(context["work_dir"], f"{file_name}.pdf"))
         with open(output_path, "wb") as file:
@@ -514,30 +526,21 @@ def _decrypt_file(context, part, enc_unzip_dir):
         return dec_path
         
 
-def _request(method, url, params=None, data=None, stream=False, attempts=3):
-    try:
-        resp = requests.request(
-            method=method,
-            url=url,
-            params=params,
-            verify=False,
-            data=data,
-            stream=stream,
-            timeout=30,
-            headers={
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
-            }
-        )
-        resp.raise_for_status()
-        return resp
-    except Exception as e:
-        if attempts <= 0:
-            raise e
-        else:
-            time.sleep(10)
-            print(f"Error on request, attempt {3-attempts+1}/3", e)
-            return _request(method, url, params=None, data=None, stream=False, attempts=attempts-1)
-
+def _request(method, url, params=None, data=None, stream=False, attempts=10):
+    resp = requests.request(
+        method=method,
+        url=url,
+        params=params,
+        verify=False,
+        data=data,
+        stream=stream,
+        timeout=30,
+        headers={
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+        }
+    )
+    resp.raise_for_status()
+    return resp
     
 def _datetime_to_bytes(dt):
     res = int(dt.timestamp())

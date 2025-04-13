@@ -118,9 +118,3 @@ def _create_newest_index():
         assert len(new_metas) == total_docs, f"Expected {total_docs} documents, but indexed {len(new_metas)} documents."
         
     return new_metas
-        
-                
-            
-                        
-                
-                    
