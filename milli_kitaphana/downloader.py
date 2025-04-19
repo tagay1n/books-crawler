@@ -80,10 +80,9 @@ def download():
         except KeyboardInterrupt:
             exit(0)
         except BaseException as e:
-            meta["broken"] = True
             print(card_path, meta)
-            print("Exception:", e)
             dump_index(idx=index)
+            print(e)
             exit(1)
     dump_index(idx=index)
 
