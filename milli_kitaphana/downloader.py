@@ -63,8 +63,7 @@ def download():
                 with open(path_to_metadata, "w") as m:
                     json.dump(context['meta'], m, ensure_ascii=False, indent=4)
 
-                pw.main(
-                    f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
+                pw.main(f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
                 upload_docs(
                     path_to_pdf=path_to_pdf,
                     path_to_texts_zip=f"{context["dec_texts_zip_path"]}.zip" if "dec_texts_zip_path" in context else None,
