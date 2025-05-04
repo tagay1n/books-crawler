@@ -16,4 +16,4 @@ huggingface_hub
 pytz
 git+https://github.com/tans1q/monocorpus-models
 git+https://github.com/tans1q/yadisk-client
-
+boto3

@@ -21,13 +21,12 @@ from rich.console import Group
 from rich.panel import Panel
 from rich import print
 from multiprocessing.pool import ThreadPool
-from multiprocessing import Pool
 import itertools
 from utils import read_config, load_index_file, get_in_workdir, dump_index
 import bs4 as bs
 import re
 from urllib.parse import urlparse
-from upload_docs import upload_docs
+from upload_docs import upload_doc, upload_metadata
 import shutil
 
 # Disable SSL warnings
@@ -58,31 +57,32 @@ def download():
                 path_to_pdf = _download_by_code(context)
 
                 # save metadata
-                path_to_metadata = os.path.join(
-                    context['work_dir'], "metadata.json")
-                with open(path_to_metadata, "w") as m:
-                    json.dump(context['meta'], m, ensure_ascii=False, indent=4)
+                path_to_metadata = os.path.join(context['work_dir'], "metadata.zip")
+                with zipfile.ZipFile(path_to_metadata, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+                    meta_json = json.dumps(context['meta'], indent=None, separators=(',', ':'), ensure_ascii=False)
+                    zf.writestr("metadata.json", meta_json)
 
                 pw.main(f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
-                upload_docs(
+                md5 = upload_doc(
                     path_to_pdf=path_to_pdf,
-                    path_to_texts_zip=f"{context["dec_texts_zip_path"]}.zip" if "dec_texts_zip_path" in context else None,
-                    path_to_metadata=path_to_metadata,
                     config=config,
                     is_limited=meta["access"] == "limited"
                 )
+                context['md5'] = md5
+                
+                # upload metadata to s3
+                pw.main(f"Uploading artifacts to object storage --> {context['md5']}")
+                upload_metadata(path_to_metadata=path_to_metadata, path_to_pdf=path_to_pdf, context=context)
+                
                 meta["downloaded"] = True
                 dump_index(idx=index)
-                pw.main(
-                    f"Document processing complete --> {context['meta']['title']}")
+                pw.main(f"Complete: {context['md5']}({context['meta']['title']})")
                 shutil.rmtree(context['work_dir'])
         except KeyboardInterrupt:
             exit(0)
         except BaseException as e:
-            print(card_path, meta)
             dump_index(idx=index)
             print(e)
-            exit(1)
     dump_index(idx=index)
 
 
@@ -102,8 +102,7 @@ def _get_not_downloaded_docs(index):
         else:
             not_downloaded_docs[card_path] = meta
 
-    print(
-        f"Total docs: {len(index)}, full docs: {open}, limited docs: {limited}, broken docs: {broken}")
+    print(f"Total docs: {len(index)}, full docs: {open}, limited docs: {limited}, broken docs: {broken}")
     return not_downloaded_docs
 
 
@@ -413,15 +412,6 @@ def _download_by_code(context):
             toc = _prepare_toc(outline_meta, available_pages)
     else:
         toc = []
-
-    # download the part with document text
-    if texts_url := source_meta.get("texts", {}).get("url"):
-        context["progress"].main("Downloading document text...")
-        enc_texts_path = _download_part(context, texts_url)
-        context["dec_texts_zip_path"] = _decrypt_file(
-            context, texts_url, enc_texts_path)
-    else:
-        print("No URL for texts found")
 
     parts_count = len(parts)
     with ThreadPool(processes=8) as pool:
