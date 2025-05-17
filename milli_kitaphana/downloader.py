@@ -76,7 +76,7 @@ def download():
                 
                 meta["downloaded"] = True
                 dump_index(idx=index)
-                pw.main(f"Complete: {context['md5']}({context['meta']['title']})")
+                pw.main(f"Completed: {context['md5']}({context['meta']['title']})")
                 shutil.rmtree(context['work_dir'])
         except KeyboardInterrupt:
             exit(0)
