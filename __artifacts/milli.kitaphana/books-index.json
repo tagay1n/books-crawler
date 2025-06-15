@@ -1,6 +1,36 @@
 {
+    "/tt/ssearch/detail/rpvimtczun": {
+        "title": "Колхоздагы балалар площадкасының көндәлек эшләре",
+        "publish_year": "1945",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "ПЕДАГОГИКА",
+            "ПЕДАГОГИКА",
+            "КОЛХОЗЛАР",
+            "БАЛАЛАР БАКЧАЛАРЫ",
+            "МЕТОДИК КУЛЛАНМАЛАР",
+            "КОЛХОЗЫ",
+            "ДЕТСКИЕ САДЫ",
+            "МЕТОДИЧЕСКИЕ РЕКОМЕНДАЦИИ"
+        ],
+        "access": "open",
+        "classification": "УДК 372.2(07)",
+        "integrated_description": [
+            "Колхоздагы балалар площадкасының көндәлек эшләре / РСФСР Мәгариф халык комиссариатының мәкт. тәрбия идарәсе",
+            "тәрҗ. Г. Хуҗаханова",
+            "Казан : Татгосиздат, 1945",
+            "19 б",
+            "УДК 372.2(07)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1884_45",
+        "download_code": "nbrt_tatarica_Inv_1884_45",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/rpvimtczun/",
+        "available_pages": 20,
+        "downloaded": true
+    },
     "/tt/ssearch/detail/eoliupglnl": {
-        "title": "1948/49 уку елына җидееллык һәм урта мәктәпләрнең 6 классларында күчереш сынаулары үткәрү өчен билетлар ",
+        "title": "1948/49 уку елына җидееллык һәм урта мәктәпләрнең 6 классларында күчереш сынаулары үткәрү өчен билетлар",
         "publish_year": "1949",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -32,7 +62,7 @@
         "downloaded": true
     },
     "/tt/ssearch/detail/pzjcmbyzxb": {
-        "title": "1950/51 уку елына урта мәктәпнең 8 классында күчереш имтиханнары өчен билетлар ",
+        "title": "1950/51 уку елына урта мәктәпнең 8 классында күчереш имтиханнары өчен билетлар",
         "publish_year": "1951",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -61,38 +91,63 @@
         "available_pages": 24,
         "downloaded": true
     },
-    "/tt/ssearch/detail/mdbqbgforp": {
-        "title": "Батыр элемтәче ",
-        "publish_year": "1941",
+    "/tt/ssearch/detail/lklhaqlyen": {
+        "title": "Социалистик дәүләт формалары турында марксизм-ленинизм",
+        "publish_year": "1957",
         "lang": "Татарский",
         "collection": "Татарика",
         "tags": [
-            "ВЕЛИКАЯ ОТЕЧЕСТВЕННАЯ ВОЙНА",
-            "ВИНОГРАДОВ А.С.",
-            "БӨЕК ВАТАН СУГЫШЫ",
-            "ЭЛЕМТӘ",
-            "БАТЫРЛЫКЛАР",
-            "СВЯЗЬ",
-            "ГЕРОИЗМ"
+            "ДЕМОКРАТИЯ",
+            "ДЕМОКРАТИЯ",
+            "ДӘҮЛӘТ",
+            "ХОКУК",
+            "ГОСУДАРСТВО И ПРАВО"
         ],
-        "author": "Шапиро, Лев",
-        "access": "open",
-        "classification": "УДК 355+9(с)27",
+        "author": "Щетинин, Б. В.",
+        "classification": "УДК 34с1",
         "integrated_description": [
-            "Шапиро, Лев.Батыр элемтәче / [тәрҗ. Х. Кәрим]",
-            "Казан : Татгосиздат, 1941",
-            "36 б.: рәс. б-н",
-            "0-25",
-            "УДК 355+9(с)27"
+            "Щетинин, Б.В.Социалистик дәүләт формалары турында марксизм-ленинизм / ТАССР Культура м-лыгы респ.лекцияләр бюросы",
+            "Казан, 1957",
+            "26 б",
+            "(\"Лекторга ярдәмгә\")",
+            "УДК 34с1"
         ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1349_42",
-        "download_code": "nbrt_tatarica_Inv_1349_42",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mdbqbgforp/",
-        "available_pages": 40,
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_25549",
+        "download_code": "nbrt_tatarica_Inv_25549",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/lklhaqlyen/",
+        "available_pages": 4,
+        "access": "open",
+        "downloaded": true
+    },
+    "/tt/ssearch/detail/gmujqqkhqe": {
+        "title": "Акчаны дәүләт хезмәт саклык кассасында саклау файдалы һәм уңайлы: саклык кассалары турында беседа үткәрүчеләргә ярдәмлек",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "ФИНАНСЫ",
+            "ФИНАНСЛАР",
+            "АКЧАЛАР",
+            "САКЛЫК КАССАЛАРЫ",
+            "ДЕНЬГИ",
+            "СБЕРЕГАТЕЛЬНЫЕ КАССЫ"
+        ],
+        "access": "open",
+        "classification": "УДК 336.162",
+        "integrated_description": [
+            "Акчаны дәүләт хезмәт саклык кассасында саклау файдалы һәм уңайлы : саклык кассалары турында беседа үткәрүчеләргә ярдәмлек",
+            "Казан, 1940",
+            "23 б",
+            "УДК 336.162"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_3656_40",
+        "download_code": "nbrt_tatarica_Inv_3656_40",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/gmujqqkhqe/",
+        "available_pages": 24,
         "downloaded": true
     },
     "/tt/ssearch/detail/gwojfuzeas": {
-        "title": "Дәүләтнең өченче бишьеллык заемын(дүртенче чыгарылыш) колхозчылар,авыл җирендәге кустарь-промысло артельләренең членнары һәм ялгыз хуҗалыкчы крестьяннар арасында урнаштыру турында инструкция N 290/44 ",
+        "title": "Дәүләтнең өченче бишьеллык заемын(дүртенче чыгарылыш) колхозчылар,авыл җирендәге кустарь-промысло артельләренең членнары һәм ялгыз хуҗалыкчы крестьяннар арасында урнаштыру турында инструкция N 290/44",
         "publish_year": "1941",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -119,59 +174,34 @@
         "available_pages": 16,
         "downloaded": true
     },
-    "/tt/ssearch/detail/lklhaqlyen": {
-        "title": "Социалистик дәүләт формалары турында марксизм-ленинизм ",
-        "publish_year": "1957",
+    "/tt/ssearch/detail/mdbqbgforp": {
+        "title": "Батыр элемтәче",
+        "publish_year": "1941",
         "lang": "Татарский",
         "collection": "Татарика",
         "tags": [
-            "ДЕМОКРАТИЯ",
-            "ДЕМОКРАТИЯ",
-            "ДӘҮЛӘТ",
-            "ХОКУК",
-            "ГОСУДАРСТВО И ПРАВО"
+            "ВЕЛИКАЯ ОТЕЧЕСТВЕННАЯ ВОЙНА",
+            "ВИНОГРАДОВ А.С.",
+            "БӨЕК ВАТАН СУГЫШЫ",
+            "ЭЛЕМТӘ",
+            "БАТЫРЛЫКЛАР",
+            "СВЯЗЬ",
+            "ГЕРОИЗМ"
         ],
-        "author": "Щетинин, Б.В.",
-        "classification": "УДК 34с1",
-        "integrated_description": [
-            "Щетинин, Б.В.Социалистик дәүләт формалары турында марксизм-ленинизм / ТАССР Культура м-лыгы респ.лекцияләр бюросы",
-            "Казан, 1957",
-            "26 б",
-            "(\"Лекторга ярдәмгә\")",
-            "УДК 34с1"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_25549",
-        "download_code": "nbrt_tatarica_Inv_25549",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/lklhaqlyen/",
-        "available_pages": 4,
+        "author": "Шапиро; Кәрим, Х.",
         "access": "open",
-        "downloaded": true
-    },
-    "/tt/ssearch/detail/gmujqqkhqe": {
-        "title": "Акчаны дәүләт хезмәт саклык кассасында саклау файдалы һәм уңайлы : саклык кассалары турында беседа үткәрүчеләргә ярдәмлек",
-        "publish_year": "1940",
-        "lang": "Татарский",
-        "collection": "Татарика",
-        "tags": [
-            "ФИНАНСЫ",
-            "ФИНАНСЛАР",
-            "АКЧАЛАР",
-            "САКЛЫК КАССАЛАРЫ",
-            "ДЕНЬГИ",
-            "СБЕРЕГАТЕЛЬНЫЕ КАССЫ"
-        ],
-        "access": "open",
-        "classification": "УДК 336.162",
+        "classification": "УДК 355+9(с)27",
         "integrated_description": [
-            "Акчаны дәүләт хезмәт саклык кассасында саклау файдалы һәм уңайлы : саклык кассалары турында беседа үткәрүчеләргә ярдәмлек",
-            "Казан, 1940",
-            "23 б",
-            "УДК 336.162"
+            "Шапиро, Лев.Батыр элемтәче / [тәрҗ. Х. Кәрим]",
+            "Казан : Татгосиздат, 1941",
+            "36 б.: рәс. б-н",
+            "0-25",
+            "УДК 355+9(с)27"
         ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_3656_40",
-        "download_code": "nbrt_tatarica_Inv_3656_40",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/gmujqqkhqe/",
-        "available_pages": 24,
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1349_42",
+        "download_code": "nbrt_tatarica_Inv_1349_42",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mdbqbgforp/",
+        "available_pages": 40,
         "downloaded": true
     },
     "/tt/ssearch/detail/xvcjkbcgmq": {
