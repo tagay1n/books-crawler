@@ -63,21 +63,21 @@ def download():
                 _dh_key_exchange(context)
                 path_to_pdf = _download_by_code(context)
 
-                # # save metadata
+                # save metadata
                 # path_to_metadata = os.path.join(context['work_dir'], "metadata.zip")
                 # with zipfile.ZipFile(path_to_metadata, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
                 #     meta_json = json.dumps(context['meta'], indent=None, separators=(',', ':'), ensure_ascii=False)
                 #     zf.writestr("metadata.json", meta_json)
 
                 # pw.main(f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
-                # context['md5'] = md5
+                # context['md5'] = calculate_md5(path_to_pdf)
                 
-                # # upload metadata to s3
+                # # # upload metadata to s3
                 # pw.main(f"Uploading artifacts to object storage --> {context['md5']}")
                 # upload_metadata(path_to_metadata=path_to_metadata, path_to_pdf=path_to_pdf, context=context)
                 
-                # meta["downloaded"] = True
-                # dump_index(idx=index)
+                meta["downloaded_limited"] = True
+                dump_index(idx=index)
 
                 pw.main(f"Saved to [bold green]{_repr_name(path_to_pdf)}[/bold green]")
                 shutil.rmtree(context['work_dir'])
@@ -103,6 +103,9 @@ def _get_not_downloaded_docs(index):
             continue
         
         if  meta['access'] == 'open':
+            continue
+        
+        if meta.get("downloaded_limited", False):
             continue
         # if meta.get("downloaded", False):
         #     if meta['access'] == 'limited':
