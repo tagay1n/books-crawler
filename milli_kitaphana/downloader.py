@@ -222,7 +222,7 @@ class ProgressWrapper():
     def download(self, part_name):
         self._pop_if_many_tasks()
         task = self._aux.add_task(
-            f"Downloading '{part_name}'",
+            f"Downloading {part_name}",
             start=True,
         )
         self._aux._tasks[task]._reset()
@@ -231,7 +231,7 @@ class ProgressWrapper():
     def decrypt(self, part_name, total_size=None):
         self._pop_if_many_tasks()
         return self._aux.add_task(
-            f"Decrypting '{part_name}'",
+            f"Decrypting {part_name}",
             start=True,
             total=total_size
         )
