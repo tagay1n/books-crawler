@@ -28,6 +28,7 @@ import re
 from urllib.parse import urlparse
 from upload_docs import upload_doc, upload_metadata
 import shutil
+from pathlib import Path
 
 # Disable SSL warnings
 requests.packages.urllib3.disable_warnings(
@@ -38,12 +39,18 @@ HOST = "https://kitap.tatar.ru"
 DETAILS_URL = HOST + "/tt/dl/edoc2"
 
 
+base_dir = get_in_workdir(os.path.join("../__artifacts/milli.kitaphana"))
+results_dir = os.path.join(base_dir, 'results')
+
+
 def download():
     index = load_index_file()
     not_downloaded_docs = _get_not_downloaded_docs(index)
     print(f"About to download {len(not_downloaded_docs)} documents")
     config = read_config()
-    for card_path, meta in not_downloaded_docs.items():
+    os.makedirs(results_dir, exist_ok=True)
+    
+    for card_path, meta in not_downloaded_docs[:5]:
         try:
             _scrap_doc_card(card_path, meta)
             context = {
@@ -56,27 +63,23 @@ def download():
                 _dh_key_exchange(context)
                 path_to_pdf = _download_by_code(context)
 
-                # save metadata
-                path_to_metadata = os.path.join(context['work_dir'], "metadata.zip")
-                with zipfile.ZipFile(path_to_metadata, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
-                    meta_json = json.dumps(context['meta'], indent=None, separators=(',', ':'), ensure_ascii=False)
-                    zf.writestr("metadata.json", meta_json)
+                # # save metadata
+                # path_to_metadata = os.path.join(context['work_dir'], "metadata.zip")
+                # with zipfile.ZipFile(path_to_metadata, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+                #     meta_json = json.dumps(context['meta'], indent=None, separators=(',', ':'), ensure_ascii=False)
+                #     zf.writestr("metadata.json", meta_json)
 
-                pw.main(f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
-                md5 = upload_doc(
-                    path_to_pdf=path_to_pdf,
-                    config=config,
-                    is_limited=meta["access"] == "limited"
-                )
-                context['md5'] = md5
+                # pw.main(f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
+                # context['md5'] = md5
                 
-                # upload metadata to s3
-                pw.main(f"Uploading artifacts to object storage --> {context['md5']}")
-                upload_metadata(path_to_metadata=path_to_metadata, path_to_pdf=path_to_pdf, context=context)
+                # # upload metadata to s3
+                # pw.main(f"Uploading artifacts to object storage --> {context['md5']}")
+                # upload_metadata(path_to_metadata=path_to_metadata, path_to_pdf=path_to_pdf, context=context)
                 
-                meta["downloaded"] = True
-                dump_index(idx=index)
-                pw.main(f"Completed: {context['md5']}({context['meta']['title']})")
+                # meta["downloaded"] = True
+                # dump_index(idx=index)
+
+                pw.main(f"Saved to [bold green]{_repr_name(path_to_pdf)}[/bold green]")
                 shutil.rmtree(context['work_dir'])
         except KeyboardInterrupt:
             exit(0)
@@ -84,25 +87,34 @@ def download():
             dump_index(idx=index)
             print(e)
     dump_index(idx=index)
+    
+    
+def _repr_name(path_to_pdf):
+    parts = Path(path_to_pdf).parts
+    dirs = parts[-3:-1]
+    file_name = parts[-1][:100]
+    return os.path.join(*(dirs), file_name)
 
 
 def _get_not_downloaded_docs(index):
-    open = 0
-    limited = 0
-    broken = 0
-    not_downloaded_docs = {}
+    not_downloaded_docs = []
     for card_path, meta in index.items():
-        if meta.get("downloaded", False):
-            if meta['access'] == 'limited':
-                limited += 1
-            elif meta['access'] == 'open':
-                open += 1
-        elif meta.get("broken", False):
-            broken += 1
-        else:
-            not_downloaded_docs[card_path] = meta
-
-    print(f"Total docs: {len(index)}, full docs: {open}, limited docs: {limited}, broken docs: {broken}")
+        if meta.get("broken", False):
+            continue
+        
+        if  meta['access'] == 'open':
+            continue
+        # if meta.get("downloaded", False):
+        #     if meta['access'] == 'limited':
+        #         limited += 1
+        #     elif meta['access'] == 'open':
+        #         open += 1
+        # elif meta.get("broken", False):
+        #     broken += 1
+        # print(0)
+        not_downloaded_docs.append((card_path, meta))
+        
+    not_downloaded_docs = sorted(not_downloaded_docs, key=lambda x: x[1].get('publish_year', "").strip('[]'), reverse=True)
     return not_downloaded_docs
 
 
@@ -262,8 +274,8 @@ def _get_details(context):
 
     code = context["meta"]["download_code"]
     # path to the directory where the artifacts of the key exchange will be stored
-    work_dir = get_in_workdir(os.path.join(
-        "../__artifacts/milli.kitaphana", code))
+    
+    work_dir = os.path.join(base_dir, code)
     context["work_dir"] = work_dir
     # path to the zip file obtained from the server
     zip_path = os.path.join(work_dir, "key_exchange_response.zip")
@@ -459,10 +471,8 @@ def _download_by_code(context):
 
         # save the final pdf
         file_name = f"{scribed_metadata["title"].strip().rstrip('.').replace("/", "-")}"
-        file_name = file_name if len(
-            file_name) < 100 else f"{file_name[:97]}..."
-        output_path = os.path.normpath(os.path.join(
-            context["work_dir"], f"{file_name}.pdf"))
+        file_name = file_name if len(file_name) < 100 else f"{file_name[:97]}..."
+        output_path = os.path.normpath(os.path.join(results_dir, f"{file_name}.pdf"))
         with open(output_path, "wb") as file:
             file.write(acc.write())
 
