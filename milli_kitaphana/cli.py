@@ -12,12 +12,12 @@ def index():
     
     
 @app.command()
-def download():
+def download(url):
     """
     Read index file and download documents what have not been downloaded yet
     """
     import downloader
-    downloader.download()
+    downloader.download(url)
     
 if __name__ == "__main__":
     app()

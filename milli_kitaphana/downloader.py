@@ -38,52 +38,63 @@ HOST = "https://kitap.tatar.ru"
 DETAILS_URL = HOST + "/tt/dl/edoc2"
 
 
-def download():
-    index = load_index_file()
-    not_downloaded_docs = _get_not_downloaded_docs(index)
-    print(f"About to download {len(not_downloaded_docs)} documents")
+def download(url):
+    # index = load_index_file()
+    # not_downloaded_docs = _get_not_downloaded_docs(index)
+    # print(f"About to download {len(not_downloaded_docs)} documents")
     config = read_config()
-    for card_path, meta in not_downloaded_docs.items():
-        try:
-            _scrap_doc_card(card_path, meta)
-            context = {
-                "meta": meta,
-                "config": config
-            }
-            with ProgressWrapper(context, card_path) as pw:
-                _get_details(context)
-                _get_dh_params(context)
-                _dh_key_exchange(context)
-                path_to_pdf = _download_by_code(context)
+    # for card_path, meta in not_downloaded_docs.items():
+    meta = {
+        "download_code": (urlparse(url).path
+                                .removeprefix('/ru/dl')
+                                 .removeprefix('/dl')
+                                 .removeprefix('/kitap.tatar.ru/dl')
+                                 .strip('/')
+                                 .replace('-', '_'))
+    }
+    
+    # card_path = "https://kitap.tatar.ru/ru/dl/nbrt_tatarica_Inv_T_1632674"
+    try:
+        # _scrap_doc_card(card_path, meta)
+        context = {
+            "meta": meta,
+            "config": config
+        }
+        with ProgressWrapper(context) as pw:
+            _get_details(context)
+            _get_dh_params(context)
+            _dh_key_exchange(context)
+            path_to_pdf = _download_by_code(context)
+            print(f"File downloaded to {path_to_pdf}")
 
-                # save metadata
-                path_to_metadata = os.path.join(context['work_dir'], "metadata.zip")
-                with zipfile.ZipFile(path_to_metadata, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
-                    meta_json = json.dumps(context['meta'], indent=None, separators=(',', ':'), ensure_ascii=False)
-                    zf.writestr("metadata.json", meta_json)
+            # # save metadata
+            # path_to_metadata = os.path.join(context['work_dir'], "metadata.zip")
+            # with zipfile.ZipFile(path_to_metadata, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+            #     meta_json = json.dumps(context['meta'], indent=None, separators=(',', ':'), ensure_ascii=False)
+            #     zf.writestr("metadata.json", meta_json)
 
-                pw.main(f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
-                md5 = upload_doc(
-                    path_to_pdf=path_to_pdf,
-                    config=config,
-                    is_limited=meta["access"] == "limited"
-                )
-                context['md5'] = md5
-                
-                # upload metadata to s3
-                pw.main(f"Uploading artifacts to object storage --> {context['md5']}")
-                upload_metadata(path_to_metadata=path_to_metadata, path_to_pdf=path_to_pdf, context=context)
-                
-                meta["downloaded"] = True
-                dump_index(idx=index)
-                pw.main(f"Completed: {context['md5']}({context['meta']['title']})")
-                shutil.rmtree(context['work_dir'])
-        except KeyboardInterrupt:
-            exit(0)
-        except BaseException as e:
-            dump_index(idx=index)
-            print(e)
-    dump_index(idx=index)
+            # pw.main(f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
+            # md5 = upload_doc(
+            #     path_to_pdf=path_to_pdf,
+            #     config=config,
+            #     is_limited=meta["access"] == "limited"
+            # )
+            # context['md5'] = md5
+            
+            # upload metadata to s3
+            # pw.main(f"Uploading artifacts to object storage --> {context['md5']}")
+            # upload_metadata(path_to_metadata=path_to_metadata, path_to_pdf=path_to_pdf, context=context)
+            
+            # meta["downloaded"] = True
+            # dump_index(idx=index)
+            # pw.main(f"Completed: {context['md5']}({context['meta']['title']})")
+            shutil.rmtree(context['work_dir'])
+    except KeyboardInterrupt:
+        exit(0)
+    except BaseException as e:
+        # dump_index(idx=index)
+        print(e)
+    # dump_index(idx=index)
 
 
 def _get_not_downloaded_docs(index):
@@ -103,7 +114,10 @@ def _get_not_downloaded_docs(index):
             not_downloaded_docs[card_path] = meta
 
     print(f"Total docs: {len(index)}, full docs: {open}, limited docs: {limited}, broken docs: {broken}")
-    return not_downloaded_docs
+    return {
+        "": {}
+    }
+    # return not_downloaded_docs
 
 
 def _scrap_doc_card(card_path, meta):
@@ -177,11 +191,11 @@ class CheckBoxColumn(ProgressColumn):
 
 
 class ProgressWrapper():
-    def __init__(self, context, card_path):
+    def __init__(self, context):
         main_progress = Progress(
             TimeElapsedColumn(),
             TextColumn(
-                f"[bold cyan]'{context["meta"]["download_code"]}({card_path})':"),
+                f"[bold cyan]'{context["meta"]["download_code"]})':"),
             TextColumn("[progress.description]{task.description}"),
             SpinnerColumn(spinner_name="dots", style="bold cyan"),
         )
@@ -402,16 +416,16 @@ def _download_by_code(context):
 
     parts = source_meta["parts"]
     # process the outline
-    outline_path = os.path.join(meta_dir, "outline.json")
-    if os.path.exists(outline_path):
-        with open(outline_path, "r", encoding="utf-8") as file:
-            outline_meta = json.load(file)
-            available_pages = sum([i['pagesCount']
-                                  for i in parts if i.get("url")])
-            context['meta']['available_pages'] = available_pages
-            toc = _prepare_toc(outline_meta, available_pages)
-    else:
-        toc = []
+    # outline_path = os.path.join(meta_dir, "outline.json")
+    # if os.path.exists(outline_path):
+    #     with open(outline_path, "r", encoding="utf-8") as file:
+    #         outline_meta = json.load(file)
+    #         available_pages = sum([i['pagesCount']
+    #                               for i in parts if i.get("url")])
+    #         context['meta']['available_pages'] = available_pages
+    #         toc = _prepare_toc(outline_meta, available_pages)
+    # else:
+    #     toc = []
 
     parts_count = len(parts)
     with ThreadPool(processes=8) as pool:
@@ -443,22 +457,22 @@ def _download_by_code(context):
 
         acc.set_pagemode(source_meta["pageMode"])
         acc.set_pagelayout(source_meta["pageLayout"])
-        acc.set_toc(toc)
+        # acc.set_toc(toc)
         scribed_metadata = context["meta"]
         if classification := scribed_metadata.get("classification"):
             scribed_metadata["integrated_description"].append(classification)
-        _metadata = {
-            "title": scribed_metadata["title"],
-            "subject": "; ".join(scribed_metadata["integrated_description"])
-        }
-        if author := scribed_metadata.get("author"):
-            _metadata["author"] = author
-        if tags := scribed_metadata.get("tags"):
-            _metadata["keywords"] = ", ".join(tags)
-        acc.set_metadata(_metadata)
+        # _metadata = {
+        #     "title": scribed_metadata["title"],
+        #     "subject": "; ".join(scribed_metadata["integrated_description"])
+        # }
+        # if author := scribed_metadata.get("author"):
+        #     _metadata["author"] = author
+        # if tags := scribed_metadata.get("tags"):
+        #     _metadata["keywords"] = ", ".join(tags)
+        # acc.set_metadata(_metadata)
 
         # save the final pdf
-        file_name = f"{scribed_metadata["title"].strip().rstrip('.').replace("/", "-")}"
+        file_name = f"{context["meta"]["download_code"].strip().rstrip('.').replace("/", "-")}"
         file_name = file_name if len(
             file_name) < 100 else f"{file_name[:97]}..."
         output_path = os.path.normpath(os.path.join(
@@ -485,17 +499,17 @@ def _decrypt_file_task(context, num, part_url, enc_unzip_dir, counter, total):
     return res
 
 
-def _prepare_toc(outline_meta, available_pages):
-    """
-    This function prepares the table of contents for the PDF document.
-    """
-    res = []
-    for i in outline_meta:
-        title = i['title'].strip().rstrip('.')
-        page_no = 1 + int(i['dest'][0])
-        res.append([1, title, page_no if page_no <= available_pages else -1])
+# def _prepare_toc(outline_meta, available_pages):
+#     """
+#     This function prepares the table of contents for the PDF document.
+#     """
+#     res = []
+#     for i in outline_meta:
+#         title = i['title'].strip().rstrip('.')
+#         page_no = 1 + int(i['dest'][0])
+#         res.append([1, title, page_no if page_no <= available_pages else -1])
 
-    return res
+#     return res
 
 
 def _download_part(context, part):
