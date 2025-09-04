@@ -50,7 +50,7 @@ def download():
     config = read_config()
     os.makedirs(results_dir, exist_ok=True)
     
-    for card_path, meta in not_downloaded_docs[:5]:
+    for card_path, meta in not_downloaded_docs:
         try:
             _scrap_doc_card(card_path, meta)
             context = {
