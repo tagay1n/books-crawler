@@ -14,8 +14,8 @@ pyyaml
 typer
 huggingface_hub
 pytz
-git+https://github.com/tans1q/monocorpus-models
-git+https://github.com/tans1q/yadisk-client
+git+https:///github.com/tagay1n/monocorpus-models
+git+https://github.com/tagay1n/yadisk-client
 boto3
 pycryptodome
 datatrove

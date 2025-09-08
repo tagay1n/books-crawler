@@ -1,6 +1,4 @@
-import json
-
-from utils import _get_index_file_loc, _get_in_workdir
+from utils import  _get_in_workdir, _load_index, _dump_index
 import os
 from rich import print
 import requests
@@ -43,15 +41,10 @@ def download():
                 print(f"Saved doc '{doc['md5']}' to '{doc['path_to_file']}'")
                 _dump_index(index=index)
              
-        # _dedup_by_hash()
     except KeyboardInterrupt:
         print("Interrupting...")
     finally:
         _dump_index(index=index)
-    
-        
-def _dedup_by_hash():
-    pass
 
         
 def _move_file(path_to_file, md5, url, script):
@@ -80,16 +73,6 @@ def _calculate_md5(file_path: str):
             hash_md5.update(chunk)
     return hash_md5.hexdigest()
         
-        
-def _dump_index(index, backup=False):
-    index_path = _get_index_file_loc()
-    if backup:
-        current_time = datetime.datetime.now()
-        formatted_time = current_time.strftime('%H:%M:%S')
-        index_path = f"{index_path}_{formatted_time}.backup"
-    with open(index_path, "w") as f:
-        return json.dump(index, f, indent=4, ensure_ascii=False)            
-    
     
 def _look_for_filename_in_index(warc_url, orig_url):
     df = _get_warc(warc_url)
@@ -99,7 +82,7 @@ def _look_for_filename_in_index(warc_url, orig_url):
     if len(exact_match) == 1:
         return exact_match['warc_filename'].values[0]
     else:
-        print("File not found in index by url {orig_url}")
+        print(f"File not found in index by url {orig_url}")
         return None
 
     # Show a few URLs
@@ -178,15 +161,7 @@ def check_pdf(path_to_file):
             print(f"Document {path_to_file} seems to be broken")
             return False
     return True
-        
-
-def _load_index():
-    index_path = _get_index_file_loc()
-    if not os.path.exists(index_path):
-        raise ValueError(f"Index file not found by path {index_path}")
-    with open(index_path, "r") as f:
-        return json.load(f)
-    
+       
     
 def _download_direct_pdf(url, path_to_file):
     print(f"Trying do download doc by url {url}")

@@ -13,5 +13,13 @@ def download():
     import downloader
     downloader.download()
     
+    
+@app.command()
+def upload():
+    import upload
+    upload.upload()
+    
+    
+    
 if __name__ == "__main__":
     app()

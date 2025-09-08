@@ -1,7 +1,7 @@
 import json
 from datatrove.pipeline.readers import ParquetReader
 import os
-from utils import _get_index_file_loc
+from utils import _get_index_file_loc, _load_index
 from rich import print
 
 cyrl_sources = [
@@ -24,8 +24,7 @@ def index():
         
     index_path = _get_index_file_loc()
     if os.path.exists(index_path):
-        with open(index_path, "r") as f:
-            existing_index = json.load(f)
+        existing_index = _load_index()
     else:
         existing_index = {}
         
