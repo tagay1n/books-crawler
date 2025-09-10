@@ -14,7 +14,7 @@ from warcio.archiveiterator import ArchiveIterator
 
 
 def download():
-    # download_directly()
+    download_directly()
     download_cc()
     
     
@@ -27,19 +27,25 @@ def download_cc():
         print(f"About to download {len(docs_to_download)} of {len(index)} documents")
         path_to_file = _get_in_workdir("../__artifacts/common.crawl/tmp.pdf")
 
-        for doc in docs_to_download:
+        for doc in docs_to_download[:]:
                 warc_file = doc['file_path'] if not doc['file_path'].endswith('.parquet') else doc.get('augmented_file_path', None)
                 if not warc_file:
                     continue
                 print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
-                if _fetch_record_from_offset(warc_file, doc['offset'], path_to_file) and check_pdf(path_to_file):
-                    doc['md5'] = _calculate_md5(path_to_file)
-                    doc['path_to_file'] = _move_file(path_to_file, doc['md5'], doc['url'], doc['script'])
-                    print(f"Saved doc '{doc['md5']}' to '{doc['path_to_file']}'")
-                    _dump_index(index=index)
-                else:
+                success = _fetch_record_from_offset(warc_file, doc['offset'], path_to_file)
+                if not success:
                     print(f"Could not download doc from common crawl", doc)
                     continue
+                    
+                pdf_valid = check_pdf(path_to_file)
+                if not pdf_valid:
+                    print("PDF file is invalid")
+                    continue
+
+                doc['md5'] = _calculate_md5(path_to_file)
+                doc['path_to_file'] = _move_file(path_to_file, doc['md5'], doc['url'], doc['script'])
+                print(f"Saved doc '{doc['md5']}' to '{doc['path_to_file']}'")
+                _dump_index(index=index)
     except KeyboardInterrupt:
         print("Interrupting...")
     finally:
@@ -136,13 +142,13 @@ def _look_for_filename_in_index(doc, df):
     orig_url = doc['url']
     exact_match = df[df['url'] == orig_url.strip()]
 
-    if len(exact_match) == 1:
-        return exact_match['warc_filename'].values[0]
-    elif len(exact_match) > 1:
-        print(f"Got more than one matches by url {orig_url}")
-    else:
+    _len = len(exact_match)
+    if _len == 0:
         print(f"File not found in index by url {orig_url}")
-    return None
+        return None
+    if _len > 1:
+        print(f"Got {_len} matches by url {orig_url}, picking first one") 
+    return exact_match['warc_filename'].values[0]
     
 
 def _fetch_record_from_offset(warc_filename, offset, output_file):
@@ -163,7 +169,9 @@ def _fetch_record_from_offset(warc_filename, offset, output_file):
         # Iterate records from stream
         for record in ArchiveIterator(resp.raw, arc2warc=True):
             # Example: only save PDFs
-            if record.http_headers and record.http_headers.get_header("Content-Type") == "application/pdf":
+            if record.http_headers:
+            # if record.http_headers and record.http_headers.get_header("Content-Type") == "application/pdf":
+
                 with open(output_file, "wb") as f:
                     f.write(record.content_stream().read())
                 print(f"💾 Saved {output_file}")

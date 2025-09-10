@@ -10,8 +10,8 @@ def index():
     
 @app.command()
 def download():
-    import downloader
-    downloader.download()
+    import download
+    download.download()
     
     
 @app.command()

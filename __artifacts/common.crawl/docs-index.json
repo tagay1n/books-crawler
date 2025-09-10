@@ -10815,7 +10815,9 @@
         "url": "http://marsila.org.ru/index.php?view=article&catid=1:latest-news&id=429:2017-09-04-18-35-20&format=pdf",
         "file_path": "s3://commoncrawl/crawl-data/CC-MAIN-2019-39/segments/1568514572980.56/warc/CC-MAIN-20190917000820-20190917022820-00167.warc.gz",
         "script": "cyrl",
-        "offset": 121334822
+        "offset": 121334822,
+        "md5": "c9cc0343870aa3db490eb1450747cfcd",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/c9cc0343870aa3db490eb1450747cfcd.pdf"
     },
     "<urn:uuid:509f2c78-87a6-4f29-bbc8-cf71a42d84b9>": {
         "url": "http://selet.biz/all-site/%D0%92%D0%B8%D0%BA%D0%B8%D0%9C%D3%99%D0%BA%D1%82%D3%99%D0%BF.pdf",
@@ -14234,7 +14236,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-05/subset=warc/part-00267-1e2959d8-5649-433a-b76e-f1b876a6479d.c000.gz.parquet",
         "script": "cyrl",
         "offset": 41575347,
-        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320303956.14/warc/CC-MAIN-20220123015212-20220123045212-00544.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320303956.14/warc/CC-MAIN-20220123015212-20220123045212-00544.warc.gz",
+        "md5": "e1f5c3ec1d55f3b079e0ad21f7563ee0",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/e1f5c3ec1d55f3b079e0ad21f7563ee0.pdf"
     },
     "<urn:uuid:9c25b932-d311-40df-946e-d18631de3f45>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2023-01/1147177/npa_ta_1147179.pdf",
@@ -16147,7 +16151,9 @@
         "url": "http://marsila.org.ru/index.php?view=article&catid=1:latest-news&id=432:2017-09-04-19-13-01&format=pdf",
         "file_path": "s3://commoncrawl/crawl-data/CC-MAIN-2019-39/segments/1568514572980.56/warc/CC-MAIN-20190917000820-20190917022820-00123.warc.gz",
         "script": "cyrl",
-        "offset": 123307091
+        "offset": 123307091,
+        "md5": "f00d24e57aeab09fd3c96a9de83e3a70",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/f00d24e57aeab09fd3c96a9de83e3a70.pdf"
     },
     "<urn:uuid:c8873890-4aee-4a52-b141-c8e82f2a2336>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2022-09/1044182/npa_ta_1044184.pdf",
@@ -19484,7 +19490,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-17/subset=warc/part-00174-74237c22-0523-49c6-9e5a-6b4aa471a042.c000.gz.parquet",
         "script": "cyrl",
         "offset": 635789005,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-17/segments/1618038862159.64/warc/CC-MAIN-20210418224306-20210419014306-00532.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-17/segments/1618038862159.64/warc/CC-MAIN-20210418224306-20210419014306-00532.warc.gz",
+        "md5": "9e740e0089b0811ec36f07a8c5c1510d",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/9e740e0089b0811ec36f07a8c5c1510d-load.pdf"
     },
     "<urn:uuid:5f68750f-959a-460e-ba1f-99c75c249a90>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-02/720474/npa_ta_720476.pdf",
@@ -34689,7 +34697,9 @@
         "url": "http://ilishmayak.ru/component/content/article/3-newsflash/4531-rusija-echke-eshlr-ministrlygyny-ilesh-rajony-buencha-blege-hbr-itench-agymdagy-elny-30-sentjabren-kadr-rajon-territorijasend-mk-operativ-profilaktik-operatsijase-tkrel.pdf",
         "file_path": "s3://commoncrawl/crawl-data/CC-MAIN-2018-22/segments/1526794864798.12/warc/CC-MAIN-20180522151159-20180522171159-00502.warc.gz",
         "script": "cyrl",
-        "offset": 138804470
+        "offset": 138804470,
+        "md5": "a662a5be017e3731ebc8e7a8cf460eaf",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/a662a5be017e3731ebc8e7a8cf460eaf-4531-rusija-echke-eshlr-ministrlygyny-ilesh-rajony-buencha-blege-hbr-itench-agymdagy-elny-30-sentjab.pdf"
     },
     "636ef840-331a-41dc-b8fb-8d8cd264990c": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2020-01/513547/npa_ta_513549.pdf",
@@ -41645,7 +41655,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-43/subset=warc/part-00171-16202947-a809-4711-8221-79ab0a79d5b1.c000.gz.parquet",
         "script": "cyrl",
         "offset": 55489861,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-43/segments/1634323585203.61/warc/CC-MAIN-20211018124412-20211018154412-00470.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-43/segments/1634323585203.61/warc/CC-MAIN-20211018124412-20211018154412-00470.warc.gz",
+        "md5": "3da43cce12ffd7eb5204d969f1ea2f87",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/3da43cce12ffd7eb5204d969f1ea2f87.pdf"
     },
     "<urn:uuid:12b153ed-4b42-4018-933f-43ebc6d81724>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-02/718949/npa_ta_718953.pdf",
@@ -42900,7 +42912,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-49/subset=warc/part-00119-eb7089cf-762b-4a3e-8cab-20b677c0d246.c000.gz.parquet",
         "script": "cyrl",
         "offset": 51417560,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-49/segments/1637964358570.48/warc/CC-MAIN-20211128164634-20211128194634-00192.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-49/segments/1637964358570.48/warc/CC-MAIN-20211128164634-20211128194634-00192.warc.gz",
+        "md5": "36778ffa43e6e3333c3a55db7036e2e9",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/36778ffa43e6e3333c3a55db7036e2e9.pdf"
     },
     "<urn:uuid:e83dc69d-6298-45d5-b56d-6040530fd349>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-09/829874/npa_ta_829878.pdf",
@@ -43869,7 +43883,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-04/subset=warc/part-00035-364a895c-5e5c-46bb-846e-75ec7de82b3b.c000.gz.parquet",
         "script": "cyrl",
         "offset": 64134940,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-04/segments/1610703519843.24/warc/CC-MAIN-20210119232006-20210120022006-00438.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-04/segments/1610703519843.24/warc/CC-MAIN-20210119232006-20210120022006-00438.warc.gz",
+        "md5": "675cd5a54a6a0a966d6066294c2d8b4a",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/675cd5a54a6a0a966d6066294c2d8b4a.pdf"
     },
     "<urn:uuid:452b7808-5f65-4d89-8561-460915c89b92>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2015-03/2248/npa_ta_2248.pdf",
@@ -57252,21 +57268,27 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-29/subset=warc/part-00224-18f202a6-71a6-4cdb-b350-51e72c917b97.c000.gz.parquet",
         "script": "cyrl",
         "offset": 90171556,
-        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00416.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00416.warc.gz",
+        "md5": "4d439e9db8c9656b4046eabd6f1f2617",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/4d439e9db8c9656b4046eabd6f1f2617.pdf"
     },
     "<urn:uuid:47c78a29-ec52-45be-8978-1544547a91d6>": {
         "url": "http://marsila.org.ru/index.php?view=article&catid=1:latest-news&id=353:2015-01-31-16-02-05&format=pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-29/subset=warc/part-00224-18f202a6-71a6-4cdb-b350-51e72c917b97.c000.gz.parquet",
         "script": "cyrl",
         "offset": 91264910,
-        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00444.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00444.warc.gz",
+        "md5": "b5b68020768357264923ddfca3ec82ae",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/b5b68020768357264923ddfca3ec82ae.pdf"
     },
     "<urn:uuid:02082ffa-29e7-4bc7-bc23-76352dd314a1>": {
         "url": "http://marsila.org.ru/index.php?view=article&catid=1:latest-news&id=352:2015-01-26-15-55-13&format=pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-29/subset=warc/part-00224-18f202a6-71a6-4cdb-b350-51e72c917b97.c000.gz.parquet",
         "script": "cyrl",
         "offset": 87712137,
-        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00445.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00445.warc.gz",
+        "md5": "4dd70f19581ad01c3f67cc75ca1cbed4",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/4dd70f19581ad01c3f67cc75ca1cbed4.pdf"
     },
     "<urn:uuid:78d6111c-02f1-454e-826b-ebba2b940952>": {
         "url": "http://onlyege.ru/35-yazu-turli-suylem-karagan/?pdf=7972",
@@ -57281,7 +57303,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-29/subset=warc/part-00224-18f202a6-71a6-4cdb-b350-51e72c917b97.c000.gz.parquet",
         "script": "cyrl",
         "offset": 93311078,
-        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00485.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00485.warc.gz",
+        "md5": "9e627cc5d0abcefa80b105cd8259b130",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/9e627cc5d0abcefa80b105cd8259b130.pdf"
     },
     "<urn:uuid:94e0ad05-b3b4-4b7e-bef0-07fa03e77c3d>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2023-02/1155657/npa_ta_1155659.pdf",
@@ -64655,7 +64679,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-49/subset=warc/part-00119-eb7089cf-762b-4a3e-8cab-20b677c0d246.c000.gz.parquet",
         "script": "cyrl",
         "offset": 48369529,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-49/segments/1637964358570.48/warc/CC-MAIN-20211128164634-20211128194634-00297.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-49/segments/1637964358570.48/warc/CC-MAIN-20211128164634-20211128194634-00297.warc.gz",
+        "md5": "93de6cfedeea800dfd5d030aec11ae8c",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/93de6cfedeea800dfd5d030aec11ae8c.pdf"
     },
     "<urn:uuid:231dc957-96d9-47de-a247-e5b69e8d9fee>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2022-11/1076797/npa_ta_1076801.pdf",
@@ -64912,7 +64938,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-45/subset=warc/part-00176-6409130e-6e9b-44d1-90ec-9f9d0ade2504.c000.gz.parquet",
         "script": "cyrl",
         "offset": 70282089,
-        "augmented_file_path": "crawl-data/CC-MAIN-2020-45/segments/1603107896778.71/warc/CC-MAIN-20201028044037-20201028074037-00573.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-45/segments/1603107896778.71/warc/CC-MAIN-20201028044037-20201028074037-00573.warc.gz",
+        "md5": "fd162e8c769f15b8b6797f53d1e7fa3f",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/fd162e8c769f15b8b6797f53d1e7fa3f.pdf"
     },
     "<urn:uuid:cae3a25b-f49a-473b-8fdd-42f4f0e771c7>": {
         "url": "https://almetyevsk.tatarstan.ru/file/almetyevsk/File/27%20%D0%A0%D0%B5%D1%88.%20%D1%82%D0%B0%D1%82.%20%20%D0%B2%D0%BD%D0%B5%D1%81%20%D0%B8%D0%B7%D0%BC%20%2026%20%D0%BE%20%D1%81%D1%82%D0%B0%D1%82%D1%83%D1%81%D0%B5%20%D0%B3%D0%BE%D1%80%D0%BE%D0%B4.pdf",
@@ -71957,7 +71985,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2023-40/subset=warc/part-00010-7aa0a1e5-33a6-434b-89a2-950f294b40c1.c000.gz.parquet",
         "script": "cyrl",
         "offset": 644807045,
-        "augmented_file_path": "crawl-data/CC-MAIN-2023-40/segments/1695233506646.94/warc/CC-MAIN-20230924123403-20230924153403-00505.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2023-40/segments/1695233506646.94/warc/CC-MAIN-20230924123403-20230924153403-00505.warc.gz",
+        "md5": "f23e210e83620cf61c1f289c3ce6430d",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/f23e210e83620cf61c1f289c3ce6430d-TT-CEESpring-2023-ttwp-certificate.pdf"
     },
     "<urn:uuid:2028a98d-fde9-48a8-a1e8-bc1f3e909f09>": {
         "url": "https://tugan-tel.tatar/adabiyat/shigriyat/Musa_Jalil/Ista.pdf",
@@ -72309,7 +72339,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2024-46/subset=warc/part-00048-65a16d46-7179-4f3c-849a-3216b203b23b.c000.gz.parquet",
         "script": "cyrl",
         "offset": 566422896,
-        "augmented_file_path": "crawl-data/CC-MAIN-2024-46/segments/1730477028116.30/warc/CC-MAIN-20241109053958-20241109083958-00062.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2024-46/segments/1730477028116.30/warc/CC-MAIN-20241109053958-20241109083958-00062.warc.gz",
+        "md5": "0a68467006d6cc46ef94ad5c1f245b71",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/0a68467006d6cc46ef94ad5c1f245b71-TurkicMarathon2021-ttwp-certificate-WUGTAT-WMRU-RTASILLA-Selet-TATNET-TT.pdf"
     },
     "fa1c2ecf-2f9d-438e-92a1-f306220642f2": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-10/1480067/npa_ta_1480069.pdf",
@@ -73308,7 +73340,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2023-40/subset=warc/part-00233-7aa0a1e5-33a6-434b-89a2-950f294b40c1.c000.gz.parquet",
         "script": "cyrl",
         "offset": 657420011,
-        "augmented_file_path": "crawl-data/CC-MAIN-2023-40/segments/1695233510676.40/warc/CC-MAIN-20230930113949-20230930143949-00367.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2023-40/segments/1695233510676.40/warc/CC-MAIN-20230930113949-20230930143949-00367.warc.gz",
+        "md5": "13597303fcb6f269c560cf0b1b920d3a",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/13597303fcb6f269c560cf0b1b920d3a-grafik-provedeniya-torzhestvennoy-lineyki-1-sentyabrya-2021-goda.pdf"
     },
     "<urn:uuid:b6048621-6c25-4ef7-b9ed-0340b1df2e98>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2019-04/355100/npa_ta_355102.pdf",
@@ -76395,7 +76429,10 @@
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-10/1481137/npa_ta_1481139.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2025-05/subset=warc/part-00261-88b30a59-3c73-48ba-a167-077611bfd245.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 491363710
+        "offset": 491363710,
+        "augmented_file_path": "crawl-data/CC-MAIN-2025-05/segments/1736703362213.4/warc/CC-MAIN-20250114214342-20250115004342-00403.warc.gz",
+        "md5": "e17ca2196d67644cb30f1e2818db0038",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/e17ca2196d67644cb30f1e2818db0038-npa_ta_1481139.pdf"
     },
     "<urn:uuid:85febec0-ea44-4854-b0fb-55d7b733defc>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2019-04/357744/npa_ta_357746.pdf",
@@ -82133,7 +82170,10 @@
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2019-10/443454/npa_ta_443456.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-33/subset=warc/part-00155-d466b69e-be2b-4525-ac34-1b10d57329da.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 444835142
+        "offset": 444835142,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-33/segments/1659882570765.6/warc/CC-MAIN-20220808031623-20220808061623-00751.warc.gz",
+        "md5": "8e99b10122d73442717de54d18630eb2",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/8e99b10122d73442717de54d18630eb2-npa_ta_443456.pdf"
     },
     "<urn:uuid:e9de9f27-625d-4fc0-949e-adca27184052>": {
         "url": "https://www.xn--90amcbj9j.xn--p1ai/file/filemanag/5f4c26904a600d48a162891d370a9572.pdf",
@@ -83751,7 +83791,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-04/subset=warc/part-00035-364a895c-5e5c-46bb-846e-75ec7de82b3b.c000.gz.parquet",
         "script": "cyrl",
         "offset": 60865897,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-04/segments/1610703519843.24/warc/CC-MAIN-20210119232006-20210120022006-00135.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-04/segments/1610703519843.24/warc/CC-MAIN-20210119232006-20210120022006-00135.warc.gz",
+        "md5": "a39a77fc3f56ba52f7a79339e3f91301",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/a39a77fc3f56ba52f7a79339e3f91301.pdf"
     },
     "<urn:uuid:02bbdbf1-d45d-475b-81f9-c8a39d74a2c6>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2017-11/181817/npa_ta_181820.pdf",
@@ -86449,7 +86491,9 @@
         "url": "http://marsila.org.ru/index.php?view=article&catid=62:2012-08-23-18-18-17&id=430:2017-09-04-18-53-04&format=pdf",
         "file_path": "s3://commoncrawl/crawl-data/CC-MAIN-2019-39/segments/1568514572980.56/warc/CC-MAIN-20190917000820-20190917022820-00382.warc.gz",
         "script": "cyrl",
-        "offset": 121315723
+        "offset": 121315723,
+        "md5": "92167896c0d251aa36360f749465f67f",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/92167896c0d251aa36360f749465f67f.pdf"
     },
     "<urn:uuid:acfd8a7b-00fa-4e61-bd30-5eddf300757e>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-10/850092/npa_ta_850094.pdf",
@@ -90048,7 +90092,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-45/subset=warc/part-00176-6409130e-6e9b-44d1-90ec-9f9d0ade2504.c000.gz.parquet",
         "script": "cyrl",
         "offset": 69593749,
-        "augmented_file_path": "crawl-data/CC-MAIN-2020-45/segments/1603107896778.71/warc/CC-MAIN-20201028044037-20201028074037-00236.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-45/segments/1603107896778.71/warc/CC-MAIN-20201028044037-20201028074037-00236.warc.gz",
+        "md5": "02722e72455451cac843a3c4d3ef15a2",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/02722e72455451cac843a3c4d3ef15a2.pdf"
     },
     "<urn:uuid:68d8e1ed-5023-4ca1-9657-19e87152d677>": {
         "url": "https://www.xn--90amcbj9j.xn--p1ai/file/filemanag/8efa2a44b2abc0e01217e0d4fb36005c.pdf",
@@ -91938,7 +91984,10 @@
         "url": "http://franklang.ru/df/Tukay_Tales_M.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-27/subset=warc/part-00212-48f675b2-7fd4-43af-adb3-2a4ea7f82193.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 23604644
+        "offset": 23604644,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-27/segments/1656103329963.19/warc/CC-MAIN-20220627073417-20220627103417-00354.warc.gz",
+        "md5": "05201b127ed941d12345ec45767dd230",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/05201b127ed941d12345ec45767dd230-Tukay_Tales_M.pdf"
     },
     "<urn:uuid:f940f4bd-ee56-4f8c-9d6a-05392cc17805>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-04/1395012/npa_ta_1395016.pdf",
@@ -92289,7 +92338,10 @@
         "url": "https://detivbezopasnosti.ru/results/conferense/203",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-21/subset=warc/part-00009-bd7ecbba-8e15-4123-ae07-d9c98ad96845.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 265572874
+        "offset": 265572874,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-21/segments/1652662545548.56/warc/CC-MAIN-20220522125835-20220522155835-00790.warc.gz",
+        "md5": "6169b03d2b1f03e6afc0901442d3ee02",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/6169b03d2b1f03e6afc0901442d3ee02.pdf"
     },
     "<urn:uuid:af0cd54e-8160-4dc8-a064-5f262bfa1891>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-04/760064/npa_ta_760068.pdf",
@@ -94662,7 +94714,10 @@
         "url": "http://finaworlds2015.dspkazan.com/tat/news_items/3640.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-05/subset=warc/part-00224-1e2959d8-5649-433a-b76e-f1b876a6479d.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 19900449
+        "offset": 19900449,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320305266.34/warc/CC-MAIN-20220127133107-20220127163107-00654.warc.gz",
+        "md5": "2bd401ba1702913e2234361a966f2780",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/2bd401ba1702913e2234361a966f2780-3640.pdf"
     },
     "<urn:uuid:701f2b41-8684-47a0-af6a-bd9e90bef187>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2019-03/336624/npa_ta_336627.pdf",
@@ -94854,7 +94909,9 @@
         "url": "http://ilishmayak.ru/component/content/article/3-newsflash/4529-rajonara-salym-inspektsijasend.pdf",
         "file_path": "s3://commoncrawl/crawl-data/CC-MAIN-2018-34/segments/1534221212598.67/warc/CC-MAIN-20180817143416-20180817163416-00104.warc.gz",
         "script": "cyrl",
-        "offset": 194800156
+        "offset": 194800156,
+        "md5": "4818d9ce6569ea0367a1208cd7d0387e",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/4818d9ce6569ea0367a1208cd7d0387e-4529-rajonara-salym-inspektsijasend.pdf"
     },
     "<urn:uuid:b9d1d951-61dd-44d5-b1f8-85e45ea8b948>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2022-10/1065052/npa_ta_1065056.pdf",
@@ -94932,7 +94989,10 @@
         "url": "https://tat.dspkazan.com/upload/iblock/c84/c847df5ea0c72062c4ef308fec395aeb.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-40/subset=warc/part-00075-50bb8e61-7c5b-4d2c-bd34-dad6ca92b697.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 621855045
+        "offset": 621855045,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-40/segments/1600401614309.85/warc/CC-MAIN-20200928202758-20200928232758-00599.warc.gz",
+        "md5": "8ac03dc9db2ed8d4305cfedb62a41176",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/8ac03dc9db2ed8d4305cfedb62a41176-c847df5ea0c72062c4ef308fec395aeb.pdf"
     },
     "<urn:uuid:e93b4e61-4966-4c43-bcd9-9b620bb4fc2a>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2023-06/1214797/npa_ta_1214801.pdf",
@@ -97450,7 +97510,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-05/subset=warc/part-00267-1e2959d8-5649-433a-b76e-f1b876a6479d.c000.gz.parquet",
         "script": "cyrl",
         "offset": 39968130,
-        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320303956.14/warc/CC-MAIN-20220123015212-20220123045212-00284.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320303956.14/warc/CC-MAIN-20220123015212-20220123045212-00284.warc.gz",
+        "md5": "4ea2ef2e462b04802dc105940565ad11",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/4ea2ef2e462b04802dc105940565ad11.pdf"
     },
     "<urn:uuid:e00282d2-fdbf-4c13-b0ae-87dd4187e58a>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-05/1411587/npa_ta_1411589.pdf",
@@ -98556,7 +98618,10 @@
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-01/1348892/npa_ta_1348894.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2025-05/subset=warc/part-00261-88b30a59-3c73-48ba-a167-077611bfd245.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 479195194
+        "offset": 479195194,
+        "augmented_file_path": "crawl-data/CC-MAIN-2025-05/segments/1736703700901.98/warc/CC-MAIN-20250126071607-20250126101607-00557.warc.gz",
+        "md5": "6343ecdd7b24923706e893145f8b0df8",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/6343ecdd7b24923706e893145f8b0df8-npa_ta_1348894.pdf"
     },
     "<urn:uuid:4e92b974-92b7-4854-a5e5-8beeae2f95b3>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2020-03/550322/npa_ta_550324.pdf",
@@ -99150,14 +99215,18 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-29/subset=warc/part-00224-18f202a6-71a6-4cdb-b350-51e72c917b97.c000.gz.parquet",
         "script": "cyrl",
         "offset": 84920105,
-        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00573.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00573.warc.gz",
+        "md5": "ef88568aeab4659d8a2dcda8d3e95ccd",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/ef88568aeab4659d8a2dcda8d3e95ccd.pdf"
     },
     "<urn:uuid:cac937a6-1dde-469a-a62c-3b9404d82826>": {
         "url": "http://marsila.org.ru/index.php?view=article&catid=1:latest-news&id=356:8-&format=pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-29/subset=warc/part-00224-18f202a6-71a6-4cdb-b350-51e72c917b97.c000.gz.parquet",
         "script": "cyrl",
         "offset": 94799720,
-        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00592.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00592.warc.gz",
+        "md5": "24c18de6589666c97707ad696446bfb7",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/24c18de6589666c97707ad696446bfb7.pdf"
     },
     "<urn:uuid:aba22b5a-3dfa-471e-ad46-5b39d97f906e>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2019-09/416529/npa_ta_416533.pdf",
@@ -100358,7 +100427,10 @@
         "url": "https://vestnikprosveshheniya.ru/publikacii/na_portale/fajly/31908204313/document.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-25/subset=warc/part-00073-e638c5dd-3c3d-4738-8d52-dc1e9f44de3a.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 516928068
+        "offset": 516928068,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-25/segments/1623487653461.74/warc/CC-MAIN-20210619233720-20210620023720-00157.warc.gz",
+        "md5": "367e406b4f30048f50106acf9574daad",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/367e406b4f30048f50106acf9574daad-document.pdf"
     },
     "<urn:uuid:c5be69a9-7660-4037-8f5c-248ab1a45c9e>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2020-12/694412/npa_ta_694414.pdf",
@@ -102285,7 +102357,10 @@
         "url": "http://mc-shatlyk.ru/wp-content/uploads/2015/08/Kabul-it%D2%AF-kagyydalare.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-10/subset=warc/part-00131-dbb5a216-bcb2-4bff-b117-e812a7981d21.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 61426778
+        "offset": 61426778,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-10/segments/1614178362133.53/warc/CC-MAIN-20210301060310-20210301090310-00172.warc.gz",
+        "md5": "b0ceee390d81e5daca2db92a81a93cab",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/b0ceee390d81e5daca2db92a81a93cab-Kabul-it%D2%AF-kagyydalare.pdf"
     },
     "f7fda38d-e183-4c06-b0c2-0d804f158433": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2019-11/482174/npa_ta_482176.pdf",
@@ -102719,7 +102794,10 @@
         "url": "https://asar-forum.uk/download/file.php?id=2422",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-24/subset=warc/part-00290-b4a094ce-c3a1-4796-8c26-d927e48e4b4a.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 255890938
+        "offset": 255890938,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-24/segments/1590347399830.24/warc/CC-MAIN-20200528170840-20200528200840-00000.warc.gz",
+        "md5": "a1cbfe3e77989075ac008069698ce430",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/a1cbfe3e77989075ac008069698ce430.pdf"
     },
     "<urn:uuid:1250725a-70d9-40f3-80d6-25aadca732c1>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2019-12/512042/npa_ta_512044.pdf",
@@ -107300,7 +107378,10 @@
         "url": "https://languageindex.online.uni-marburg.de/datasheet/tatar/pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-10/subset=warc/part-00010-dbb5a216-bcb2-4bff-b117-e812a7981d21.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 432064365
+        "offset": 432064365,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-10/segments/1614178358976.37/warc/CC-MAIN-20210227144626-20210227174626-00591.warc.gz",
+        "md5": "604e7ede724c47bdeafef43fe1dea2b1",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/604e7ede724c47bdeafef43fe1dea2b1.pdf"
     },
     "<urn:uuid:e452c0cd-7e5f-4b99-b6fb-e35f1c43acd6>": {
         "url": "http://selet.biz/all-site/%D0%A1%D0%90%D0%9C%D0%90%D0%A0%D0%90%20%D1%82%D0%B0%D1%82%202020-2.pdf",
@@ -107379,7 +107460,10 @@
         "url": "http://ibt.org.ru/ftpmirror/pub/ebook/TTR/TTR/4-%D0%98%D0%BD%D2%97%D0%B8%D0%BB,%202001/Rom.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-45/subset=warc/part-00014-6409130e-6e9b-44d1-90ec-9f9d0ade2504.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 52064464
+        "offset": 52064464,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-45/segments/1603107879537.28/warc/CC-MAIN-20201022111909-20201022141909-00068.warc.gz",
+        "md5": "103d6d73eee3377554f8224cf96a318f",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/103d6d73eee3377554f8224cf96a318f-Rom.pdf"
     },
     "<urn:uuid:f34a604b-8f62-4151-ac7d-b60c883658ad>": {
         "url": "https://kitaphane.tatarstan.ru/file/koyash.pdf",
@@ -107676,7 +107760,10 @@
         "url": "https://vestnikprosveshheniya.ru/publikacii/na_portale/fajly/1829114094/document.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-45/subset=warc/part-00198-6409130e-6e9b-44d1-90ec-9f9d0ade2504.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 570491969
+        "offset": 570491969,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-45/segments/1603107889651.52/warc/CC-MAIN-20201025183844-20201025213844-00616.warc.gz",
+        "md5": "47ce9b73ac743ca85adc3b127252b42f",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/47ce9b73ac743ca85adc3b127252b42f-document.pdf"
     },
     "<urn:uuid:7ead1353-d103-4ee4-aa19-5f875dbd99ac>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2019-10/427614/npa_ta_427618.pdf",
@@ -108301,7 +108388,10 @@
         "url": "https://upload.wikimedia.org/wikimedia/ru/7/76/AfricaWikiChallange2021-ttwp-certificate-WUGTAT-WMRU-TT.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-21/subset=warc/part-00038-bd7ecbba-8e15-4123-ae07-d9c98ad96845.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 694942875
+        "offset": 694942875,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-21/segments/1652662515466.5/warc/CC-MAIN-20220516235937-20220517025937-00439.warc.gz",
+        "md5": "c02101436dd7c1e366ee4177f73b6153",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/c02101436dd7c1e366ee4177f73b6153-AfricaWikiChallange2021-ttwp-certificate-WUGTAT-WMRU-TT.pdf"
     },
     "<urn:uuid:c931a866-c630-4b76-af51-0dcff4e3bb6d>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2020-07/607202/npa_ta_607204.pdf",
@@ -111492,7 +111582,10 @@
         "url": "https://upload.wikimedia.org/wikimedia/ru/3/3c/Tatar40-certificate-WMRU-TT.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-49/subset=warc/part-00005-eb7089cf-762b-4a3e-8cab-20b677c0d246.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 652395529
+        "offset": 652395529,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-49/segments/1637964363327.64/warc/CC-MAIN-20211206224536-20211207014536-00565.warc.gz",
+        "md5": "09c4f2b87836d2b35f8233da890dc4b0",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/09c4f2b87836d2b35f8233da890dc4b0-Tatar40-certificate-WMRU-TT.pdf"
     },
     "<urn:uuid:0d2cc89b-dca8-4ef4-a433-23f6562a2261>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-07/798874/npa_ta_798878.pdf",
@@ -116419,7 +116512,10 @@
         "url": "https://fund.selet.biz/fund2022.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-21/subset=warc/part-00069-bd7ecbba-8e15-4123-ae07-d9c98ad96845.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 337210551
+        "offset": 337210551,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-21/segments/1652662515466.5/warc/CC-MAIN-20220516235937-20220517025937-00033.warc.gz",
+        "md5": "6060174b5c58fd88a5f53d2d38ea69c5",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/6060174b5c58fd88a5f53d2d38ea69c5-fund2022.pdf"
     },
     "<urn:uuid:7aab7c55-3c37-4b79-a98e-64c0ea19457e>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-11/1499857/npa_ta_1499859.pdf",
@@ -120762,7 +120858,10 @@
         "url": "https://oosh3.bkobr.ru/index.php/o-shkole/dokumenty/nezavisimaya-otsenka-kachestva-obrazovaniya/item/download/157_498bb28d306f4c93fb4cd4ec7f9e6122",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-05/subset=warc/part-00269-2224c996-15d6-400a-8ae4-2d0740e74c18.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 597859457
+        "offset": 597859457,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-05/segments/1579250598217.23/warc/CC-MAIN-20200120081337-20200120105337-00113.warc.gz",
+        "md5": "0f67dcd37cf066547f0e516a41420799",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/0f67dcd37cf066547f0e516a41420799.pdf"
     },
     "<urn:uuid:5f549920-2560-4046-8dc4-b6a056d0b9ea>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2018-08/246960/npa_ta_246963.pdf",
@@ -121804,7 +121903,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-29/subset=warc/part-00224-18f202a6-71a6-4cdb-b350-51e72c917b97.c000.gz.parquet",
         "script": "cyrl",
         "offset": 89103159,
-        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00346.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00346.warc.gz",
+        "md5": "a15d0e2d7d66eea4a3c71bc6acfac165",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/a15d0e2d7d66eea4a3c71bc6acfac165.pdf"
     },
     "<urn:uuid:5585f04d-af78-445b-8617-78f2049e7cdf>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2022-11/1082632/npa_ta_1082636.pdf",
@@ -122172,7 +122273,10 @@
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-12/1539447/npa_ta_1539449.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2025-05/subset=warc/part-00261-88b30a59-3c73-48ba-a167-077611bfd245.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 481236895
+        "offset": 481236895,
+        "augmented_file_path": "crawl-data/CC-MAIN-2025-05/segments/1736703362069.10/warc/CC-MAIN-20250113021857-20250113051857-00389.warc.gz",
+        "md5": "c8859891a670de3c20b1411bfac1df45",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/c8859891a670de3c20b1411bfac1df45-npa_ta_1539449.pdf"
     },
     "658b4cb4-5b81-4d50-a203-a08f53fdd4ff": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-10/1480652/npa_ta_1480654.pdf",
@@ -123164,7 +123268,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-04/subset=warc/part-00035-364a895c-5e5c-46bb-846e-75ec7de82b3b.c000.gz.parquet",
         "script": "cyrl",
         "offset": 71501126,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-04/segments/1610703519843.24/warc/CC-MAIN-20210119232006-20210120022006-00425.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-04/segments/1610703519843.24/warc/CC-MAIN-20210119232006-20210120022006-00425.warc.gz",
+        "md5": "2a38f5aeb63edd9c2fe164818e11d1d7",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/2a38f5aeb63edd9c2fe164818e11d1d7.pdf"
     },
     "<urn:uuid:c02a4c2b-ee48-4337-9577-063d1056cd3d>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2019-05/361776/npa_ta_361778.pdf",
@@ -125520,7 +125626,9 @@
         "url": "http://marsila.org.ru/index.php?view=article&catid=62:2012-08-23-18-18-17&id=438:2018-12-16-19-24-10&format=pdf",
         "file_path": "s3://commoncrawl/crawl-data/CC-MAIN-2019-39/segments/1568514573533.49/warc/CC-MAIN-20190919142838-20190919164838-00184.warc.gz",
         "script": "cyrl",
-        "offset": 124277819
+        "offset": 124277819,
+        "md5": "0824198a0dff45ce755d52fae5c7a3cf",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/0824198a0dff45ce755d52fae5c7a3cf.pdf"
     },
     "<urn:uuid:d895433a-b2d0-41b7-b59f-e13bfef0b89c>": {
         "url": "https://kpfu.ru/portal/docs/F1331083773/Darelfonyn.sajt.pdf",
@@ -127823,7 +127931,10 @@
         "url": "http://www.old.shailoo.gov.kg/files/prilojeniya/Forma3_k.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2024-33/subset=warc/part-00009-4f628544-3cdf-4526-86aa-bdfa0b33cdc9.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 43713047
+        "offset": 43713047,
+        "augmented_file_path": "crawl-data/CC-MAIN-2024-33/segments/1722641028735.71/warc/CC-MAIN-20240812030550-20240812060550-00118.warc.gz",
+        "md5": "c78d85aaa21cde2c634cfdb80a7a883a",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/c78d85aaa21cde2c634cfdb80a7a883a-Forma3_k.pdf"
     },
     "<urn:uuid:c3fe2a9d-8771-4e2b-9708-f27dc09b92cb>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2019-11/470349/npa_ta_470353.pdf",
@@ -128061,7 +128172,9 @@
         "url": "http://mfc.astrobl.ru/files/docs/%D0%9E%D1%82%D1%87%D0%B5%D1%82%20%D0%BF%D0%BE%20%D0%B3%D0%BE%D1%81%D0%B7%D0%B0%D0%B4%D0%B0%D0%BD%D0%B8%D1%8E%20%D0%9C%D0%A4%D0%A6-2014%20%D0%B3%D0%BE%D0%B4.PDF",
         "file_path": "s3://commoncrawl/crawl-data/CC-MAIN-2017-22/segments/1495463608622.82/warc/CC-MAIN-20170526013116-20170526033116-00419.warc.gz",
         "script": "cyrl",
-        "offset": 257670314
+        "offset": 257670314,
+        "md5": "71dfbceef254307a56876f81cf43179d",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/71dfbceef254307a56876f81cf43179d.pdf"
     },
     "<urn:uuid:b9fe8b36-d7d8-4b3f-b7d0-7b9d7c1cf0ac>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-09/829454/npa_ta_829458.pdf",
@@ -132295,7 +132408,10 @@
         "url": "https://upload.wikimedia.org/wikipedia/tt/c/c9/TT-MinBezTatar2022-2023-ttwp-certificate.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2024-10/subset=warc/part-00004-d9675c6d-5c8d-45bb-9c98-c56e42022a4d.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 589083122
+        "offset": 589083122,
+        "augmented_file_path": "crawl-data/CC-MAIN-2024-10/segments/1707947474617.27/warc/CC-MAIN-20240225135334-20240225165334-00384.warc.gz",
+        "md5": "97d5f515ad4984e1cb2f0a945fba6393",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/97d5f515ad4984e1cb2f0a945fba6393-TT-MinBezTatar2022-2023-ttwp-certificate.pdf"
     },
     "<urn:uuid:a51f42ae-542e-481b-9757-6b00531100a3>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-10/1471757/npa_ta_1471761.pdf",
@@ -132566,7 +132682,10 @@
         "url": "https://vestnikprosveshheniya.ru/publikacii/na_portale/fajly/31928214664/document.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2023-50/subset=warc/part-00294-e565b809-b335-4c1d-90fd-54a9a2b7113d.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 680692603
+        "offset": 680692603,
+        "augmented_file_path": "crawl-data/CC-MAIN-2023-50/segments/1700679100550.40/warc/CC-MAIN-20231205073336-20231205103336-00215.warc.gz",
+        "md5": "6c0cdeec6974035aa4fe49ab5eff600f",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/6c0cdeec6974035aa4fe49ab5eff600f-document.pdf"
     },
     "<urn:uuid:31594f4a-065d-4770-8a3c-c9e554764059>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-06/1427987/npa_ta_1427991.pdf",
@@ -135532,7 +135651,9 @@
         "url": "http://meshabash.ru/index.php?view=article&catid=40:2010-02-28-11-27-21&id=714:kartaebyz&format=pdf",
         "file_path": "s3://commoncrawl/crawl-data/CC-MAIN-2019-26/segments/1560628000164.31/warc/CC-MAIN-20190626033520-20190626055520-00283.warc.gz",
         "script": "cyrl",
-        "offset": 110978434
+        "offset": 110978434,
+        "md5": "7c3ed0992ed2ea8e957bab7411e4e938",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/7c3ed0992ed2ea8e957bab7411e4e938.pdf"
     },
     "<urn:uuid:af907e48-efc1-41f1-b000-5d15cc45a058>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2022-11/1086867/npa_ta_1086871.pdf",
@@ -138385,7 +138506,10 @@
         "url": "http://franklang.ru/df/Gadel_Kutuj_Hatlar_M.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-27/subset=warc/part-00212-48f675b2-7fd4-43af-adb3-2a4ea7f82193.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 23632166
+        "offset": 23632166,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-27/segments/1656103329963.19/warc/CC-MAIN-20220627073417-20220627103417-00130.warc.gz",
+        "md5": "1b1d4ccb02a75acf6b9c6d70d99fae13",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/1b1d4ccb02a75acf6b9c6d70d99fae13-Gadel_Kutuj_Hatlar_M.pdf"
     },
     "<urn:uuid:1f4e917b-baef-4c4f-9329-49edfad4b3f0>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2019-03/342976/npa_ta_342979.pdf",
@@ -140635,7 +140759,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-04/subset=warc/part-00035-364a895c-5e5c-46bb-846e-75ec7de82b3b.c000.gz.parquet",
         "script": "cyrl",
         "offset": 62414130,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-04/segments/1610703519843.24/warc/CC-MAIN-20210119232006-20210120022006-00779.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-04/segments/1610703519843.24/warc/CC-MAIN-20210119232006-20210120022006-00779.warc.gz",
+        "md5": "5fb6eba23df2a2990ed2814a9e372337",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/5fb6eba23df2a2990ed2814a9e372337.pdf"
     },
     "<urn:uuid:4deeb84c-51dd-46a1-a948-e8de625c2b56>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-07/797839/npa_ta_797841.pdf",
@@ -144613,7 +144739,10 @@
         "url": "https://www.audiokitaplar.com/_files/ugd/493fec_9a13556ffe984d9bb4c4c09dac17ac77.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-21/subset=warc/part-00207-bd7ecbba-8e15-4123-ae07-d9c98ad96845.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 741528730
+        "offset": 741528730,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-21/segments/1652662520936.24/warc/CC-MAIN-20220517225809-20220518015809-00068.warc.gz",
+        "md5": "35aae9c41fee269f8abce78ebc7f7d12",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/35aae9c41fee269f8abce78ebc7f7d12-493fec_9a13556ffe984d9bb4c4c09dac17ac77.pdf"
     },
     "<urn:uuid:08cad2c2-77d5-4a88-9490-0f2e45e95d17>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2022-12/1124907/npa_ta_1124909.pdf",
@@ -149916,7 +150045,10 @@
         "url": "http://philology-and-culture.kpfu.ru/?q=system/files/45-50_11.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-50/subset=warc/part-00124-8431e8c9-c763-4c27-b286-ba1dd7e2631e.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 72101312
+        "offset": 72101312,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-50/segments/1606141181179.12/warc/CC-MAIN-20201125041943-20201125071943-00230.warc.gz",
+        "md5": "267a86d8308b88d63cd47629ab703761",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/267a86d8308b88d63cd47629ab703761.pdf"
     },
     "<urn:uuid:2f0a7449-6cfd-47bb-9d56-72c332feca45>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-10/1474607/npa_ta_1474611.pdf",
@@ -152722,7 +152854,10 @@
         "url": "http://mamadysh-medrese.magarifrt.ru/netcat_files/multifile/2311/Ukytu_terbiya_plany_na_2021__2022.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-40/subset=warc/part-00178-26160df0-1827-4787-a515-95ecaa2c9688.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 37598934
+        "offset": 37598934,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-40/segments/1664030337531.3/warc/CC-MAIN-20221005011205-20221005041205-00258.warc.gz",
+        "md5": "b89c6bed9ffd53a2787188df57adf40d",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/b89c6bed9ffd53a2787188df57adf40d-Ukytu_terbiya_plany_na_2021__2022.pdf"
     },
     "<urn:uuid:180d4990-2c97-41ec-86f5-65be8098a998>": {
         "url": "http://dilus-19.web-box.ru/ftpgetfile.php?id=121",
@@ -153090,7 +153225,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-10/subset=warc/part-00188-dbb5a216-bcb2-4bff-b117-e812a7981d21.c000.gz.parquet",
         "script": "cyrl",
         "offset": 88434174,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-10/segments/1614178376206.84/warc/CC-MAIN-20210307074942-20210307104942-00002.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-10/segments/1614178376206.84/warc/CC-MAIN-20210307074942-20210307104942-00002.warc.gz",
+        "md5": "1b43425d6b3bb8abc3376d2cad19ce19",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/1b43425d6b3bb8abc3376d2cad19ce19-load.pdf"
     },
     "<urn:uuid:e080d71a-e49a-4d54-bde5-c8f213704db3>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2018-08/247392/npa_ta_247394.pdf",
@@ -155118,7 +155255,10 @@
         "url": "http://yakti-yul.ru/doc/tatar-pesni.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-16/subset=warc/part-00279-5e0433ee-fa15-4837-b2dc-d6f38301af97.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 307745305
+        "offset": 307745305,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-16/segments/1585371821680.80/warc/CC-MAIN-20200408170717-20200408201217-00473.warc.gz",
+        "md5": "9bf94b62a7ae203cd217c9a5ca706e64",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/9bf94b62a7ae203cd217c9a5ca706e64-tatar-pesni.pdf"
     },
     "<urn:uuid:310704c9-7841-49f3-b116-7a151213bda2>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2019-04/353512/npa_ta_353514.pdf",
@@ -155976,7 +156116,10 @@
         "url": "https://kazan-tr.gazprom.ru/d/textpage/a2/162/arskaya-rehgs-4.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-49/subset=warc/part-00034-eb7089cf-762b-4a3e-8cab-20b677c0d246.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 422934326
+        "offset": 422934326,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-49/segments/1637964363290.39/warc/CC-MAIN-20211206042636-20211206072636-00045.warc.gz",
+        "md5": "8e932305cb9adf1eb291f9b51ac23877",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/8e932305cb9adf1eb291f9b51ac23877-arskaya-rehgs-4.pdf"
     },
     "<urn:uuid:56eb8119-6521-4fb1-9bc9-6dc67b08bd8f>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-08/822259/npa_ta_822263.pdf",
@@ -156335,7 +156478,10 @@
         "url": "https://upload.wikimedia.org/wikipedia/tt/4/4c/TT-Tatar40-2023-ttwp-certificate.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2024-33/subset=warc/part-00002-4f628544-3cdf-4526-86aa-bdfa0b33cdc9.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 483297255
+        "offset": 483297255,
+        "augmented_file_path": "crawl-data/CC-MAIN-2024-33/segments/1722641079807.82/warc/CC-MAIN-20240813141635-20240813171635-00531.warc.gz",
+        "md5": "ec0c03c2c219dc8b7f0519eb1f9df8f4",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/ec0c03c2c219dc8b7f0519eb1f9df8f4-TT-Tatar40-2023-ttwp-certificate.pdf"
     },
     "<urn:uuid:2831118e-4184-42a7-a297-66d6e75874e6>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2019-07/401474/npa_ta_401476.pdf",
@@ -157688,7 +157834,10 @@
         "url": "http://fund.selet.biz/2019.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-16/subset=warc/part-00006-5e0433ee-fa15-4837-b2dc-d6f38301af97.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 72510488
+        "offset": 72510488,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-16/segments/1585371624083.66/warc/CC-MAIN-20200406102322-20200406132822-00371.warc.gz",
+        "md5": "0c570df2437b8e4d489efb6d71cd85a5",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/0c570df2437b8e4d489efb6d71cd85a5-2019.pdf"
     },
     "<urn:uuid:a634a13f-d0e4-483a-b9c8-e339aa8606f1>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2015-03/2266/npa_ta_2266.pdf",
@@ -159905,7 +160054,10 @@
         "url": "http://tulpar.kpfu.ru/pluginfile.php/113724/course/summary/%D0%9A%D0%9A%D0%9B_%D0%97%D0%B0%D0%BC%D0%B0%D0%BB%D0%B8%D0%B5%D0%B2%D0%B0.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-40/subset=warc/part-00158-50bb8e61-7c5b-4d2c-bd34-dad6ca92b697.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 123329847
+        "offset": 123329847,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-40/segments/1600400220495.39/warc/CC-MAIN-20200924194925-20200924224925-00531.warc.gz",
+        "md5": "a7b407677b7f7976fa48539b226adc29",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/a7b407677b7f7976fa48539b226adc29-%D0%9A%D0%9A%D0%9B_%D0%97%D0%B0%D0%BC%D0%B0%D0%BB%D0%B8%D0%B5%D0%B2%D0%B0.pdf"
     },
     "<urn:uuid:990ced23-98a6-4cb3-be5d-13f512590a4d>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2019-09/420904/npa_ta_420906.pdf",
@@ -163094,7 +163246,10 @@
         "url": "http://nk-kor.kz/file-kor/power42019.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-16/subset=warc/part-00220-5e0433ee-fa15-4837-b2dc-d6f38301af97.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 114989926
+        "offset": 114989926,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-16/segments/1585371611051.77/warc/CC-MAIN-20200405213008-20200406003508-00234.warc.gz",
+        "md5": "58b38024a5da305dc42f55dd14b60014",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/58b38024a5da305dc42f55dd14b60014-power42019.pdf"
     },
     "<urn:uuid:cbd7b66d-5481-4130-a350-cca1d3b05b66>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-06/1426142/npa_ta_1426144.pdf",
@@ -163381,7 +163536,10 @@
         "url": "http://ibt.org.ru/ftpmirror/pub/ebook/TTR/TTR/4-%D0%98%D0%BD%D2%97%D0%B8%D0%BB,%202001/Gal.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-45/subset=warc/part-00014-6409130e-6e9b-44d1-90ec-9f9d0ade2504.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 48113682
+        "offset": 48113682,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-45/segments/1603107879537.28/warc/CC-MAIN-20201022111909-20201022141909-00262.warc.gz",
+        "md5": "ddffce4879dee570c208c3fb268aef92",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/ddffce4879dee570c208c3fb268aef92-Gal.pdf"
     },
     "<urn:uuid:907a0b6c-275a-477c-9927-ec54b2e454d2>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2022-11/1094207/npa_ta_1094209.pdf",
@@ -163852,7 +164010,10 @@
         "url": "http://ibt.org.ru/ftpmirror/pub/ebook/TTR/TTR/4-%D0%98%D0%BD%D2%97%D0%B8%D0%BB,%202001/Acts.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-45/subset=warc/part-00014-6409130e-6e9b-44d1-90ec-9f9d0ade2504.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 49881746
+        "offset": 49881746,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-45/segments/1603107885059.50/warc/CC-MAIN-20201024223210-20201025013210-00405.warc.gz",
+        "md5": "cf74f53b67cc19f9b39d3d80946cdeec",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/cf74f53b67cc19f9b39d3d80946cdeec-Acts.pdf"
     },
     "<urn:uuid:c5efca1d-c18f-4e5c-99a5-81c55f976efa>": {
         "url": "https://kpfu.ru/staff_files/F678934519/E.Eniki.hikeyal_renen.sjuzhet.strukturasy.pdf",
@@ -166736,7 +166897,10 @@
         "url": "https://kazan-tr.gazprom.ru/d/textpage/8d/141/inzhener-pto-fatykhov-i.k..pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-49/subset=warc/part-00034-eb7089cf-762b-4a3e-8cab-20b677c0d246.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 394074251
+        "offset": 394074251,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-49/segments/1637964359073.63/warc/CC-MAIN-20211130201935-20211130231935-00293.warc.gz",
+        "md5": "952141a8e07654826e93302229a2367a",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/952141a8e07654826e93302229a2367a-inzhener-pto-fatykhov-i.k..pdf"
     },
     "<urn:uuid:9f2e173e-4779-48a2-8aa3-0d3dca25c1bc>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2019-09/426944/npa_ta_426946.pdf",
@@ -173043,7 +173207,10 @@
         "url": "https://bts.s3.nl-ams.scw.cloud/books/books/alish/akiyatlar_a_alis.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-04/subset=warc/part-00018-364a895c-5e5c-46bb-846e-75ec7de82b3b.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 260247291
+        "offset": 260247291,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-04/segments/1610703521139.30/warc/CC-MAIN-20210120151257-20210120181257-00402.warc.gz",
+        "md5": "1a9e6d0120b09d498855adc755b780dc",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/1a9e6d0120b09d498855adc755b780dc-akiyatlar_a_alis.pdf"
     },
     "<urn:uuid:2677e5e5-622f-4d24-98aa-576573b31e29>": {
         "url": "http://almetyevsk.tatar.ru/file/File/285%20%D1%80%D0%B5%D1%88.%20%D1%82%D0%B0%D1%82.%20%D0%9A%D0%94%D0%9D.pdf",
@@ -174416,7 +174583,10 @@
         "url": "https://diktant.tatar/ftp/2021/faq.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-39/subset=warc/part-00179-f465d820-0362-4c4c-a396-c69f5fd24cc4.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 254014303
+        "offset": 254014303,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-39/segments/1631780056892.13/warc/CC-MAIN-20210919160038-20210919190038-00593.warc.gz",
+        "md5": "83d76746f28ca2120e133728132f4c4b",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/83d76746f28ca2120e133728132f4c4b-faq.pdf"
     },
     "<urn:uuid:56272884-bdf1-4696-bb77-ec535dc31a10>": {
         "url": "https://tugan-tel.tatar/adabiyat/shigriyat/Gabdulla_Tukai/bush_wakyt.pdf",
@@ -174502,7 +174672,10 @@
         "url": "http://f-sadriev.hostenko.com/wp-content/uploads/2015/09/2shv-fs14.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-31/subset=warc/part-00102-a23f1677-939c-4b0d-b187-713170151123.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 15296821
+        "offset": 15296821,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-31/segments/1627046154163.9/warc/CC-MAIN-20210801061513-20210801091513-00001.warc.gz",
+        "md5": "6cdf31869ecf6414cac1ec629eec8602",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/6cdf31869ecf6414cac1ec629eec8602-2shv-fs14.pdf"
     },
     "<urn:uuid:ac381fd5-e642-423f-8d67-07a1b6c22e72>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2016-07/65057/npa_ta_65060.pdf",
@@ -177806,13 +177979,19 @@
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-12/1539407/npa_ta_1539409.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2025-05/subset=warc/part-00261-88b30a59-3c73-48ba-a167-077611bfd245.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 486398894
+        "offset": 486398894,
+        "augmented_file_path": "crawl-data/CC-MAIN-2025-05/segments/1736703362214.22/warc/CC-MAIN-20250115010435-20250115040435-00333.warc.gz",
+        "md5": "e1f79aa93bf4f17984f4016ad33cccaa",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/e1f79aa93bf4f17984f4016ad33cccaa-npa_ta_1539409.pdf"
     },
     "2405f54a-dd51-4b41-9721-9ea624b5a75a": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-12/1531312/npa_ta_1531314.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2025-05/subset=warc/part-00261-88b30a59-3c73-48ba-a167-077611bfd245.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 488687818
+        "offset": 488687818,
+        "augmented_file_path": "crawl-data/CC-MAIN-2025-05/segments/1736703363373.23/warc/CC-MAIN-20250122031110-20250122061110-00477.warc.gz",
+        "md5": "12a4e22660944d9e743e1f5db4433a4e",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/12a4e22660944d9e743e1f5db4433a4e-npa_ta_1531314.pdf"
     },
     "2383b4fa-b18b-4688-9080-60fa10e39549": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-10/1488042/npa_ta_1488044.pdf",
@@ -178574,7 +178753,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-45/subset=warc/part-00176-6409130e-6e9b-44d1-90ec-9f9d0ade2504.c000.gz.parquet",
         "script": "cyrl",
         "offset": 63984249,
-        "augmented_file_path": "crawl-data/CC-MAIN-2020-45/segments/1603107896778.71/warc/CC-MAIN-20201028044037-20201028074037-00710.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-45/segments/1603107896778.71/warc/CC-MAIN-20201028044037-20201028074037-00710.warc.gz",
+        "md5": "056ed93a45f1d06b7719c17d09db5a54",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/056ed93a45f1d06b7719c17d09db5a54.pdf"
     },
     "<urn:uuid:94735dd2-5fcc-467a-b536-cee9663baedc>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2019-03/340020/npa_ta_340023.pdf",
@@ -178917,7 +179098,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-05/subset=warc/part-00267-1e2959d8-5649-433a-b76e-f1b876a6479d.c000.gz.parquet",
         "script": "cyrl",
         "offset": 36330010,
-        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320303956.14/warc/CC-MAIN-20220123015212-20220123045212-00213.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320303956.14/warc/CC-MAIN-20220123015212-20220123045212-00213.warc.gz",
+        "md5": "be66745d99bb8ccbea0dcdcae6531574",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/be66745d99bb8ccbea0dcdcae6531574.pdf"
     },
     "<urn:uuid:592c179a-4167-4c7c-9233-7f0948b1924f>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2018-05/226592/npa_ta_226595.pdf",
@@ -181251,7 +181434,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-43/subset=warc/part-00171-16202947-a809-4711-8221-79ab0a79d5b1.c000.gz.parquet",
         "script": "cyrl",
         "offset": 45933509,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-43/segments/1634323585203.61/warc/CC-MAIN-20211018124412-20211018154412-00024.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-43/segments/1634323585203.61/warc/CC-MAIN-20211018124412-20211018154412-00024.warc.gz",
+        "md5": "4eb171d042a610a92e9c75181698f6f1",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/4eb171d042a610a92e9c75181698f6f1.pdf"
     },
     "<urn:uuid:76968635-379d-4933-8e11-ae71a1b4ed1e>": {
         "url": "http://yuldash-sputnik.ru/13/2155-2017-04-05-08-42-18.pdf",
@@ -181993,7 +182178,10 @@
         "url": "https://proftat.ru/assets/mgr/files/10/sogltat.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2025-08/subset=warc/part-00018-b184e832-acd1-425a-bab7-895830f2748a.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 436982671
+        "offset": 436982671,
+        "augmented_file_path": "crawl-data/CC-MAIN-2025-08/segments/1738831951746.1/warc/CC-MAIN-20250212025441-20250212055441-00625.warc.gz",
+        "md5": "cb37b6fee4b93be56432491c4bc733cd",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/cb37b6fee4b93be56432491c4bc733cd-sogltat.pdf"
     },
     "<urn:uuid:6dc6d473-57a9-4574-9c26-27675bebac20>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-11/1492877/npa_ta_1492879.pdf",
@@ -185997,7 +186185,10 @@
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-12/1531337/npa_ta_1531339.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2025-05/subset=warc/part-00261-88b30a59-3c73-48ba-a167-077611bfd245.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 490106756
+        "offset": 490106756,
+        "augmented_file_path": "crawl-data/CC-MAIN-2025-05/segments/1736703363373.23/warc/CC-MAIN-20250122031110-20250122061110-00433.warc.gz",
+        "md5": "cd67dc0090d2f448ae15670aa29cdb57",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/cd67dc0090d2f448ae15670aa29cdb57-npa_ta_1531339.pdf"
     },
     "<urn:uuid:ecc42c8b-193f-430e-9f40-2cf29ecbfcc1>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2020-11/680792/npa_ta_680796.pdf",
@@ -187665,7 +187856,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-43/subset=warc/part-00171-16202947-a809-4711-8221-79ab0a79d5b1.c000.gz.parquet",
         "script": "cyrl",
         "offset": 48637062,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-43/segments/1634323585203.61/warc/CC-MAIN-20211018124412-20211018154412-00176.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-43/segments/1634323585203.61/warc/CC-MAIN-20211018124412-20211018154412-00176.warc.gz",
+        "md5": "e23193663abfc64ebfc8a65b4a8e88d4",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/e23193663abfc64ebfc8a65b4a8e88d4.pdf"
     },
     "<urn:uuid:31f4b26c-1d84-4d51-8221-ab7c25f103dc>": {
         "url": "https://tugan-tel.tatar/adabiyat/shigriyat/Gabdulla_Tukai/dustlarga_ber_suz.pdf",
@@ -188609,7 +188802,10 @@
         "url": "https://vmk-konkurs.ru/sites/default/files/webform/2020_2_2571_atext_88fd58fbeae235922eede7335352aa09.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-05/subset=warc/part-00090-1e2959d8-5649-433a-b76e-f1b876a6479d.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 644044810
+        "offset": 644044810,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320304760.30/warc/CC-MAIN-20220125035839-20220125065839-00282.warc.gz",
+        "md5": "20cb1d4d43d7b395e11e3cdcde80fa00",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/20cb1d4d43d7b395e11e3cdcde80fa00-2020_2_2571_atext_88fd58fbeae235922eede7335352aa09.pdf"
     },
     "<urn:uuid:b0c3d886-1eab-4355-b4d7-6403bfcf8139>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2018-01/196968/npa_ta_196971.pdf",
@@ -188832,7 +189028,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-45/subset=warc/part-00176-6409130e-6e9b-44d1-90ec-9f9d0ade2504.c000.gz.parquet",
         "script": "cyrl",
         "offset": 67993025,
-        "augmented_file_path": "crawl-data/CC-MAIN-2020-45/segments/1603107896778.71/warc/CC-MAIN-20201028044037-20201028074037-00269.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-45/segments/1603107896778.71/warc/CC-MAIN-20201028044037-20201028074037-00269.warc.gz",
+        "md5": "5cb875f4b4ce95a5314670063cdbfc83",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/5cb875f4b4ce95a5314670063cdbfc83.pdf"
     },
     "<urn:uuid:59c0960e-8f7c-425b-9253-81cef531952e>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2019-11/468389/npa_ta_468393.pdf",
@@ -192197,7 +192395,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-29/subset=warc/part-00224-18f202a6-71a6-4cdb-b350-51e72c917b97.c000.gz.parquet",
         "script": "cyrl",
         "offset": 91430827,
-        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00260.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00260.warc.gz",
+        "md5": "2a0a4de167112d972402bab525761a60",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/2a0a4de167112d972402bab525761a60.pdf"
     },
     "<urn:uuid:be38fe5e-e6b2-4287-bf2a-b0ad94d04e58>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-04/754174/npa_ta_754176.pdf",
@@ -195816,7 +196016,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-43/subset=warc/part-00171-16202947-a809-4711-8221-79ab0a79d5b1.c000.gz.parquet",
         "script": "cyrl",
         "offset": 51917645,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-43/segments/1634323585203.61/warc/CC-MAIN-20211018124412-20211018154412-00283.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-43/segments/1634323585203.61/warc/CC-MAIN-20211018124412-20211018154412-00283.warc.gz",
+        "md5": "91bd7da00a4bb8dd1d8cc4194c5ba502",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/91bd7da00a4bb8dd1d8cc4194c5ba502.pdf"
     },
     "<urn:uuid:c85fdd8f-e648-4228-bde5-f1bf16f1f68f>": {
         "url": "http://kazan2015.com/tat/news_items/1551.pdf",
@@ -197409,7 +197611,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-29/subset=warc/part-00224-18f202a6-71a6-4cdb-b350-51e72c917b97.c000.gz.parquet",
         "script": "cyrl",
         "offset": 88048115,
-        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00516.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-29/segments/1593655890181.37/warc/CC-MAIN-20200706191400-20200706221400-00516.warc.gz",
+        "md5": "cea485ff2da5d4992d334697642c82de",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/cea485ff2da5d4992d334697642c82de.pdf"
     },
     "<urn:uuid:89ff04fc-0f1c-4c3e-8f67-36eac259537a>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-04/760244/npa_ta_760246.pdf",
@@ -201081,7 +201285,10 @@
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-12/1531344/npa_ta_1531346.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2025-05/subset=warc/part-00261-88b30a59-3c73-48ba-a167-077611bfd245.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 497686837
+        "offset": 497686837,
+        "augmented_file_path": "crawl-data/CC-MAIN-2025-05/segments/1736703362340.49/warc/CC-MAIN-20250117231700-20250118021700-00061.warc.gz",
+        "md5": "cc804e279b8ef5f0ac4b4cf08196d75d",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/cc804e279b8ef5f0ac4b4cf08196d75d-npa_ta_1531346.pdf"
     },
     "<urn:uuid:d1f1bf24-c36c-4447-8696-58e4979c7943>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-04/753189/npa_ta_753193.pdf",
@@ -202608,7 +202815,10 @@
         "url": "https://ufa.roskazna.gov.ru/upload/iblock/265/6.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-49/subset=warc/part-00190-eb7089cf-762b-4a3e-8cab-20b677c0d246.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 642766281
+        "offset": 642766281,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-49/segments/1637964362230.18/warc/CC-MAIN-20211202145130-20211202175130-00178.warc.gz",
+        "md5": "442347122dbe9d1ed1b13c965beb0669",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/442347122dbe9d1ed1b13c965beb0669-6.pdf"
     },
     "<urn:uuid:9d32382b-de4e-4b84-92a2-fe32b637d7d3>": {
         "url": "https://kuk-sch-brznk.ucoz.ru/Fatixov_X/porjadok_raboty-2.pdf",
@@ -203263,7 +203473,10 @@
         "url": "http://meshabash.ru/index.php?view=article&catid=40:2010-02-28-11-27-21&id=498:fotoshop&format=pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-34/subset=warc/part-00278-157cb54e-5228-45b3-9530-e1132e1b63b2.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 77103703
+        "offset": 77103703,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-34/segments/1596439738015.38/warc/CC-MAIN-20200808165417-20200808195417-00113.warc.gz",
+        "md5": "6e336bb183d19061645b96bc267749e6",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/6e336bb183d19061645b96bc267749e6.pdf"
     },
     "<urn:uuid:ed040f91-bd58-41d3-9661-9ca2adfbaadb>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2020-11/677172/npa_ta_677174.pdf",
@@ -208105,7 +208318,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-17/subset=warc/part-00174-74237c22-0523-49c6-9e5a-6b4aa471a042.c000.gz.parquet",
         "script": "cyrl",
         "offset": 632216585,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-17/segments/1618038862159.64/warc/CC-MAIN-20210418224306-20210419014306-00006.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-17/segments/1618038862159.64/warc/CC-MAIN-20210418224306-20210419014306-00006.warc.gz",
+        "md5": "d2e56df0201caa9dfea5f87c415599c2",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/d2e56df0201caa9dfea5f87c415599c2-load.pdf"
     },
     "<urn:uuid:01677c52-3996-4391-bf8f-500725a3ef21>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2020-11/662257/npa_ta_662259.pdf",
@@ -209395,13 +209610,19 @@
         "url": "https://upload.wikimedia.org/wikipedia/tt/c/c6/TT-fgos.wiki-2022-ttwp-certificate.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2024-10/subset=warc/part-00004-d9675c6d-5c8d-45bb-9c98-c56e42022a4d.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 614824023
+        "offset": 614824023,
+        "augmented_file_path": "crawl-data/CC-MAIN-2024-10/segments/1707947473472.21/warc/CC-MAIN-20240221102433-20240221132433-00848.warc.gz",
+        "md5": "604eb3d9804078cecd4034547d8aa9cf",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/604eb3d9804078cecd4034547d8aa9cf-TT-fgos.wiki-2022-ttwp-certificate.pdf"
     },
     "b2356514-d3f8-49cf-8508-e1572b19a1ae": {
         "url": "https://upload.wikimedia.org/wikipedia/tt/5/5a/TT-MinBezTatar2022-2023-ttwp-diploma.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2024-10/subset=warc/part-00004-d9675c6d-5c8d-45bb-9c98-c56e42022a4d.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 584832978
+        "offset": 584832978,
+        "augmented_file_path": "crawl-data/CC-MAIN-2024-10/segments/1707947475727.3/warc/CC-MAIN-20240302020802-20240302050802-00119.warc.gz",
+        "md5": "e4e7c09f0defbc6769d9d21f2f371aa1",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/e4e7c09f0defbc6769d9d21f2f371aa1-TT-MinBezTatar2022-2023-ttwp-diploma.pdf"
     },
     "9a35a805-1ceb-406c-924a-d5f39ed27563": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2023-01/1138627/npa_ta_1138631.pdf",
@@ -210095,7 +210316,10 @@
         "url": "https://upload.wikimedia.org/wikipedia/tt/f/f5/TT-fgos.wiki-2022-ttwp-diploma.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2024-10/subset=warc/part-00004-d9675c6d-5c8d-45bb-9c98-c56e42022a4d.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 605780901
+        "offset": 605780901,
+        "augmented_file_path": "crawl-data/CC-MAIN-2024-10/segments/1707947473472.21/warc/CC-MAIN-20240221102433-20240221132433-00070.warc.gz",
+        "md5": "1b60177d0c1011250a91f2a0334be43b",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/1b60177d0c1011250a91f2a0334be43b-TT-fgos.wiki-2022-ttwp-diploma.pdf"
     },
     "<urn:uuid:859313fe-06ea-48f3-8c33-ade33d84ff97>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2022-11/1071702/npa_ta_1071704.pdf",
@@ -212284,7 +212508,10 @@
         "url": "https://findtheslide.com/pedagogika/v-hrefe/pdf/1",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-43/subset=warc/part-00082-16202947-a809-4711-8221-79ab0a79d5b1.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 374714631
+        "offset": 374714631,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-43/segments/1634323587926.9/warc/CC-MAIN-20211026200738-20211026230738-00078.warc.gz",
+        "md5": "71151d214bc3311639fa13b4600910f6",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/71151d214bc3311639fa13b4600910f6.pdf"
     },
     "<urn:uuid:507aa835-6d21-40b8-ad60-8b2fdc3b6723>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2023-08/1248497/npa_ta_1248499.pdf",
@@ -216665,7 +216892,10 @@
         "url": "http://www.islamsamara.ru/upload/files/%D1%84%D0%B0%D0%B9%D0%BB%D1%8B/%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-25/subset=warc/part-00205-e638c5dd-3c3d-4738-8d52-dc1e9f44de3a.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 68286989
+        "offset": 68286989,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-25/segments/1623488544264.91/warc/CC-MAIN-20210623225535-20210624015535-00460.warc.gz",
+        "md5": "661ac3a81179b837337a308db8d04df3",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/661ac3a81179b837337a308db8d04df3-%D0%BA%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C.pdf"
     },
     "<urn:uuid:767ba8f5-ff2b-43cd-9b9c-9c42254f9d2f>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-11/1506467/npa_ta_1506469.pdf",
@@ -221073,7 +221303,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-05/subset=warc/part-00267-1e2959d8-5649-433a-b76e-f1b876a6479d.c000.gz.parquet",
         "script": "cyrl",
         "offset": 39746573,
-        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320303956.14/warc/CC-MAIN-20220123015212-20220123045212-00040.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320303956.14/warc/CC-MAIN-20220123015212-20220123045212-00040.warc.gz",
+        "md5": "b689e5a1a38ae697ab655db07d48ee53",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/b689e5a1a38ae697ab655db07d48ee53.pdf"
     },
     "<urn:uuid:210cec51-69da-41e3-b57f-1f5b4461256f>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2016-02/26381/npa_ta_26384.pdf",
@@ -222090,7 +222322,10 @@
         "url": "http://xn----8sbapcay0adn3c4c9c.xn--p1ai/wp-content/uploads/2015/11/%D0%A2%D0%B0%D1%82%D0%B0%D1%80%D1%87%D0%B0-%D0%B3%D1%8B%D0%B9%D0%BB%D1%8C%D0%BC%D0%B5-%D1%85%D0%B0%D0%BB%D1%8C.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-40/subset=warc/part-00011-50bb8e61-7c5b-4d2c-bd34-dad6ca92b697.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 205982973
+        "offset": 205982973,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-40/segments/1600400214347.17/warc/CC-MAIN-20200924065412-20200924095412-00313.warc.gz",
+        "md5": "14b1ebfdd63502bc4360b534d1dab5c2",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/14b1ebfdd63502bc4360b534d1dab5c2-%D0%A2%D0%B0%D1%82%D0%B0%D1%80%D1%87%D0%B0-%D0%B3%D1%8B%D0%B9%D0%BB%D1%8C%D0%BC%D0%B5-%D1%85%D0%B0%D.pdf"
     },
     "<urn:uuid:04d2bd09-8a12-4182-8e2c-5d0f6aeba8d4>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2020-10/642342/npa_ta_642344.pdf",
@@ -223536,7 +223771,10 @@
         "url": "https://upload.wikimedia.org/wikipedia/commons/3/33/%D0%A0%D0%A4%D0%98%D0%9F-%D0%A2%D0%B0%D1%82%D0%B0%D1%80%D1%81%D1%82%D0%B0%D0%BD-%D0%A2%D0%B0%D1%82%D0%B0%D1%80%D1%87%D0%B0%D0%92%D0%B8%D0%BA%D0%B8-%D1%82%D3%99%D2%97%D1%80%D0%B8%D0%B1%D3%99%D1%81%D0%B5.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-05/subset=warc/part-00127-1e2959d8-5649-433a-b76e-f1b876a6479d.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 652888610
+        "offset": 652888610,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320300658.84/warc/CC-MAIN-20220118002226-20220118032226-00116.warc.gz",
+        "md5": "5843ba3d34b691e7cfe908c8b0dd39e9",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/5843ba3d34b691e7cfe908c8b0dd39e9-%D0%A0%D0%A4%D0%98%D0%9F-%D0%A2%D0%B0%D1%82%D0%B0%D1%80%D1%81%D1%82%D0%B0%D0%BD-%D0%A2%D0%B0%D1%82%D.pdf"
     },
     "<urn:uuid:568affd5-027f-4419-98e5-dda64e988fb9>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2023-12/1322607/npa_ta_1322609.pdf",
@@ -225331,7 +225569,9 @@
         "url": "http://marsila.org.ru/index.php?view=article&amp;catid=66%3A2012-10-18-18-07-47&amp;id=238%3A2009-11-&amp;format=pdf&amp;option=com_content",
         "file_path": "s3://commoncrawl/crawl-data/CC-MAIN-2019-22/segments/1558232256040.41/warc/CC-MAIN-20190520142005-20190520164005-00161.warc.gz",
         "script": "cyrl",
-        "offset": 122362343
+        "offset": 122362343,
+        "md5": "21f21a9ac6e82a0eb68f881caca79e30",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/21f21a9ac6e82a0eb68f881caca79e30.pdf"
     },
     "<urn:uuid:32f4691b-4cf9-49fa-a7a9-2ee81384a992>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-09/1467017/npa_ta_1467019.pdf",
@@ -228628,7 +228868,10 @@
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-12/1539507/npa_ta_1539509.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2025-05/subset=warc/part-00261-88b30a59-3c73-48ba-a167-077611bfd245.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 475874870
+        "offset": 475874870,
+        "augmented_file_path": "crawl-data/CC-MAIN-2025-05/segments/1736703363462.25/warc/CC-MAIN-20250122195159-20250122225159-00473.warc.gz",
+        "md5": "ece7d34736006c623b9134e6bf0019d5",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/ece7d34736006c623b9134e6bf0019d5-npa_ta_1539509.pdf"
     },
     "bc1e9e6a-846a-44a9-bbac-b42a5fe97415": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-10/1474642/npa_ta_1474646.pdf",
@@ -229364,7 +229607,10 @@
         "url": "https://www.diktant.tatar/ftp/2020/polozheniye.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-40/subset=warc/part-00285-50bb8e61-7c5b-4d2c-bd34-dad6ca92b697.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 797250803
+        "offset": 797250803,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-40/segments/1600401583556.73/warc/CC-MAIN-20200928010415-20200928040415-00749.warc.gz",
+        "md5": "0247d46ec084d550b3e4b5414f61811f",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/0247d46ec084d550b3e4b5414f61811f-polozheniye.pdf"
     },
     "<urn:uuid:a5416882-e9a9-4798-8c28-a742df7d5bce>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-08/1450777/npa_ta_1450779.pdf",
@@ -236409,7 +236655,10 @@
         "url": "https://isxaki.com/wp-content/uploads/2020/08/25-tatarkizi.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-43/subset=warc/part-00219-16202947-a809-4711-8221-79ab0a79d5b1.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 429160502
+        "offset": 429160502,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-43/segments/1634323588113.25/warc/CC-MAIN-20211027084718-20211027114718-00191.warc.gz",
+        "md5": "322e6f582f18e1287f9b89c4c88d2e44",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/322e6f582f18e1287f9b89c4c88d2e44-25-tatarkizi.pdf"
     },
     "<urn:uuid:3144b376-ffb4-40d1-b00e-168bab93e8ec>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2022-12/1137417/npa_ta_1137419.pdf",
@@ -238361,7 +238610,10 @@
         "url": "https://detivbezopasnosti.ru/results/conferense/271",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-21/subset=warc/part-00009-bd7ecbba-8e15-4123-ae07-d9c98ad96845.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 250026055
+        "offset": 250026055,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-21/segments/1652662545548.56/warc/CC-MAIN-20220522125835-20220522155835-00205.warc.gz",
+        "md5": "358f62bdc76f619910ea6209292bff41",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/358f62bdc76f619910ea6209292bff41.pdf"
     },
     "<urn:uuid:9d738019-f502-4aeb-8ffd-7824177a021f>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-11/880707/npa_ta_880711.pdf",
@@ -238519,7 +238771,10 @@
         "url": "http://finaworlds2015.dspkazan.com/tat/news_items/3632.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-05/subset=warc/part-00224-1e2959d8-5649-433a-b76e-f1b876a6479d.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 26770799
+        "offset": 26770799,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320305266.34/warc/CC-MAIN-20220127133107-20220127163107-00385.warc.gz",
+        "md5": "f02b60999036751e2860ffd900bcfee2",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/f02b60999036751e2860ffd900bcfee2-3632.pdf"
     },
     "<urn:uuid:ab42fba1-d279-4d70-81d1-b790eced0dbc>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2019-11/468864/npa_ta_468868.pdf",
@@ -241723,7 +241978,10 @@
         "url": "https://upload.wikimedia.org/wikipedia/tt/2/2e/TT-FeminismFolklore2023-ttwp-certificate.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2024-30/subset=warc/part-00005-65338ae2-db7f-48fa-a620-71777c40d854.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 461657308
+        "offset": 461657308,
+        "augmented_file_path": "crawl-data/CC-MAIN-2024-30/segments/1720763514450.42/warc/CC-MAIN-20240712161324-20240712191324-00332.warc.gz",
+        "md5": "40d8a40a06cd56a7a2f32e53f7e2f791",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/40d8a40a06cd56a7a2f32e53f7e2f791-TT-FeminismFolklore2023-ttwp-certificate.pdf"
     },
     "<urn:uuid:d45bcb2e-16af-429d-ac90-b9e5b8269d27>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2022-11/1100442/npa_ta_1100444.pdf",
@@ -243084,7 +243342,10 @@
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-10/1492117/npa_ta_1492119.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2025-05/subset=warc/part-00261-88b30a59-3c73-48ba-a167-077611bfd245.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 492888336
+        "offset": 492888336,
+        "augmented_file_path": "crawl-data/CC-MAIN-2025-05/segments/1736703362532.35/warc/CC-MAIN-20250119214819-20250120004819-00327.warc.gz",
+        "md5": "9e8fa62d00912249c3297e26c76931f6",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/9e8fa62d00912249c3297e26c76931f6-npa_ta_1492119.pdf"
     },
     "7078a6e9-1725-434c-8503-b8cc7cc5a13d": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-07/1439282/npa_ta_1439284.pdf",
@@ -249226,7 +249487,10 @@
         "url": "https://fund.selet.biz/2020.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-21/subset=warc/part-00067-2bb1ba05-1421-4b90-a3f4-bbc46b4a29a5.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 311423247
+        "offset": 311423247,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-21/segments/1620243989006.71/warc/CC-MAIN-20210509153220-20210509183220-00314.warc.gz",
+        "md5": "989779fc946619b6b72cd3a10c386153",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/989779fc946619b6b72cd3a10c386153-2020.pdf"
     },
     "<urn:uuid:49dd9e20-e951-4f13-b28d-2533e7651f7e>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-11/863417/npa_ta_863419.pdf",
@@ -249914,7 +250178,10 @@
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-10/1489097/npa_ta_1489101.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2025-05/subset=warc/part-00261-88b30a59-3c73-48ba-a167-077611bfd245.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 489418170
+        "offset": 489418170,
+        "augmented_file_path": "crawl-data/CC-MAIN-2025-05/segments/1736703362199.73/warc/CC-MAIN-20250114082024-20250114112024-00253.warc.gz",
+        "md5": "d8ccaeae9bd3819991c8347e8e4d8e60",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/d8ccaeae9bd3819991c8347e8e4d8e60-npa_ta_1489101.pdf"
     },
     "<urn:uuid:8e8ec01d-b3bd-475e-bce2-51234b471c68>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2018-11/284004/npa_ta_284006.pdf",
@@ -250018,7 +250285,10 @@
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-10/1491792/npa_ta_1491794.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2025-05/subset=warc/part-00261-88b30a59-3c73-48ba-a167-077611bfd245.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 484558003
+        "offset": 484558003,
+        "augmented_file_path": "crawl-data/CC-MAIN-2025-05/segments/1736703362284.61/warc/CC-MAIN-20250115210945-20250116000945-00039.warc.gz",
+        "md5": "bf4019d86fab9af6b52228435711b63b",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/bf4019d86fab9af6b52228435711b63b-npa_ta_1491794.pdf"
     },
     "<urn:uuid:0efac84f-d455-493b-a6c3-8d563bea5567>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2018-11/295468/npa_ta_295471.pdf",
@@ -251572,7 +251842,10 @@
         "url": "https://upload.wikimedia.org/wikimedia/ru/6/6e/WikiLovesFashion2021-ttwp-certificate-WUGTAT-WMRU-RTASILLA-Selet-TATNET-TT.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2024-22/subset=warc/part-00186-4dd72944-e9c0-41a1-9026-dfd2d0615bf2.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 528730980
+        "offset": 528730980,
+        "augmented_file_path": "crawl-data/CC-MAIN-2024-22/segments/1715971058956.26/warc/CC-MAIN-20240526135546-20240526165546-00216.warc.gz",
+        "md5": "8f44cc74697fe08e1f04b14ccabb9144",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/8f44cc74697fe08e1f04b14ccabb9144-WikiLovesFashion2021-ttwp-certificate-WUGTAT-WMRU-RTASILLA-Selet-TATNET-TT.pdf"
     },
     "<urn:uuid:c3bcad59-1030-436d-a33a-b96c54b75655>": {
         "url": "http://www.xn--90amcbj9j.xn--p1ai/file/filemanag/3a567381e1c55a37fa4867b13ab7b76b.pdf",
@@ -253774,7 +254047,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-05/subset=warc/part-00267-1e2959d8-5649-433a-b76e-f1b876a6479d.c000.gz.parquet",
         "script": "cyrl",
         "offset": 36984285,
-        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320303956.14/warc/CC-MAIN-20220123015212-20220123045212-00504.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-05/segments/1642320303956.14/warc/CC-MAIN-20220123015212-20220123045212-00504.warc.gz",
+        "md5": "022996cb264f14d1ddea8095b59242a7",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/022996cb264f14d1ddea8095b59242a7.pdf"
     },
     "<urn:uuid:9a6553af-5740-467a-be58-1d2a1eb38b49>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2022-11/1071852/npa_ta_1071856.pdf",
@@ -254950,7 +255225,10 @@
         "url": "http://ud.gov.kg/images/arenda/arenda13-2k.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2023-14/subset=warc/part-00205-39c03058-7d78-443d-9984-102329513e3d.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 48735354
+        "offset": 48735354,
+        "augmented_file_path": "crawl-data/CC-MAIN-2023-14/segments/1679296943750.71/warc/CC-MAIN-20230322051607-20230322081607-00747.warc.gz",
+        "md5": "9fc535123a84e26e5acb4fae8e10e4dc",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/9fc535123a84e26e5acb4fae8e10e4dc-arenda13-2k.pdf"
     },
     "<urn:uuid:b80de36a-ca6b-4d67-a5f7-c3895df54633>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2022-10/1056442/npa_ta_1056444.pdf",
@@ -263012,7 +263290,10 @@
         "url": "https://upload.wikimedia.org/wikimedia/ru/b/b8/TurkicMarathon2021-ttwp-certificate-WUGTAT-WMRU-TT.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2024-26/subset=warc/part-00011-44971353-df4b-48d7-8025-975e8feb989b.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 545419871
+        "offset": 545419871,
+        "augmented_file_path": "crawl-data/CC-MAIN-2024-26/segments/1718198861173.16/warc/CC-MAIN-20240612140424-20240612170424-00234.warc.gz",
+        "md5": "9f15d2552380cf1964a0097ea7da2fff",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/9f15d2552380cf1964a0097ea7da2fff-TurkicMarathon2021-ttwp-certificate-WUGTAT-WMRU-TT.pdf"
     },
     "<urn:uuid:04cd7615-8660-4457-987b-3da44cd8850e>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2023-08/1246092/npa_ta_1246094.pdf",
@@ -266322,7 +266603,10 @@
         "url": "https://kzn.ru/upload/iblock/aa1/3735_17.12.2020-tat.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-39/subset=warc/part-00065-f465d820-0362-4c4c-a396-c69f5fd24cc4.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 406137288
+        "offset": 406137288,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-39/segments/1631780057036.89/warc/CC-MAIN-20210920101029-20210920131029-00256.warc.gz",
+        "md5": "8689d81523a59094a3bce81f1e579e1c",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/8689d81523a59094a3bce81f1e579e1c-3735_17.12.2020-tat.pdf"
     },
     "<urn:uuid:d6920b7b-8824-49ee-ae94-66de2e1807bd>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-06/782779/npa_ta_782781.pdf",
@@ -271212,7 +271496,9 @@
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-17/subset=warc/part-00174-74237c22-0523-49c6-9e5a-6b4aa471a042.c000.gz.parquet",
         "script": "cyrl",
         "offset": 640781079,
-        "augmented_file_path": "crawl-data/CC-MAIN-2021-17/segments/1618038862159.64/warc/CC-MAIN-20210418224306-20210419014306-00595.warc.gz"
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-17/segments/1618038862159.64/warc/CC-MAIN-20210418224306-20210419014306-00595.warc.gz",
+        "md5": "de1113e7f6b8c3eb141d67870e5b8879",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/de1113e7f6b8c3eb141d67870e5b8879-load.pdf"
     },
     "<urn:uuid:a381e49d-ab63-4417-a7b2-3e13b1e9446f>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2021-02/727544/npa_ta_727546.pdf",
@@ -271710,7 +271996,10 @@
         "url": "https://upload.wikimedia.org/wikipedia/tt/1/12/TT-CEESpring-2022-ttwp-certificate.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2024-18/subset=warc/part-00001-29538f81-5664-4df2-acb6-7d8ba3d2a1aa.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 558688796
+        "offset": 558688796,
+        "augmented_file_path": "crawl-data/CC-MAIN-2024-18/segments/1712296817729.0/warc/CC-MAIN-20240421040323-20240421070323-00507.warc.gz",
+        "md5": "14bacd007dbd7678f9829b211bb20643",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/14bacd007dbd7678f9829b211bb20643-TT-CEESpring-2022-ttwp-certificate.pdf"
     },
     "<urn:uuid:d8a56d47-d6c5-4223-9e75-f659b581eb3e>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2019-01/317560/npa_ta_317562.pdf",
@@ -272151,7 +272440,10 @@
         "url": "https://kzn.ru/content/upravlenie-grazhdanskoy-zashchity/novosti/f%20UMC%20Nab%20Chelny%20(lesnoj%20pozhar)%20-%20RUS%20i%20TAT.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2023-14/subset=warc/part-00141-39c03058-7d78-443d-9984-102329513e3d.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 435800799
+        "offset": 435800799,
+        "augmented_file_path": "crawl-data/CC-MAIN-2023-14/segments/1679296943471.24/warc/CC-MAIN-20230320083513-20230320113513-00605.warc.gz",
+        "md5": "18f09157d1a8016eb904807f1c53ae7c",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/18f09157d1a8016eb904807f1c53ae7c-f%20UMC%20Nab%20Chelny%20(lesnoj%20pozhar)%20-%20RUS%20i%20TAT.pdf"
     },
     "<urn:uuid:89f89687-cd73-41d0-b9ab-804eb4ecbd42>": {
         "url": "http://pravo.tatarstan.ru/tat/file/npa/2019-04/353068/npa_ta_353071.pdf",
@@ -272932,7 +273224,10 @@
         "url": "https://upload.wikimedia.org/wikimedia/ru/1/13/CEESpring2021-diploma-WMRU-TT.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-27/subset=warc/part-00001-48f675b2-7fd4-43af-adb3-2a4ea7f82193.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 639494399
+        "offset": 639494399,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-27/segments/1656104678225.97/warc/CC-MAIN-20220706212428-20220707002428-00397.warc.gz",
+        "md5": "9ed6fd45f094c160f22e6e24c42024db",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/9ed6fd45f094c160f22e6e24c42024db-CEESpring2021-diploma-WMRU-TT.pdf"
     },
     "9d138fdf-e4e5-42de-b75c-9c3f01c49483": {
         "url": "https://islamfond.ru/wp-content/uploads/2017/06/Ogl_2.pdf",
@@ -278100,7 +278395,10 @@
         "url": "https://bts.s3.nl-ams.scw.cloud/books/books/Chaptar/Captar_Jack_E_S_Thompson.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-04/subset=warc/part-00018-364a895c-5e5c-46bb-846e-75ec7de82b3b.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 250165752
+        "offset": 250165752,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-04/segments/1610704832583.88/warc/CC-MAIN-20210127183317-20210127213317-00608.warc.gz",
+        "md5": "291867becdf1e0ce0b370276aabedc2a",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/291867becdf1e0ce0b370276aabedc2a-Captar_Jack_E_S_Thompson.pdf"
     },
     "<urn:uuid:fd6d9fc7-8959-4ba4-8e6e-6611d2781905>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-03/1381867/npa_ta_1381869.pdf",
@@ -283166,7 +283464,10 @@
         "url": "https://zolotojvek.ru/publikacii/na_portale/fajly/1804091934/document.pdf?%3C?=intval(microtime(1))?%3E",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-50/subset=warc/part-00195-8431e8c9-c763-4c27-b286-ba1dd7e2631e.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 919144775
+        "offset": 919144775,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-50/segments/1606141747323.98/warc/CC-MAIN-20201205074417-20201205104417-00629.warc.gz",
+        "md5": "8c2057b465be073b2d3bb1fd118bcbc9",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/8c2057b465be073b2d3bb1fd118bcbc9.pdf"
     },
     "<urn:uuid:e9dd0b11-ceb5-4bfd-b665-e91774e47749>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-07/1436947/npa_ta_1436951.pdf",
@@ -284965,7 +285266,10 @@
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2024-03/1373957/npa_ta_1373959.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2025-05/subset=warc/part-00261-88b30a59-3c73-48ba-a167-077611bfd245.c000.gz.parquet",
         "script": "cyrl",
-        "offset": 494582423
+        "offset": 494582423,
+        "augmented_file_path": "crawl-data/CC-MAIN-2025-05/segments/1736703362316.43/warc/CC-MAIN-20250117031455-20250117061455-00831.warc.gz",
+        "md5": "8a1776f7e3d1c74b20ca0c1452e6b40c",
+        "path_to_file": "/home/tans1q/.common-crawl/result/cyrl/8a1776f7e3d1c74b20ca0c1452e6b40c-npa_ta_1373959.pdf"
     },
     "<urn:uuid:b601c0c9-e8c6-4755-8fc1-0d78addb7e78>": {
         "url": "https://pravo.tatarstan.ru/tat/file/npa/2020-07/610097/npa_ta_610099.pdf",
@@ -289952,7 +290256,10 @@
         "url": "https://tdk.gov.tr/wp-content/uploads/2014/09/2001_11_04_Refiyev.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-39/subset=warc/part-00021-f465d820-0362-4c4c-a396-c69f5fd24cc4.c000.gz.parquet",
         "script": "latn",
-        "offset": 599122169
+        "offset": 599122169,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-39/segments/1631780057796.87/warc/CC-MAIN-20210926022920-20210926052920-00461.warc.gz",
+        "md5": "f025970b1be78eee430ff7865617f534",
+        "path_to_file": "/home/tans1q/.common-crawl/result/latn/f025970b1be78eee430ff7865617f534-2001_11_04_Refiyev.pdf"
     },
     "<urn:uuid:5a79a53e-2a12-4fd8-a362-5eb159a7215f>": {
         "url": "https://yonetim.secilogretmen.com/Dosyalar/8cb2c9ef-8470-4373-bd23-9cc5e70e9ba7.pdf",
@@ -289998,7 +290305,10 @@
         "url": "https://egitimkatalogu.tbb.org.tr/PdfDokuman/Y%C3%BCzy%C3%BCze%20E%C4%9Fitim%20Listesi_%20Ocak_Mart%202025%20%C3%96zet%20Liste.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2024-46/subset=warc/part-00043-65a16d46-7179-4f3c-849a-3216b203b23b.c000.gz.parquet",
         "script": "latn",
-        "offset": 197855402
+        "offset": 197855402,
+        "augmented_file_path": "crawl-data/CC-MAIN-2024-46/segments/1730477028347.28/warc/CC-MAIN-20241113103539-20241113133539-00322.warc.gz",
+        "md5": "92a739f730f5963007c4d456783c31a5",
+        "path_to_file": "/home/tans1q/.common-crawl/result/latn/92a739f730f5963007c4d456783c31a5-Y%C3%BCzy%C3%BCze%20E%C4%9Fitim%20Listesi_%20Ocak_Mart%202025%20%C3%96zet%20Liste.pdf"
     },
     "<urn:uuid:89a9e078-c282-48bb-b751-88b30b4e997b>": {
         "url": "http://www.consciencerasta.info/truthbrary/Priere-selot_Mathieu-Mattewos_amharique.pdf",
@@ -290084,7 +290394,10 @@
         "url": "http://aoecs.org/sites/default/files/ckeditor/Hungary%20licensed%20products%20Dec%202019.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2020-16/subset=warc/part-00244-5e0433ee-fa15-4837-b2dc-d6f38301af97.c000.gz.parquet",
         "script": "latn",
-        "offset": 16443250
+        "offset": 16443250,
+        "augmented_file_path": "crawl-data/CC-MAIN-2020-16/segments/1585370509103.51/warc/CC-MAIN-20200402235814-20200403025814-00489.warc.gz",
+        "md5": "58075ae50deba1f2e3218c3d1b506354",
+        "path_to_file": "/home/tans1q/.common-crawl/result/latn/58075ae50deba1f2e3218c3d1b506354-Hungary%20licensed%20products%20Dec%202019.pdf"
     },
     "<urn:uuid:ea2f1c56-dc3d-4d78-ba36-43ffa1438a48>": {
         "url": "https://inboundsalesacademy.com/gegenw_rtige_zuk_nfte_by_ronald_hitzler.pdf",
@@ -290106,13 +290419,19 @@
         "url": "https://joqargikenes.uz/2831.html?print=pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-39/subset=warc/part-00228-f465d820-0362-4c4c-a396-c69f5fd24cc4.c000.gz.parquet",
         "script": "latn",
-        "offset": 376306697
+        "offset": 376306697,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-39/segments/1631780057687.51/warc/CC-MAIN-20210925142524-20210925172524-00473.warc.gz",
+        "md5": "46ef808b4227b6c5ca7f1a07bca1edf2",
+        "path_to_file": "/home/tans1q/.common-crawl/result/latn/46ef808b4227b6c5ca7f1a07bca1edf2.pdf"
     },
     "<urn:uuid:91aaa8ae-a93b-42b0-b95a-d29ef72362dc>": {
         "url": "http://www.westafricanscripts.com/tamajeq/Ruth/Ruth_Tamajeq_Romanised.PDF",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-31/subset=warc/part-00029-a23f1677-939c-4b0d-b187-713170151123.c000.gz.parquet",
         "script": "latn",
-        "offset": 88525058
+        "offset": 88525058,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-31/segments/1627046152085.13/warc/CC-MAIN-20210805224801-20210806014801-00149.warc.gz",
+        "md5": "d5916b99de85c1c61b147bc6697769ad",
+        "path_to_file": "/home/tans1q/.common-crawl/result/latn/d5916b99de85c1c61b147bc6697769ad.pdf"
     },
     "<urn:uuid:03ffc662-17dc-4bc0-9d2b-bf18960437ef>": {
         "url": "http://languageindex.online.uni-marburg.de/datasheet/khalami/pdf",
@@ -290126,19 +290445,28 @@
         "url": "https://www.merexpression.com/upload/files/2022/05/nM6e9znpy3wVoyG9wUvY_17_e0f10b94728379c5e5713c5ecfcdd114_file.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-33/subset=warc/part-00138-d466b69e-be2b-4525-ac34-1b10d57329da.c000.gz.parquet",
         "script": "latn",
-        "offset": 774023709
+        "offset": 774023709,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-33/segments/1659882571950.76/warc/CC-MAIN-20220813111851-20220813141851-00069.warc.gz",
+        "md5": "9485d72d6f9940b6ceff6a0740f83243",
+        "path_to_file": "/home/tans1q/.common-crawl/result/latn/9485d72d6f9940b6ceff6a0740f83243-nM6e9znpy3wVoyG9wUvY_17_e0f10b94728379c5e5713c5ecfcdd114_file.pdf"
     },
     "<urn:uuid:7bf32af8-9247-47a1-ab49-c0d8d54ba756>": {
         "url": "http://www.westafricanscripts.com/tamajeq/Luke/Luke_Tamajeq_Romanised.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-31/subset=warc/part-00029-a23f1677-939c-4b0d-b187-713170151123.c000.gz.parquet",
         "script": "latn",
-        "offset": 90821540
+        "offset": 90821540,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-31/segments/1627046152085.13/warc/CC-MAIN-20210805224801-20210806014801-00597.warc.gz",
+        "md5": "42dcddca4686b916c982d7d430cf4def",
+        "path_to_file": "/home/tans1q/.common-crawl/result/latn/42dcddca4686b916c982d7d430cf4def-Luke_Tamajeq_Romanised.pdf"
     },
     "<urn:uuid:e8046e3c-777e-495a-b5f3-4668359cdbbb>": {
         "url": "https://karakalpakstan.uz/qq/document/genereate-pdf/news/3133",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2021-31/subset=warc/part-00295-a23f1677-939c-4b0d-b187-713170151123.c000.gz.parquet",
         "script": "latn",
-        "offset": 341450404
+        "offset": 341450404,
+        "augmented_file_path": "crawl-data/CC-MAIN-2021-31/segments/1627046153816.3/warc/CC-MAIN-20210729043158-20210729073158-00226.warc.gz",
+        "md5": "f492b2f1d9ff1fda72c00963724fb1cf",
+        "path_to_file": "/home/tans1q/.common-crawl/result/latn/f492b2f1d9ff1fda72c00963724fb1cf.pdf"
     },
     "<urn:uuid:88ef9038-d40b-43f1-b50f-802ea92597d1>": {
         "url": "http://etusbe.com/Makaleler/531119496_1.%20S%C3%BCleyman%20Efendio%C4%9Flu,%20Metin.pdf",
@@ -290192,7 +290520,10 @@
         "url": "https://fizik.ogu.edu.tr/Storage/FizikBolumu/Uploads/Y%C3%BCzy%C3%BCze---Uzaktan_27.09.2021.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-33/subset=warc/part-00062-d466b69e-be2b-4525-ac34-1b10d57329da.c000.gz.parquet",
         "script": "latn",
-        "offset": 263541420
+        "offset": 263541420,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-33/segments/1659882571989.67/warc/CC-MAIN-20220813232744-20220814022744-00606.warc.gz",
+        "md5": "cb88ddbaf25c5c82054a0bd69b3508a5",
+        "path_to_file": "/home/tans1q/.common-crawl/result/latn/cb88ddbaf25c5c82054a0bd69b3508a5-Y%C3%BCzy%C3%BCze---Uzaktan_27.09.2021.pdf"
     },
     "<urn:uuid:517265a8-1654-4f1c-92a0-01b7adbc0107>": {
         "url": "http://pixelbedlam.co.uk/harga-pil-kb-yasmin-thn-2014-65ef.pdf",
@@ -290230,13 +290561,19 @@
         "url": "http://acta.bibl.u-szeged.hu/38760/1/altaica_044.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2022-27/subset=warc/part-00215-48f675b2-7fd4-43af-adb3-2a4ea7f82193.c000.gz.parquet",
         "script": "latn",
-        "offset": 2921025
+        "offset": 2921025,
+        "augmented_file_path": "crawl-data/CC-MAIN-2022-27/segments/1656104189587.61/warc/CC-MAIN-20220702162147-20220702192147-00352.warc.gz",
+        "md5": "ef580fade397e75c4a864235f6b861c6",
+        "path_to_file": "/home/tans1q/.common-crawl/result/latn/ef580fade397e75c4a864235f6b861c6-altaica_044.pdf"
     },
     "<urn:uuid:14cbc832-09c2-4fec-b38f-60092059e90a>": {
         "url": "https://www.colmic.it/sinemet-kaufen-6413.pdf",
         "file_path": "s3://commoncrawl/cc-index/table/cc-main/warc/crawl=CC-MAIN-2019-47/subset=warc/part-00214-47abed28-4fa2-4f4a-b4d3-db11c85b2f3a.c000.gz.parquet",
         "script": "latn",
-        "offset": 743146953
+        "offset": 743146953,
+        "augmented_file_path": "crawl-data/CC-MAIN-2019-47/segments/1573496669454.33/warc/CC-MAIN-20191118053441-20191118081441-00559.warc.gz",
+        "md5": "416f4faf96479d1f16b2c51253cbc59d",
+        "path_to_file": "/home/tans1q/.common-crawl/result/latn/416f4faf96479d1f16b2c51253cbc59d-sinemet-kaufen-6413.pdf"
     },
     "<urn:uuid:c07db8ba-c5de-47ef-9c84-68b431318947>": {
         "url": "https://melataw.com/wp-content/uploads/2024/09/Transcript-Mammariya-masihaf-phonetic-A1.1-.pdf",
