@@ -23,7 +23,6 @@ def download_cc():
     _dump_index(index=index, backup=True)
     try: 
         _augment(index)
-        return
         docs_to_download = [d for d in index.values() if not d.get('path_to_file', None)]
         print(f"About to download {len(docs_to_download)} of {len(index)} documents")
         path_to_file = _get_in_workdir("../__artifacts/common.crawl/tmp.pdf")
@@ -59,8 +58,9 @@ def _augment(index):
         else: 
             index_file_to_docs[warc_filename] = [doc]
     
-    
-    for warc_filename, docs in index_file_to_docs.items():
+    items = index_file_to_docs.items()
+    print(f"About to process {len(items)} indexes")
+    for warc_filename, docs in track(items, "Downloading index files"):
         try:
             df = _get_warc(warc_filename)
             for doc in docs:
