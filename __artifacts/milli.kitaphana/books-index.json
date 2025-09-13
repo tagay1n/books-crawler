@@ -1,35 +1,171 @@
 {
-    "/tt/ssearch/detail/ndqdbhgvio": {
-        "title": "Букварь татарскаго и арабскаго письма: С приложением слов со знаками, показываающими (!) их выговор",
-        "publish_year": "1802",
-        "lang": "Русский, Арабский, Татарский",
-        "collection": "Коллекция русской старопечатной книги (до 1830 г.), \"Книжные памятники\"",
+    "/tt/ssearch/detail/iwkedsrarz": {
+        "title": "Әлифбага карата методик күрсәтмәләр: 1-нче класс укытучылары өчен кулланма",
+        "publish_year": "1948",
+        "lang": "Татарский",
         "tags": [
-            "Языкознание",
-            "Татарский язык",
-            "Арабский язык",
-            "Письма",
-            "Письменность"
+            "Педагогика",
+            "Буквари",
+            "Методические рекомендации",
+            "Методик кулланмалар",
+            "Әлифба"
         ],
-        "author": "Атнометев; Гиганов, И.",
+        "author": "Сәйфуллин, Г.",
         "access": "open",
+        "classification": "УДК 372+373(07)",
         "integrated_description": [
-            "Атнометев, Ният Бака.Букварь татарскаго и арабскаго письма : С приложением слов со знаками, показываающими (!) их выговор / Сочиненный в Тобольском главном народном училище бухарцом Ният Бакою Атнометевым",
-            "под руководством татарскаго языка учителя, соборнаго священника Иосифа Гиганова",
-            "В Санктпетербурге : При Императорской Академии наук, 1802",
-            "66 c",
-            "4° (26 см) 24,6 х 20,1 х 1,2 см",
-            "Книжный памятник № 35645 от 19.10.2021",
-            "Книжный памятник.УДК 4 (с) Тат"
+            "Сәйфуллин, Г.Әлифбага карата методик күрсәтмәләр : 1-нче класс укытучылары өчен кулланма / Г. Сәйфуллин",
+            "Казан : Татгосиздат, 1948",
+            "71 б",
+            "УДК 372+373(07)"
         ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_fstp_Inv_5529",
-        "download_code": "nbrt_fstp_Inv_5529",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ndqdbhgvio/",
-        "available_pages": 67,
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_2596_48",
+        "download_code": "nbrt_tatarica_Inv_2596_48",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/iwkedsrarz/",
+        "available_pages": 76,
+        "downloaded": true
+    },
+    "/tt/ssearch/detail/qazdruktzp": {
+        "title": "Балалар бакчасы мөдиренә ярдәмлек",
+        "publish_year": "1945",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Педагогика",
+            "Детские сады",
+            "Методические рекомендации",
+            "Балалар бакчасы",
+            "Методик кулланмалар"
+        ],
+        "author": "Файзуллина, С.",
+        "access": "open",
+        "classification": "УДК 372.415",
+        "integrated_description": [
+            "Балалар бакчасы мөдиренә ярдәмлек / җав. ред. С. Файзуллина",
+            "Казан : Татгосиздат, 1945",
+            "47 б",
+            "УДК 372.415"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1834_45",
+        "download_code": "nbrt_tatarica_Inv_1834_45",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qazdruktzp/",
+        "available_pages": 48,
+        "downloaded": true
+    },
+    "/tt/ssearch/detail/mscbxzfqvh": {
+        "title": "Укучыларның өлгерешләрен бәяләү нормалары: башл.җидееллык һ.урта мәкт.1-4 кл.өчен",
+        "publish_year": "1953",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "ПЕДАГОГИКА",
+            "ПЕДАГОГИКА",
+            "МЕТОДИК КУЛЛАНМАЛАР",
+            "НОРМАЛАР",
+            "МЕТОДИЧЕСКИЕ РЕКОМЕНДАЦИИ",
+            "НОРМЫ"
+        ],
+        "access": "limited",
+        "classification": "УДК 372+373(07)",
+        "integrated_description": [
+            "Укучыларның өлгерешләрен бәяләү нормалары : башл.җидееллык һ.урта мәкт.1-4 кл.өчен / РСФСР Мәгариф м-лыгының мәкт. идарәсе",
+            "җ. ред. Н. Мәҗитова",
+            "Казан : Таткнигоиздат, 1953",
+            "22 б",
+            "УДК 372+373(07)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_5928_1",
+        "download_code": "nbrt_tatarica_Inv_5928_1",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mscbxzfqvh/",
+        "available_pages": 3,
+        "downloaded": true
+    },
+    "/tt/ssearch/detail/fcbajojduk": {
+        "title": "Яшь төзүчеләр",
+        "publish_year": "1957",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "ПЕДАГОГИКА",
+            "ПЕДАГОГИКА",
+            "ХЕЗМӘТ ТӘРБИЯСЕ",
+            "ТӨЗҮЧЕЛӘР",
+            "ВОСПИТАНИЕ ТРУДОВОЕ",
+            "СТРОИТЕЛИ"
+        ],
+        "access": "limited",
+        "classification": "УДК 371.012.66",
+        "integrated_description": [
+            "Яшь төзүчеләр / ТАССР Мәгариф м-лыгы яшь техникларның респ. станциясе",
+            "тәрҗ. Г. Гайфуллин",
+            "Казан, 1957",
+            "19 б",
+            "УДК 371.012.66"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_26013",
+        "download_code": "nbrt_tatarica_Inv_26013",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/fcbajojduk/",
+        "available_pages": 3,
+        "downloaded": true
+    },
+    "/tt/ssearch/detail/xsfqdixqeg": {
+        "title": "Мәҗбүри окладной страхование турында закон. Мәҗбүри окладной страхованиесен үткәрү турында инструкция: 1940-нчы елның 4-нче апрелендә һәм 1946-нчы елның 9-нчы сентябрендә (№ 614) кабул ителгән",
+        "publish_year": "1947",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Законы",
+            "Инструкции",
+            "Страхование",
+            "Иминиятләштерү",
+            "Законнар",
+            "Инструкцияләр"
+        ],
+        "author": "Файзуллин, И.; Абдрахманов, Р.; СССР Финанс министрлыгы; Дәүләт страхованиесенең баш идарәсе",
+        "access": "limited",
+        "classification": "УДК 368",
+        "integrated_description": [
+            "Мәҗбүри окладной страхование турында закон. Мәҗбүри окладной страхованиесен үткәрү турында инструкция : 1940-нчы елның 4-нче апрелендә һәм 1946-нчы елның 9-нчы сентябрендә (№ 614) кабул ителгән / [тәрҗ. И. Файзуллин",
+            "җав. ред. Р. Абдрахманов], СССР Финанс министрлыгы [и др.]",
+            "Казан, 1947",
+            "62 б",
+            "УДК 368"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_2471_48",
+        "download_code": "nbrt_tatarica_Inv_2471_48",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/xsfqdixqeg/",
+        "available_pages": 7,
+        "downloaded": true
+    },
+    "/tt/ssearch/detail/ywcqhnbhax": {
+        "title": "Башлангыч мәктәпләр өчен физик хәзерлек программасы",
+        "publish_year": "1950",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Педагогика",
+            "Программы",
+            "Физическое воспитание",
+            "Программалар",
+            "Физик тәрбия"
+        ],
+        "author": "Рахматуллина, З.",
+        "access": "limited",
+        "classification": "УДК 371+373(07)",
+        "integrated_description": [
+            "Башлангыч мәктәпләр өчен физик хәзерлек программасы / җаваплы редактор З. Рахматуллина",
+            "Казан : Татгосиздат, 1950",
+            "12 б",
+            "УДК 371+373(07)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_3791_51",
+        "download_code": "nbrt_tatarica_Inv_3791_51",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ywcqhnbhax/",
+        "available_pages": 6,
         "downloaded": true
     },
     "/tt/ssearch/detail/pwqzghfuwp": {
-        "title": "Башлангыч мәктәпләр өчен программалар ",
+        "title": "Башлангыч мәктәпләр өчен программалар",
         "publish_year": "1948",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -61,7 +197,7 @@
         "downloaded": true
     },
     "/tt/ssearch/detail/ixgdrbiofm": {
-        "title": "Беседаны ничек үткәрү турында агитаторга истәлек ",
+        "title": "Беседаны ничек үткәрү турында агитаторга истәлек",
         "publish_year": "1943",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -86,7 +222,7 @@
         "downloaded": true
     },
     "/tt/ssearch/detail/kigbfvmoul": {
-        "title": "1946/47-нче уку елына башлангыч мәктәп, җидееллык һәм урта мәктәпләрнең 4-нче классларында башлангыч мәктәп курсы күләмендә чыгарыш имтиханнары өчен билетлар ",
+        "title": "1946/47-нче уку елына башлангыч мәктәп, җидееллык һәм урта мәктәпләрнең 4-нче классларында башлангыч мәктәп курсы күләмендә чыгарыш имтиханнары өчен билетлар",
         "publish_year": "1947",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -115,27 +251,37 @@
         "available_pages": 28,
         "downloaded": true
     },
-    "/tt/ssearch/detail/mheiocuxtd": {
-        "title": "Совет мәктәбе: Айлык педагогия журналы. – № 4 ",
-        "publish_year": "1941",
-        "lang": "Татарский",
-        "collection": "Периодические издания Республики Татарстан",
+    "/tt/ssearch/detail/ndqdbhgvio": {
+        "title": "Букварь татарскаго и арабскаго письма: С приложением слов со знаками, показываающими (!) их выговор",
+        "publish_year": "1802",
+        "lang": "Русский, Арабский, Татарский",
+        "collection": "Коллекция русской старопечатной книги (до 1830 г.), \"Книжные памятники\"",
+        "tags": [
+            "Языкознание",
+            "Татарский язык",
+            "Арабский язык",
+            "Письма",
+            "Письменность"
+        ],
+        "author": "Атнометев; Гиганов, И.",
         "access": "open",
         "integrated_description": [
-            "Совет мәктәбе = Просвещение : Айлык педагогия журналы / гл. ред. М.Валидова",
-            "г.Казань, ул. Баумана, 19 : Татарстан мәгариф халык комиссариаты, 1918",
-            "ISSN 0868-8001.№ 4 ",
-            "1941",
-            "Айга бер тапкыр чыга"
+            "Атнометев, Ният Бака.Букварь татарскаго и арабскаго письма : С приложением слов со знаками, показываающими (!) их выговор / Сочиненный в Тобольском главном народном училище бухарцом Ният Бакою Атнометевым",
+            "под руководством татарскаго языка учителя, соборнаго священника Иосифа Гиганова",
+            "В Санктпетербурге : При Императорской Академии наук, 1802",
+            "66 c",
+            "4° (26 см) 24,6 х 20,1 х 1,2 см",
+            "Книжный памятник № 35645 от 19.10.2021",
+            "Книжный памятник.УДК 4 (с) Тат"
         ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_SovMakt_1941_4",
-        "download_code": "nbrt_pRT_SovMakt_1941_4",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mheiocuxtd/",
-        "available_pages": 80,
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_fstp_Inv_5529",
+        "download_code": "nbrt_fstp_Inv_5529",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ndqdbhgvio/",
+        "available_pages": 67,
         "downloaded": true
     },
     "/tt/ssearch/detail/cvcwaeghzg": {
-        "title": "Тормыш кыры : шигырьләр, кыска поэма",
+        "title": "Тормыш кыры: шигырьләр, кыска поэма",
         "publish_year": "2001",
         "lang": "Татарский",
         "collection": "Матур әдәбият",
@@ -169,27 +315,8 @@
         "available_pages": 25,
         "downloaded": true
     },
-    "/tt/ssearch/detail/sdiynahxro": {
-        "title": "Совет мәктәбе: Айлык педагогия журналы. – № 6 ",
-        "publish_year": "1941",
-        "lang": "Татарский",
-        "collection": "Периодические издания Республики Татарстан",
-        "access": "open",
-        "integrated_description": [
-            "Совет мәктәбе = Просвещение : Айлык педагогия журналы / гл. ред. М.Валидова",
-            "г.Казань, ул. Баумана, 19 : Татарстан мәгариф халык комиссариаты, 1918",
-            "ISSN 0868-8001.№ 6 ",
-            "1941",
-            "Айга бер тапкыр чыга"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_SovMakt_1941_6",
-        "download_code": "nbrt_pRT_SovMakt_1941_6",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/sdiynahxro/",
-        "available_pages": 33,
-        "downloaded": true
-    },
     "/tt/ssearch/detail/evxlaaaply": {
-        "title": "Хуш, Агыйдел! : повестьлар, хикәяләр, фельетоннар",
+        "title": "Хуш, Агыйдел!: повестьлар, хикәяләр, фельетоннар",
         "publish_year": "2002",
         "lang": "Татарский",
         "collection": "Матур әдәбият",
@@ -229,7 +356,7 @@
         "downloaded": true
     },
     "/tt/ssearch/detail/yasbtevbdu": {
-        "title": "РСФСР Верховный Советының икенче сессиясе : 25-29 июль,1939 ел:стенографик отчет",
+        "title": "РСФСР Верховный Советының икенче сессиясе: 25-29 июль,1939 ел:стенографик отчет",
         "publish_year": "1940",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -255,7 +382,7 @@
         "downloaded": true
     },
     "/tt/ssearch/detail/edaqcucfsr": {
-        "title": "Татарстан Автономияле Совет Социалистик Республикасының Конституциясе (Төп законы) ",
+        "title": "Татарстан Автономияле Совет Социалистик Республикасының Конституциясе (Төп законы)",
         "publish_year": "1946",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -279,7 +406,7 @@
         "downloaded": true
     },
     "/tt/ssearch/detail/oepzdfexpn": {
-        "title": "Батырлар китабы. Т. 1. – Т. 1 ",
+        "title": "Батырлар китабы. Т. 1. – Т. 1",
         "publish_year": "1945",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -310,27 +437,8 @@
         "available_pages": 234,
         "downloaded": true
     },
-    "/tt/ssearch/detail/qilbpzfatd": {
-        "title": "Совет мәктәбе: Айлык педагогия журналы. – № 5 ",
-        "publish_year": "1941",
-        "lang": "Татарский",
-        "collection": "Периодические издания Республики Татарстан",
-        "access": "open",
-        "integrated_description": [
-            "Совет мәктәбе = Просвещение : Айлык педагогия журналы / гл. ред. М.Валидова",
-            "г.Казань, ул. Баумана, 19 : Татарстан мәгариф халык комиссариаты, 1918",
-            "ISSN 0868-8001.№ 5 ",
-            "1941",
-            "Айга бер тапкыр чыга"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_SovMakt_1941_5",
-        "download_code": "nbrt_pRT_SovMakt_1941_5",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qilbpzfatd/",
-        "available_pages": 32,
-        "downloaded": true
-    },
     "/tt/ssearch/detail/hqrmafexyp": {
-        "title": "Язгы чәчүдә авыл клубы ",
+        "title": "Язгы чәчүдә авыл клубы",
         "publish_year": "1954",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -356,6 +464,63 @@
         "download_code": "nbrt_tatarica_Inv_6642",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/hqrmafexyp/",
         "available_pages": 12,
+        "downloaded": true
+    },
+    "/tt/ssearch/detail/mheiocuxtd": {
+        "title": "Совет мәктәбе: Айлык педагогия журналы. – № 4",
+        "publish_year": "1941",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Совет мәктәбе = Просвещение : Айлык педагогия журналы / гл. ред. М.Валидова",
+            "г.Казань, ул. Баумана, 19 : Татарстан мәгариф халык комиссариаты, 1918",
+            "ISSN 0868-8001.№ 4 ",
+            "1941",
+            "Айга бер тапкыр чыга"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_SovMakt_1941_4",
+        "download_code": "nbrt_pRT_SovMakt_1941_4",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mheiocuxtd/",
+        "available_pages": 80,
+        "downloaded": true
+    },
+    "/tt/ssearch/detail/sdiynahxro": {
+        "title": "Совет мәктәбе: Айлык педагогия журналы. – № 6",
+        "publish_year": "1941",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Совет мәктәбе = Просвещение : Айлык педагогия журналы / гл. ред. М.Валидова",
+            "г.Казань, ул. Баумана, 19 : Татарстан мәгариф халык комиссариаты, 1918",
+            "ISSN 0868-8001.№ 6 ",
+            "1941",
+            "Айга бер тапкыр чыга"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_SovMakt_1941_6",
+        "download_code": "nbrt_pRT_SovMakt_1941_6",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/sdiynahxro/",
+        "available_pages": 33,
+        "downloaded": true
+    },
+    "/tt/ssearch/detail/qilbpzfatd": {
+        "title": "Совет мәктәбе: Айлык педагогия журналы. – № 5",
+        "publish_year": "1941",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Совет мәктәбе = Просвещение : Айлык педагогия журналы / гл. ред. М.Валидова",
+            "г.Казань, ул. Баумана, 19 : Татарстан мәгариф халык комиссариаты, 1918",
+            "ISSN 0868-8001.№ 5 ",
+            "1941",
+            "Айга бер тапкыр чыга"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_SovMakt_1941_5",
+        "download_code": "nbrt_pRT_SovMakt_1941_5",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qilbpzfatd/",
+        "available_pages": 32,
         "downloaded": true
     },
     "/tt/ssearch/detail/xuhdwrkojz": {
