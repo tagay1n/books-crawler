@@ -36,6 +36,10 @@ def _merge_indexes(new_index, old_index):
         else:
             _merged_index[k] = old_index[k]
             _merged_index[k].update(v)
+            
+    for k, v in old_index.items():
+        if k not in _merged_index:
+            _merged_index[k] = v
 
     if _new_entries:
         print(f"[green]Added {_new_entries} new entries to the index.[/green]")
