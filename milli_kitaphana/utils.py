@@ -1,9 +1,11 @@
 import os.path
 import yaml
 import json
+import shutil
 
 
 index_file_name = "books-index.json"
+
 
 def get_in_workdir(file):
     """Return file in the current directory where script file is located"""
@@ -15,6 +17,7 @@ def read_config():
     with open(get_in_workdir("config.yaml"), "r") as f:
         return yaml.safe_load(f)
     
+    
 def load_index_file():
     index_file = get_index_file_loc()
     if os.path.exists(index_file):
@@ -24,6 +27,7 @@ def load_index_file():
         books = {}
     return books
         
+        
 def get_index_file_loc():
     index_dir = get_in_workdir("../__artifacts/milli.kitaphana")
     os.makedirs(index_dir, exist_ok=True)
@@ -32,6 +36,8 @@ def get_index_file_loc():
 
 def dump_index(idx):
     index_file = get_index_file_loc()
-    with open(index_file, "w") as f:
+    tmp_file = f"{index_file}.part"
+    with open(tmp_file, "w") as f:
         json.dump(idx, f, ensure_ascii=False, indent=4)
+    shutil.move(tmp_file, index_file)
     
