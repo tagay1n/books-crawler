@@ -77,16 +77,15 @@ def download():
                 # upload_metadata(path_to_metadata=path_to_metadata, path_to_pdf=path_to_pdf, context=context)
                 
                 meta["downloaded_limited"] = True
-                dump_index(idx=index)
 
                 pw.main(f"Saved to [bold green]{_repr_name(path_to_pdf)}[/bold green]")
                 shutil.rmtree(context['work_dir'])
         except KeyboardInterrupt:
-            exit(0)
+            return
         except BaseException as e:
-            dump_index(idx=index)
             print(e)
-    dump_index(idx=index)
+        finally:
+            dump_index(idx=index)
     
     
 def _repr_name(path_to_pdf):
