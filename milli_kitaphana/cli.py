@@ -12,12 +12,22 @@ def index():
     
     
 @app.command()
-def download():
+def download(with_limited: bool = False):
     """
     Read index file and download documents what have not been downloaded yet
     """
-    import downloader
-    downloader.download()
+    import download
+    download.download(with_limited)
+    
+
+@app.command()
+def decrypt():
+    """
+    Decrypt PDF parts what was downloaded by `download` command 
+    """
+    import decrypt as decrypt
+    decrypt.decrypt()
+    
     
 if __name__ == "__main__":
     app()
