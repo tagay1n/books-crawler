@@ -9,14 +9,14 @@ def upload_doc(path_to_pdf, config, is_limited):
     remote_dir = os.path.join(config['yandex']['disk']['target_dir'], "limited" if is_limited else "full")
     client = YaDisk(config['yandex']['disk']['oauth_token'])
 
-    remote_path, _ = client.upload_or_replace(
+    _, _ = client.upload_or_replace(
         path_to_pdf, 
         remote_dir=remote_dir,
         conflict_resolution=ConflictResolution.SKIP
     )
-    res = client.publish(remote_path)
-    res = client.get_meta(res.path, fields=['md5'])
-    return res.md5
+    # res = client.publish(remote_path)
+    # res = client.get_meta(res.path, fields=['md5'])
+    # return res.md5
     
 def upload_metadata(path_to_metadata, path_to_pdf, context):
     config = context['config']

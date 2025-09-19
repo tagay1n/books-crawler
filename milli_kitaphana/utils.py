@@ -52,7 +52,7 @@ def download_part(context, part):
     enc_zip_path = os.path.join(work_dir, part_name + "_encrypted.zip")
     enc_unzip_dir = os.path.join(work_dir, part_name + "_encrypted")
 
-    url = HOST + context["formatUrl"].format(url=part)
+    url = HOST + context['meta']["format_url"].format(url=part)
     # download the encrypted zip file
     with request(method="GET", url=url, stream=True) as response:
         os.makedirs(work_dir, exist_ok=True)

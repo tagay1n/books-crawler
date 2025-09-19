@@ -9,7 +9,10 @@ from utils import read_config, load_index_file, get_in_workdir, dump_index, down
 from progress_wrapper import ProgressWrapper
 import json
 import base64
-
+import copy
+import shutil
+from upload_docs import upload_doc, upload_metadata
+import hashlib
 
 def decrypt():
     index = load_index_file()
@@ -32,29 +35,41 @@ def decrypt():
                 
                 work_dir = os.path.join(base_dir, code)
                 context["work_dir"] = work_dir
-                decrypt_doc_parts(context)
+                path_to_pdf = decrypt_doc_parts(context)
+                del context['meta']['enc_part_paths']
+                del context['meta']['format_url']
+                del context['meta']['decryption_key']
+                del context['meta']['decryption_key_iv']
+                upstream_metadata = copy.deepcopy(context["meta"])
+                del upstream_metadata['downloaded']
+                del upstream_metadata['decrypted']
 
                 # save metadata
-                # path_to_metadata = os.path.join(context['work_dir'], "metadata.zip")
-                # with zipfile.ZipFile(path_to_metadata, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
-                #     meta_json = json.dumps(context['meta'], indent=None, separators=(',', ':'), ensure_ascii=False)
-                #     zf.writestr("metadata.json", meta_json)
+                path_to_metadata = os.path.join(context['work_dir'], "metadata.zip")
+                with zipfile.ZipFile(path_to_metadata, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+                    meta_json = json.dumps(upstream_metadata, indent=None, separators=(',', ':'), ensure_ascii=False)
+                    zf.writestr("metadata.json", meta_json)
 
-                # pw.main(f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
-                # context['md5'] = calculate_md5(path_to_pdf)
+                pw.main(f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
+                context['md5'] = _calculate_md5(path_to_pdf)
+                upload_doc(
+                    path_to_pdf=path_to_pdf,
+                    config=config,
+                    is_limited=meta["access"] == "limited"
+                )
                 
-                # # # upload metadata to s3
-                # pw.main(f"Uploading artifacts to object storage --> {context['md5']}")
-                # upload_metadata(path_to_metadata=path_to_metadata, path_to_pdf=path_to_pdf, context=context)
+                # upload metadata to s3
+                pw.main(f"Uploading artifacts to object storage --> {context['md5']}")
+                upload_metadata(path_to_metadata=path_to_metadata, path_to_pdf=path_to_pdf, context=context)
                 
-                # meta["downloaded_limited"] = True
-
-                # pw.main(f"Saved to [bold green]{_repr_name(path_to_pdf)}[/bold green]")
+                pw.main(f"[bold green]Decryption complete '{context['md5']}' '{context['meta']['title']}'[/bold green]")
                 # shutil.rmtree(context['work_dir'])
+                context['meta']['decrypted'] = True
         except KeyboardInterrupt:
             return
         except BaseException as e:
-            print(e)
+            import traceback
+            print(f"Error: {e} {traceback.format_exc()}")
         finally:
             dump_index(idx=index)
             
@@ -102,7 +117,8 @@ def decrypt_doc_parts(context):
 
         acc.set_pagemode(source_meta["pageMode"])
         acc.set_pagelayout(source_meta["pageLayout"])
-        acc.set_toc(_get_toc(context, meta_dir, parts))
+        toc = _get_toc(context, meta_dir, parts)
+        acc.set_toc(toc)
         scribed_metadata = context["meta"]
         if classification := scribed_metadata.get("classification"):
             scribed_metadata["integrated_description"].append(classification)
@@ -127,14 +143,12 @@ def decrypt_doc_parts(context):
         
 
 def _decrypt_file_task(context, num, part_url, enc_unzip_dir, counter, total):
-    print(8888)
     res = num, _decrypt_file(context, part_url, enc_unzip_dir)
     context['progress'].main(f"Decrypted ({next(counter) + 1}/{total}) parts")
     return res
 
 
 def _decrypt_file(context, part, enc_unzip_dir):
-    print(9999)
     work_dir = context["work_dir"]
     part_name, ext = part.split(".")
 
@@ -192,3 +206,17 @@ def _get_toc(context, meta_dir, parts):
                 page_no = 1 + int(i['dest'][0])
                 toc.append([1, title, page_no if page_no <= available_pages else -1])
     return toc
+
+
+def _calculate_md5(file_path: str):
+    """
+    Calculates MD5 hash of the file
+
+    :param file_path: path to the file
+    :return: MD5 hash of the file
+    """
+    hash_md5 = hashlib.md5()
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(2048), b""):
+            hash_md5.update(chunk)
+    return hash_md5.hexdigest()

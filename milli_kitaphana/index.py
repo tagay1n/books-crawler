@@ -84,7 +84,7 @@ def _create_newest_index():
                     title = re.sub(r"NEW!!!", "", title_elem.text.strip())
                     title = re.sub(r"\\s+", r"\\s", title)
                     meta = {
-                        "title": title
+                        "title": title.strip()
                     }
                     card_link = urlparse(title_elem['href']).path.rstrip("/")
                     _k = None

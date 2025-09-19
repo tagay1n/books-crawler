@@ -11,51 +11,7 @@
             "Хатын-кызлар",
             "Гаилә"
         ],
-        "author": "Николаева, К.; Карасева, Л.",
-        "access": "open",
-        "classification": "УДК 396",
-        "integrated_description": [
-            "Николаева, К.Коммунизм өчен көрәштә хатын-кызлар / К. Николаева, Л. Карасева",
-            "Казан : Татгосиздат, 1941",
-            "44 б"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1077_41",
-        "download_code": "nbrt_tatarica_Inv_1077_41",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/xztdbhcuna/",
-        "enc_part_paths": [
-            {
-                "num": 0,
-                "part_url": "part1.pdf",
-                "enc_unzip_dir": "/home/tans1q/projects/books-crawler/__artifacts/milli.kitaphana/nbrt_tatarica_Inv_1077_41/part1_encrypted"
-            },
-            {
-                "num": 1,
-                "part_url": "part2.pdf",
-                "enc_unzip_dir": "/home/tans1q/projects/books-crawler/__artifacts/milli.kitaphana/nbrt_tatarica_Inv_1077_41/part2_encrypted"
-            },
-            {
-                "num": 2,
-                "part_url": "part3.pdf",
-                "enc_unzip_dir": "/home/tans1q/projects/books-crawler/__artifacts/milli.kitaphana/nbrt_tatarica_Inv_1077_41/part3_encrypted"
-            },
-            {
-                "num": 3,
-                "part_url": "part4.pdf",
-                "enc_unzip_dir": "/home/tans1q/projects/books-crawler/__artifacts/milli.kitaphana/nbrt_tatarica_Inv_1077_41/part4_encrypted"
-            },
-            {
-                "num": 4,
-                "part_url": "part5.pdf",
-                "enc_unzip_dir": "/home/tans1q/projects/books-crawler/__artifacts/milli.kitaphana/nbrt_tatarica_Inv_1077_41/part5_encrypted"
-            },
-            {
-                "num": 5,
-                "part_url": "part6.pdf",
-                "enc_unzip_dir": "/home/tans1q/projects/books-crawler/__artifacts/milli.kitaphana/nbrt_tatarica_Inv_1077_41/part6_encrypted"
-            }
-        ],
-        "decrypted": false,
-        "downloaded": "full"
+        "author": "Николаева, К.; Карасева, Л."
     },
     "/tt/ssearch/detail/qyoqktlfwk": {
         "title": "Математика буенча укучыларның өлгерешләрен бәяләү нормалары : 5-7 нче кл.",
@@ -71,19 +27,7 @@
             "МАТЕМАТИКА",
             "ШКОЛЫ СРЕДНИЕ",
             "МЕТОДИЧЕСКИЕ РЕКОМЕНДАЦИИ"
-        ],
-        "access": "open",
-        "classification": "УДК 373(07)+371.01.8",
-        "integrated_description": [
-            "Математика буенча укучыларның өлгерешләрен бәяләү нормалары : 5-7 нче кл. / РСФСР наркомпросының башл. һ. урта мәкт. упр",
-            "җ. ред. У. Бакиров",
-            "Казан : Татгосиздат, 1940",
-            "18 б",
-            "0-25"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_980_41",
-        "download_code": "nbrt_tatarica_Inv_980_41",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qyoqktlfwk/"
+        ]
     },
     "/tt/ssearch/detail/bproiikghk": {
         "title": "Балалар бакчасының өлкән группасында тәрбия эше һәм балаларны мәктәпкә хәзерләү : методик күрсәтмәләр",

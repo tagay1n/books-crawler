@@ -56,7 +56,7 @@ def download(with_limited):
     config = read_config()
     # os.makedirs(results_dir, exist_ok=True)
     
-    for card_path, meta in not_downloaded_docs[:1]:
+    for card_path, meta in not_downloaded_docs[:]:
         try:
             _scrap_doc_card(card_path, meta)
             context = {
@@ -92,7 +92,8 @@ def download(with_limited):
             print("Interrupting....")
             return
         except BaseException as e:
-            print(e)
+            import traceback
+            print(f"Error: {e} {traceback.format_exc()}")
         finally:
             dump_index(idx=index)
     
@@ -210,6 +211,7 @@ def _get_details(context):
     with open(key_details, "r", encoding="utf-8") as file:
         key_details = json.load(file)
     context.update(key_details)
+    context['meta']['format_url'] = key_details['formatUrl']
 
 
 def _get_dh_params(context):
@@ -347,11 +349,11 @@ def _download_by_code(context):
         )
         context['meta']['enc_part_paths'] = [
             {
-                'num': num,
-                'part_url': part_url,
-                'enc_unzip_dir': os.path.normpath(enc_unzip_dir),
+                'num': p[0],
+                'part_url': p[1],
+                'enc_unzip_dir': os.path.normpath(p[2]),
             }
-            for num, part_url, enc_unzip_dir in enc_part_paths
+            for p in enc_part_paths if p
         ]
     context['progress'].main(f"[bold green]Parts downloading complete[/bold green]")
 
