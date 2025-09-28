@@ -72,22 +72,6 @@ def download(with_limited):
             meta["downloaded"] = "full" if meta['access'] == "open" else 'limited'
             meta['decrypted'] = False
             
-    #             # save metadata
-    #             # path_to_metadata = os.path.join(context['work_dir'], "metadata.zip")
-    #             # with zipfile.ZipFile(path_to_metadata, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
-    #             #     meta_json = json.dumps(context['meta'], indent=None, separators=(',', ':'), ensure_ascii=False)
-    #             #     zf.writestr("metadata.json", meta_json)
-
-    #             # pw.main(f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
-    #             # context['md5'] = calculate_md5(path_to_pdf)
-                
-    #             # # # upload metadata to s3
-    #             # pw.main(f"Uploading artifacts to object storage --> {context['md5']}")
-    #             # upload_metadata(path_to_metadata=path_to_metadata, path_to_pdf=path_to_pdf, context=context)
-                
-    #             meta["downloaded_limited"] = True
-
-            # shutil.rmtree(context['work_dir'])
         except KeyboardInterrupt:
             print("Interrupting....")
             return
@@ -98,13 +82,6 @@ def download(with_limited):
             dump_index(idx=index)
     
     
-# def _repr_name(path_to_pdf):
-#     parts = Path(path_to_pdf).parts
-#     dirs = parts[-3:-1]
-#     file_name = parts[-1][:100]
-#     return os.path.join(*(dirs), file_name)
-
-
 def _get_not_downloaded_docs(index, with_limited):
     not_downloaded_docs = []
     for card_path, meta in index.items():
@@ -163,9 +140,8 @@ def _scrap_doc_card(card_path, meta):
                     i_.text.startswith("http://kitap.tatar.ru/dl")):
                 meta["doc_url"] = i_['href']
                 break
-            else:
-                raise ValueError(
-                    "Could not parse document's url", HOST + card_path)
+        else:
+            raise ValueError("Could not parse document's url", HOST + card_path)
         meta["download_code"] = (urlparse(meta["doc_url"]).path
                                  .removeprefix('/dl')
                                  .removeprefix('/kitap.tatar.ru/dl')

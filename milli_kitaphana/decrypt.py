@@ -21,7 +21,6 @@ def decrypt():
         return
     print(f"About to decrypt {len(not_decrypted_docs)} document(s)")
     config = read_config()
-    # os.makedirs(results_dir, exist_ok=True)
     
     for card_path, meta in not_decrypted_docs:
         try:
@@ -77,7 +76,6 @@ def decrypt():
 def _get_not_decrypted_docs(index):
     not_decrypted_docs = []
     for card_path, meta in index.items():
-        # if not meta.get('decrypted', False):
         if not meta.get('decrypted', False) and meta.get('enc_part_paths'):
             not_decrypted_docs.append((card_path, meta))
         
