@@ -12,12 +12,12 @@ def index():
     
     
 @app.command()
-def download(with_limited: bool = False):
+def download(with_limited: bool = False, limit: int = None):
     """
     Read index file and download documents what have not been downloaded yet
     """
     import download
-    download.download(with_limited)
+    download.download(with_limited, limit)
     
 
 @app.command()

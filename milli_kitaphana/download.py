@@ -18,13 +18,10 @@ from progress_wrapper import ProgressWrapper
 from rich import print
 from multiprocessing.pool import ThreadPool
 import itertools
-from utils import read_config, load_index_file, get_in_workdir, dump_index, HOST, request, download_part, base_dir
+from utils import read_config, load_index_file, dump_index, HOST, request, download_part, base_dir
 import bs4 as bs
 import re
 from urllib.parse import urlparse
-from upload_docs import upload_doc, upload_metadata
-import shutil
-from pathlib import Path
 from decrypt import _decrypt_file
 
 # Disable SSL warnings
@@ -35,18 +32,7 @@ requests.packages.urllib3.disable_warnings(
 DETAILS_URL = HOST + "/tt/dl/edoc2"
 
 
-# index = load_index_file()
-# for card_path, meta in index.items():
-#     if meta.get("downloaded"):
-#         meta['decrypted'] = True
-#         if (meta['access'] == 'open' or meta.get('downloaded_limited', None)):
-#             meta['downloaded'] = 'full' 
-#         else:
-#             meta['downloaded'] = 'limited'
-#     if meta.get('downloaded_limited'):
-#         del meta['downloaded_limited']
-# dump_index(idx=index)
-def download(with_limited):
+def download(with_limited, limit):
     index = load_index_file()
     if not (not_downloaded_docs := _get_not_downloaded_docs(index, with_limited)):
         print("No docs for downloading, exiting...")
@@ -54,16 +40,15 @@ def download(with_limited):
     
     print(f"About to download {len(not_downloaded_docs)} document(s)")
     config = read_config()
-    # os.makedirs(results_dir, exist_ok=True)
     
-    for card_path, meta in not_downloaded_docs[:]:
+    for card_path, meta in not_downloaded_docs[:limit]:
         try:
             _scrap_doc_card(card_path, meta)
             context = {
                 "meta": meta,
                 "config": config
             }
-            with ProgressWrapper(context, card_path) as pw:
+            with ProgressWrapper(context, card_path):
                 _get_details(context)
                 _get_dh_params(context)
                 _dh_key_exchange(context)
@@ -92,7 +77,7 @@ def _get_not_downloaded_docs(index, with_limited):
         if not downloaded or (with_limited and downloaded != 'full'): 
             not_downloaded_docs.append((card_path, meta))
 
-    # not_downloaded_docs = sorted(not_downloaded_docs, key=lambda x: x[1].get('publish_year', "").strip('[]'), reverse=True)
+    not_downloaded_docs = sorted(not_downloaded_docs, key=lambda x: x[1].get('publish_year', "").strip('[]'), reverse=True)
     return not_downloaded_docs
 
 
