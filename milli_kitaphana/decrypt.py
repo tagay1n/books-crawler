@@ -108,7 +108,7 @@ def decrypt_doc_parts(context):
         for num, path in dec_part_paths:
             # open the encrypted pdf part
             with pymupdf.open(path) as pdf_doc:
-                password = f"rbooks2-{source_meta["fingerprint"].split("-")[-1]}-{num+1}"
+                password = f"rbooks2-{source_meta['fingerprint'].split('-')[-1]}-{num+1}"
                 pdf_doc.authenticate(password)
                 # add the pages to the accumulator
                 acc.insert_pdf(pdf_doc)
@@ -131,7 +131,7 @@ def decrypt_doc_parts(context):
         acc.set_metadata(_metadata)
 
         # save the final pdf
-        file_name = f"{scribed_metadata["title"].strip().rstrip('.').replace("/", "-")}"
+        file_name = f"{scribed_metadata['title'].strip().rstrip('.').replace('/', '-')}"
         file_name = file_name if len(file_name) < 100 else f"{file_name[:97]}..."
         output_path = os.path.normpath(os.path.join(context["work_dir"], f"{file_name}.pdf"))
         with open(output_path, "wb") as file:

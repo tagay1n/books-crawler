@@ -8,7 +8,7 @@ class ProgressWrapper():
         main_progress = Progress(
             TimeElapsedColumn(),
             TextColumn(
-                f"[bold cyan]'{context["meta"]["download_code"]}({card_path})':"),
+                f"[bold cyan]'{context['meta']['download_code']}({card_path})':"),
             TextColumn("[progress.description]{task.description}"),
             SpinnerColumn(spinner_name="dots", style="bold cyan"),
         )

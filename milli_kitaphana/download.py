@@ -34,14 +34,14 @@ DETAILS_URL = HOST + "/tt/dl/edoc2"
 
 def download(with_limited, limit):
     index = load_index_file()
-    if not (not_downloaded_docs := _get_not_downloaded_docs(index, with_limited)):
+    if not (not_downloaded_docs := _get_not_downloaded_docs(index, with_limited, limit)):
         print("No docs for downloading, exiting...")
         return
     
     print(f"About to download {len(not_downloaded_docs)} document(s)")
     config = read_config()
     
-    for card_path, meta in not_downloaded_docs[:limit]:
+    for card_path, meta in not_downloaded_docs:
         try:
             _scrap_doc_card(card_path, meta)
             context = {
@@ -67,7 +67,7 @@ def download(with_limited, limit):
             dump_index(idx=index)
     
     
-def _get_not_downloaded_docs(index, with_limited):
+def _get_not_downloaded_docs(index, with_limited, limit=None):
     not_downloaded_docs = []
     for card_path, meta in index.items():
         if meta.get("broken", False):
@@ -78,7 +78,7 @@ def _get_not_downloaded_docs(index, with_limited):
             not_downloaded_docs.append((card_path, meta))
 
     not_downloaded_docs = sorted(not_downloaded_docs, key=lambda x: x[1].get('publish_year', "").strip('[]'), reverse=True)
-    return not_downloaded_docs
+    return not_downloaded_docs[:limit]
 
 
 def _scrap_doc_card(card_path, meta):
