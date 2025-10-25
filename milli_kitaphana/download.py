@@ -34,6 +34,9 @@ DETAILS_URL = HOST + "/tt/dl/edoc2"
 
 def download(with_limited, limit):
     index = load_index_file()
+    # a dictionary with download code as key and book's card path as a value
+    # the card path is a key in the index 
+    code_to_card_path = {v['download_code']: k for k, v in index.items() if 'download_code' in v}
     if not (not_downloaded_docs := _get_not_downloaded_docs(index, with_limited, limit)):
         print("No docs for downloading, exiting...")
         return
@@ -44,6 +47,23 @@ def download(with_limited, limit):
     for card_path, meta in not_downloaded_docs:
         try:
             _scrap_doc_card(card_path, meta)
+            download_code = meta['download_code']
+            if (existing_card_path := code_to_card_path.get(download_code, None)) and existing_card_path != card_path:
+                # here if item with such download code already exists in the index
+                existing_meta = index[existing_card_path]
+                # update item iterating right now, but remain 'doc_card_url'
+                del existing_meta['doc_card_url']
+                meta.update(existing_meta)
+                
+                # delete old meta item because it contains obsolete links
+                del index[existing_card_path]
+                code_to_card_path[download_code] = card_path
+                print(f"Replaced old card path '{existing_card_path}' with new '{card_path}' for download code '{download_code}'")
+                if not meta.get("broken", False) or meta.get("downloaded", None):
+                    # if merged meta shows document downloading was not broken or downloaded then just proceed next,
+                    # else just 
+                    continue
+            
             context = {
                 "meta": meta,
                 "config": config
