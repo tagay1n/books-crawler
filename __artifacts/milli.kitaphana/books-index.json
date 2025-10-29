@@ -1,31 +1,241 @@
 {
-    "/tt/ssearch/detail/mnpnuxonvj": {
-        "title": "Клубта кичәләр: тематик кичәләр үткәрү өчен методик кулланма",
-        "publish_year": "1957",
+    "/tt/ssearch/detail/bdjcbkjztf": {
+        "title": "Көн арты көн : шигырьләр, легендалар, поэмалар",
+        "publish_year": "1978",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Шабаев М.С.",
+            "Татар әдәбияты",
+            "Татарская литература",
+            "Матур әдәбият",
+            "Художественная литература",
+            "Шигырьләр",
+            "Стихи",
+            "Поэмалар",
+            "Поэмы",
+            "Легендалар",
+            "Легенды"
+        ],
+        "author": "Шабаев; Камалов; Субаев, И.; Гатауллин, Р.",
+        "access": "limited",
+        "integrated_description": [
+            "Шабаев, Марс.Көн арты көн : шигырьләр, легендалар, поэмалар / Марс Шабаев",
+            "[кер. сүз язу. Х. Камалов]",
+            "[худ. И. Субаев]",
+            "Казан : Татарстан китап нәшрияты, 1978",
+            "376 б.: портр",
+            "(Шигырь китапханәсе)",
+            "Эчт.: Шәймәт карт",
+            "Яңа җыр",
+            "Җирән Конрад һ. б",
+            "Оглавление",
+            "Суперобложка.ББК 84(2=632.3)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_mAdab_Inv_54469",
+        "download_code": "nbrt_mAdab_Inv_54469",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/bdjcbkjztf/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 40
+    },
+    "/tt/ssearch/detail/yqsoipstta": {
+        "title": "Бер яшьлектә, бер картлыкта : төрле еллар, төрле җырлар",
+        "publish_year": "1988",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Хөсни Ф.",
+            "Татар әдәбияты",
+            "Татарская литература",
+            "Матур әдәбият",
+            "Художественная литература",
+            "Повести",
+            "Повестьлар",
+            "Хикәяләр",
+            "Рассказы"
+        ],
+        "author": "Хөсни; Миңлебаев, К.; Миңлебаев, К.; Галимуллин, Ф.",
+        "access": "limited",
+        "integrated_description": [
+            "Хөсни, Фатих.Бер яшьлектә, бер картлыкта : төрле еллар, төрле җырлар / Фатих Хөсни",
+            "[төз. һәм ред. К. Миңлебаев]",
+            "[кер. сүз яз. Ф. Галимуллин]",
+            "Казан : Татарстан китап нәшрияты, 1988",
+            "495 б.: портр",
+            "Эчт.: Йөзек кашы: повесть",
+            "Без яшь идек: повесть",
+            "Адәм балалары: повесть һ. б",
+            "Оглавление.ББК 84(2=632.3)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_mAdab_Inv_62508",
+        "download_code": "nbrt_mAdab_Inv_62508",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/yqsoipstta/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 51
+    },
+    "/tt/ssearch/detail/rzcdwymcjo": {
+        "title": "Каләмем : мәсәлләр, мәкаләләр",
+        "publish_year": "1979",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Шамуков",
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Мәкаләләр",
+            "Артистлар",
+            "Г.Камал исем.Татар дәүләт академия театры",
+            "Шамуков А.",
+            "Статьи",
+            "Художественная литература",
+            "Исәнбәт Н.",
+            "Исанбет Н.",
+            "Шигырь төзелеше",
+            "Стихосложение",
+            "Хөсни Ф.",
+            "Хусни Ф.",
+            "Переводы (лит.)",
+            "Тәрҗемәләр"
+        ],
+        "author": "Шамуков; Мәһдиев; Стоев, И.; Шабаев, М.",
+        "access": "limited",
+        "integrated_description": [
+            "Шамуков, Абдулла.Каләмем : мәсәлләр, мәкаләләр / Абдулла Шамуков",
+            "[кер. сүз яз. М. Мәһдиев]",
+            "[худ. И. Стоев]",
+            "Казан : Татарстан китап нәшрияты, 1979",
+            "272 б.: 8 б.фоторәс",
+            "Тышл.: Габдулла Шамуков",
+            "Оглавление.ББК 84(2=632.3)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_mAdab_Inv_T_1761587",
+        "download_code": "nbrt_mAdab_Inv_T_1761587",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/rzcdwymcjo/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 29
+    },
+    "/tt/ssearch/detail/ksslacpciu": {
+        "title": "Страховать ителгән терлекләрнең һәлак булуыннан килгән зарарларны түләү турында инструкция : 10 сентябрь, 1946 ел (№ 618)",
+        "publish_year": "1947",
         "lang": "Татарский",
         "collection": "Татарика",
         "tags": [
-            "КЛУБНОЕ ДЕЛО",
-            "КЛУБЛАР",
-            "МЕТОДИК КУЛЛАНМАЛАР",
-            "КИЧӘЛӘР",
-            "МЕТОДИЧЕСКИЕ РЕКОМЕНДАЦИИ"
+            "Страхование",
+            "Инструкции",
+            "Животноводство",
+            "Иминиятләштерү",
+            "Инструкцияләр",
+            "Терлекчелек"
         ],
-        "access": "open",
-        "classification": "УДК 374.3(07)",
+        "author": "Туишев, Х. С.; Файзуллин, И. Ш.; СССР Финанс министрлыгы; СССР Дәүләт страхованиесенең баш идарәсе",
+        "access": "limited",
+        "classification": "УДК 368",
         "integrated_description": [
-            "Клубта кичәләр : тематик кичәләр үткәрү өчен методик кулланма / ТАССР Культура-агарту эшләре методик каб",
-            "җ.чыгаручы М.Сөләйманова",
-            "Казан, 1957",
-            "15 б",
-            "УДК 374.3(07)"
+            "Страховать ителгән терлекләрнең һәлак булуыннан килгән зарарларны түләү турында инструкция : 10 сентябрь, 1946 ел (№ 618) / СССР Финанс министрлыгы, СССР Дәүләт страхованиесенең баш идарәсе",
+            "[тәрҗ. Х. С. Туишев",
+            "җав. ред. И. Ш. Файзуллин]",
+            "Москва : Госфиниздат, 1947",
+            "25 б",
+            "УДК 368"
         ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_26675",
-        "download_code": "nbrt_tatarica_Inv_26675",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mnpnuxonvj/",
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_2472_48",
+        "download_code": "nbrt_tatarica_Inv_2472_48",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ksslacpciu/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 3
+    },
+    "/tt/ssearch/detail/qbtbaxekzm": {
+        "title": "Бөек Ватан сугышына бер ел",
+        "publish_year": "1942",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Великая Отечественная война",
+            "История",
+            "Бөек Ватан сугышы",
+            "Тарих"
+        ],
+        "author": "Газый, И.",
+        "access": "open",
+        "classification": "УДК 355+9(с)27",
+        "integrated_description": [
+            "Бөек Ватан сугышына бер ел / [җав. ред. И. Газый]",
+            "Казан : Татгосиздат, 1942",
+            "31 б",
+            "УДК 355+9(с)27"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_5943_42",
+        "download_code": "nbrt_tatarica_Inv_5943_42",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qbtbaxekzm/",
         "downloaded": "full",
         "decrypted": true,
-        "available_pages": 20
+        "available_pages": 32
+    },
+    "/tt/ssearch/detail/ultwejzoxw": {
+        "title": "Кызыл Армия сугышчысы пленга бирелми!",
+        "publish_year": "1941",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Военное дело",
+            "История",
+            "Военнослужащие",
+            "Великая Отечественная война",
+            "Хәрби эш",
+            "Хәрби эшлеклеләре",
+            "Тарих",
+            "Бөек Ватан сугышы"
+        ],
+        "author": "Брычев, Н.",
+        "access": "open",
+        "classification": "УДК 355.1",
+        "integrated_description": [
+            "Брычев, Н.Кызыл Армия сугышчысы пленга бирелми! / Н. Брычев",
+            "Казан : Татгосиздат, 1941",
+            "31 б",
+            "УДК 355.1"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_5426_41",
+        "download_code": "nbrt_tatarica_Inv_5426_41",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ultwejzoxw/",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 36
+    },
+    "/tt/ssearch/detail/onefkdgive": {
+        "title": "Югары уңыш  көрәштә городищи уку өе: эш тәҗр.",
+        "publish_year": "1949",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "КУЛЬТУРНО-ПРОСВЕТИТЕЛЬНАЯ РАБОТА",
+            "МӘДӘНИЯТ-АГАРТУ ЭШЛӘРЕ",
+            "КЛУБЛАР",
+            "КИТАПХАНӘЛӘР",
+            "КЛУБНОЕ ДЕЛО",
+            "БИБЛИОТЕКИ"
+        ],
+        "access": "limited",
+        "classification": "УДК 374.3",
+        "integrated_description": [
+            "Югары уңыш көрәштә городищи уку өе : эш тәҗр. / ТАССР Культура-агарту учржденияләре эшләре идарәсе",
+            "җ.ред.Х.Салихов",
+            "Казан, 1949",
+            "16 б.: портр.б-н",
+            "0-30",
+            "УДК 374.3"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_3907_51",
+        "download_code": "nbrt_tatarica_Inv_3907_51",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/onefkdgive/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 22
     },
     "/tt/ssearch/detail/uiwbtrljvp": {
         "title": "Татарстан АССРның Тымытык һәм Биек тау районнарында укый-яза белмәүчелекне бетерү буенча тәҗрибә эше",
@@ -116,6 +326,34 @@
         "decrypted": true,
         "available_pages": 68
     },
+    "/tt/ssearch/detail/mnpnuxonvj": {
+        "title": "Клубта кичәләр: тематик кичәләр үткәрү өчен методик кулланма",
+        "publish_year": "1957",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "КЛУБНОЕ ДЕЛО",
+            "КЛУБЛАР",
+            "МЕТОДИК КУЛЛАНМАЛАР",
+            "КИЧӘЛӘР",
+            "МЕТОДИЧЕСКИЕ РЕКОМЕНДАЦИИ"
+        ],
+        "access": "open",
+        "classification": "УДК 374.3(07)",
+        "integrated_description": [
+            "Клубта кичәләр : тематик кичәләр үткәрү өчен методик кулланма / ТАССР Культура-агарту эшләре методик каб",
+            "җ.чыгаручы М.Сөләйманова",
+            "Казан, 1957",
+            "15 б",
+            "УДК 374.3(07)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_26675",
+        "download_code": "nbrt_tatarica_Inv_26675",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mnpnuxonvj/",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 20
+    },
     "/tt/ssearch/detail/iokvbthrhj": {
         "title": "Клубта табигый-фәнни һәм фәнни-атеистик темаларга тематик: методик  кулланмалар",
         "publish_year": "1959",
@@ -144,36 +382,6 @@
         "downloaded": "limited",
         "decrypted": true,
         "available_pages": 28
-    },
-    "/tt/ssearch/detail/skczllcahj": {
-        "title": "Югары уңыш  көрәштә городищи уку өе: эш тәҗр.",
-        "publish_year": "1949",
-        "lang": "Татарский",
-        "collection": "Татарика",
-        "tags": [
-            "КУЛЬТУРНО-ПРОСВЕТИТЕЛЬНАЯ РАБОТА",
-            "МӘДӘНИЯТ-АГАРТУ ЭШЛӘРЕ",
-            "КЛУБЛАР",
-            "КИТАПХАНӘЛӘР",
-            "КЛУБНОЕ ДЕЛО",
-            "БИБЛИОТЕКИ"
-        ],
-        "access": "limited",
-        "classification": "УДК 374.3",
-        "integrated_description": [
-            "Югары уңыш көрәштә городищи уку өе : эш тәҗр. / ТАССР Культура-агарту учржденияләре эшләре идарәсе",
-            "җ.ред.Х.Салихов",
-            "Казан, 1949",
-            "16 б.: портр.б-н",
-            "0-30",
-            "УДК 374.3"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_3907_51",
-        "download_code": "nbrt_tatarica_Inv_3907_51",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/skczllcahj/",
-        "downloaded": "limited",
-        "decrypted": true,
-        "available_pages": 22
     },
     "/tt/ssearch/detail/jgchhlpgco": {
         "title": "Клуб: җәмәгатьчелек көче б-н культура-агарту учреждениеләрен төзү һ. төзекләндерү тәҗр.",
@@ -61573,6 +61781,125 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/dutcyfnqwi/",
         "available_pages": 7,
         "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/pymxllscrl": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 3 гыйнвар (№ 2)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.3 гыйнвар (№ 2) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_2",
+        "download_code": "nbrt_pRT_kt_1940_2",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/pymxllscrl/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/htxgplwijt": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 4 гыйнвар (№ 3)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.4 гыйнвар (№ 3) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_3",
+        "download_code": "nbrt_pRT_kt_1940_3",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/htxgplwijt/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/puopsgzwyl": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 5 гыйнвар (№ 4)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.5 гыйнвар (№ 4) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_4",
+        "download_code": "nbrt_pRT_kt_1940_4",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/puopsgzwyl/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/yxcaueqpsp": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 6 гыйнвар (№ 5)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.6 гыйнвар (№ 5) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_5",
+        "download_code": "nbrt_pRT_kt_1940_5",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/yxcaueqpsp/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/scgiyekbeh": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 8 гыйнвар (№ 6)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.8 гыйнвар (№ 6) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_6",
+        "download_code": "nbrt_pRT_kt_1940_6",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/scgiyekbeh/",
+        "downloaded": "full",
+        "decrypted": false
+    },
+    "/tt/ssearch/detail/naaxivbiap": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 9 гыйнвар (№ 7)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.9 гыйнвар (№ 7) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_7",
+        "download_code": "nbrt_pRT_kt_1940_7",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/naaxivbiap/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/wcrwfhqfto": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 10 гыйнвар (№ 8)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.10 гыйнвар (№ 8) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_8",
+        "download_code": "nbrt_pRT_kt_1940_8",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/wcrwfhqfto/",
+        "downloaded": "full",
         "decrypted": true
     },
     "/tt/ssearch/detail/bcobfqqfgl": {
