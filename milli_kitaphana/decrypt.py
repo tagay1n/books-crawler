@@ -5,7 +5,7 @@ import os
 from Crypto.Util.Padding import unpad
 import zipfile
 import pymupdf
-from utils import read_config, load_index_file, get_in_workdir, dump_index, download_part, base_dir
+from utils import read_config, load_index_file, dump_index, download_part, base_dir
 from progress_wrapper import ProgressWrapper
 import json
 import base64

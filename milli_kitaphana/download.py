@@ -306,17 +306,6 @@ def _download_by_code(context):
         source_meta = json.load(file)
 
     parts = source_meta["parts"]
-    # process the outline
-    # outline_path = os.path.join(meta_dir, "outline.json")
-    # if os.path.exists(outline_path):
-    #     with open(outline_path, "r", encoding="utf-8") as file:
-    #         outline_meta = json.load(file)
-    #         available_pages = sum([i['pagesCount']
-    #                               for i in parts if i.get("url")])
-    #         context['meta']['available_pages'] = available_pages
-    #         toc = _prepare_toc(outline_meta, available_pages)
-    # else:
-    #     toc = []
 
     parts_count = len(parts)
     with ThreadPool(processes=8) as pool:
@@ -338,50 +327,6 @@ def _download_by_code(context):
         ]
     context['progress'].main(f"[bold green]Parts downloading complete[/bold green]")
 
-    
-    # with ThreadPool(processes=4) as pool:
-    #     # decrypt the parts
-    #     counter = itertools.count()
-    #     context['progress'].main(f"Decrypted (0/{parts_count}) parts")
-    #     dec_part_paths = pool.map(lambda en: _decrypt_file_task(
-    #         context, en[0], en[1], en[2], counter, parts_count), [i for i in enc_part_paths if i])
-
-    # accumulate all parts into one pdf doc
-    # context["progress"].main("Merging document parts...")
-    # with pymupdf.open() as acc:
-    #     for num, path in dec_part_paths:
-    #         # open the encrypted pdf part
-    #         with pymupdf.open(path) as pdf_doc:
-    #             password = f"rbooks2-{source_meta["fingerprint"].split("-")[-1]}-{num+1}"
-    #             pdf_doc.authenticate(password)
-    #             # add the pages to the accumulator
-    #             acc.insert_pdf(pdf_doc)
-
-    #     acc.set_pagemode(source_meta["pageMode"])
-    #     acc.set_pagelayout(source_meta["pageLayout"])
-    #     acc.set_toc(toc)
-    #     scribed_metadata = context["meta"]
-    #     if classification := scribed_metadata.get("classification"):
-    #         scribed_metadata["integrated_description"].append(classification)
-    #     _metadata = {
-    #         "title": scribed_metadata["title"],
-    #         "subject": "; ".join(scribed_metadata["integrated_description"])
-    #     }
-    #     if author := scribed_metadata.get("author"):
-    #         _metadata["author"] = author
-    #     if tags := scribed_metadata.get("tags"):
-    #         _metadata["keywords"] = ", ".join(tags)
-    #     acc.set_metadata(_metadata)
-
-    #     # save the final pdf
-    #     file_name = f"{scribed_metadata["title"].strip().rstrip('.').replace("/", "-")}"
-    #     file_name = file_name if len(file_name) < 100 else f"{file_name[:97]}..."
-    #     output_path = os.path.normpath(os.path.join(results_dir, f"{file_name}.pdf"))
-    #     with open(output_path, "wb") as file:
-    #         file.write(acc.write())
-
-    #     return output_path
-
 
 def _download_part_task(context, part, num, counter, total):
     if not (part_url := part.get("url")):
@@ -391,112 +336,6 @@ def _download_part_task(context, part, num, counter, total):
     res = num, part_url, download_part(context, part_url)
     context['progress'].main(f"Downloaded ({next(counter) + 1}/{total}) parts")
     return res
-
-
-# def _decrypt_file_task(context, num, part_url, enc_unzip_dir, counter, total):
-#     res = num, _decrypt_file(context, part_url, enc_unzip_dir)
-#     context['progress'].main(f"Decrypted ({next(counter) + 1}/{total}) parts")
-#     return res
-
-
-def _prepare_toc(outline_meta, available_pages):
-    """
-    This function prepares the table of contents for the PDF document.
-    """
-    res = []
-    for i in outline_meta:
-        title = i['title'].strip().rstrip('.')
-        page_no = 1 + int(i['dest'][0])
-        res.append([1, title, page_no if page_no <= available_pages else -1])
-
-    return res
-
-
-# def _download_part(context, part):
-#     work_dir = context["work_dir"]
-#     part_name, _ = part.split(".")
-#     enc_zip_path = os.path.join(work_dir, part_name + "_encrypted.zip")
-#     enc_unzip_dir = os.path.join(work_dir, part_name + "_encrypted")
-
-#     url = HOST + context["formatUrl"].format(url=part)
-#     # download the encrypted zip file
-#     with _request(method="GET", url=url, stream=True) as response:
-#         os.makedirs(work_dir, exist_ok=True)
-#         # save the encrypted zip file
-#         with open(enc_zip_path, "wb") as enc_zip:
-#             task = context["progress"].download(part)
-#             total_size = 0
-#             for chunk in response.iter_content(chunk_size=1024):
-#                 enc_zip.write(chunk)
-#                 chunk_len = len(chunk)
-#                 total_size += chunk_len
-#                 context['progress']._aux.update(task, advance=chunk_len)
-#             context['progress']._aux.update(
-#                 task, description=f"Downloaded {part}")
-#             context['progress']._aux.stop_task(task)
-
-#     # unzip the encrypted zip file
-#     with zipfile.ZipFile(enc_zip_path, 'r') as enc_zip:
-#         enc_zip.extractall(enc_unzip_dir)
-
-#     return enc_unzip_dir
-
-
-# def _decrypt_file(context, part, enc_unzip_dir):
-#     work_dir = context["work_dir"]
-#     part_name, ext = part.split(".")
-
-#     enc_file_path = os.path.join(enc_unzip_dir, "enc.dat")
-#     with open(enc_file_path, "rb") as file:
-#         aes_key = AES.new(context["decryption_key"],
-#                           AES.MODE_CBC, iv=context["decryption_key_iv"])
-#         # read encrypted file by chunks 512 bytes at a time
-#         decrypted_data = b""
-#         total_size = os.path.getsize(enc_file_path)
-#         task = context["progress"].decrypt(part, total_size)
-#         while True:
-#             chunk = file.read(512)
-#             if not chunk:
-#                 break
-#             decrypted_data += aes_key.decrypt(chunk)
-#             context['progress']._aux.update(task, advance=len(chunk))
-#         context['progress']._aux.update(task, description=f"Decrypted {part}")
-#         context['progress']._aux.stop_task(task)
-
-#     # unpad the decrypted data
-#     decrypted_data = unpad(decrypted_data, AES.block_size)
-#     # save the decrypted file
-#     dec_path = os.path.join(work_dir, part_name + "_decrypted." + ext)
-
-#     with open(dec_path, "wb") as dec_zip:
-#         dec_zip.write(decrypted_data)
-
-#     # unzip the decrypted file
-#     if ext == "zip":
-#         dec_unzip_dir = os.path.join(work_dir, part_name + "_decrypted")
-#         with zipfile.ZipFile(dec_path, 'r') as dec_zip:
-#             dec_zip.extractall(dec_unzip_dir)
-#         return dec_unzip_dir
-#     else:
-#         # if the decrypted file is not a zip file, just return the path to the file
-#         return dec_path
-
-
-# def _request(method, url, params=None, data=None, stream=False, attempts=10):
-#     resp = requests.request(
-#         method=method,
-#         url=url,
-#         params=params,
-#         verify=False,
-#         data=data,
-#         stream=stream,
-#         timeout=30,
-#         headers={
-#             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
-#         }
-#     )
-#     resp.raise_for_status()
-#     return resp
 
 
 def _datetime_to_bytes(dt):
