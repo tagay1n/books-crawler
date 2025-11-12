@@ -29,5 +29,14 @@ def decrypt():
     decrypt.decrypt()
     
     
+@app.command()
+def merge_index(path: str):
+    """
+    Merge index file provided by path with main index 
+    """
+    import merge_index
+    merge_index.merge_indexes(path)
+    
+    
 if __name__ == "__main__":
     app()

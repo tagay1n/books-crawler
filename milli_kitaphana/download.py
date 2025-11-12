@@ -61,7 +61,6 @@ def download(with_limited, limit):
                 print(f"Replaced old card path '{existing_card_path}' with new '{card_path}' for download code '{download_code}'")
                 if not meta.get("broken", False) or meta.get("downloaded", None):
                     # if merged meta shows document downloading was not broken or downloaded then just proceed next,
-                    # else just 
                     continue
             
             context = {

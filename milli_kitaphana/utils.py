@@ -22,8 +22,9 @@ def read_config():
         return yaml.safe_load(f)
     
     
-def load_index_file():
-    index_file = get_index_file_loc()
+def load_index_file(index_file=None):
+    if not index_file:
+        index_file = get_index_file_loc()
     if os.path.exists(index_file):
         with open(index_file, "r") as f:
             books = json.load(f)

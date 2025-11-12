@@ -1,12 +1,11 @@
 from utils import load_index_file, dump_index
-import os
-import json
 import requests
 import bs4 as bs
 from urllib.parse import urlparse
 import re
 from rich import print
-from rich.progress import Progress, TextColumn, ProgressColumn, BarColumn, TaskProgressColumn, TimeRemainingColumn, MofNCompleteColumn, TimeElapsedColumn, FileSizeColumn, TotalFileSizeColumn, TransferSpeedColumn
+from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn, TimeRemainingColumn, MofNCompleteColumn, TimeElapsedColumn
+from merge_index import _merge_indexes
 
 # Disable SSL warnings
 requests.packages.urllib3.disable_warnings(
@@ -24,27 +23,6 @@ def index():
     _merged_index = _merge_indexes(new_index, old_index)
     print("Merged indexes")
     dump_index(_merged_index)
-
-
-def _merge_indexes(new_index, old_index):
-    _merged_index = {}
-    _new_entries = 0
-    for k, v in new_index.items():
-        if k not in old_index:
-            _new_entries += 1
-            _merged_index[k] = v
-        else:
-            _merged_index[k] = old_index[k]
-            _merged_index[k].update(v)
-            
-    for k, v in old_index.items():
-        if k not in _merged_index:
-            _merged_index[k] = v
-
-    if _new_entries:
-        print(f"[green]Added {_new_entries} new entries to the index.[/green]")
-
-    return _merged_index
 
 
 def _create_newest_index():
