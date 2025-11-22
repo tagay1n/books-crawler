@@ -77,7 +77,10 @@ def download_part(context, part):
     return enc_unzip_dir
 
 
-def request(method, url, params=None, data=None, stream=False, attempts=10):
+def request(method, url, params=None, data=None, stream=False, headers={}):
+    headers.update({
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
+    })
     resp = requests.request(
         method=method,
         url=url,
@@ -86,9 +89,7 @@ def request(method, url, params=None, data=None, stream=False, attempts=10):
         data=data,
         stream=stream,
         timeout=30,
-        headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
-        }
+        headers=headers
     )
     resp.raise_for_status()
     return resp
