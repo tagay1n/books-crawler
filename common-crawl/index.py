@@ -51,7 +51,6 @@ def _get_urls_to_sources(source, script):
     index = {}
     data_reader = ParquetReader(source) 
     for doc in data_reader():
-        print(doc)
         index[doc.id] = {
             'url': doc.metadata['url'],
             'file_path': doc.metadata['file_path'],
