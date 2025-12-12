@@ -3828,10 +3828,7 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/eojhhoxrta/",
         "downloaded": "limited",
         "decrypted": true,
-        "available_pages": 5,
-        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_F_1829739.1&version=e5250651421858174986&part={url}",
-        "decryption_key": "PaeL2LH2qWeCjQ9PdWw/aQ==",
-        "decryption_key_iv": "OxJEVJzJySB4JR9JJERdkw=="
+        "available_pages": 44
     },
     "/tt/ssearch/detail/hjbtgkaosr": {
         "title": "Патриоткалар: Ватан сугышы көннәрендә совет хатын-кызлары",
@@ -5029,7 +5026,7 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/kerzttrqok/",
         "downloaded": "limited",
         "decrypted": true,
-        "available_pages": 6
+        "available_pages": 60
     },
     "/tt/ssearch/detail/lzfamxevsu": {
         "title": "Авыл клубы утлары",
@@ -8727,7 +8724,10 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mluonmuaxz/",
         "available_pages": 600,
         "downloaded": "limited",
-        "decrypted": true
+        "decrypted": true,
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_L_1722159.2&version=e5250573656560893307&part={url}",
+        "decryption_key": "rTiWgH2RFHqS1siF7qbnAw==",
+        "decryption_key_iv": "Iqg0EA0RN8L0C4XU002GGA=="
     },
     "/tt/ssearch/detail/hbrptvrqsa": {
         "title": "Совет мәктәбе: Айлык иҗтимагый-педагогик hәм методик журнал. – № 10",
@@ -76404,10 +76404,7 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/zhmxbftlnd/",
         "available_pages": 100,
         "downloaded": "limited",
-        "decrypted": true,
-        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_MAdab_Inv_T_1778929.1&version=e5250013806797387904&part={url}",
-        "decryption_key": "ELZLX8XFlRX+/tmGmFMObw==",
-        "decryption_key_iv": "XIV6P8sb9isGMNimk9fGGA=="
+        "decrypted": true
     },
     "/tt/ssearch/detail/rjgzoinzqv": {
         "title": "Сугыш ятимнәре: повесть-истәлек",
@@ -108099,7 +108096,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1703034",
         "download_code": "nbrt_tatarica_Inv_T_1703034",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/snskypsjsm/",
-        "available_pages": 53,
+        "available_pages": 530,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -112707,7 +112704,10 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qpxpatmmlb/",
         "available_pages": 260,
         "downloaded": "limited",
-        "decrypted": true
+        "decrypted": true,
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1703716.2&version=e5249538649577387904&part={url}",
+        "decryption_key": "q5IGhSQ8fi5/Wk4p/GsTyw==",
+        "decryption_key_iv": "BeaOWMs/scTdV2GlwwvhWw=="
     },
     "/tt/ssearch/detail/fhlciktfbe": {
         "title": "Кайдан син, Жан? Таңнар һаман матурмы?: Повестьлар",
@@ -112964,7 +112964,10 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/aumdlmhkdm/",
         "available_pages": 388,
         "downloaded": "limited",
-        "decrypted": true
+        "decrypted": true,
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1736865.2&version=e5249532752007387904&part={url}",
+        "decryption_key": "NwDWOfysWJpdUQbAsBhkAg==",
+        "decryption_key_iv": "2HrYp3h1WDp9DJwvoUwrsw=="
     },
     "/tt/ssearch/detail/crlxloklki": {
         "title": "Колхоз бригадиры: Айга бер чыга торган массовый агро-зоотехника журналы. – № 2",
@@ -118292,7 +118295,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1709497",
         "download_code": "nbrt_tatarica_Inv_T_1709497",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/edncwicotp/",
-        "available_pages": 44,
+        "available_pages": 436,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -123683,7 +123686,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1705182",
         "download_code": "nbrt_tatarica_Inv_T_1705182",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/bsgizqcfkm/",
-        "available_pages": 53,
+        "available_pages": 530,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -126675,7 +126678,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1706858",
         "download_code": "nbrt_tatarica_Inv_T_1706858",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/wrbipmcqkm/",
-        "available_pages": 63,
+        "available_pages": 625,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -210886,7 +210889,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1710972",
         "download_code": "nbrt_tatarica_Inv_T_1710972",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/czjqbnvhjt/",
-        "available_pages": 23,
+        "available_pages": 228,
         "downloaded": "limited",
         "decrypted": true
     },
