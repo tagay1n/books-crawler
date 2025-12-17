@@ -1,28 +1,43 @@
-import requests
-import os
-import zipfile
-import json
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives.asymmetric import padding
-from cryptography.hazmat.primitives import serialization
 import base64
+import copy
 import hashlib
+import itertools
+import json
+import os
+import random as rnd
+import re
+import string
+import zipfile
+from datetime import datetime, timedelta
+from multiprocessing.pool import ThreadPool
+from random import randbytes
+from urllib.parse import urlparse
+
+import bs4 as bs
+import pytz
+import requests
 from Crypto.Cipher import AES
 from Crypto.Util.Padding import unpad
-from random import randbytes
-import pytz
-from datetime import datetime, timedelta
-import string
-import random as rnd
+from cryptography.hazmat.primitives import hashes
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import padding
 from progress_wrapper import ProgressWrapper
 from rich import print
-from multiprocessing.pool import ThreadPool
-import itertools
-from utils import read_config, load_index_file, dump_index, HOST, request, download_part, base_dir
-import bs4 as bs
-import re
-from urllib.parse import urlparse
+
 from decrypt import _decrypt_file
+from utils import (
+    HOST,
+    base_dir,
+    download_part,
+    dump_index,
+    get_index_file_loc,
+    get_list_file_loc,
+    get_not_downloaded_docs,
+    open_lock,
+    load_index_file,
+    read_config,
+    request,
+)
 
 # Disable SSL warnings
 requests.packages.urllib3.disable_warnings(
@@ -32,31 +47,37 @@ requests.packages.urllib3.disable_warnings(
 DETAILS_URL = HOST + "/tt/dl/edoc2"
 
 
-def download(with_limited, limit):
-    index = load_index_file()
+def download(with_limited, limit, proxy, index_name):
+    global_index_file = get_index_file_loc()
+    worker_index_file = get_list_file_loc(index_name) if index_name else global_index_file
+    worker_is_global = worker_index_file == global_index_file
+
+    global_index = load_index_file(global_index_file) 
+    index_part = global_index if worker_is_global else load_index_file(worker_index_file) 
     # a dictionary with download code as key and book's card path as a value
     # the card path is a key in the index 
-    code_to_card_path = {v['download_code']: k for k, v in index.items() if 'download_code' in v}
-    if not (not_downloaded_docs := _get_not_downloaded_docs(index, with_limited, limit)):
+    code_to_card_path = {v['download_code']: k for k, v in global_index.items() if 'download_code' in v}
+    if not (not_downloaded_docs := get_not_downloaded_docs(index_part, with_limited, limit)):
         print("No docs for downloading, exiting...")
         return
     
     print(f"About to download {len(not_downloaded_docs)} document(s)")
     config = read_config()
+    proxies = {'https': proxy, 'http': proxy} if proxy else None
     
     for card_path, meta in not_downloaded_docs:
         try:
-            _scrap_doc_card(card_path, meta)
+            _scrap_doc_card(card_path, meta, proxies)
             download_code = meta['download_code']
             if (existing_card_path := code_to_card_path.get(download_code, None)) and existing_card_path != card_path:
                 # here if item with such download code already exists in the index
-                existing_meta = index[existing_card_path]
+                existing_meta = index_part[existing_card_path]
                 # update item iterating right now, but remain 'doc_card_url'
                 del existing_meta['doc_card_url']
                 meta.update(existing_meta)
                 
                 # delete old meta item because it contains obsolete links
-                del index[existing_card_path]
+                del index_part[existing_card_path]
                 code_to_card_path[download_code] = card_path
                 print(f"Replaced old card path '{existing_card_path}' with new '{card_path}' for download code '{download_code}'")
                 if not meta.get("broken", False) or meta.get("downloaded", None):
@@ -74,7 +95,7 @@ def download(with_limited, limit):
                 _download_by_code(context)
                 
             meta["downloaded"] = "full" if meta['access'] == "open" else 'limited'
-            meta['decrypted'] = False
+            meta["decrypted"] = False
             
         except KeyboardInterrupt:
             print("Interrupting....")
@@ -83,25 +104,17 @@ def download(with_limited, limit):
             import traceback
             print(f"Error: {e} {traceback.format_exc()}")
         finally:
-            dump_index(idx=index)
+            if not worker_is_global:
+                dump_index(idx=index_part, index_file=worker_index_file)
+            
+            with open_lock(global_index_file):
+                current_global_index = load_index_file(index_file=global_index_file)
+                current_global_index[card_path] = meta
+                dump_index(current_global_index, index_file=global_index_file)
     
     
-def _get_not_downloaded_docs(index, with_limited, limit=None):
-    not_downloaded_docs = []
-    for card_path, meta in index.items():
-        if meta.get("broken", False):
-            continue
-        
-        downloaded = meta.get("downloaded") 
-        if not downloaded or (with_limited and downloaded != 'full'): 
-            not_downloaded_docs.append((card_path, meta))
-
-    not_downloaded_docs = sorted(not_downloaded_docs, key=lambda x: x[1].get('publish_year', "").strip('[]'), reverse=True)
-    return not_downloaded_docs[:limit]
-
-
-def _scrap_doc_card(card_path, meta):
-    with request(method="GET", url=HOST + card_path) as r:
+def _scrap_doc_card(card_path, meta, proxies):
+    with request(method="GET", url=HOST + card_path, proxies=proxies) as r:
         soup = bs.BeautifulSoup(r.text, "html.parser")
 
     record = soup.select_one(".record")
@@ -176,7 +189,7 @@ def _get_details(context):
     # generate a random token1 for the requestpwd
     token1 = ''.join(rnd.choice(string.ascii_lowercase) for _ in range(9))
 
-    with request("GET", DETAILS_URL, params={"code": code, "token1": token1}) as response:
+    with request("GET", DETAILS_URL, params={"code": code, "token1": token1}, proxies=context.get('proxies')) as response:
         if response.headers.get("Content-Type") != "application/zip":
             raise ValueError(
                 f"Unexpected content type: {response.headers.get('Content-Type')}")
@@ -231,7 +244,7 @@ def _get_dh_params(context):
         "s": base64.b64encode(sig),
     }
 
-    with request(method="POST", url=HOST + context['keyUrl'], data=form_data) as resp:
+    with request(method="POST", url=HOST + context['keyUrl'], data=form_data, proxies=context.get('proxies')) as resp:
         context['dh_params'] = base64.b64decode(resp.json()['data'])
         # here we can verify the server's signature, but we don't need it for now
 
@@ -278,7 +291,7 @@ def _dh_key_exchange(context):
         "dh2": base64.b64encode(dh_sig),
     }
 
-    with request(method="POST", url=HOST + context['keyUrl'], data=form_data) as resp:
+    with request(method="POST", url=HOST + context['keyUrl'], data=form_data, proxies=context.get('proxies')) as resp:
         # decrypt the document key
         # this key will be used to encrypt the document later on
         ciphertext = base64.b64decode(resp.json()['data'])
@@ -307,7 +320,7 @@ def _download_by_code(context):
     parts = source_meta["parts"]
 
     parts_count = len(parts)
-    with ThreadPool(processes=8) as pool:
+    with ThreadPool(processes=2) as pool:
         # download the parts
         counter = itertools.count()
         context['progress'].main(f"Downloaded (0/{parts_count}) parts")

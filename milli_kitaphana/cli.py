@@ -12,12 +12,12 @@ def index():
     
     
 @app.command()
-def download(with_limited: bool = False, limit: int = None):
+def download(with_limited: bool = False, limit: int = None, proxy=None, index_name: str = None):
     """
     Read index file and download documents what have not been downloaded yet
     """
     import download
-    download.download(with_limited, limit)
+    download.download(with_limited, limit, proxy, index_name)
     
 
 @app.command()
@@ -36,6 +36,20 @@ def merge_index(path: str):
     """
     import merge_index
     merge_index.merge_indexes(path)
+    
+
+@app.command()
+def split(
+    parts: int = typer.Option(..., "--parts", "-p", help="Number of sublists to create"),
+    with_limited: bool = False,
+    dest: str = None,
+    prefix: str = "index-part",
+):
+    """
+    Split pending docs into N sublists stored under dest folder
+    """
+    import split_index
+    split_index.split_lists(parts, with_limited, dest, prefix)
     
     
 if __name__ == "__main__":

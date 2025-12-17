@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  http_proxy:
+    image: cr.yandex/crp1htpplbm4pc8ctjbj/squid
+    ports:
+      - "8888:3128"   # host:container
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'exec 6<>/dev/tcp/127.0.0.1/3128'"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        set -e
+        rm -f /run/squid.pid /var/run/squid.pid
+        cat > /etc/squid/squid.conf <<'EOF'
+        http_port 0.0.0.0:3128
+        http_access allow all
+        cache deny all
+        forwarded_for off
+        EOF
+        exec /usr/sbin/squid -N -f /etc/squid/squid.conf

@@ -1,3 +1,16 @@
-rerun with --with-limited option download already downloaded but not decrypted docs 
-try virtual namespaces to create mac
-leave only limited what are not on out library
++ rerun with --with-limited option download already downloaded but not decrypted docs 
++ multiple VPS per instance
++ leave only limited what are not in our library
++ think how can I split job between workers
+
+cd ~/projects/books-crawler/ && source .venv/bin/activate && python ./milli_kitaphana/cli.py split --parts 6 --with-limited  ; spd-say complete
+
+
+cd ~/projects/books-crawler/ && source .venv/bin/activate && python ./milli_kitaphana/cli.py download --with-limited --index-name index-part-1.json ; spd-say complete
+cd ~/projects/books-crawler/ && source .venv/bin/activate && python ./milli_kitaphana/cli.py download --with-limited --index-name index-part-2.json ; spd-say complete
+cd ~/projects/books-crawler/ && source .venv/bin/activate && python ./milli_kitaphana/cli.py download --with-limited --index-name index-part-3.json ; spd-say complete
+cd ~/projects/books-crawler/ && source .venv/bin/activate && python ./milli_kitaphana/cli.py download --with-limited --index-name index-part-4.json ; spd-say complete
+cd ~/projects/books-crawler/ && source .venv/bin/activate && python ./milli_kitaphana/cli.py download --with-limited --index-name index-part-5.json ; spd-say complete
+cd ~/projects/books-crawler/ && source .venv/bin/activate && python ./milli_kitaphana/cli.py download --with-limited --index-name index-part-6.json ; spd-say complete
+
+--proxy http://127.0.0.1:8888
