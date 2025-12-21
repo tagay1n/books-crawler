@@ -1,6 +1,244 @@
 {
+    "/tt/ssearch/detail/avcdihqrkk": {
+        "title": "Аз укый-яза белүчеләр өчен программалар: арифметика, татар теле, география",
+        "publish_year": "1939",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Педагогика",
+            "Программы",
+            "Арифметика",
+            "Татарский язык",
+            "География",
+            "Программалар",
+            "Татар теле"
+        ],
+        "author": "Хасанова, А.",
+        "access": "open",
+        "classification": "УДК 375(07)",
+        "integrated_description": [
+            "Аз укый-яза белүчеләр өчен программалар : арифметика, татар теле, география / җав. редактор А. Хасанова",
+            "Казан : Татгосиздат, 1939",
+            "18 б",
+            "УДК 375(07)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_628",
+        "download_code": "nbrt_tatarica_Inv_628",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/avcdihqrkk/",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 20
+    },
+    "/tt/ssearch/detail/cipgnhgcxg": {
+        "title": "Икенче класста кул эше дәресләре",
+        "publish_year": "1956",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "ПЕДАГОГИКА",
+            "ПЕДАГОГИКА",
+            "ХЕЗМӘТ ТӘРБИЯСЕ",
+            "ВОСПИТАНИЕ ТРУДОВОЕ"
+        ],
+        "author": "Розанов, И. Г.; Завитаев, П. А.",
+        "access": "limited",
+        "classification": "УДК 371.012.83",
+        "integrated_description": [
+            "Розанов, И. Г.Икенче класста кул эше дәресләре ",
+            "Казан : Таткнигоиздат, 1956",
+            "115 б.: рәс. б-н",
+            "(\"Укытучының педагогик китапханәсе\")",
+            "УДК 371.012.83"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_24833",
+        "download_code": "nbrt_tatarica_Inv_24833",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/cipgnhgcxg/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 12
+    },
+    "/tt/ssearch/detail/piernmbbek": {
+        "title": "Урта мәктәп программалары: әдәбият",
+        "publish_year": "1946",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Педагогика",
+            "Средняя школа",
+            "Программы",
+            "Литература",
+            "Урта мәктәп",
+            "Программалар",
+            "Әдәбият"
+        ],
+        "author": "Халит, Г.; Татарстан мәгариф министрлыгы",
+        "access": "open",
+        "classification": "УДК 375(07)",
+        "integrated_description": [
+            "Урта мәктәп программалары : әдәбият : 8-10 класслар / Татарстан мәгариф министрлыгы",
+            "җаваплы редактор Г. Халит",
+            "Казан : Татгосиздат, 1946",
+            "48 б",
+            "УДК 375(07)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_7535_46",
+        "download_code": "nbrt_tatarica_Inv_7535_46",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/piernmbbek/",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 52
+    },
+    "/tt/ssearch/detail/ytglbflbsd": {
+        "title": "Урта мәктәп программалары: СССР тарихы, яңа тарих",
+        "publish_year": "1943",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Педагогика",
+            "Средняя школа",
+            "Программы",
+            "История",
+            "Новая история",
+            "Урта мәктәп",
+            "Программалар",
+            "Тарих",
+            "Яңа тарих"
+        ],
+        "author": "Фәйзуллин, С.",
+        "access": "open",
+        "classification": "УДК 375(07)",
+        "integrated_description": [
+            "Урта мәктәп программалары : СССР тарихы, яңа тарих / җав. редактор С. Фәйзуллин",
+            "Казан : Татгосиздат, 1943",
+            "77 б",
+            "УДК 375(07)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1618_43",
+        "download_code": "nbrt_tatarica_Inv_1618_43",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ytglbflbsd/",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 80
+    },
+    "/tt/ssearch/detail/vtdprobmib": {
+        "title": "Jaña kyzlәr",
+        "publish_year": "1931",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият, Яналиф",
+        "tags": [
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Художественная литература",
+            "Хикәяләр",
+            "Рассказы"
+        ],
+        "access": "open",
+        "classification": "УДК Т2",
+        "integrated_description": [
+            "Garif, G.Jaña kyzlәr / G. Garif",
+            "Qazan : Tatizdat, 1931",
+            "24 b",
+            "(Matur әdәbiattan massa kөtepxanәse",
+            "№ 8)",
+            "Татар телендә",
+            "УДК Т2"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_6193",
+        "download_code": "nbrt_tatarica_Inv_6193",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vtdprobmib/",
+        "author": "Garif, G.",
+        "available_pages": 28,
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/ilqesschvk": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 28 апрель (№ 98)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.28 апрель (№ 98) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_98",
+        "download_code": "nbrt_pRT_kt_1940_98",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ilqesschvk/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/bbexacqepp": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 29 апрель (№ 99)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.29 апрель (№ 99) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_99",
+        "download_code": "nbrt_pRT_kt_1940_99",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/bbexacqepp/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/nsqfevlblv": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 1 май (№ 100)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.1 май (№ 100) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_100",
+        "download_code": "nbrt_pRT_kt_1940_100",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/nsqfevlblv/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/huowfbcqop": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 4 май (№ 101)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.4 май (№ 101) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_101",
+        "download_code": "nbrt_pRT_kt_1940_101",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/huowfbcqop/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/wjjaugoloy": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 5 май (№ 102)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.5 май (№ 102) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_102",
+        "download_code": "nbrt_pRT_kt_1940_102",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/wjjaugoloy/",
+        "downloaded": "full",
+        "decrypted": true
+    },
     "/tt/ssearch/detail/diqiqvjnie": {
-        "title": "Көннәрдән бер көнне : хикәяләр",
+        "title": "Көннәрдән бер көнне: хикәяләр",
         "publish_year": "1959",
         "lang": "Татарский",
         "collection": "Матур әдәбият",
@@ -36,7 +274,7 @@
         "available_pages": 32
     },
     "/tt/ssearch/detail/xnjabhygpf": {
-        "title": "Шатлыклы кайгы NEW!!: юмористик һәм сатирик хикәяләр",
+        "title": "Шатлыклы кайгы: юмористик һәм сатирик хикәяләр",
         "publish_year": "1987",
         "lang": "Татарский",
         "collection": "Матур әдәбият",
@@ -129,7 +367,7 @@
         "available_pages": 17
     },
     "/tt/ssearch/detail/mhnxzzzjhy": {
-        "title": "Мәхәббәт  сагышы : повесть һәм пьесалар",
+        "title": "Мәхәббәт  сагышы: повесть һәм пьесалар",
         "publish_year": "1989",
         "lang": "Татарский",
         "collection": "Матур әдәбият",
@@ -162,6 +400,32 @@
         "downloaded": "limited",
         "decrypted": false,
         "available_pages": 36
+    },
+    "/tt/ssearch/detail/vexlhuleyv": {
+        "title": "Мәҗбүри окладной страхованиене үткәрү турында инструкция: 20 апр. 1940 ел, № 263/48",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "СЕЛЬСКОЕ ХОЗЯЙСТВО",
+            "АВЫЛ ХУҖАЛЫГЫ",
+            "ИМИНИЯТЛӘШТЕРҮ",
+            "ИНСТРУКЦИЯЛӘР",
+            "СТРАХОВАНИЕ",
+            "ИНСТРУКЦИИ"
+        ],
+        "access": "open",
+        "classification": "УДК 368",
+        "integrated_description": [
+            "Мәҗбүри окладной страхованиене үткәрү турында инструкция : 20 апр.1940 ел,N 263/48",
+            "Казан : [1940],",
+            "УДК 368"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_3611_40",
+        "download_code": "nbrt_tatarica_Inv_3611_40",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vexlhuleyv/",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 3
     },
     "/tt/ssearch/detail/ozniwjbbrx": {
         "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 22 апрель (№ 93)",
@@ -248,51 +512,8 @@
         "downloaded": "full",
         "decrypted": true
     },
-    "/tt/ssearch/detail/vexlhuleyv": {
-        "title": "Мәҗбүри окладной страхованиене үткәрү турында инструкция : 20 апр.1940 ел,N 263/48",
-        "lang": "Татарский",
-        "collection": "Татарика",
-        "tags": [
-            "СЕЛЬСКОЕ ХОЗЯЙСТВО",
-            "АВЫЛ ХУҖАЛЫГЫ",
-            "ИМИНИЯТЛӘШТЕРҮ",
-            "ИНСТРУКЦИЯЛӘР",
-            "СТРАХОВАНИЕ",
-            "ИНСТРУКЦИИ"
-        ],
-        "access": "open",
-        "classification": "УДК 368",
-        "integrated_description": [
-            "Мәҗбүри окладной страхованиене үткәрү турында инструкция : 20 апр.1940 ел,N 263/48",
-            "Казан : [1940],",
-            "УДК 368"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_3611_40",
-        "download_code": "nbrt_tatarica_Inv_3611_40",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vexlhuleyv/",
-        "downloaded": "full",
-        "decrypted": true,
-        "available_pages": 3
-    },
-    "/tt/ssearch/detail/qvulaopncb": {
-        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 17 апрель (№ 89)",
-        "publish_year": "1940",
-        "lang": "Татарский",
-        "collection": "Периодические издания Республики Татарстан",
-        "access": "open",
-        "integrated_description": [
-            "Кызыл Татарстан : иҗтимагый-сәяси газета",
-            "Казан, 1924–1951.17 апрель (№ 89) ",
-            "1940"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_89",
-        "download_code": "nbrt_pRT_kt_1940_89",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qvulaopncb/",
-        "downloaded": "full",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/zltmnvzeic": {
-        "title": "Татарстан АССР Верховный Советы утырышлары : 12 дек., 1956 ел: стеногр. отчет",
+        "title": "Татарстан АССР Верховный Советы утырышлары: 12 дек., 1956 ел: стеногр. отчет",
         "publish_year": "1957",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -323,7 +544,7 @@
         "available_pages": 8
     },
     "/tt/ssearch/detail/rdrpnmtoay": {
-        "title": "Татарстан АССР Верховный Советы утырышлары : 10 дек.,1958 ел:стеногр. отчет",
+        "title": "Татарстан АССР Верховный Советы утырышлары: 10 дек., 1958 ел: стеногр. отчет",
         "publish_year": "1959",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -352,6 +573,23 @@
         "downloaded": "limited",
         "decrypted": true,
         "available_pages": 9
+    },
+    "/tt/ssearch/detail/qvulaopncb": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 17 апрель (№ 89)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.17 апрель (№ 89) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_89",
+        "download_code": "nbrt_pRT_kt_1940_89",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qvulaopncb/",
+        "downloaded": "full",
+        "decrypted": true
     },
     "/tt/ssearch/detail/tnrjzmmxof": {
         "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 15 апрель (№ 87)",
@@ -520,37 +758,6 @@
         "downloaded": "full",
         "decrypted": true,
         "available_pages": 48
-    },
-    "/tt/ssearch/detail/tytfqdjxgw": {
-        "title": "Татарстанда эшчеләр һәм крестьяннар союзы тантанасы дигән темага лекция материаллары",
-        "publish_year": "1957",
-        "lang": "Татарский",
-        "collection": "Татарика",
-        "tags": [
-            "ЛЕКЦИИ",
-            "ЛЕКЦИЯЛӘР",
-            "КРЕСТЬЯННАР",
-            "ТАТАРСТАН",
-            "ТАТАРСТАН",
-            "КРЕСТЬЯНСТВО"
-        ],
-        "author": "Хамматов, Ш.Х.",
-        "access": "limited",
-        "classification": "УДК 374.5",
-        "integrated_description": [
-            "Хамматов, Ш.Х.Татарстанда эшчеләр һәм крестьяннар союзы тантанасы дигән темага лекция материаллары / Ш.Х. Хамматов",
-            "политик һ. фәнни белемнәр тарату буенча РСФСР җәмгыятенең Татарстан бүлеге",
-            "Казан, 1957",
-            "22 б",
-            "0-40",
-            "УДК 374.5"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_27015",
-        "download_code": "nbrt_tatarica_Inv_27015",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/tytfqdjxgw/",
-        "downloaded": "limited",
-        "decrypted": true,
-        "available_pages": 3
     },
     "/tt/ssearch/detail/eytmbwtayf": {
         "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 3 апрель (№ 77)",
@@ -722,6 +929,150 @@
         "downloaded": "full",
         "decrypted": true
     },
+    "/tt/ssearch/detail/tytfqdjxgw": {
+        "title": "Татарстанда эшчеләр һәм крестьяннар союзы тантанасы дигән темага лекция материаллары",
+        "publish_year": "1957",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "ЛЕКЦИИ",
+            "ЛЕКЦИЯЛӘР",
+            "КРЕСТЬЯННАР",
+            "ТАТАРСТАН",
+            "ТАТАРСТАН",
+            "КРЕСТЬЯНСТВО"
+        ],
+        "author": "Хамматов, Ш.Х.",
+        "access": "limited",
+        "classification": "УДК 374.5",
+        "integrated_description": [
+            "Хамматов, Ш.Х.Татарстанда эшчеләр һәм крестьяннар союзы тантанасы дигән темага лекция материаллары / Ш.Х. Хамматов",
+            "политик һ. фәнни белемнәр тарату буенча РСФСР җәмгыятенең Татарстан бүлеге",
+            "Казан, 1957",
+            "22 б",
+            "0-40",
+            "УДК 374.5"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_27015",
+        "download_code": "nbrt_tatarica_Inv_27015",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/tytfqdjxgw/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 3
+    },
+    "/tt/ssearch/detail/lgaernkstp": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 27 март (№ 71)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.27 март (№ 71) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_71",
+        "download_code": "nbrt_pRT_kt_1940_71",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/lgaernkstp/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/faocrramow": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 29 март (№ 73)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.29 март (№ 73) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_73",
+        "download_code": "nbrt_pRT_kt_1940_73",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/faocrramow/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/yjlvcwnjfx": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 30 март (№ 74)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.30 март (№ 74) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_74",
+        "download_code": "nbrt_pRT_kt_1940_74",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/yjlvcwnjfx/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/nrwtjswydj": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 1 апрель (№ 75)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.1 апрель (№ 75) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_75",
+        "download_code": "nbrt_pRT_kt_1940_75",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/nrwtjswydj/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/lobzceiknb": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 2 апрель (№ 76)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.2 апрель (№ 76) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_76",
+        "download_code": "nbrt_pRT_kt_1940_76",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/lobzceiknb/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/tkuijxmlzu": {
+        "title": "Яшьләрне физик тәрбияләү-коммунистик тәрбиянең аерылгысыз өлеше: дигән темага докладчылар һ. лекторлар өчен материал",
+        "publish_year": "1951",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "ПЕДАГОГИКА",
+            "ПЕДАГОГИКА",
+            "ФИЗИК ТӘРБИЯ",
+            "ВОСПИТАНИЕ ФИЗИЧЕСКОЕ"
+        ],
+        "access": "limited",
+        "classification": "УДК 371.018.54",
+        "integrated_description": [
+            "Яшьләрне физик тәрбияләү-коммунистик тәрбиянең аерылгысыз өлеше : дигән темага докладчылар һ.лекторлар өчен материал / ТАССР Культура-агарту учреждениеләре идарәсе респ.лекцияләр бюросы",
+            "җ.ред.Г.Нәбиев",
+            "Казан, 1951",
+            "30б",
+            "0-60",
+            "УДК 371.018.54"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_4086_51",
+        "download_code": "nbrt_tatarica_Inv_4086_51",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/tkuijxmlzu/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 4
+    },
     "/tt/ssearch/detail/nvjdofwvbz": {
         "title": "Утлы өермә: очерклар",
         "publish_year": "1969",
@@ -837,118 +1188,33 @@
         "decrypted": true,
         "available_pages": 4
     },
-    "/tt/ssearch/detail/lgaernkstp": {
-        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 27 март (№ 71)",
-        "publish_year": "1940",
-        "lang": "Татарский",
-        "collection": "Периодические издания Республики Татарстан",
-        "access": "open",
-        "integrated_description": [
-            "Кызыл Татарстан : иҗтимагый-сәяси газета",
-            "Казан, 1924–1951.27 март (№ 71) ",
-            "1940"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_71",
-        "download_code": "nbrt_pRT_kt_1940_71",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/lgaernkstp/",
-        "downloaded": "full",
-        "decrypted": true
-    },
-    "/tt/ssearch/detail/faocrramow": {
-        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 29 март (№ 73)",
-        "publish_year": "1940",
-        "lang": "Татарский",
-        "collection": "Периодические издания Республики Татарстан",
-        "access": "open",
-        "integrated_description": [
-            "Кызыл Татарстан : иҗтимагый-сәяси газета",
-            "Казан, 1924–1951.29 март (№ 73) ",
-            "1940"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_73",
-        "download_code": "nbrt_pRT_kt_1940_73",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/faocrramow/",
-        "downloaded": "full",
-        "decrypted": true
-    },
-    "/tt/ssearch/detail/yjlvcwnjfx": {
-        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 30 март (№ 74)",
-        "publish_year": "1940",
-        "lang": "Татарский",
-        "collection": "Периодические издания Республики Татарстан",
-        "access": "open",
-        "integrated_description": [
-            "Кызыл Татарстан : иҗтимагый-сәяси газета",
-            "Казан, 1924–1951.30 март (№ 74) ",
-            "1940"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_74",
-        "download_code": "nbrt_pRT_kt_1940_74",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/yjlvcwnjfx/",
-        "downloaded": "full",
-        "decrypted": true
-    },
-    "/tt/ssearch/detail/nrwtjswydj": {
-        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 1 апрель (№ 75)",
-        "publish_year": "1940",
-        "lang": "Татарский",
-        "collection": "Периодические издания Республики Татарстан",
-        "access": "open",
-        "integrated_description": [
-            "Кызыл Татарстан : иҗтимагый-сәяси газета",
-            "Казан, 1924–1951.1 апрель (№ 75) ",
-            "1940"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_75",
-        "download_code": "nbrt_pRT_kt_1940_75",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/nrwtjswydj/",
-        "downloaded": "full",
-        "decrypted": true
-    },
-    "/tt/ssearch/detail/lobzceiknb": {
-        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 2 апрель (№ 76)",
-        "publish_year": "1940",
-        "lang": "Татарский",
-        "collection": "Периодические издания Республики Татарстан",
-        "access": "open",
-        "integrated_description": [
-            "Кызыл Татарстан : иҗтимагый-сәяси газета",
-            "Казан, 1924–1951.2 апрель (№ 76) ",
-            "1940"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_76",
-        "download_code": "nbrt_pRT_kt_1940_76",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/lobzceiknb/",
-        "downloaded": "full",
-        "decrypted": true
-    },
-    "/tt/ssearch/detail/tkuijxmlzu": {
-        "title": "Яшьләрне физик тәрбияләү-коммунистик тәрбиянең аерылгысыз өлеше: дигән темага докладчылар һ. лекторлар өчен материал",
-        "publish_year": "1951",
+    "/tt/ssearch/detail/olgdspoabv": {
+        "title": "Хезмәт ияләре депутатлары авыл советларының барлык председательләренә",
+        "publish_year": "1950",
         "lang": "Татарский",
         "collection": "Татарика",
         "tags": [
-            "ПЕДАГОГИКА",
-            "ПЕДАГОГИКА",
-            "ФИЗИК ТӘРБИЯ",
-            "ВОСПИТАНИЕ ФИЗИЧЕСКОЕ"
+            "Местные органы власти",
+            "Постановления",
+            "Сельское хозяйство",
+            "Карарлар",
+            "Авыл хуҗалыгы"
         ],
-        "access": "limited",
-        "classification": "УДК 371.018.54",
+        "author": "ТАССР Министрлар Советы",
+        "classification": "УДК 34с10.5",
         "integrated_description": [
-            "Яшьләрне физик тәрбияләү-коммунистик тәрбиянең аерылгысыз өлеше : дигән темага докладчылар һ.лекторлар өчен материал / ТАССР Культура-агарту учреждениеләре идарәсе респ.лекцияләр бюросы",
-            "җ.ред.Г.Нәбиев",
-            "Казан, 1951",
-            "30б",
-            "0-60",
-            "УДК 371.018.54"
+            "Хезмәт ияләре депутатлары авыл советларының барлык председательләренә / ТАССР Министрлар Советы",
+            "Казан, 1950",
+            "7 б",
+            "УДК 34с10.5"
         ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_4086_51",
-        "download_code": "nbrt_tatarica_Inv_4086_51",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/tkuijxmlzu/",
-        "downloaded": "limited",
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_3724_50",
+        "download_code": "nbrt_tatarica_Inv_3724_50",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/olgdspoabv/",
+        "access": "open",
+        "downloaded": "full",
         "decrypted": true,
-        "available_pages": 4
+        "available_pages": 1
     },
     "/tt/ssearch/detail/uracdtydnr": {
         "title": "Укырга-язарга өйрәтү мәктәпләре өчен программалар: татар теле, арифметика",
@@ -980,34 +1246,6 @@
         "downloaded": "full",
         "decrypted": true,
         "available_pages": 8
-    },
-    "/tt/ssearch/detail/olgdspoabv": {
-        "title": "Хезмәт ияләре депутатлары авыл советларының барлык председательләренә",
-        "publish_year": "1950",
-        "lang": "Татарский",
-        "collection": "Татарика",
-        "tags": [
-            "Местные органы власти",
-            "Постановления",
-            "Сельское хозяйство",
-            "Карарлар",
-            "Авыл хуҗалыгы"
-        ],
-        "author": "ТАССР Министрлар Советы",
-        "classification": "УДК 34с10.5",
-        "integrated_description": [
-            "Хезмәт ияләре депутатлары авыл советларының барлык председательләренә / ТАССР Министрлар Советы",
-            "Казан, 1950",
-            "7 б",
-            "УДК 34с10.5"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_3724_50",
-        "download_code": "nbrt_tatarica_Inv_3724_50",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/olgdspoabv/",
-        "access": "open",
-        "downloaded": "full",
-        "decrypted": true,
-        "available_pages": 1
     },
     "/tt/ssearch/detail/xazxsikgyx": {
         "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 17 март (№ 64)",
@@ -1192,62 +1430,6 @@
         "downloaded": "limited",
         "decrypted": true,
         "available_pages": 4
-    },
-    "/tt/ssearch/detail/zxnylnphwe": {
-        "title": "Зурлар урта мәктәпләре өчен программалар: СССР Конституциясе",
-        "publish_year": "1940",
-        "lang": "Татарский",
-        "collection": "Татарика",
-        "tags": [
-            "Программы",
-            "Конституции",
-            "Средняя школа",
-            "Программалар",
-            "Конституция",
-            "Урта мәктәп"
-        ],
-        "author": "Хакимуллин, Т.",
-        "access": "open",
-        "classification": "УДК 374.6(07)",
-        "integrated_description": [
-            "Зурлар урта мәктәпләре өчен программалар : СССР Конституциясе : 8 класс өчен / җав. ред. Т. Хакимуллин",
-            "Казан : Татгосиздат, 1940",
-            "15 б",
-            "УДК 374.6(07)"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_848_40",
-        "download_code": "nbrt_tatarica_Inv_848_40",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/zxnylnphwe/",
-        "downloaded": "full",
-        "decrypted": true,
-        "available_pages": 16
-    },
-    "/tt/ssearch/detail/vpgylllitm": {
-        "title": "СССР гражданнарының хокуклары һәм бурычлары",
-        "publish_year": "1946",
-        "lang": "Татарский",
-        "collection": "Татарика",
-        "tags": [
-            "Обязанности",
-            "Государство и право",
-            "Хокук",
-            "Бурычлар"
-        ],
-        "author": "Карпинский, В.",
-        "access": "limited",
-        "classification": "УДК 34с",
-        "integrated_description": [
-            "Карпинский, В.СССР гражданнарының хокуклары һәм бурычлары / В. Карпинский",
-            "Казан : Татгосиздат, 1946",
-            "98 б",
-            "УДК 34с"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1968_46",
-        "download_code": "nbrt_tatarica_Inv_1968_46",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vpgylllitm/",
-        "downloaded": "limited",
-        "decrypted": true,
-        "available_pages": 11
     },
     "/tt/ssearch/detail/cqqmselitq": {
         "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 6 март (№ 54)",
@@ -1535,6 +1717,62 @@
         "downloaded": "limited",
         "decrypted": true,
         "available_pages": 1
+    },
+    "/tt/ssearch/detail/zxnylnphwe": {
+        "title": "Зурлар урта мәктәпләре өчен программалар: СССР Конституциясе",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Программы",
+            "Конституции",
+            "Средняя школа",
+            "Программалар",
+            "Конституция",
+            "Урта мәктәп"
+        ],
+        "author": "Хакимуллин, Т.",
+        "access": "open",
+        "classification": "УДК 374.6(07)",
+        "integrated_description": [
+            "Зурлар урта мәктәпләре өчен программалар : СССР Конституциясе : 8 класс өчен / җав. ред. Т. Хакимуллин",
+            "Казан : Татгосиздат, 1940",
+            "15 б",
+            "УДК 374.6(07)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_848_40",
+        "download_code": "nbrt_tatarica_Inv_848_40",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/zxnylnphwe/",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 16
+    },
+    "/tt/ssearch/detail/vpgylllitm": {
+        "title": "СССР гражданнарының хокуклары һәм бурычлары",
+        "publish_year": "1946",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Обязанности",
+            "Государство и право",
+            "Хокук",
+            "Бурычлар"
+        ],
+        "author": "Карпинский, В.",
+        "access": "limited",
+        "classification": "УДК 34с",
+        "integrated_description": [
+            "Карпинский, В.СССР гражданнарының хокуклары һәм бурычлары / В. Карпинский",
+            "Казан : Татгосиздат, 1946",
+            "98 б",
+            "УДК 34с"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1968_46",
+        "download_code": "nbrt_tatarica_Inv_1968_46",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vpgylllitm/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 11
     },
     "/tt/ssearch/detail/uphswhwalu": {
         "title": "Октябрь һәм гражданнар сугышы чорында Татарстан яшьләренең революцион хәрәкәте дигән темага лекция материалы",
@@ -2018,7 +2256,7 @@
         "title": "Ватан өчен",
         "publish_year": "1941",
         "lang": "Татарский",
-        "collection": "Татарика",
+        "collection": "Матур әдәбият",
         "tags": [
             "Великая Отечественная война",
             "История",
@@ -105658,36 +105896,6 @@
         "downloaded": "full",
         "decrypted": true
     },
-    "/tt/ssearch/detail/xxwpbmlani": {
-        "title": "Ленин-Сталин турында",
-        "publish_year": "1940",
-        "lang": "Татарский",
-        "collection": "Татарика",
-        "tags": [
-            "Татар әдәбияты",
-            "Татарская литература",
-            "Сталин И.В.",
-            "Ленин В.И.",
-            "Шигырьләр",
-            "Стихи",
-            "Хикәяләр",
-            "Рассказы"
-        ],
-        "author": "Баян, Н.; Сали, М.",
-        "access": "open",
-        "integrated_description": [
-            "Ленин-Сталин турында / төз.: Н. Баян , М. Сали",
-            "Казан : Татгосиздат, 1940",
-            "255 б.: портр",
-            "Оглавления.ББК 84(2=632.3)"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_65130_0",
-        "download_code": "nbrt_tatarica_Inv_65130_0",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/xxwpbmlani/",
-        "available_pages": 263,
-        "downloaded": "full",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/csbldbxsfx": {
         "title": "Совет әдәбияты: әдәбият, сәнгать, тәнкыйть, политика һәм публицистика журналы. – № 6",
         "publish_year": "1943",
@@ -105780,6 +105988,36 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/brtivqokcc/",
         "available_pages": 81,
         "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/xxwpbmlani": {
+        "title": "Ленин-Сталин турында",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Татар әдәбияты",
+            "Татарская литература",
+            "Сталин И.В.",
+            "Ленин В.И.",
+            "Шигырьләр",
+            "Стихи",
+            "Хикәяләр",
+            "Рассказы"
+        ],
+        "author": "Баян, Н.; Сали, М.",
+        "access": "open",
+        "integrated_description": [
+            "Ленин-Сталин турында / төз.: Н. Баян , М. Сали",
+            "Казан : Татгосиздат, 1940",
+            "255 б.: портр",
+            "Оглавления.ББК 84(2=632.3)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_65130_0",
+        "download_code": "nbrt_tatarica_Inv_65130_0",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/xxwpbmlani/",
+        "available_pages": 263,
+        "downloaded": "full",
         "decrypted": true
     },
     "/tt/ssearch/detail/hclunmoors": {
@@ -110086,21 +110324,18 @@
         "decrypted": true
     },
     "/tt/ssearch/detail/adjlwxqwbx": {
-        "title": "Сайланма әсәрләр: 6 томда. 6 т.. – Юлъязмалар, нәсер-парчалар, әңгәмәләр",
+        "title": "Сайланма әсәрләр: 6 томда. 5 т.. – Әдәби-публицистик язмалар, әңгәмәләр",
         "publish_year": "2005",
-        "lang": "Татарский, Русский",
+        "lang": "Татарский",
         "collection": "Матур әдәбият",
         "tags": [
-            "Юльязма",
-            "Идел",
-            "Астрахань",
-            "Чернобыль",
-            "Бәхет",
+            "Татар әдәбияты",
+            "Публицистик очерклар",
+            "Публицистические очерки",
+            "Татарская литература",
+            "Писатели",
             "Китап темасы",
-            "Рецензияләр",
-            "Фәйзуллин Р.Г.",
-            "Интервью",
-            "Файзуллин Р.Г."
+            "Язучылар"
         ],
         "access": "limited",
         "integrated_description": [
@@ -110241,6 +110476,38 @@
         "download_code": "nbrt_tatarica_Inv_T_1630382",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/brulewgtzj/",
         "available_pages": 52,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/dcpvlspmpx": {
+        "title": "Сайланма әсәрләр: 6 томда. 5 т.. – Әдәби-публицистик язмалар, әңгәмәләр",
+        "publish_year": "2005",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Татар әдәбияты",
+            "Публицистик очерклар",
+            "Публицистические очерки",
+            "Татарская литература",
+            "Писатели",
+            "Китап темасы",
+            "Язучылар"
+        ],
+        "access": "limited",
+        "integrated_description": [
+            "Фәйзуллин, Равил .Сайланма әсәрләр : 6 томда / Равил Фәйзуллин",
+            "редколлегия: З. Р. Вәлиева, Р. И. Вәлиев, Т. А. Миңнуллин, И. М. Ибраһимов, Д. С. Шакиров, Х. Г. Әюпов, Р. Х. Корбанов",
+            "[рәссамы Р. Х. Хәсәншин]",
+            "Казан : Татарстан китап нәшрияты, 2005 -",
+            "ISBN 5-298-04201-5.5 т.: Әдәби-публицистик язмалар, әңгәмәләр ",
+            "2005",
+            "463 б",
+            "ISBN 5-298-04206-6 ((5 т.))"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1629423",
+        "download_code": "nbrt_tatarica_Inv_T_1629423",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/dcpvlspmpx/",
+        "available_pages": 48,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -134292,36 +134559,6 @@
         "downloaded": "full",
         "decrypted": true
     },
-    "/tt/ssearch/detail/qfcghjlnty": {
-        "title": "Signal: \"Eşce\" gәzitndә jazucь jәş qәlәm kөclәreneñ әdәbi çiьntьgь",
-        "publish_year": "1930",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият, Яналиф",
-        "tags": [
-            "Художественная литература",
-            "Матур әдәбият",
-            "Татар әдәбияты",
-            "Татарская литература",
-            "Сборники стихов",
-            "Шигырьләр җыентыгы"
-        ],
-        "access": "open",
-        "classification": "УДК Т2",
-        "integrated_description": [
-            "Signal : \"Eşce\" gәzitndә jazucь jәş qәlәm kөclәreneñ әdәbi çiьntьgь",
-            "Mәskәy : Sintrizdat, 1930",
-            "16 b",
-            "Татар телендә",
-            "Эчт.: М. Сөндекле, Г. Юсупов, Ә. Гәрәй, Г. Теләшев, Ә. Фәез, Чубай, М. Крымов, М. Җәлил, Ч. Башмаков, Г. Абязов, Л. Гильми, Ә. Ерикәй",
-            "УДК Т2"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_68502",
-        "download_code": "nbrt_tatarica_Inv_68502",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qfcghjlnty/",
-        "available_pages": 20,
-        "downloaded": "full",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/zchegkepay": {
         "title": "Soñgь xat: xikәjәlәr",
         "publish_year": "1932",
@@ -134464,6 +134701,36 @@
         "download_code": "nbrt_tatarica_Inv_65575",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/xgvrqdsnku/",
         "available_pages": 36,
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/qfcghjlnty": {
+        "title": "Signal: \"Eşce\" gәzitndә jazucь jәş qәlәm kөclәreneñ әdәbi çiьntьgь",
+        "publish_year": "1930",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият, Яналиф",
+        "tags": [
+            "Художественная литература",
+            "Матур әдәбият",
+            "Татар әдәбияты",
+            "Татарская литература",
+            "Сборники стихов",
+            "Шигырьләр җыентыгы"
+        ],
+        "access": "open",
+        "classification": "УДК Т2",
+        "integrated_description": [
+            "Signal : \"Eşce\" gәzitndә jazucь jәş qәlәm kөclәreneñ әdәbi çiьntьgь",
+            "Mәskәy : Sintrizdat, 1930",
+            "16 b",
+            "Татар телендә",
+            "Эчт.: М. Сөндекле, Г. Юсупов, Ә. Гәрәй, Г. Теләшев, Ә. Фәез, Чубай, М. Крымов, М. Җәлил, Ч. Башмаков, Г. Абязов, Л. Гильми, Ә. Ерикәй",
+            "УДК Т2"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_68502",
+        "download_code": "nbrt_tatarica_Inv_68502",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qfcghjlnty/",
+        "available_pages": 20,
         "downloaded": "full",
         "decrypted": true
     },
@@ -135522,36 +135789,6 @@
         "downloaded": "full",
         "decrypted": true
     },
-    "/tt/ssearch/detail/wfbuemtomy": {
-        "title": "Bezneñ saflar çьrь",
-        "publish_year": "1936",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият, Яналиф",
-        "tags": [
-            "Художественная литература",
-            "Матур әдәбият",
-            "Татар әдәбияты",
-            "Татарская литература",
-            "Җырлар",
-            "Песни"
-        ],
-        "author": "Tufan; Kәrim, F.",
-        "access": "open",
-        "integrated_description": [
-            "Bezneñ saflar çьrь / tөz. X. Tufan",
-            "çәv. red. F. Kәrim",
-            "Qazan : Tatgosizdat, 1936",
-            "95 b",
-            "Татар телендә",
-            "Оглавление.УДК Т2"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_65758",
-        "download_code": "nbrt_tatarica_Inv_65758",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/wfbuemtomy/",
-        "available_pages": 104,
-        "downloaded": "full",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/zywqegkpcn": {
         "title": "Stacka",
         "publish_year": "1932",
@@ -135620,6 +135857,36 @@
         "download_code": "nbrt_tatarica_Inv_2378",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/sckawymdpo/",
         "available_pages": 38,
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/wfbuemtomy": {
+        "title": "Bezneñ saflar çьrь",
+        "publish_year": "1936",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият, Яналиф",
+        "tags": [
+            "Художественная литература",
+            "Матур әдәбият",
+            "Татар әдәбияты",
+            "Татарская литература",
+            "Җырлар",
+            "Песни"
+        ],
+        "author": "Tufan; Kәrim, F.",
+        "access": "open",
+        "integrated_description": [
+            "Bezneñ saflar çьrь / tөz. X. Tufan",
+            "çәv. red. F. Kәrim",
+            "Qazan : Tatgosizdat, 1936",
+            "95 b",
+            "Татар телендә",
+            "Оглавление.УДК Т2"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_65758",
+        "download_code": "nbrt_tatarica_Inv_65758",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/wfbuemtomy/",
+        "available_pages": 104,
         "downloaded": "full",
         "decrypted": true
     },
@@ -139618,38 +139885,6 @@
         "downloaded": "full",
         "decrypted": true
     },
-    "/tt/ssearch/detail/qspxsukeek": {
-        "title": "Jaña kyzlәr",
-        "publish_year": "1931",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият, Яналиф",
-        "tags": [
-            "Татарская литература",
-            "Татар әдәбияты",
-            "Матур әдәбият",
-            "Художественная литература",
-            "Хикәяләр",
-            "Рассказы"
-        ],
-        "author": "Garif, G.",
-        "access": "open",
-        "classification": "УДК Т2",
-        "integrated_description": [
-            "Garif, G.Jaña kyzlәr / G. Garif",
-            "Qazan : Tatizdat, 1931",
-            "24 b",
-            "(Matur әdәbiattan massa kөtepxanәse",
-            "№ 8)",
-            "Татар телендә",
-            "УДК Т2"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_6193",
-        "download_code": "nbrt_tatarica_Inv_6193",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qspxsukeek/",
-        "available_pages": 28,
-        "downloaded": "full",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/tbuvtulzqg": {
         "title": "Muzьjkalь çrlar",
         "publish_year": "1931",
@@ -140583,6 +140818,38 @@
         "download_code": "nbrt_tatarica_Inv_71184",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ciwmwklfbo/",
         "available_pages": 40,
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/qspxsukeek": {
+        "title": "Jaña kyzlәr",
+        "publish_year": "1931",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият, Яналиф",
+        "tags": [
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Художественная литература",
+            "Хикәяләр",
+            "Рассказы"
+        ],
+        "author": "Garif, G.",
+        "access": "open",
+        "classification": "УДК Т2",
+        "integrated_description": [
+            "Garif, G.Jaña kyzlәr / G. Garif",
+            "Qazan : Tatizdat, 1931",
+            "24 b",
+            "(Matur әdәbiattan massa kөtepxanәse",
+            "№ 8)",
+            "Татар телендә",
+            "УДК Т2"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_6193",
+        "download_code": "nbrt_tatarica_Inv_6193",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qspxsukeek/",
+        "available_pages": 28,
         "downloaded": "full",
         "decrypted": true
     },
@@ -192153,33 +192420,6 @@
         "downloaded": "full",
         "decrypted": true
     },
-    "/tt/ssearch/detail/fxerqxddnp": {
-        "title": "Avьlda pijanir eşlәre",
-        "publish_year": "1929",
-        "lang": "Татарский",
-        "collection": "Яналиф",
-        "tags": [
-            "Пионеры",
-            "Пионерлар"
-        ],
-        "author": "Çәlil, M.; Çәlil, M.",
-        "access": "open",
-        "classification": "УДК 3КЮП",
-        "integrated_description": [
-            "Çәlil, M.Avьlda pijanir eşlәre / M. Çәlil",
-            "kereş syz jazucь M. Çәlil",
-            "Mәskәy : SSSR xalьqlarьnьñ yzәk nәşriatь, 1929",
-            "67 b",
-            "Татар телендә",
-            "УДК 3КЮП"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_3720",
-        "download_code": "nbrt_tatarica_Inv_3720",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/fxerqxddnp/",
-        "available_pages": 72,
-        "downloaded": "full",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/ywzyttyryh": {
         "title": "Milliәt, milli kul`tura : milliәt, milli kul`tura mәs`әlәlәren lininizm qaraşnnan cgьp birlgәn analiz",
         "publish_year": "1929",
@@ -192350,6 +192590,33 @@
         "download_code": "nbrt_tatarica_Inv_12353",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ympsxfysit/",
         "available_pages": 96,
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/fxerqxddnp": {
+        "title": "Avьlda pijanir eşlәre",
+        "publish_year": "1929",
+        "lang": "Татарский",
+        "collection": "Яналиф",
+        "tags": [
+            "Пионеры",
+            "Пионерлар"
+        ],
+        "author": "Çәlil, M.; Çәlil, M.",
+        "access": "open",
+        "classification": "УДК 3КЮП",
+        "integrated_description": [
+            "Çәlil, M.Avьlda pijanir eşlәre / M. Çәlil",
+            "kereş syz jazucь M. Çәlil",
+            "Mәskәy : SSSR xalьqlarьnьñ yzәk nәşriatь, 1929",
+            "67 b",
+            "Татар телендә",
+            "УДК 3КЮП"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_3720",
+        "download_code": "nbrt_tatarica_Inv_3720",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/fxerqxddnp/",
+        "available_pages": 72,
         "downloaded": "full",
         "decrypted": true
     },
@@ -216118,36 +216385,6 @@
         "downloaded": "full",
         "decrypted": true
     },
-    "/tt/ssearch/detail/hzgpajpbkj": {
-        "title": "Sajlanma әsәrlәr",
-        "publish_year": "1938",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият, Яналиф",
-        "tags": [
-            "Татарская литература",
-            "Татар әдәбияты",
-            "Матур әдәбият",
-            "Художественная литература",
-            "Шигырьләр",
-            "Стихи",
-            "Тукай Г."
-        ],
-        "author": "Tuqaj; Çәlil",
-        "access": "open",
-        "integrated_description": [
-            "Tuqaj, Ğabdulla.Sajlanma әsәrlәr / Ğ. Tuqaj",
-            "çәv. red. M. Çәlil",
-            "Qazan : Tatgosizdat, 1938",
-            "622 b.: portr",
-            "Татар телендә"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_13239",
-        "download_code": "nbrt_tatarica_Inv_13239",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/hzgpajpbkj/",
-        "available_pages": 644,
-        "downloaded": "full",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/buacjorbxt": {
         "title": "Avьl xuçalьgь terleklәren yrcety texnikasь",
         "publish_year": "1935",
@@ -216391,6 +216628,36 @@
         "download_code": "nbrt_tatarica_Inv_298_o_e",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/cmzezepgfv/",
         "available_pages": 678,
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/hzgpajpbkj": {
+        "title": "Sajlanma әsәrlәr",
+        "publish_year": "1938",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият, Яналиф",
+        "tags": [
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Художественная литература",
+            "Шигырьләр",
+            "Стихи",
+            "Тукай Г."
+        ],
+        "author": "Tuqaj; Çәlil",
+        "access": "open",
+        "integrated_description": [
+            "Tuqaj, Ğabdulla.Sajlanma әsәrlәr / Ğ. Tuqaj",
+            "çәv. red. M. Çәlil",
+            "Qazan : Tatgosizdat, 1938",
+            "622 b.: portr",
+            "Татар телендә"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_13239",
+        "download_code": "nbrt_tatarica_Inv_13239",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/hzgpajpbkj/",
+        "available_pages": 644,
         "downloaded": "full",
         "decrypted": true
     },
@@ -220388,37 +220655,6 @@
         "downloaded": "full",
         "decrypted": true
     },
-    "/tt/ssearch/detail/vkcmrvihnc": {
-        "title": "Ordenlь Tatarstan turьnda çьr",
-        "publish_year": "1938",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Татарская литература",
-            "Татар әдәбияты",
-            "Художественная литература",
-            "Матур әдәбият",
-            "Стихи",
-            "Шигырьләр"
-        ],
-        "author": "Taqtaş, H.; Sadrьj, M.; Çәlil, M.; Bajan, N.; Sөndekle, M.; Xuçi, G.; Mannur, Ş.; Dәvli, N.",
-        "access": "open",
-        "integrated_description": [
-            "Ordenlь Tatarstan turьnda çьr /",
-            "H. Taqtaş [h. b.]",
-            "Qazan : Tatgosizdat, 1938",
-            "48 b",
-            "(Mәktәp seriәse)",
-            "Татар телендә",
-            "<URL:http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_68297>.ББК Т2"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_68297",
-        "download_code": "nbrt_tatarica_Inv_68297",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vkcmrvihnc/",
-        "available_pages": 56,
-        "downloaded": "full",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/eqfbnacmiv": {
         "title": "Balalarga",
         "publish_year": "1938",
@@ -220832,6 +221068,37 @@
         "download_code": "nbrt_tatarica_Inv_65216",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/rfifeipuyr/",
         "available_pages": 168,
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/vkcmrvihnc": {
+        "title": "Ordenlь Tatarstan turьnda çьr",
+        "publish_year": "1938",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият, Яналиф",
+        "tags": [
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Художественная литература",
+            "Матур әдәбият",
+            "Стихи",
+            "Шигырьләр"
+        ],
+        "author": "Taqtaş, H.; Sadrьj, M.; Çәlil, M.; Bajan, N.; Sөndekle, M.; Xuçi, G.; Mannur, Ş.; Dәvli, N.",
+        "access": "open",
+        "integrated_description": [
+            "Ordenlь Tatarstan turьnda çьr /",
+            "H. Taqtaş [h. b.]",
+            "Qazan : Tatgosizdat, 1938",
+            "48 b",
+            "(Mәktәp seriәse)",
+            "Татар телендә",
+            "<URL:http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_68297>.ББК Т2"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_68297",
+        "download_code": "nbrt_tatarica_Inv_68297",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vkcmrvihnc/",
+        "available_pages": 56,
         "downloaded": "full",
         "decrypted": true
     },
@@ -223498,6 +223765,39 @@
         "downloaded": "full",
         "decrypted": true
     },
+    "/tt/ssearch/detail/oikwkibmci": {
+        "title": "Prolitariat әdәbiatь өcen kөrәşkәndә",
+        "publish_year": "1931",
+        "lang": "Татарский",
+        "collection": "Яналиф",
+        "tags": [
+            "Ибрагимов Г.Г.",
+            "Ибрагимов Г.Г. \"Глубокие корни\"",
+            "Литературоведение",
+            "Әдәбият белеме",
+            "Ибраһимов Г. \"Тирән тамырлар\"",
+            "Ибраһимов Г.",
+            "Тукай Г.",
+            "Татар әдәбияты",
+            "Татарская литература"
+        ],
+        "author": "Gәli; Gәli",
+        "access": "open",
+        "integrated_description": [
+            "Gәli, Gөmәr.Prolitariat әdәbiatь өcen kөrәşkәndә / G. Gәli",
+            "kereş syz jazucь G. Gәli",
+            "Qazan : Tatizdat, 1931",
+            "135 b",
+            "Татар телендә. - Тышл. бирелгән: Janalif, 1930",
+            "<URL:http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_13069>.УДК 8"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_13069",
+        "download_code": "nbrt_tatarica_Inv_13069",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/oikwkibmci/",
+        "available_pages": 140,
+        "downloaded": "full",
+        "decrypted": true
+    },
     "/tt/ssearch/detail/tvjplfxwxj": {
         "title": "Bezneñ saflar çьrь: marşlar,çьrlar һәm revolytsion qimnnar",
         "publish_year": "1934",
@@ -223529,39 +223829,6 @@
         "download_code": "nbrt_tatarica_Inv_67321",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/tvjplfxwxj/",
         "available_pages": 116,
-        "downloaded": "full",
-        "decrypted": true
-    },
-    "/tt/ssearch/detail/oikwkibmci": {
-        "title": "Prolitariat әdәbiatь өcen kөrәşkәndә",
-        "publish_year": "1931",
-        "lang": "Татарский",
-        "collection": "Яналиф",
-        "tags": [
-            "Ибрагимов Г.Г.",
-            "Ибрагимов Г.Г. \"Глубокие корни\"",
-            "Литературоведение",
-            "Әдәбият белеме",
-            "Ибраһимов Г. \"Тирән тамырлар\"",
-            "Ибраһимов Г.",
-            "Тукай Г.",
-            "Татар әдәбияты",
-            "Татарская литература"
-        ],
-        "author": "Gәli; Gәli",
-        "access": "open",
-        "integrated_description": [
-            "Gәli, Gөmәr.Prolitariat әdәbiatь өcen kөrәşkәndә / G. Gәli",
-            "kereş syz jazucь G. Gәli",
-            "Qazan : Tatizdat, 1931",
-            "135 b",
-            "Татар телендә. - Тышл. бирелгән: Janalif, 1930",
-            "<URL:http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_13069>.УДК 8"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_13069",
-        "download_code": "nbrt_tatarica_Inv_13069",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/oikwkibmci/",
-        "available_pages": 140,
         "downloaded": "full",
         "decrypted": true
     },
