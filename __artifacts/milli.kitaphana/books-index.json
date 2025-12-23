@@ -45149,7 +45149,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_L_1713982",
         "download_code": "nbrt_tatarica_Inv_L_1713982",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/dmeargjseq/",
-        "available_pages": 13,
+        "available_pages": 124,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -46196,10 +46196,7 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/engcacljri/",
         "available_pages": 92,
         "downloaded": "limited",
-        "decrypted": true,
-        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_L_1856011.2&version=e5250361183037387904&part={url}",
-        "decryption_key": "iMoohdExIBd+MEMN9Cc7qQ==",
-        "decryption_key_iv": "E3ZiG962Xfm/wPqK+hb+/Q=="
+        "decrypted": true
     },
     "/tt/ssearch/detail/zdwnoqvmhz": {
         "title": "Атака: әдәбият, сәнгать һәм тәнкыйть журналы . – № 8",
@@ -102131,7 +102128,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1683635",
         "download_code": "nbrt_tatarica_Inv_1683635",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qcjhhdlojg/",
-        "available_pages": 20,
+        "available_pages": 200,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -102189,7 +102186,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1680672",
         "download_code": "nbrt_tatarica_Inv_1680672",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vfpnfhadus/",
-        "available_pages": 14,
+        "available_pages": 132,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -108022,7 +108019,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1680159",
         "download_code": "nbrt_tatarica_Inv_T_1680159",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ktpqjczljt/",
-        "available_pages": 36,
+        "available_pages": 356,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -109851,7 +109848,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1680151",
         "download_code": "nbrt_tatarica_Inv_T_1680151",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mftxdabptq/",
-        "available_pages": 34,
+        "available_pages": 340,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -110065,7 +110062,10 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/dfdlbasndm/",
         "available_pages": 41,
         "downloaded": "limited",
-        "decrypted": true
+        "decrypted": true,
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1685289.2&version=e5249577494457387904&part={url}",
+        "decryption_key": "Fu7FKHJ6D7migdCzwYKUbQ==",
+        "decryption_key_iv": "brU7tNFL5mNDsXmD9xZsYA=="
     },
     "/tt/ssearch/detail/erbltjojyf": {
         "title": "Сайланма әсәрләр: ике томда. Т. 1. – Хикәяләр, повестьлар",
@@ -110610,7 +110610,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1727757",
         "download_code": "nbrt_tatarica_Inv_T_1727757",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/presrlsqff/",
-        "available_pages": 41,
+        "available_pages": 408,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -110632,7 +110632,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1681869",
         "download_code": "nbrt_tatarica_Inv_T_1681869",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ukvurivwld/",
-        "available_pages": 31,
+        "available_pages": 308,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -111147,7 +111147,10 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/xlciqhflwp/",
         "available_pages": 44,
         "downloaded": "limited",
-        "decrypted": true
+        "decrypted": true,
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1681865.2&version=e5249566246707387904&part={url}",
+        "decryption_key": "lbJrBC13eKKkFV/ZLaW5iQ==",
+        "decryption_key_iv": "czlkSI7j8F1tYITqlKPRMQ=="
     },
     "/tt/ssearch/detail/iwqsgarenp": {
         "title": "Пропагандистка һәм агитаторга ярдәмгә: Иҗтимагый-сәяси журнал. – № 10-11",
@@ -113231,10 +113234,7 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/aumdlmhkdm/",
         "available_pages": 388,
         "downloaded": "limited",
-        "decrypted": true,
-        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1736865.2&version=e5249532752007387904&part={url}",
-        "decryption_key": "NwDWOfysWJpdUQbAsBhkAg==",
-        "decryption_key_iv": "2HrYp3h1WDp9DJwvoUwrsw=="
+        "decrypted": true
     },
     "/tt/ssearch/detail/crlxloklki": {
         "title": "Колхоз бригадиры: Айга бер чыга торган массовый агро-зоотехника журналы. – № 2",
@@ -113563,10 +113563,7 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/aiuvfiedvq/",
         "available_pages": 404,
         "downloaded": "limited",
-        "decrypted": true,
-        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1736861.2&version=e5249526635907387904&part={url}",
-        "decryption_key": "F+MW7pLi5zfYPVy7vLilpA==",
-        "decryption_key_iv": "cv6m1KHV/ZbcajoJ7drfjw=="
+        "decrypted": true
     },
     "/tt/ssearch/detail/veiwbawikq": {
         "title": "Колхоз бригадиры: Айга бер чыга торган массовый агро-зоотехника журналы. – № 8",
@@ -114008,10 +114005,7 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/bhouhemmka/",
         "available_pages": 292,
         "downloaded": "limited",
-        "decrypted": true,
-        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1732734.2&version=e5249517231757387904&part={url}",
-        "decryption_key": "PRN7YS9kBeJv2egbmMUxFA==",
-        "decryption_key_iv": "PVb9K1nFOeH/FUrKfhNhcw=="
+        "decrypted": true
     },
     "/tt/ssearch/detail/ioraruyixv": {
         "title": "Әллә, өйләнергә инде?..: пьесалар",
@@ -115094,7 +115088,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1714524",
         "download_code": "nbrt_tatarica_Inv_T_1714524",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mpmidvvjoh/",
-        "available_pages": 41,
+        "available_pages": 404,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -115164,7 +115158,10 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/xgddvehjgm/",
         "available_pages": 52,
         "downloaded": "limited",
-        "decrypted": true
+        "decrypted": true,
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1669943.2&version=e5249499944227387904&part={url}",
+        "decryption_key": "t+/e1xsXrxL8H2SwFvF+PQ==",
+        "decryption_key_iv": "RCgwFKWmjha0dRCcfhnKcg=="
     },
     "/tt/ssearch/detail/scbvpskibr": {
         "title": "Акчарлаклар оча Иделдә: Җырлар, шигырьләр, поэмалар",
@@ -115826,7 +115823,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1708269",
         "download_code": "nbrt_tatarica_Inv_T_1708269",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/tdlgcrxzah/",
-        "available_pages": 17,
+        "available_pages": 164,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -116292,7 +116289,10 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/rlmafxhjzo/",
         "available_pages": 49,
         "downloaded": "limited",
-        "decrypted": true
+        "decrypted": true,
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1715867.2&version=e5249479113947387904&part={url}",
+        "decryption_key": "58ECwEC2UUri3BibvSGzVg==",
+        "decryption_key_iv": "AaP0ijFEvBAJ2seEChM6jQ=="
     },
     "/tt/ssearch/detail/ffcvhmnqrg": {
         "title": "Күңел тәрәзәләрем: шигырьләр",
@@ -116471,10 +116471,7 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/oogjefqdoo/",
         "available_pages": 212,
         "downloaded": "limited",
-        "decrypted": true,
-        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1743074.2&version=e5249478349617387904&part={url}",
-        "decryption_key": "v3ImIOOs09vXkk1dQScGfQ==",
-        "decryption_key_iv": "fDqfUI9XaeEPQQcldnCMMw=="
+        "decrypted": true
     },
     "/tt/ssearch/detail/crbpiaymje": {
         "title": "Сугыш язмалары: Төз. һ. сүз башы язучы С. Шакир",
@@ -116973,7 +116970,10 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ouhegraxxz/",
         "available_pages": 17,
         "downloaded": "limited",
-        "decrypted": true
+        "decrypted": true,
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1709167.2&version=e5249472119287387904&part={url}",
+        "decryption_key": "MLUEZOpLi+nIPl6B5E6IVA==",
+        "decryption_key_iv": "BiOsi6hSv+pPS89bw736lg=="
     },
     "/tt/ssearch/detail/tzijykrdkq": {
         "title": "Ильич нурлары: Очерклар, публицистик мәкаләләр, памфлетлар",
@@ -117128,10 +117128,7 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/hlpedmkeov/",
         "available_pages": 761,
         "downloaded": "limited",
-        "decrypted": true,
-        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1727513.2&version=e5249466024857387904&part={url}",
-        "decryption_key": "qzzpg9AUWL5MdOL1df9ONA==",
-        "decryption_key_iv": "+VpccjxAur/JyHw5TMf5hw=="
+        "decrypted": true
     },
     "/tt/ssearch/detail/cvshqnfgpf": {
         "title": "Кояшлы көн хакына: шигырьләр, поэмалар, роман-симфония",
@@ -117297,7 +117294,10 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/xsqlzxavgy/",
         "available_pages": 76,
         "downloaded": "limited",
-        "decrypted": true
+        "decrypted": true,
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1721048.2&version=e5249466024147387904&part={url}",
+        "decryption_key": "vFRuGE6sxgv7wK1zYASMuA==",
+        "decryption_key_iv": "sX0fTOLmL8RuHO/HG88YsA=="
     },
     "/tt/ssearch/detail/edmohfsnie": {
         "title": "Кенәри-читлек кошы: Роман, повесть, хикәя",
@@ -117735,7 +117735,10 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/fgimuahrun/",
         "available_pages": 73,
         "downloaded": "limited",
-        "decrypted": true
+        "decrypted": true,
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1711439.1&version=e5249460019287387904&part={url}",
+        "decryption_key": "Kdz1f9rOvR5euToT5Dpl3Q==",
+        "decryption_key_iv": "MnN9WP1Dfl4coPp5/yEXkA=="
     },
     "/tt/ssearch/detail/suckfkmuio": {
         "title": "Йолдызкай: повесть һәм хикәяләр",
@@ -118915,7 +118918,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1715901",
         "download_code": "nbrt_tatarica_Inv_T_1715901",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/bzaqdjxrfo/",
-        "available_pages": 39,
+        "available_pages": 388,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -118979,10 +118982,7 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/etqyaxfeyo/",
         "available_pages": 673,
         "downloaded": "limited",
-        "decrypted": true,
-        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1727443.2&version=e5249423696387387904&part={url}",
-        "decryption_key": "eZsqg24oLGndS4YpCfAO+w==",
-        "decryption_key_iv": "fXe1tvVWdaYAACpb0M4AUw=="
+        "decrypted": true
     },
     "/tt/ssearch/detail/qavytguzsu": {
         "title": "Сайланма әсәрләр: 4 томда. 3 том. – Пьесалар, балалар өчен әсәрләр, шигырьләр һәм поэмалар",
@@ -119152,7 +119152,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1721660",
         "download_code": "nbrt_tatarica_Inv_T_1721660",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/nqpetaoank/",
-        "available_pages": 41,
+        "available_pages": 404,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -120719,7 +120719,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1720948",
         "download_code": "nbrt_tatarica_Inv_T_1720948",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/hclxyhlsgq/",
-        "available_pages": 22,
+        "available_pages": 212,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -121804,7 +121804,10 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/nwywejsliw/",
         "available_pages": 34,
         "downloaded": "limited",
-        "decrypted": true
+        "decrypted": true,
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1717365.2&version=e5249399598227387904&part={url}",
+        "decryption_key": "fDeg9eZnfZay4gaFeprB6Q==",
+        "decryption_key_iv": "vyWHPM9pchFVIlG5ifoxWg=="
     },
     "/tt/ssearch/detail/reonircawc": {
         "title": "Көрәш еллары: Совет Армиясенең 40 еллыгына багышланган әдәби җ-к",
@@ -122440,7 +122443,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1734616",
         "download_code": "nbrt_tatarica_Inv_T_1734616",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/pigdwlnnvm/",
-        "available_pages": 47,
+        "available_pages": 466,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -124063,7 +124066,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1692989",
         "download_code": "nbrt_tatarica_Inv_T_1692989",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/zvoqxeturt/",
-        "available_pages": 38,
+        "available_pages": 376,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -124600,7 +124603,10 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qrtgidxvsr/",
         "available_pages": 38,
         "downloaded": "limited",
-        "decrypted": true
+        "decrypted": true,
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1720878.2&version=e5249378922567387904&part={url}",
+        "decryption_key": "vstkNw+pnumM3EuUEti4eA==",
+        "decryption_key_iv": "qCQr6kPhFr20RmNwBd2Wnw=="
     },
     "/tt/ssearch/detail/nfnkxiumil": {
         "title": "Сайланма әсәрләр",
@@ -125455,12 +125461,9 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1694110",
         "download_code": "nbrt_tatarica_Inv_1694110",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/kkczyhbwta/",
-        "available_pages": 77,
+        "available_pages": 762,
         "downloaded": "limited",
-        "decrypted": true,
-        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_1694110.2&version=e5249375256957387904&part={url}",
-        "decryption_key": "Lr+L1ceHSXG0KJtkwQQCEQ==",
-        "decryption_key_iv": "hud1WnKgAJUFbuTEXyi6PQ=="
+        "decrypted": true
     },
     "/tt/ssearch/detail/quvhvyqtlc": {
         "title": "Igen fabrige: xikәjә",
@@ -125630,7 +125633,7 @@
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1724982",
         "download_code": "nbrt_tatarica_Inv_T_1724982",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/apqhwzmvrg/",
-        "available_pages": 20,
+        "available_pages": 194,
         "downloaded": "limited",
         "decrypted": true
     },
