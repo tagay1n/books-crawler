@@ -4,3 +4,5 @@ token.json
 credentials.json
 __artifacts
 **/*.pyc
+common-crawl/__pycache__/*
+milli_kitaphana/__pycache__/*
