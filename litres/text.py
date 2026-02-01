@@ -1,3 +1,5 @@
+"""Downloads Litres text books by fetching JS page fragments, converts the structured content into markdown with images and footnotes, and stores artifacts under workdir."""
+
 import json
 import os
 import re

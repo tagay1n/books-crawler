@@ -1,3 +1,5 @@
+"""Downloads Milli Kitaphana documents by scraping cards, performing key exchange, fetching encrypted parts, and updating the index with download state."""
+
 import base64
 import copy
 import hashlib

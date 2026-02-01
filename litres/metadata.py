@@ -1,3 +1,5 @@
+"""Scrapes per-book metadata fields from Litres pages and stores them back into the index."""
+
 import json
 import re
 

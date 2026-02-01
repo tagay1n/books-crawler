@@ -1,3 +1,5 @@
+"""Typer CLI for Common Crawl tasks (index, download, upload)."""
+
 import typer
 
 app = typer.Typer()

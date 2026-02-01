@@ -1,3 +1,5 @@
+"""Merges a secondary index file into the main Milli Kitaphana index."""
+
 from utils import load_index_file, dump_index
 from rich import print
 

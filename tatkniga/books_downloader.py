@@ -1,3 +1,5 @@
+"""Downloads Tatkniga book and audiobook files, computes md5s, uploads to Yandex Disk, and handles metadata and dedup logic against external stores."""
+
 import hashlib
 import json
 import os

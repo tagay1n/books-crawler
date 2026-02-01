@@ -1,3 +1,5 @@
+"""Builds or refreshes the Common Crawl PDF index by reading parquet datasets and merging URL, offset, and script metadata into a local JSON file."""
+
 import json
 from datatrove.pipeline.readers import ParquetReader
 import os

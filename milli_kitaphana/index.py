@@ -1,3 +1,5 @@
+"""Scrapes Milli Kitaphana search pages, builds a metadata index, and merges it with existing records."""
+
 from utils import load_index_file, dump_index
 import requests
 import bs4 as bs

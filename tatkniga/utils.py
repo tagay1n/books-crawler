@@ -1,3 +1,5 @@
+"""Shared utilities for Tatkniga crawling: paths, Selenium helpers, persistence files, and filtering rules."""
+
 import json
 import os
 import sys

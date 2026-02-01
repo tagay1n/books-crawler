@@ -1,3 +1,5 @@
+"""Downloads Common Crawl PDFs either directly by URL or via WARC offsets, augments parquet-based records, validates PDFs, computes md5s, moves files into per-script folders, and persistently updates the index."""
+
 from utils import  _get_in_workdir, _load_index, _dump_index
 import os
 from rich import print

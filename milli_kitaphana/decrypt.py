@@ -1,3 +1,5 @@
+"""Decrypts downloaded document parts, merges PDFs with metadata, uploads artifacts to storage, and updates the index for completed items."""
+
 from multiprocessing.pool import ThreadPool
 import itertools
 from Crypto.Cipher import AES

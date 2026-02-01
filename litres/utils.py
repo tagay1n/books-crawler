@@ -1,3 +1,5 @@
+"""Utilities for Litres workflows: config loading, SID authentication, Selenium driver setup, hashing, and workdir path helpers."""
+
 import hashlib
 import os.path
 

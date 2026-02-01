@@ -1,3 +1,5 @@
+"""Scrapes Litres catalog pages to build a JSON index of titles, authors, URLs, and content types, merging with any existing index."""
+
 import json
 import os.path
 

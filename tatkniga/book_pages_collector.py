@@ -1,3 +1,5 @@
+"""Crawls Tatkniga starting from entry points to collect book page links, tracking visited pages for resumable runs."""
+
 from selenium.common.exceptions import StaleElementReferenceException
 
 from utils import load_visited_pages, load_books_pages, get_element, create_driver, write_if_new

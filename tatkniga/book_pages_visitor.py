@@ -1,3 +1,5 @@
+"""Visits each collected book page, extracts metadata and download links, and records results for free and paid items."""
+
 import csv
 import json
 

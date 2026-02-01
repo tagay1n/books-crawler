@@ -1,3 +1,5 @@
+"""Uploads PDFs to Yandex Disk and metadata zips to object storage."""
+
 import os.path
 from boto3 import Session
 

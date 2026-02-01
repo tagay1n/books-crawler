@@ -1,3 +1,5 @@
+"""Rich progress UI wrapper combining main status and per-part download/decrypt tasks."""
+
 from rich.progress import Progress, TextColumn, ProgressColumn, TaskProgressColumn, Text, SpinnerColumn, TimeElapsedColumn, FileSizeColumn, TransferSpeedColumn
 from rich.live import Live
 from rich.console import Group

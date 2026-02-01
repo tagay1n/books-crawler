@@ -1,3 +1,5 @@
+"""Splits pending index entries into N JSON sublists, optionally filtering by criteria."""
+
 import copy
 import json
 import os

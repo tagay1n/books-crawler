@@ -1,3 +1,5 @@
+"""Downloads Litres PDF books by fetching page metadata and images, reconstructs PDFs from image pages, and records file IDs and extensions in the index."""
+
 import io
 import json
 import os.path

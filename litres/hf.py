@@ -1,3 +1,5 @@
+"""Uploads prepared Litres markdown and images to a Hugging Face dataset."""
+
 from utils import get_in_workdir
 
 

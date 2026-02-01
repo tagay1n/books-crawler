@@ -1,3 +1,5 @@
+"""Helpers for locating, loading, and writing the Common Crawl index."""
+
 import os
 import json
 import datetime

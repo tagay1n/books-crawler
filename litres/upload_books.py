@@ -1,3 +1,5 @@
+"""Uploads Litres PDFs to Yandex Disk, publishes links, and writes document metadata to the monocorpus database."""
+
 import json
 import os.path
 import re

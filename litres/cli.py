@@ -1,3 +1,5 @@
+"""CLI entry points for Litres indexing, downloads, metadata, and uploads."""
+
 import typer
 
 app = typer.Typer()

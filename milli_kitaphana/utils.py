@@ -1,3 +1,5 @@
+"""Shared helpers for Milli Kitaphana: index paths, file locking, list management, and HTTP request wrappers."""
+
 import json
 import os
 import shutil

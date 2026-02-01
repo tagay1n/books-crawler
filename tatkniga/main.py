@@ -1,3 +1,5 @@
+"""Orchestrates Tatkniga crawl phases and validates config tokens."""
+
 import yadisk
 from src.tatkniga import book_pages_collector, book_pages_visitor
 

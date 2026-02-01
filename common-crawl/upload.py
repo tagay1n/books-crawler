@@ -1,3 +1,5 @@
+"""Uploads downloaded Common Crawl PDFs to Yandex Disk, deduplicates by md5 using the database, and marks index entries as uploaded."""
+
 from utils import _load_index, _dump_index
 from monocorpus_models import Document, Session
 from sqlalchemy import select

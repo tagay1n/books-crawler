@@ -1,3 +1,5 @@
+"""CLI entry points for Milli Kitaphana indexing, download, and maintenance tasks."""
+
 import typer
 
 app = typer.Typer()
