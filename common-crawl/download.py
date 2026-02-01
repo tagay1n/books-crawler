@@ -8,10 +8,9 @@ import pymupdf
 import pandas as pd
 import hashlib
 import shutil
-from urllib.parse import urlparse, unquote
+from urllib.parse import urlparse
 from rich.progress import track
 import re
-import datetime
 from warcio.archiveiterator import ArchiveIterator
 
 

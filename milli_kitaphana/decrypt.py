@@ -12,7 +12,6 @@ from progress_wrapper import ProgressWrapper
 import json
 import base64
 import copy
-import shutil
 from upload_docs import upload_doc, upload_metadata
 import hashlib
 

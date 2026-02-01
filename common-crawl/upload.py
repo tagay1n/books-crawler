@@ -3,7 +3,7 @@
 from utils import _load_index, _dump_index
 from monocorpus_models import Document, Session
 from sqlalchemy import select
-from yadisk_client import YaDisk, ConflictResolution
+from yadisk_client import YaDisk
 import os
 from rich.progress import track
 
