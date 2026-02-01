@@ -45,7 +45,7 @@ class Document(Model):
     class Meta:
         base_id = "appyygYGhPHwIQPO2"
         table_name = "tblmCi8f63d4YxEWF"
-        api_key = "REDACTED"
+        api_key = os.environ.get("AIRTABLE_API_KEY")
 
     def __str__(self):
         return self.to_record()['fields'].__str__()
