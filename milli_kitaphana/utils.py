@@ -74,20 +74,14 @@ def get_not_downloaded_docs(index, limited_only):
     for card_path, meta in index.items():
         if meta.get("broken", False):
             continue
-        
-        if meta.get("downloaded"):
+
+        if not limited_only:
+            if meta.get("downloaded") is None:
+                not_downloaded_docs.append((card_path, meta))
             continue
-        
-        # Here we try to get limited docs only. To do this we sort out only those having:
-        # - known access flag (can be just after indexing but before first attepmt to download) 
-        # or
-        # - if access flag exists and it is limited (meaning we tried to download the doc before and found out it is limited)
-        if limited_only:
-            _access = meta.get("access")
-            if _access := meta.get("access") and _access != 'limited':
-                continue
-        
-        not_downloaded_docs.append((card_path, meta))
+
+        if meta.get("downloaded") == "limited" and meta.get("access") != "open":
+            not_downloaded_docs.append((card_path, meta))
 
     not_downloaded_docs = sorted(not_downloaded_docs, key=lambda x: x[1].get('publish_year', "").strip('[]'), reverse=True)
     return not_downloaded_docs

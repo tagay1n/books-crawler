@@ -43,7 +43,6 @@ def merge_index(path: str):
 @app.command()
 def split(
     parts: int = typer.Option(..., "--parts", "-p", help="Number of sublists to create"),
-    with_limited: bool = False,
     dest: str = None,
     prefix: str = "index-part",
 ):
@@ -51,7 +50,7 @@ def split(
     Split pending docs into N sublists stored under dest folder
     """
     import split_index
-    split_index.split_lists(parts, with_limited, dest, prefix)
+    split_index.split_lists(parts, dest, prefix)
     
     
 if __name__ == "__main__":

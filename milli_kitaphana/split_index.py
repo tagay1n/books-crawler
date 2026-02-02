@@ -9,12 +9,12 @@ from rich import print
 from utils import dump_index, get_list_file_loc, get_lists_dir, get_not_downloaded_docs, load_index_file
 
 
-def split_lists(parts: int, with_limited: bool = False, dest: str = None, prefix: str = None):
+def split_lists(parts: int, dest: str = None, prefix: str = None):
     if parts < 1:
         raise ValueError("Parts must be greater than zero")
 
     index = load_index_file()
-    docs = get_not_downloaded_docs(index, with_limited)
+    docs = get_not_downloaded_docs(index, limited_only=False)
 
     filters = _load_filter()
     if filters:
