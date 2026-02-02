@@ -132,13 +132,13 @@ def decrypt_doc_parts(context):
             _metadata["keywords"] = ", ".join(tags)
         acc.set_metadata(_metadata)
 
-                # save the final pdf
-                file_name = _safe_filename(scribed_metadata["title"])
-                if len(file_name) > 100:
-                    file_name = f"{file_name[:98]}__"
-                output_path = os.path.normpath(os.path.join(context["work_dir"], f"{file_name}.pdf"))
-                with open(output_path, "wb") as file:
-                    file.write(acc.write())
+        # save the final pdf
+        file_name = _safe_filename(scribed_metadata["title"])
+        if len(file_name) > 100:
+            file_name = f"{file_name[:98]}__"
+        output_path = os.path.normpath(os.path.join(context["work_dir"], f"{file_name}.pdf"))
+        with open(output_path, "wb") as file:
+            file.write(acc.write())
 
         return output_path
         

@@ -69,18 +69,28 @@ def get_list_file_loc(name, lists_dir=None):
     return os.path.normpath(os.path.join(lists_dir, filename))
 
 
-def get_not_downloaded_docs(index, with_limited, limit=None):
+def get_not_downloaded_docs(index, limited_only):
     not_downloaded_docs = []
     for card_path, meta in index.items():
         if meta.get("broken", False):
             continue
-
-        downloaded = meta.get("downloaded")
-        if not downloaded or (with_limited and downloaded != 'full' and not meta.get("enc_part_paths")):
-            not_downloaded_docs.append((card_path, meta))
+        
+        if meta.get("downloaded"):
+            continue
+        
+        # Here we try to get limited docs only. To do this we sort out only those having:
+        # - known access flag (can be just after indexing but before first attepmt to download) 
+        # or
+        # - if access flag exists and it is limited (meaning we tried to download the doc before and found out it is limited)
+        if limited_only:
+            _access = meta.get("access")
+            if _access := meta.get("access") and _access != 'limited':
+                continue
+        
+        not_downloaded_docs.append((card_path, meta))
 
     not_downloaded_docs = sorted(not_downloaded_docs, key=lambda x: x[1].get('publish_year', "").strip('[]'), reverse=True)
-    return not_downloaded_docs[:limit]
+    return not_downloaded_docs
 
 
 @contextmanager

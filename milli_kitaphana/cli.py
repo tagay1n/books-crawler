@@ -14,12 +14,12 @@ def index():
     
     
 @app.command()
-def download(with_limited: bool = False, limit: int = None, proxy=None, index_name: str = None):
+def download(limited: bool = False, index_name: str = None):
     """
     Read index file and download documents what have not been downloaded yet
     """
     import download
-    download.download(with_limited, limit, proxy, index_name)
+    download.download(limited, index_name)
     
 
 @app.command()

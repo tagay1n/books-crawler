@@ -6,7 +6,7 @@ Downloads can be split into sublists to run workers in parallel.
 ## Commands
 - `python milli_kitaphana/cli.py index` - build or update `__artifacts/milli.kitaphana/books-index.json`.
 - `python milli_kitaphana/cli.py split --parts N` - split pending docs into N sublists.
-- `python milli_kitaphana/cli.py download` - download missing docs (supports `--proxy`).
+- `python milli_kitaphana/cli.py download` - download missing docs (supports `--proxy` and `--limited`).
 - `python milli_kitaphana/cli.py decrypt` - decrypt downloaded parts into PDFs.
 - `python milli_kitaphana/cli.py merge-index <path>` - merge a partial index into the main one.
 
