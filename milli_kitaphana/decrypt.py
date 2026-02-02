@@ -4,6 +4,7 @@ from multiprocessing.pool import ThreadPool
 import itertools
 from Crypto.Cipher import AES
 import os
+import re
 from Crypto.Util.Padding import unpad
 import zipfile
 import pymupdf
@@ -131,12 +132,13 @@ def decrypt_doc_parts(context):
             _metadata["keywords"] = ", ".join(tags)
         acc.set_metadata(_metadata)
 
-        # save the final pdf
-        file_name = f"{scribed_metadata['title'].strip().rstrip('.').replace('/', '-')}"
-        file_name = file_name if len(file_name) < 100 else f"{file_name[:97]}..."
-        output_path = os.path.normpath(os.path.join(context["work_dir"], f"{file_name}.pdf"))
-        with open(output_path, "wb") as file:
-            file.write(acc.write())
+                # save the final pdf
+                file_name = _safe_filename(scribed_metadata["title"])
+                if len(file_name) > 100:
+                    file_name = f"{file_name[:98]}__"
+                output_path = os.path.normpath(os.path.join(context["work_dir"], f"{file_name}.pdf"))
+                with open(output_path, "wb") as file:
+                    file.write(acc.write())
 
         return output_path
         
@@ -205,6 +207,22 @@ def _get_toc(context, meta_dir, parts):
                 page_no = 1 + int(i['dest'][0])
                 toc.append([1, title, page_no if page_no <= available_pages else -1])
     return toc
+
+
+def _safe_filename(name: str, default: str = "document") -> str:
+    # Remove Windows-invalid characters and control chars, then trim trailing dots/spaces.
+    cleaned = re.sub(r'[<>:"/\\\\|?*]', "-", name)
+    cleaned = "".join(ch for ch in cleaned if ord(ch) >= 32).strip().rstrip(".")
+    if not cleaned:
+        cleaned = default
+    reserved = {
+        "con", "prn", "aux", "nul",
+        "com1", "com2", "com3", "com4", "com5", "com6", "com7", "com8", "com9",
+        "lpt1", "lpt2", "lpt3", "lpt4", "lpt5", "lpt6", "lpt7", "lpt8", "lpt9",
+    }
+    if cleaned.lower() in reserved:
+        cleaned = f"_{cleaned}"
+    return cleaned
 
 
 def _calculate_md5(file_path: str):

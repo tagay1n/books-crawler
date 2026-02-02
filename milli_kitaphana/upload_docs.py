@@ -1,6 +1,7 @@
 """Uploads PDFs to Yandex Disk and metadata zips to object storage."""
 
 import os.path
+import posixpath
 from boto3 import Session
 
 
@@ -8,7 +9,7 @@ from yadisk_client import YaDisk, ConflictResolution
 
 
 def upload_doc(path_to_pdf, config, is_limited):
-    remote_dir = os.path.join(config['yandex']['disk']['target_dir'], "limited" if is_limited else "full")
+    remote_dir = posixpath.join(config['yandex']['disk']['target_dir'], "limited" if is_limited else "full")
     client = YaDisk(config['yandex']['disk']['oauth_token'])
 
     _, _ = client.upload_or_replace(

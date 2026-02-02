@@ -82,7 +82,7 @@ class ProgressWrapper():
         for ct in to_remove:
             try:
                 del self._aux._tasks[ct.id]
-            except _:
+            except Exception:
                 pass
 
 
