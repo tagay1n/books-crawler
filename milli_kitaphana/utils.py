@@ -31,7 +31,7 @@ def load_index_file(index_file=None):
     if not index_file:
         index_file = get_index_file_loc()
     if os.path.exists(index_file):
-        with open(index_file, "r") as f:
+        with open(index_file, "r", encoding="utf-8") as f:
             books = json.load(f)
     else:
         books = {}
@@ -48,7 +48,7 @@ def dump_index(idx, index_file=None):
     if not index_file:
         index_file = get_index_file_loc()
     tmp_file = f"{index_file}.{os.getpid()}_part"
-    with open(tmp_file, "w") as f:
+    with open(tmp_file, "w", encoding="utf-8") as f:
         json.dump(idx, f, ensure_ascii=False, indent=4)
     shutil.move(tmp_file, index_file)
 
