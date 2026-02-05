@@ -56,7 +56,7 @@ def decrypt():
                 upload_doc(
                     path_to_pdf=path_to_pdf,
                     config=config,
-                    is_limited=meta["access"] == "limited"
+                    is_limited=meta["downloaded"] == "limited"
                 )
                 
                 # upload metadata to s3

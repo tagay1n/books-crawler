@@ -136,12 +136,12 @@ def _scrap_doc_card(card_path, meta, proxies):
                 meta['classification'] = udk.group(1).strip()
 
             return None
-        elif "Свободный доступ из сети Интернет" in __m:
-            meta["access"] = "open"
-            return None
-        elif 'Ограниченный доступ из сети Интернет' in __m:
-            meta["access"] = "limited"
-            return None
+        # elif "Свободный доступ из сети Интернет" in __m:
+        #     meta["access"] = "open"
+        #     return None
+        # elif 'Ограниченный доступ из сети Интернет' in __m:
+        #     meta["access"] = "limited"
+        #     return None
         elif "Коллекция:" in __m:
             return None
 
@@ -166,10 +166,6 @@ def _scrap_doc_card(card_path, meta, proxies):
                                  .strip('/')
                                  .replace('-', '_'))
     meta['doc_card_url'] = r.url
-
-
-
-
 
 
 def _get_details(context):
@@ -325,8 +321,7 @@ def _download_by_code(context):
         # download the parts
         counter = itertools.count()
         context['progress'].main(f"Downloaded (0/{parts_count}) parts")
-        if not context['meta'].get('access'):
-            context['meta']['access'] = "open"
+        context['meta']['access'] = "open"
         enc_part_paths = pool.map(lambda en: _download_part_task(
             context, en[1], en[0], counter, parts_count), enumerate(parts)
         )
@@ -344,7 +339,7 @@ def _download_by_code(context):
 def _download_part_task(context, part, num, counter, total):
     if not (part_url := part.get("url")):
         print(f"Part {num} does not have an URL")
-        context['access'] = "limited"
+        context['meta']['access'] = "limited"
         return None
     res = num, part_url, download_part(context, part_url)
     context['progress'].main(f"Downloaded ({next(counter) + 1}/{total}) parts")
