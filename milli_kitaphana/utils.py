@@ -10,6 +10,10 @@ import requests
 import yaml
 import zipfile
 
+# Disable SSL warnings
+requests.packages.urllib3.disable_warnings(
+    requests.packages.urllib3.exceptions.InsecureRequestWarning)
+
 
 def get_in_workdir(file):
     """Return file in the current directory where script file is located"""
@@ -69,19 +73,21 @@ def get_list_file_loc(name, lists_dir=None):
     return os.path.normpath(os.path.join(lists_dir, filename))
 
 
-def get_not_downloaded_docs(index, limited_only):
+def get_not_downloaded_docs(index, limited):
     not_downloaded_docs = []
     for card_path, meta in index.items():
         if meta.get("broken", False):
             continue
 
-        if not limited_only:
-            if meta.get("downloaded") is None:
+        if meta.get("downloaded") is not None:
+            continue
+
+        if limited:
+            if meta.get("needs_full_download"):
                 not_downloaded_docs.append((card_path, meta))
             continue
 
-        if meta.get("downloaded") == "limited" and meta.get("access") != "open":
-            not_downloaded_docs.append((card_path, meta))
+        not_downloaded_docs.append((card_path, meta))
 
     not_downloaded_docs = sorted(not_downloaded_docs, key=lambda x: x[1].get('publish_year', "").strip('[]'), reverse=True)
     return not_downloaded_docs

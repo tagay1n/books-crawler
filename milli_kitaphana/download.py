@@ -48,7 +48,7 @@ requests.packages.urllib3.disable_warnings(
 DETAILS_URL = HOST + "/tt/dl/edoc2"
 
 
-def download(limited_only, index_name):
+def download(limited, index_name):
     global_index_file = get_index_file_loc()
     worker_index_file = get_list_file_loc(index_name) if index_name else global_index_file
     worker_is_global = worker_index_file == global_index_file
@@ -58,7 +58,7 @@ def download(limited_only, index_name):
     # a dictionary with download code as key and book's card path as a value
     # the card path is a key in the index 
     code_to_card_path = {v['download_code']: k for k, v in global_index.items() if 'download_code' in v}
-    not_downloaded_docs = get_not_downloaded_docs(index_part, limited_only)
+    not_downloaded_docs = get_not_downloaded_docs(index_part, limited)
     if not not_downloaded_docs:
         print("No docs for downloading, exiting...")
         return
@@ -68,11 +68,7 @@ def download(limited_only, index_name):
     
     for card_path, meta in not_downloaded_docs:
         try:
-            print(card_path)
             _scrap_doc_card(card_path, meta, proxies=None)
-            if limited_only and (_access := meta.get("access")) and _access != 'limited':
-                print(f"Skipping document '{card_path}' because only limited docs option set and the document is open")
-                continue
             download_code = meta['download_code']
             if (existing_card_path := code_to_card_path.get(download_code, None)) and existing_card_path != card_path:
                 # here if item with such download code already exists in the index

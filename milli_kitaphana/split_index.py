@@ -14,7 +14,7 @@ def split_lists(parts: int, dest: str = None, prefix: str = None):
         raise ValueError("Parts must be greater than zero")
 
     index = load_index_file()
-    docs = get_not_downloaded_docs(index, limited_only=False)
+    docs = get_not_downloaded_docs(index, limited=False)
 
     filters = _load_filter()
     if filters:
