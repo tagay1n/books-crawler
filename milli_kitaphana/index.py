@@ -14,12 +14,16 @@ requests.packages.urllib3.disable_warnings(
     requests.packages.urllib3.exceptions.InsecureRequestWarning)
 
 
-entry_point = "https://kitap.tatar.ru/tt/ssearch/ecollection/?attr=text_t&q=*&sort=record-create-date&q=tat&attr=code-language_t"
+ENTRY_POINT = "https://kitap.tatar.ru/tt/ssearch/ecollection/"
+LANGUAGE_QUERIES = ["tat", "ara"]
 
 
 def index():
     print("Creating index of books")
-    new_index = _create_newest_index()
+    new_index = {}
+    for lang_code in LANGUAGE_QUERIES:
+        lang_index = _create_newest_index(lang_code)
+        new_index.update(lang_index)
     print("Loading old index of books")
     old_index = load_index_file()
     _merged_index = _merge_indexes(new_index, old_index)
@@ -27,7 +31,7 @@ def index():
     dump_index(_merged_index)
 
 
-def _create_newest_index():
+def _create_newest_index(language_code):
     next_page = 1
     total_docs = None
     new_metas = {}
@@ -39,13 +43,21 @@ def _create_newest_index():
         TimeRemainingColumn(),
         BarColumn(),
     ) as progress:
-        task = progress.add_task("Indexing pages", start=True, total=None)
+        task = progress.add_task(f"Indexing pages ({language_code})", start=True, total=None)
         total_pages = None
 
         while next_page:
+            params = [
+                ("attr", "text_t"),
+                ("q", "*"),
+                ("sort", "record-create-date"),
+                ("q", language_code),
+                ("attr", "code-language_t"),
+                ("page", next_page),
+            ]
             with requests.get(
-                url=entry_point,
-                params={"page": next_page},
+                url=ENTRY_POINT,
+                params=params,
                 headers={
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'},
                 verify=False
