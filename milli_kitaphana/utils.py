@@ -79,15 +79,16 @@ def get_not_downloaded_docs(index, limited):
         if meta.get("broken", False):
             continue
 
-        if meta.get("downloaded") is not None:
-            continue
-
         if limited:
-            if meta.get("needs_full_download"):
+            if not meta.get("needs_full_download"):
+                continue
+            downloaded = meta.get("downloaded")
+            if downloaded is None or downloaded == "limited":
                 not_downloaded_docs.append((card_path, meta))
             continue
 
-        not_downloaded_docs.append((card_path, meta))
+        if meta.get("downloaded") is None:
+            not_downloaded_docs.append((card_path, meta))
 
     not_downloaded_docs = sorted(not_downloaded_docs, key=lambda x: x[1].get('publish_year', "").strip('[]'), reverse=True)
     return not_downloaded_docs
