@@ -22,3 +22,4 @@ warcio==1.7.5
 SQLAlchemy==2.0.46
 pyairtable==3.3.0
 yadisk==3.4.0
+psycopg[binary]==3.2.9
