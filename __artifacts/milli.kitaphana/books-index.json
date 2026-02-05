@@ -1,4 +1,396 @@
 {
+    "/tt/ssearch/detail/soqmayfxqa": {
+        "title": "Мәгариф: Айлык иҗтимагый-педагогик hәм фәнни-әдәби гомумитатар журналы. – № 8",
+        "publish_year": "1992",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "limited",
+        "integrated_description": [
+            "Мәгариф = Просвещение : Айлык иҗтимагый-педагогик hәм фәнни-әдәби гомумитатар журналы / гл. ред. Г. Шәмсетдинов",
+            "420066, Казан ш. Декабристлар ур., 2 нче йорт, 47 нче а/я : \"ТАТМЕДИА\" Ачык акционерлык җәмгыяте, 1913",
+            "ISSN 0868-8001.№ 8 ",
+            "1992",
+            "Айга бер тапкыр чыга"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_Magarif_1992_8",
+        "download_code": "nbrt_pRT_Magarif_1992_8",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/soqmayfxqa/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 7
+    },
+    "/tt/ssearch/detail/brzgaiftax": {
+        "title": "Мәгариф: Айлык иҗтимагый-педагогик hәм фәнни-әдәби гомумитатар журналы. – № 9",
+        "publish_year": "1992",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "limited",
+        "integrated_description": [
+            "Мәгариф = Просвещение : Айлык иҗтимагый-педагогик hәм фәнни-әдәби гомумитатар журналы / гл. ред. Г. Шәмсетдинов",
+            "420066, Казан ш. Декабристлар ур., 2 нче йорт, 47 нче а/я : \"ТАТМЕДИА\" Ачык акционерлык җәмгыяте, 1913",
+            "ISSN 0868-8001.№ 9 ",
+            "1992",
+            "Айга бер тапкыр чыга"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_Magarif_1992_9",
+        "download_code": "nbrt_pRT_Magarif_1992_9",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/brzgaiftax/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 7
+    },
+    "/tt/ssearch/detail/tcwresnozi": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 28 июль (№ 173)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.28 июль (№ 173) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_173",
+        "download_code": "nbrt_pRT_kt_1940_173",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/tcwresnozi/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/gdwzrvlqxm": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 30 июль (№ 174)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.30 июль (№ 174) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_174",
+        "download_code": "nbrt_pRT_kt_1940_174",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/gdwzrvlqxm/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/hnmffiyqzl": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 31 июль (№ 175)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.31 июль (№ 175) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_175",
+        "download_code": "nbrt_pRT_kt_1940_175",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/hnmffiyqzl/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/ovwbhqsolh": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 1 август (№ 176)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.1 август (№ 176) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_176",
+        "download_code": "nbrt_pRT_kt_1940_176",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ovwbhqsolh/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/ipnkddypef": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 2 август (№ 177)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.2 август (№ 177) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_177",
+        "download_code": "nbrt_pRT_kt_1940_177",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ipnkddypef/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/rrttflqvbf": {
+        "title": "Урта мәктәп программалары : химия",
+        "publish_year": "1941",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Педагогика",
+            "Средняя школа",
+            "Программы",
+            "Химия",
+            "Урта мәктәп",
+            "Программалар"
+        ],
+        "author": "Кильдеев, А.",
+        "access": "open",
+        "classification": "УДК 375(07)",
+        "integrated_description": [
+            "Урта мәктәп программалары : химия / җав. ред. А. Кильдеев",
+            "Казан : Татгосиздат, 1941",
+            "29 б",
+            "УДК 375(07)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_990_41",
+        "download_code": "nbrt_tatarica_Inv_990_41",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/rrttflqvbf/",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 32
+    },
+    "/tt/ssearch/detail/wyvaffxssb": {
+        "title": "Бал турында хикәяләр",
+        "publish_year": "1967",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Балалар әдәбияты",
+            "Татар әдәбияты",
+            "Татарская литература",
+            "Детская литература",
+            "Матур әдәбият",
+            "Шигырьләр",
+            "Стихи",
+            "Научно-художественная литература"
+        ],
+        "author": "Шәрифуллин; Гәрәй; Карамышев, В. В.; Шәрәфиева, Р. Г.",
+        "access": "limited",
+        "integrated_description": [
+            "Шәрифуллин, Рәфикъ.Бал турында хикәяләр / Рәфикъ Шәрифуллин",
+            "[ред. Р. Гәрәй]",
+            "[худ. В. В. Карамышев]",
+            "Казан : Татарстан китап нәшрияты, 1967",
+            "39 б.: рәс",
+            "Кече яшьтәге мәктәп балалары өчен",
+            "Оглавление.ББК 83.84(2=632.3)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_mAdab_Inv_44100",
+        "download_code": "nbrt_mAdab_Inv_44100",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/wyvaffxssb/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 5
+    },
+    "/tt/ssearch/detail/ufdoyqssno": {
+        "title": "Язмышлар яңарганда : хикәяләр, нәсерләр, очерклар, мәзәкләр",
+        "publish_year": "1982",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Хикәяләр",
+            "Нәсерләр",
+            "Очерклар",
+            "Мәзәкләр",
+            "Парчалар",
+            "Татар әдәбияты",
+            "Татарская литература",
+            "Матур әдәбият",
+            "Художественная литература"
+        ],
+        "author": "Касыймов; Вәлиев; Сибгатуллина, С.; Пахомов, Ю.",
+        "access": "limited",
+        "integrated_description": [
+            "Язмышлар яңарганда : хикәяләр, нәсерләр, очерклар, мәзәкләр /",
+            "[төз.: Э. Касыймов, Р. Вәлиев]",
+            "[С. Сибгатиуллина]",
+            "[Ю. Пахомов]",
+            "Казан : Татарстан китап нәшрияты, 1982",
+            "168 б",
+            "Олы яшьтәге балаларга",
+            "Эчт.: Исәнме, әни!, Мәхәббәт/ А. Сафин",
+            "Кипкән җиләк тәме/ Р. Вәлиев һ.б",
+            "Мәхәббәт / Альберт Сафин.Вәлиев, Р.Кипкән җиләк тәме / Равил Вәлиев.Гыйззәтуллин, Р.Таш / Рәүф Гыйззәтуллин.Касыймов, Э.Күңелдәге эзләр / Эдуард Касыймов.Кашапов, Газиз.Әти йолдызы",
+            "Җан җәрәхәте / Газиз Кашапов.Чурбанов, А.Кайту / Александр Чурбанов",
+            "тәрҗ. Ә. Гайнуллин.Бәшәр, Р.Югалту / Рәшит Бәшәр.Хисаметдинов, Р.Буран / Рәхим Хисаметдинов.Диндаров, И.Чүкеч җыры / Ирек Диндаров.Хөснуллин, Х.Беренче автомобиль / Хәниф Хөснуллин.Ихсанов, И.Гармун",
+            "Курай",
+            "Юкәләр / Илгиз Ихсанов.Сәлимҗанов, Р.Һәйкәл моңы",
+            "Учаклар",
+            "Банкрот / Рафис Сәлимҗанов.Юнысов, Р.Күчә-күчә / Рәшит Юнысов.Мадьяров, Н.\"Минем күргәннәрем\"",
+            "Эрудит",
+            "Коперникны да танымаганнар",
+            "Әйди, алмашабыз",
+            "Мотыйк нотыгы",
+            "Мәзәкләр / Нәҗип Мадьяров.Вәлиев, Р.Бер оя бөркетләре / Равил Вәлиев.Мөхәммәтшин, Х.Биектә һәм түбәндә / Хәмит Мөхәммәтшин.Гайнуллин, Ә.Тынгысыз йөрәк / Әхәт Гайнуллин.Кашапов, Г.Биеклектә танышу / Газиз Кашапов.Шәйдуллин, Ш.Очрашу",
+            "Дага / Шамил Шәйдуллин.Хисмәтуллин, Р.Яшьлекнең гүзәл мизгелләре / Рахмай Хисмәтуллин.Абдуллин, Ф.Юллар, юллар.. / Фәтхулла Абдуллин.Касыймов, Э.Сандугачлар килсен калага / Эдуард Касыймов",
+            "Оглавление.ББК 84(2=632.3)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_mAdab_Inv_57768",
+        "download_code": "nbrt_mAdab_Inv_57768",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ufdoyqssno/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 18
+    },
+    "/tt/ssearch/detail/dsacnakzel": {
+        "title": "Мәгариф: Айлык иҗтимагый-педагогик hәм фәнни-әдәби гомумитатар журналы. – № 6",
+        "publish_year": "1992",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "limited",
+        "integrated_description": [
+            "Мәгариф = Просвещение : Айлык иҗтимагый-педагогик hәм фәнни-әдәби гомумитатар журналы / гл. ред. Г. Шәмсетдинов",
+            "420066, Казан ш. Декабристлар ур., 2 нче йорт, 47 нче а/я : \"ТАТМЕДИА\" Ачык акционерлык җәмгыяте, 1913",
+            "ISSN 0868-8001.№ 6 ",
+            "1992",
+            "Айга бер тапкыр чыга"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_Magarif_1992_6",
+        "download_code": "nbrt_pRT_Magarif_1992_6",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/dsacnakzel/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 7
+    },
+    "/tt/ssearch/detail/jswhfnhcyl": {
+        "title": "Мәгариф: Айлык иҗтимагый-педагогик hәм фәнни-әдәби гомумитатар журналы. – № 7",
+        "publish_year": "1992",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "limited",
+        "integrated_description": [
+            "Мәгариф = Просвещение : Айлык иҗтимагый-педагогик hәм фәнни-әдәби гомумитатар журналы / гл. ред. Г. Шәмсетдинов",
+            "420066, Казан ш. Декабристлар ур., 2 нче йорт, 47 нче а/я : \"ТАТМЕДИА\" Ачык акционерлык җәмгыяте, 1913",
+            "ISSN 0868-8001.№ 7 ",
+            "1992",
+            "Айга бер тапкыр чыга"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_Magarif_1992_7",
+        "download_code": "nbrt_pRT_Magarif_1992_7",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/jswhfnhcyl/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 7
+    },
+    "/tt/ssearch/detail/tkcbrzdmvu": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 23 июль (№ 168)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.23 июль (№ 168) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_168",
+        "download_code": "nbrt_pRT_kt_1940_168",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/tkcbrzdmvu/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/qehmbhqyup": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 24 июль (№ 169)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.24 июль (№ 169) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_169",
+        "download_code": "nbrt_pRT_kt_1940_169",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qehmbhqyup/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/ujmccbwajk": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 25 июль (№ 170)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.25 июль (№ 170) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_170",
+        "download_code": "nbrt_pRT_kt_1940_170",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ujmccbwajk/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/ulozbjphwt": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 26 июль (№ 171)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.26 июль (№ 171) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_171",
+        "download_code": "nbrt_pRT_kt_1940_171",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ulozbjphwt/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/xmdppbvhwk": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 27 июль (№ 172)",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
+        "integrated_description": [
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.27 июль (№ 172) ",
+            "1940"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_172",
+        "download_code": "nbrt_pRT_kt_1940_172",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/xmdppbvhwk/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/slipwlacrn": {
+        "title": "Ничек, нинди, ни төсле : балалар өчен шигырьләр",
+        "publish_year": "2000",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Балалар әдәбияты",
+            "Татар әдәбияты",
+            "Шигырьләр",
+            "Детская литература",
+            "Стихи",
+            "Татарская литература"
+        ],
+        "author": "Шәрифуллина",
+        "access": "limited",
+        "integrated_description": [
+            "Шәрифуллина, Эльмира.Ничек, нинди, ни төсле : балалар өчен шигырьләр / Эльмира Шәрифуллина",
+            "Казан : Хәтер, 2000",
+            "96 б.: рәс",
+            "Кече яшьтәге мәктәп балаларына",
+            "ISBN 5-900004-94-5",
+            "Оглавление.ББК 84(2=632.3)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_mAdab_Inv_T_1556247",
+        "download_code": "nbrt_mAdab_Inv_T_1556247",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/slipwlacrn/",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 10
+    },
     "/tt/ssearch/detail/eoavywibsd": {
         "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 18 июль (№ 164)",
         "publish_year": "1940",
@@ -342,23 +734,6 @@
         "downloaded": "full",
         "decrypted": true
     },
-    "/tt/ssearch/detail/jcnsfbczkv": {
-        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 9 июль (№ 156) !",
-        "publish_year": "1940",
-        "lang": "Татарский",
-        "collection": "Периодические издания Республики Татарстан",
-        "access": "open",
-        "integrated_description": [
-            "Кызыл Татарстан : иҗтимагый-сәяси газета",
-            "Казан, 1924–1951.9 июль (№ 156) ",
-            "1940"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_156",
-        "download_code": "nbrt_pRT_kt_1940_156",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/jcnsfbczkv/",
-        "downloaded": "full",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/vbbzfixsqh": {
         "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 10 июль (№ 157)",
         "publish_year": "1940",
@@ -396,41 +771,22 @@
         "decrypted": true,
         "available_pages": 7
     },
-    "/tt/ssearch/detail/izquoabrpd": {
-        "title": "Моабит төрмәсендә язылган шигырьләр",
-        "publish_year": "1953",
+    "/tt/ssearch/detail/jcnsfbczkv": {
+        "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 9 июль (№ 156)",
+        "publish_year": "1940",
         "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Татар әдәбияты",
-            "Татарская литература",
-            "Шигырьләр",
-            "Стихи",
-            "Җәлил М.",
-            "Джалиль М.",
-            "Матур әдәбият",
-            "Художественная литература"
-        ],
-        "author": "Җәлил; Кашшаф; Кашшаф; Альменов, Б.; Хөснетдинов, Ш.",
-        "access": "limited",
+        "collection": "Периодические издания Республики Татарстан",
+        "access": "open",
         "integrated_description": [
-            "Җәлил, Муса.Моабит төрмәсендә язылган шигырьләр / М. Җәлил",
-            "[ред., кереш сүз язучы Г. Кашшаф]",
-            "[тышл., тит. рәс. Б. Альменов]",
-            "Казан : Таткнигоиздат, 1953",
-            "206 б.: портр., 3 б. рәс",
-            "Иск.: б. 197-203",
-            "Прижизненные издания М. Джалиля",
-            "Оглавление.ББК 84(2=632.3)"
+            "Кызыл Татарстан : иҗтимагый-сәяси газета",
+            "Казан, 1924–1951.9 июль (№ 156) ",
+            "1940"
         ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_mAdab_Inv_6037",
-        "download_code": "nbrt_mAdab_Inv_6037",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/izquoabrpd/",
-        "downloaded": "limited",
-        "decrypted": true,
-        "available_pages": 22,
-        "needs_full_download": true,
-        "matched_by": "doc_url"
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_kt_1940_156",
+        "download_code": "nbrt_pRT_kt_1940_156",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/jcnsfbczkv/",
+        "downloaded": "full",
+        "decrypted": true
     },
     "/tt/ssearch/detail/ovcrqcdvns": {
         "title": "Җәяүле буран: повесть һәм хикәяләр",
@@ -680,64 +1036,41 @@
         "decrypted": true,
         "available_pages": 7
     },
-    "/tt/ssearch/detail/olrogduzac": {
-        "title": "Көрәш җырлары: соңгы шагыйрьләрдән җыентык",
-        "publish_year": "1923",
+    "/tt/ssearch/detail/izquoabrpd": {
+        "title": "Моабит төрмәсендә язылган шигырьләр",
+        "publish_year": "1953",
         "lang": "Татарский",
         "collection": "Матур әдәбият",
         "tags": [
             "Татар әдәбияты",
-            "Шигърият",
-            "Шагыйрьләр"
+            "Татарская литература",
+            "Шигырьләр",
+            "Стихи",
+            "Җәлил М.",
+            "Джалиль М.",
+            "Матур әдәбият",
+            "Художественная литература"
         ],
-        "author": "Бурнаш Ф.",
-        "access": "open",
-        "classification": "УДК Т2",
+        "author": "Җәлил; Кашшаф; Кашшаф; Альменов, Б.; Хөснетдинов, Ш.",
+        "access": "limited",
         "integrated_description": [
-            "Көрәш җырлары : соңгы шагыйрьләрдән җыентык",
-            "Казан : Татарстан дәүләт нәшрияты, 1923",
-            "239 б",
-            "Прижизненное издание М. Джалиля",
-            "Г. Тукайның үлүенә ун ел тулу хатирәсенә багышлана",
-            "Китап гарәп графикасында",
-            "Содерж.: Эчт.: Ш. Бабич, Н. Исәнбәт, Һ. Такташ, К. Нәҗми, М. Җәлил, Б. Рәхмәт, З. Бәшири һ.б",
-            "УДК Т2"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_MAdab_Inv_12436",
-        "download_code": "nbrt_MAdab_Inv_12436",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/olrogduzac/",
-        "downloaded": "full",
-        "decrypted": true,
-        "available_pages": 248
-    },
-    "/tt/ssearch/detail/fzgnmjkbju": {
-        "title": "Ленин: Нәфис-әдәби җыентык",
-        "publish_year": "1924",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Ленин В. И.",
-            "ТАТАРСКАЯ ЛИТЕРАТУРА",
-            "ЛЕНИН",
-            "ТАТАР ӘДӘБИЯТЫ"
-        ],
-        "access": "open",
-        "classification": "УДК Т2ББК Т2+3К26",
-        "integrated_description": [
-            "Ленин NEW!! : Нәфис-әдәби җыентык",
-            "Казан : Татар. матбугат һәм нәшр. комбинаты, 1924 ( : Полиграфшкола им. А. В. Луначарского)",
-            "63 б.: Рәс. б-н",
-            "23х32",
-            "Китап гарәп графикасында",
+            "Җәлил, Муса.Моабит төрмәсендә язылган шигырьләр / М. Җәлил",
+            "[ред., кереш сүз язучы Г. Кашшаф]",
+            "[тышл., тит. рәс. Б. Альменов]",
+            "Казан : Таткнигоиздат, 1953",
+            "206 б.: портр., 3 б. рәс",
+            "Иск.: б. 197-203",
             "Прижизненные издания М. Джалиля",
-            "УДК Т2ББК Т2+3К26"
+            "Оглавление.ББК 84(2=632.3)"
         ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_MAdab_Inv_IT_1548819",
-        "download_code": "nbrt_MAdab_Inv_IT_1548819",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/fzgnmjkbju/",
-        "downloaded": "full",
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_mAdab_Inv_6037",
+        "download_code": "nbrt_mAdab_Inv_6037",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/izquoabrpd/",
+        "downloaded": "limited",
         "decrypted": true,
-        "available_pages": 88
+        "available_pages": 22,
+        "needs_full_download": true,
+        "matched_by": "doc_url"
     },
     "/tt/ssearch/detail/iewodcazcn": {
         "title": "1950/51 уку елына урта мәктәпнең 9 классында күчереш имтиханнары өчен билетлар",
@@ -904,6 +1237,65 @@
         "downloaded": "limited",
         "decrypted": true,
         "available_pages": 7
+    },
+    "/tt/ssearch/detail/olrogduzac": {
+        "title": "Көрәш җырлары: соңгы шагыйрьләрдән җыентык",
+        "publish_year": "1923",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Татар әдәбияты",
+            "Шигърият",
+            "Шагыйрьләр"
+        ],
+        "author": "Бурнаш Ф.",
+        "access": "open",
+        "classification": "УДК Т2",
+        "integrated_description": [
+            "Көрәш җырлары : соңгы шагыйрьләрдән җыентык",
+            "Казан : Татарстан дәүләт нәшрияты, 1923",
+            "239 б",
+            "Прижизненное издание М. Джалиля",
+            "Г. Тукайның үлүенә ун ел тулу хатирәсенә багышлана",
+            "Китап гарәп графикасында",
+            "Содерж.: Эчт.: Ш. Бабич, Н. Исәнбәт, Һ. Такташ, К. Нәҗми, М. Җәлил, Б. Рәхмәт, З. Бәшири һ.б",
+            "УДК Т2"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_MAdab_Inv_12436",
+        "download_code": "nbrt_MAdab_Inv_12436",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/olrogduzac/",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 248
+    },
+    "/tt/ssearch/detail/fzgnmjkbju": {
+        "title": "Ленин: Нәфис-әдәби җыентык",
+        "publish_year": "1924",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Ленин В. И.",
+            "ТАТАРСКАЯ ЛИТЕРАТУРА",
+            "ЛЕНИН",
+            "ТАТАР ӘДӘБИЯТЫ"
+        ],
+        "access": "open",
+        "classification": "УДК Т2ББК Т2+3К26",
+        "integrated_description": [
+            "Ленин NEW!! : Нәфис-әдәби җыентык",
+            "Казан : Татар. матбугат һәм нәшр. комбинаты, 1924 ( : Полиграфшкола им. А. В. Луначарского)",
+            "63 б.: Рәс. б-н",
+            "23х32",
+            "Китап гарәп графикасында",
+            "Прижизненные издания М. Джалиля",
+            "УДК Т2ББК Т2+3К26"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_MAdab_Inv_IT_1548819",
+        "download_code": "nbrt_MAdab_Inv_IT_1548819",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/fzgnmjkbju/",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 88
     },
     "/tt/ssearch/detail/lwlxbixyzn": {
         "title": "РСФСР башлангыч, җидееллык,урта мәктәп работниклары өчен эчке хезмәт тәртибенең типовой кагыйдәләре",
@@ -1269,36 +1661,6 @@
         "needs_full_download": true,
         "matched_by": "doc_url"
     },
-    "/tt/ssearch/detail/qzzssgnfoj": {
-        "title": "Барабыз: революция көрәшчеләре өчен  ясалган кичәләргә материаллар",
-        "publish_year": "1925",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият, Прижизненные издания М. Джалиля",
-        "tags": [
-            "Революция",
-            "Көрәшчеләр",
-            "Материаллар",
-            "Татар әдәбияты",
-            "Матур әдәбият"
-        ],
-        "author": "Җәлил",
-        "access": "open",
-        "classification": "УДК Т2",
-        "integrated_description": [
-            "Җәлил, Муса.Барабыз : революция көрәшчеләре өчен ясалган кичәләргә материаллар",
-            "Казан : МОПРның Татарстан өлкә комитеты нәшр., 1925",
-            "39 б.: рәс",
-            "(МОПР китапханәсеннән 3 нче китап)",
-            "Китап гарап графикасында",
-            "УДК Т2"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_mAdab_Inv_T_1905012",
-        "download_code": "nbrt_mAdab_Inv_T_1905012",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qzzssgnfoj/",
-        "downloaded": "full",
-        "decrypted": true,
-        "available_pages": 46
-    },
     "/tt/ssearch/detail/rnhmaqlhri": {
         "title": "Мәгариф: Айлык иҗтимагый-педагогик hәм фәнни-әдәби гомумитатар журналы. – № 5",
         "publish_year": "1991",
@@ -1539,6 +1901,38 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ieftrwhaln/",
         "downloaded": "full",
         "decrypted": true
+    },
+    "/tt/ssearch/detail/qzzssgnfoj": {
+        "title": "Барабыз: революция көрәшчеләре өчен  ясалган кичәләргә материаллар",
+        "publish_year": "1925",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият, Прижизненные издания М. Джалиля",
+        "tags": [
+            "Революция",
+            "Көрәшчеләр",
+            "Материаллар",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Стихи",
+            "Шигырьләр"
+        ],
+        "author": "Җәлил",
+        "access": "open",
+        "classification": "УДК Т2",
+        "integrated_description": [
+            "Җәлил, Муса.Барабыз : революция көрәшчеләре өчен ясалган кичәләргә материаллар",
+            "Казан : МОПРның Татарстан өлкә комитеты нәшр., 1925",
+            "39 б.: рәс",
+            "(МОПР китапханәсеннән 3 нче китап)",
+            "Китап гарап графикасында",
+            "УДК Т2"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_mAdab_Inv_T_1905012",
+        "download_code": "nbrt_mAdab_Inv_T_1905012",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qzzssgnfoj/",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 46
     },
     "/tt/ssearch/detail/hexwfoxkzb": {
         "title": "Мәктәпкәчә яшьтәге балаларны физик тәрбияләү: мәктәпкәчә педагогия училищелары һәм балалар бакчалары тәрбиячеләре өчен ярдәмлек",
@@ -2370,25 +2764,6 @@
         "decrypted": true,
         "available_pages": 8
     },
-    "/tt/ssearch/detail/kligtrwgvx": {
-        "title": "Пионер каләме: айлык балалар журналы. – № 1-2",
-        "publish_year": "1935",
-        "lang": "Татарский",
-        "collection": "Фонд татарской и восточной периодики",
-        "access": "open",
-        "integrated_description": [
-            "Пионер каләме : айлык балалар журналы / җав. мөхәр. Р. Хәмиди",
-            "Казан, 1933-1941.№ 1-2 ",
-            "1935",
-            "Прижизненные издания М. Джалиля"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Pioner_kalame_1935_1_2",
-        "download_code": "nbrt_pRF_Pioner_kalame_1935_1_2",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/kligtrwgvx/",
-        "downloaded": "full",
-        "decrypted": true,
-        "available_pages": 33
-    },
     "/tt/ssearch/detail/ajiuxltlwm": {
         "title": "Авыл культура работнигына ярдәмгә бюллетень: культура-агарту учрежденияләре эшенә җәмәгать смотрының барышы тур.",
         "publish_year": "1958",
@@ -2503,6 +2878,25 @@
         "downloaded": "full",
         "decrypted": true,
         "available_pages": 32
+    },
+    "/tt/ssearch/detail/kligtrwgvx": {
+        "title": "Пионер каләме: айлык балалар журналы. – № 1-2",
+        "publish_year": "1935",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Пионер каләме : айлык балалар журналы / җав. мөхәр. Р. Хәмиди",
+            "Казан, 1933-1941.№ 1-2 ",
+            "1935",
+            "Прижизненные издания М. Джалиля"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Pioner_kalame_1935_1_2",
+        "download_code": "nbrt_pRF_Pioner_kalame_1935_1_2",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/kligtrwgvx/",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 33
     },
     "/tt/ssearch/detail/avcdihqrkk": {
         "title": "Аз укый-яза белүчеләр өчен программалар: арифметика, татар теле, география",
@@ -79952,40 +80346,6 @@
         "needs_full_download": true,
         "matched_by": "doc_url"
     },
-    "/tt/ssearch/detail/zhmxbftlnd": {
-        "title": "Ишет мине!...: шигырьләр",
-        "publish_year": "2019",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Фәттахова",
-            "Поэзия татарская",
-            "Художественная литература",
-            "Татарская литература",
-            "Татар әдәбияты",
-            "Матур әдәбият",
-            "Художественная литература",
-            "Стихи",
-            "Шигырьләр"
-        ],
-        "author": "Фәттахова; Хәйретдинов, Р. Ф.",
-        "access": "limited",
-        "integrated_description": [
-            "Фәттахова, Лилия .Ишет мине!.. : шигырьләр / Л. Фәттахова",
-            "[рәс. Р. Ф. Хәйретдинов]",
-            "Казан : Татар. кит. нәшр., 2019",
-            "95 б.: рәс",
-            "На тат. яз",
-            "ISBN 978-5-298-03779-2",
-            "Оглавление.ББК 84(2=632.3)6-5"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_MAdab_Inv_T_1778929",
-        "download_code": "nbrt_MAdab_Inv_T_1778929",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/zhmxbftlnd/",
-        "available_pages": 100,
-        "downloaded": "limited",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/rjgzoinzqv": {
         "title": "Сугыш ятимнәре: повесть-истәлек",
         "publish_year": "1990",
@@ -117025,42 +117385,6 @@
         "downloaded": "limited",
         "decrypted": true
     },
-    "/tt/ssearch/detail/ndulewyyyw": {
-        "title": "Атландым атның биленә: повестьлар, хикәяләр",
-        "publish_year": "2018",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Сафин",
-            "Татарская литература",
-            "Художественная литература",
-            "Татарская литература",
-            "Татар әдәбияты",
-            "Матур әдәбият",
-            "Художественная литература"
-        ],
-        "author": "Сафин",
-        "access": "limited",
-        "integrated_description": [
-            "Сафин, Рәис.Атландым атның биленә : повестьлар, хикәяләр / Р. Сафин",
-            "Казан : Татарстан китап нәшрияты, 2018",
-            "189, [2] б.: рәс. б-н",
-            "Эчт.: Атландым атның биленә",
-            "Автобус һәм кешеләр",
-            "Бүләк",
-            "Күл буенда",
-            "Күзле бүкән [һ. б.]",
-            "16+",
-            "ISBN 978-5-298-03561-3, 1100",
-            "Оглавление.ББК 84(2=632.3)6-4"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1743466",
-        "download_code": "nbrt_tatarica_Inv_T_1743466",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ndulewyyyw/",
-        "available_pages": 196,
-        "downloaded": "limited",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/xfzjejinru": {
         "title": "Каеннар юлы: повестьлар",
         "publish_year": "2006",
@@ -117141,44 +117465,6 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/swhamsvufi/",
         "available_pages": 20,
         "downloaded": "full",
-        "decrypted": true
-    },
-    "/tt/ssearch/detail/aumdlmhkdm": {
-        "title": "Сайланма әсәрләр: 5 т.. 3 том. – Шигырьләр, газәлләр, төрки шагыйрьләр иҗатыннан үрнәкләр (1961-2016)",
-        "publish_year": "2017",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Гаташ",
-            "Поэзия татарская",
-            "Художественная литература",
-            "Татар әдәбияты",
-            "Татарская литература",
-            "Матур әдәбият",
-            "Художественная литература",
-            "Шигырьләр",
-            "Стихи",
-            "Газели(лит.)",
-            "Үрнәкләр",
-            "Образцы"
-        ],
-        "author": "Хисамов",
-        "access": "limited",
-        "integrated_description": [
-            "Гаташ, Рәдиф .Сайланма әсәрләр : 5 т. / Рәдиф Гаташ",
-            "Казан : Татарстан китап нәшрияты, 2017 -",
-            "ISBN 978-5-298-03447-0.3 том: Шигырьләр, газәлләр, төрки шагыйрьләр иҗатыннан үрнәкләр (1961-2016) / [ахыргы сүз авт. Н. Хисамов]",
-            "2017",
-            "383 б.: портр",
-            "16+",
-            "ISBN 978-5-298-03450-0 ((3 т.))",
-            "Оглавление.ББК 84(2=632.3)6-5"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1736865",
-        "download_code": "nbrt_tatarica_Inv_T_1736865",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/aumdlmhkdm/",
-        "available_pages": 388,
-        "downloaded": "limited",
         "decrypted": true
     },
     "/tt/ssearch/detail/crlxloklki": {
@@ -117483,45 +117769,6 @@
         ],
         "author": "Садриев"
     },
-    "/tt/ssearch/detail/aiuvfiedvq": {
-        "title": "Сайланма әсәрләр: 5 т.. 2 том. – Шигырьләр, публицистик цикллар, поэмалар, робагыйлар (1972-2016)",
-        "publish_year": "2017",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Гаташ",
-            "Поэзия татарская",
-            "Художественная литература",
-            "Татарская литература",
-            "Татар әдәбияты",
-            "Матур әдәбият",
-            "Художественная литература",
-            "Шигырьләр",
-            "Стихи",
-            "Поэмалар",
-            "Поэмы",
-            "Рубаи",
-            "Робагыйлар"
-        ],
-        "author": "Заһидуллина",
-        "access": "limited",
-        "integrated_description": [
-            "Гаташ, Рәдиф .Сайланма әсәрләр : 5 т. / Рәдиф Гаташ",
-            "Казан : Татарстан китап нәшрияты, 2017 -",
-            "ISBN 978-5-298-03447-0.2 том: Шигырьләр, публицистик цикллар, поэмалар, робагыйлар (1972-2016) / [ахыргы сүз авт. Д. Заһидуллина]",
-            "2017",
-            "399 б.: портр",
-            "16+",
-            "ISBN 978-5-298-03449-4 ((2 т.))",
-            "Оглавление.ББК 84(2=632.3)"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1736861",
-        "download_code": "nbrt_tatarica_Inv_T_1736861",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/aiuvfiedvq/",
-        "available_pages": 404,
-        "downloaded": "limited",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/veiwbawikq": {
         "title": "Колхоз бригадиры: Айга бер чыга торган массовый агро-зоотехника журналы. – № 8",
         "publish_year": "1940",
@@ -117538,35 +117785,6 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/veiwbawikq/",
         "available_pages": 20,
         "downloaded": "full",
-        "decrypted": true
-    },
-    "/tt/ssearch/detail/zydbbltgdc": {
-        "title": "Күкләр ак иде: шигырьләр",
-        "publish_year": "2018",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Татарская поэзия",
-            "Татар әдәбияты",
-            "Матур әдәбият",
-            "Шигырьләр",
-            "Художественная литература"
-        ],
-        "author": "Солтанова",
-        "access": "limited",
-        "integrated_description": [
-            "Солтанова, Роза.Күкләр ак иде : шигырьләр / Р. Г. Солтанова",
-            "Казан : Татарстан китап нәшрияты, 2018",
-            "142, [1] б",
-            "16+",
-            "ISBN 978-5-298-03568-2",
-            "Оглавление.ББК 84(2=632.3)6-4"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1742123",
-        "download_code": "nbrt_tatarica_Inv_T_1742123",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/zydbbltgdc/",
-        "available_pages": 148,
-        "downloaded": "limited",
         "decrypted": true
     },
     "/tt/ssearch/detail/niaowfekuj": {
@@ -117861,21 +118079,6 @@
         "needs_full_download": true,
         "matched_by": "doc_url"
     },
-    "/tt/ssearch/detail/ohbwmqtbua": {
-        "broken": true,
-        "title": "Туксан тугыз шаяру: робагыйлар",
-        "publish_year": "2017",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Татарская литература",
-            "Татар әдәбияты",
-            "Шигырьләр",
-            "Робагыйлар",
-            "Татарская литература"
-        ],
-        "author": "Сирматов; Вәлиев, Р."
-    },
     "/tt/ssearch/detail/wwvuuerecq": {
         "title": "Тормыш сукмаклары: повестьлар, хикәяләр, эсселар",
         "publish_year": "2011",
@@ -117945,34 +118148,6 @@
             "Татарская литература"
         ],
         "author": "Саттар; Низамиев; Мостафин"
-    },
-    "/tt/ssearch/detail/bhouhemmka": {
-        "title": "Татар моңы: шигырьләр, җырлар, робагыйлар",
-        "publish_year": "2017",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Татарская литература",
-            "Татар әдәбияты",
-            "Татарская литература",
-            "Шигырьләр",
-            "Матур әдәбият"
-        ],
-        "author": "Мөхәммәтшин",
-        "access": "limited",
-        "integrated_description": [
-            "Казан : Татарстан китап нәшрияты, 2017",
-            "287 б",
-            "16+",
-            "ISBN 978-5-298-03351-0",
-            "Оглавление"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1732734",
-        "download_code": "nbrt_tatarica_Inv_T_1732734",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/bhouhemmka/",
-        "available_pages": 292,
-        "downloaded": "limited",
-        "decrypted": true
     },
     "/tt/ssearch/detail/ioraruyixv": {
         "title": "Әллә, өйләнергә инде?..: пьесалар",
@@ -118549,40 +118724,6 @@
         "needs_full_download": true,
         "matched_by": "doc_url"
     },
-    "/tt/ssearch/detail/gaafwdwmiq": {
-        "title": "Офыкларга карап...: шигырьләр, балладалар, поэмалар",
-        "publish_year": "2017",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Сибгатуллин",
-            "Поэзия татарская",
-            "Татар әдәбияты",
-            "Татар шигърияте",
-            "Татарская поэзия",
-            "Шигырьләр"
-        ],
-        "author": "Сибгатуллин; Хамматова; Сафин, Ф.",
-        "access": "limited",
-        "integrated_description": [
-            "Сибгатуллин, Кадыйр.Офыкларга карап.. : шигырьләр, балладалар, поэмалар / К. Һ. Сибгатуллин",
-            "[төз. Ф. Хамматова",
-            "кереш сүз авт. Ф. Сафин]",
-            "Казан : Татарстан китап нәшрияты, 2017",
-            "399 б",
-            "(\"Шагыйрь мөнбәре\" сериясе)",
-            "Библиогр.: б.393",
-            "12+",
-            "ISBN 978-5-298-03269-8",
-            "Оглавление"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1729324",
-        "download_code": "nbrt_tatarica_Inv_T_1729324",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/gaafwdwmiq/",
-        "available_pages": 404,
-        "downloaded": "limited",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/zuhprhlkre": {
         "title": "Саба: елмаюлы тарих. – [Беренче китап]: хикәя-миниатюралар, мәзәкләр, хикмәтләр",
         "publish_year": "2012",
@@ -118610,43 +118751,6 @@
         "decrypted": true,
         "needs_full_download": true,
         "matched_by": "doc_url"
-    },
-    "/tt/ssearch/detail/egtelstark": {
-        "title": "Сайланма әсәрләр: 5 т.. 1 том. – Шигырьләр, лирик цикллар, тәрҗемәләр (1961-1972)",
-        "publish_year": "2017",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Гаташ",
-            "Поэзия татарская",
-            "Художественная литература",
-            "Татар әдәбияты",
-            "Матур әдәбият",
-            "Шигырьләр",
-            "Стихи",
-            "Тәрҗемәләр",
-            "Переводы (лит.)",
-            "Татарская литература",
-            "Матур әдәбият"
-        ],
-        "author": "Миңнегулов, Х.",
-        "access": "limited",
-        "integrated_description": [
-            "Гаташ, Рәдиф .Сайланма әсәрләр : 5 т. / Рәдиф Гаташ",
-            "Казан : Татарстан китап нәшрияты, 2017 -",
-            "ISBN 978-5-298-03447-0.1 том: Шигырьләр, лирик цикллар, тәрҗемәләр (1961-1972) / [кереш сүз авт. Х. Миңнегулов]",
-            "2017",
-            "327 б.: портр",
-            "16+",
-            "ISBN 978-5-298-03448-7 ((1 т.))",
-            "Оглавление"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1736859",
-        "download_code": "nbrt_tatarica_Inv_T_1736859",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/egtelstark/",
-        "available_pages": 332,
-        "downloaded": "limited",
-        "decrypted": true
     },
     "/tt/ssearch/detail/gruzdibncz": {
         "title": "Тан җиле: Роман",
@@ -118870,37 +118974,6 @@
         "needs_full_download": true,
         "matched_by": "doc_url"
     },
-    "/tt/ssearch/detail/vtvlsuhhse": {
-        "title": "Яктылык сулышы: шигырьләр, поэмалар, сонетлар һәм тәкълитләр",
-        "publish_year": "2017",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Ситдыйкова",
-            "Поэзия татарская",
-            "Татар әдәбияты",
-            "Шигырьләр",
-            "Татарская литература",
-            "Стихи"
-        ],
-        "author": "Ситдыйкова; Сафин, Ф.",
-        "access": "limited",
-        "integrated_description": [
-            "Ситдыйкова, Әлфия.Яктылык сулышы : шигырьләр, поэмалар, сонетлар һәм тәкълитләр / Ә. Ситдыйкова",
-            "[кереш сүз авт. Ф. Сафин]",
-            "Казан : Татарстан китап нәшрияты, 2017",
-            "254, [1] б",
-            "16+",
-            "ISBN 978-5-298-03391-6",
-            "Оглавление"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1734610",
-        "download_code": "nbrt_tatarica_Inv_T_1734610",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vtvlsuhhse/",
-        "available_pages": 260,
-        "downloaded": "limited",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/srqdggmicj": {
         "title": "Мин дөньяга багам",
         "publish_year": "2016",
@@ -119101,7 +119174,10 @@
         "downloaded": "limited",
         "decrypted": true,
         "needs_full_download": true,
-        "matched_by": "doc_url"
+        "matched_by": "doc_url",
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_T_1714524.1&version=e5249502354377387904&part={url}",
+        "decryption_key": "xa5g6qXAQ6atIk2hT7yg6w==",
+        "decryption_key_iv": "mDEfy3+4wQk9YITVzFJ7pA=="
     },
     "/tt/ssearch/detail/bsxiquqnwj": {
         "title": "Әсәрләр: Өч томда. Т.2. – Ике буйдак: Роман, повестьлар, хикәяләр. Т. 2",
@@ -119492,39 +119568,6 @@
         "download_code": "nbrt_tatarica_Inv_T_1552015",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/awsvmindip/",
         "available_pages": 29,
-        "downloaded": "limited",
-        "decrypted": true,
-        "needs_full_download": true,
-        "matched_by": "doc_url"
-    },
-    "/tt/ssearch/detail/htvnbdkzlm": {
-        "title": "Күңелдәге хатлар: шигырьләр",
-        "publish_year": "2017",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Поэзия татарская",
-            "Художественная литература",
-            "Татар әдәбияты",
-            "Матур әдәбият",
-            "Татарская литература",
-            "Шигырьләр"
-        ],
-        "author": "Сафина; Гыйльманов; Шәех",
-        "access": "limited",
-        "integrated_description": [
-            "Сафина, Эльвира.Күңелдәге хатлар : шигырьләр / Э. И. Сафина",
-            "[мөх-ре Г. Гыйльманов",
-            "кереш сүз авт. Л. Шәех]",
-            "Казан : Ихлас, 2017",
-            "159 б",
-            "ISBN 978-5-85247-928-0",
-            "Оглавление"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1736916",
-        "download_code": "nbrt_tatarica_Inv_T_1736916",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/htvnbdkzlm/",
-        "available_pages": 164,
         "downloaded": "limited",
         "decrypted": true,
         "needs_full_download": true,
@@ -120518,34 +120561,6 @@
         "downloaded": "limited",
         "decrypted": true
     },
-    "/tt/ssearch/detail/oogjefqdoo": {
-        "title": "Сүзгә - мәрхәбә!: [фәлсәфи трактат, публицистик язмалар, әдәби тәнкыйть мәкаләләре, хикәяләр, бәяннар]",
-        "publish_year": "2017",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Татарская литература",
-            "Татарская литература",
-            "Публицистика",
-            "Матур әдәбият",
-            "Татар әдәбияты"
-        ],
-        "author": "Низами",
-        "access": "limited",
-        "integrated_description": [
-            "Низами, Рашат.Сүзгә - мәрхәбә! : [фәлсәфи трактат, публицистик язмалар, әдәби тәнкыйть мәкаләләре, хикәяләр, бәяннар] / Р. Низами",
-            "Казан : Татарстан китап нәшрияты, 2017",
-            "205, [2] б",
-            "ISBN 978-5-298-03394-7",
-            "Оглавление.ББК 84(2=632.3)6-4"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1743074",
-        "download_code": "nbrt_tatarica_Inv_T_1743074",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/oogjefqdoo/",
-        "available_pages": 212,
-        "downloaded": "limited",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/crbpiaymje": {
         "title": "Сугыш язмалары: Төз. һ. сүз башы язучы С. Шакир",
         "publish_year": "1968",
@@ -121281,36 +121296,6 @@
         "decrypted": true,
         "needs_full_download": true,
         "matched_by": "doc_url"
-    },
-    "/tt/ssearch/detail/pkoyqrpeic": {
-        "title": "Каен җылысы: шигырьләр",
-        "publish_year": "2018",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Поэзия татарская",
-            "Татарская поэзия",
-            "Художественная литература",
-            "Татар әдәбияты",
-            "Матур әдәбият",
-            "Шигырьләр"
-        ],
-        "author": "Мөслимова",
-        "access": "limited",
-        "integrated_description": [
-            "Мөслимова, Фәйрүзә.Каен җылысы : шигырьләр / Ф. Ә. Мөслимова",
-            "Казан : Татарстан китап нәшрияты, 2018",
-            "174, [1] б",
-            "16+",
-            "ISBN 978-5-298-03539-2",
-            "Оглавление"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1742126",
-        "download_code": "nbrt_tatarica_Inv_T_1742126",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/pkoyqrpeic/",
-        "available_pages": 180,
-        "downloaded": "limited",
-        "decrypted": true
     },
     "/tt/ssearch/detail/qujnqvfkxq": {
         "title": "Әмир иле. Икенче китап. – Поэмалар, документаль повесть, мәкаләләр",
@@ -124391,20 +124376,6 @@
         "needs_full_download": true,
         "matched_by": "doc_url"
     },
-    "/tt/ssearch/detail/ywenifvmbv": {
-        "broken": true,
-        "title": "Йолдыз ява: шигырьләр, җырлар, хикәяләр, истәлекләр",
-        "publish_year": "[2017]",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Татарская литература",
-            "Татар әдәбияты",
-            "Татарская литература",
-            "Матур әдәбият"
-        ],
-        "author": "Кәримова"
-    },
     "/tt/ssearch/detail/lcnilowgef": {
         "title": "Яшьлек эзләре буйлап",
         "publish_year": "1964",
@@ -126714,40 +126685,6 @@
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/evmaarcwpr/",
         "available_pages": 41,
         "matched_by": "title",
-        "downloaded": "limited",
-        "decrypted": true
-    },
-    "/tt/ssearch/detail/pigdwlnnvm": {
-        "title": "Китап: роман, хикәяләр",
-        "publish_year": "2017",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "tags": [
-            "Кәбиров",
-            "Татарская литература",
-            "Художественная литература",
-            "Татарская литература",
-            "Татар әдәбияты",
-            "Матур әдәбият",
-            "Художественная литература"
-        ],
-        "author": "Кәбиров",
-        "access": "limited",
-        "integrated_description": [
-            "Кәбиров, Марат.Китап : роман, хикәяләр / М. Р. Кәбиров",
-            "Казан : Татарстан китап нәшрияты, 2017",
-            "461, [2] б",
-            "Эчт.: Китап",
-            "Фәрештә",
-            "Параллель дөнья һ. б",
-            "16+",
-            "ISBN 978-5-298-03369-5",
-            "Оглавление"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1734616",
-        "download_code": "nbrt_tatarica_Inv_T_1734616",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/pigdwlnnvm/",
-        "available_pages": 466,
         "downloaded": "limited",
         "decrypted": true
     },
@@ -130019,17 +129956,18 @@
             "Телефон : хикәя",
             "Сугыш корбаны : хикәя һ. б",
             "16+",
+            "Ограниченный доступ из сети ИнтернетСодерж.:Алмагач : повесть.Болытлар артында кояш бар : хикәя.Балан чәчәге : хикәя.Телефон : хикәя.Сугыш корбаны : хикәя.Сүнгән елмаю : хикәя.Соңгы хатирә : хикәя.Ярат кына : хикәя.Могҗиза : хикәя.Юл : хикәя.Җиткән кыз : хикәя.Чыршы энәләре : хикәя.Онытылган парад : хикәя.Песи : хикәя.Әкият : хикәя.Күбәләк : хикәя.Бәхетле син...: хикәя.Сәхәр ашыйсым килә : хикәя.Сөюләрем сине хак минем : телевизион фильм өчен сценарий.Әбиләр сабагы : эссе",
             "ISBN 978-5-298-03141-7, 2000",
             "Оглавление"
         ],
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1724982",
         "download_code": "nbrt_tatarica_Inv_T_1724982",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/apqhwzmvrg/",
-        "available_pages": 194,
-        "downloaded": "limited",
-        "decrypted": true,
+        "available_pages": 20,
         "needs_full_download": true,
-        "matched_by": "doc_url"
+        "matched_by": "doc_url",
+        "downloaded": "limited",
+        "decrypted": true
     },
     "/tt/ssearch/detail/bkcnhjchhb": {
         "title": "Jәşren mәgarә: xikәjә",
@@ -213853,6 +213791,68 @@
         "downloaded": "full",
         "decrypted": true
     },
+    "/tt/ssearch/detail/afhbwuyrus": {
+        "title": "Kolxoz teatrь: Keckenә forma kolxoz teatrlarь өcen",
+        "publish_year": "1934",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият, Яналиф",
+        "tags": [
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Художественная литература",
+            "Матур әдәбият",
+            "Пьесы",
+            "Пьесалар"
+        ],
+        "author": "Nasrьj",
+        "access": "open",
+        "integrated_description": [
+            "Nasrьj, Gamir.Kolxoz teatrь : Keckenә forma kolxoz teatrlarь өcen / G. Nasrьj",
+            "Qazan : Tatgosizdat, 1934",
+            "54 b",
+            "Татар телендә",
+            "Эчт.: Kul`tura frontьnda",
+            "Kolxoz sәvdәse",
+            "Bәjrәm kөnnәrendә",
+            "Cәcy çьrlarь",
+            "Puşnina өcen kөrәş һ. б"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_10080",
+        "download_code": "nbrt_tatarica_Inv_10080",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/afhbwuyrus/",
+        "available_pages": 60,
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/imaemzsuex": {
+        "title": "Staxanof turьnda çьr",
+        "publish_year": "1938",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият, Яналиф",
+        "tags": [
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Художественная литература",
+            "Стихи",
+            "Шигырьләр"
+        ],
+        "author": "Sөndekle, M.",
+        "access": "open",
+        "integrated_description": [
+            "Sөndekle, M.Staxanof turьnda çьr / M. Sөndekle",
+            "Ufa : Başgosizdat, 1938",
+            "84 b",
+            "Татар телендә",
+            "<URL:http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_5245_53>.ББК Т2"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_5245_53",
+        "download_code": "nbrt_tatarica_Inv_5245_53",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/imaemzsuex/",
+        "available_pages": 90,
+        "downloaded": "full",
+        "decrypted": true
+    },
     "/tt/ssearch/detail/xkjtpvtlsk": {
         "title": "Kolxoz sәxnәse: avьl sәxnәlәre өcen ınsenirofkalar, deklamatsiәlәr һәm estpada materiallarь",
         "publish_year": "1935",
@@ -213978,68 +213978,6 @@
         "downloaded": "full",
         "decrypted": true
     },
-    "/tt/ssearch/detail/afhbwuyrus": {
-        "title": "Kolxoz teatrь: Keckenә forma kolxoz teatrlarь өcen",
-        "publish_year": "1934",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият, Яналиф",
-        "tags": [
-            "Татарская литература",
-            "Татар әдәбияты",
-            "Художественная литература",
-            "Матур әдәбият",
-            "Пьесы",
-            "Пьесалар"
-        ],
-        "author": "Nasrьj",
-        "access": "open",
-        "integrated_description": [
-            "Nasrьj, Gamir.Kolxoz teatrь : Keckenә forma kolxoz teatrlarь өcen / G. Nasrьj",
-            "Qazan : Tatgosizdat, 1934",
-            "54 b",
-            "Татар телендә",
-            "Эчт.: Kul`tura frontьnda",
-            "Kolxoz sәvdәse",
-            "Bәjrәm kөnnәrendә",
-            "Cәcy çьrlarь",
-            "Puşnina өcen kөrәş һ. б"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_10080",
-        "download_code": "nbrt_tatarica_Inv_10080",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/afhbwuyrus/",
-        "available_pages": 60,
-        "downloaded": "full",
-        "decrypted": true
-    },
-    "/tt/ssearch/detail/imaemzsuex": {
-        "title": "Staxanof turьnda çьr",
-        "publish_year": "1938",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият, Яналиф",
-        "tags": [
-            "Татарская литература",
-            "Татар әдәбияты",
-            "Матур әдәбият",
-            "Художественная литература",
-            "Стихи",
-            "Шигырьләр"
-        ],
-        "author": "Sөndekle, M.",
-        "access": "open",
-        "integrated_description": [
-            "Sөndekle, M.Staxanof turьnda çьr / M. Sөndekle",
-            "Ufa : Başgosizdat, 1938",
-            "84 b",
-            "Татар телендә",
-            "<URL:http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_5245_53>.ББК Т2"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_5245_53",
-        "download_code": "nbrt_tatarica_Inv_5245_53",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/imaemzsuex/",
-        "available_pages": 90,
-        "downloaded": "full",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/kdiamooncd": {
         "title": "Neckәbil: әкiәт",
         "publish_year": "1937",
@@ -214136,47 +214074,6 @@
         "download_code": "nbrt_tatarica_Inv_67334",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/knguzqnlbw/",
         "available_pages": 216,
-        "downloaded": "full",
-        "decrypted": true
-    },
-    "/tt/ssearch/detail/zlglyrzxeb": {
-        "title": "Julbarьs tirese jabьngan batьr",
-        "publish_year": "1939",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият, Яналиф",
-        "tags": [
-            "Матур әдәбият",
-            "Художественная литература",
-            "Грузинская литература",
-            "Грузин әдәбияты",
-            "Тәрҗемәләр",
-            "Переводы (лит.)",
-            "Поэмалар",
-            "Поэмы",
-            "Руставели Ш.",
-            "Руставели Ш. \"Юлбарыс тиресе ябынган батыр\""
-        ],
-        "author": "Rustaveli; Isxaq; Mannur; Dәvli; Gosman; Çәlil; Jәrikәj; Fәjzi; Xuçi; Rin, G.; Zicinьq, M.",
-        "access": "open",
-        "integrated_description": [
-            "Rustaveli, Şota.Julbarьs tirese jabьngan batьr / Ş. Rustaveli",
-            "Ş. Rustaveli",
-            "tәrç.: Ә. Isxaq, Ş. Mannur, N. Dәvli, X. Gosman, M. Cәlil, Ә. Jәrikәj, Ә. Fәjzi, G. Xuçi",
-            "rәs. M. Zicinьq",
-            "kereş syz avt. G. Rin",
-            "tәrç.: Ә. Isxaq, Ş. Mannur, N. Dәvli, X. Gosman, M. Cәlil, Ә. Jәrikәj, Ә. Fәjzi, G. Xuçi",
-            "rәs. M. Zicinьq",
-            "kereş syz avt. G. Rin",
-            "Qazan : Tatgosizdat, 1939",
-            "138 b",
-            "(Мәктәp seriәse)",
-            "Татар телендә",
-            "Прижизненные издания М. Джалиля"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_68650",
-        "download_code": "nbrt_tatarica_Inv_68650",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/zlglyrzxeb/",
-        "available_pages": 148,
         "downloaded": "full",
         "decrypted": true
     },
@@ -214477,6 +214374,47 @@
         "download_code": "nbrt_tatarica_Inv_8798",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/atojcpgtnm/",
         "available_pages": 126,
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/zlglyrzxeb": {
+        "title": "Julbarьs tirese jabьngan batьr",
+        "publish_year": "1939",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият, Яналиф",
+        "tags": [
+            "Матур әдәбият",
+            "Художественная литература",
+            "Грузинская литература",
+            "Грузин әдәбияты",
+            "Тәрҗемәләр",
+            "Переводы (лит.)",
+            "Поэмалар",
+            "Поэмы",
+            "Руставели Ш.",
+            "Руставели Ш. \"Юлбарыс тиресе ябынган батыр\""
+        ],
+        "author": "Rustaveli; Isxaq; Mannur; Dәvli; Gosman; Çәlil; Jәrikәj; Fәjzi; Xuçi; Rin, G.; Zicinьq, M.",
+        "access": "open",
+        "integrated_description": [
+            "Rustaveli, Şota.Julbarьs tirese jabьngan batьr / Ş. Rustaveli",
+            "Ş. Rustaveli",
+            "tәrç.: Ә. Isxaq, Ş. Mannur, N. Dәvli, X. Gosman, M. Cәlil, Ә. Jәrikәj, Ә. Fәjzi, G. Xuçi",
+            "rәs. M. Zicinьq",
+            "kereş syz avt. G. Rin",
+            "tәrç.: Ә. Isxaq, Ş. Mannur, N. Dәvli, X. Gosman, M. Cәlil, Ә. Jәrikәj, Ә. Fәjzi, G. Xuçi",
+            "rәs. M. Zicinьq",
+            "kereş syz avt. G. Rin",
+            "Qazan : Tatgosizdat, 1939",
+            "138 b",
+            "(Мәктәp seriәse)",
+            "Татар телендә",
+            "Прижизненные издания М. Джалиля"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_68650",
+        "download_code": "nbrt_tatarica_Inv_68650",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/zlglyrzxeb/",
+        "available_pages": 148,
         "downloaded": "full",
         "decrypted": true
     },
@@ -243997,6 +243935,1652 @@
         "downloaded": "full",
         "decrypted": true,
         "available_pages": 24
+    },
+    "/tt/ssearch/detail/axmyifyelm": {
+        "title": "Карчыга: рәсемле көлке журналы. – № 4",
+        "publish_year": "1907",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Карчыга : рәсемле көлке журналы / баш мөх. Ш. Мөхәммәдов",
+            "Оренбург : Типо-литография М.Ф.Каримовъ, 1906.№ 4 ",
+            "1907"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Karchiga_1907_4",
+        "download_code": "nbrt_pRF_Karchiga_1907_4",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/axmyifyelm/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/megpqthdqy": {
+        "title": "Карчыга: рәсемле көлке журналы. – № 5",
+        "publish_year": "1907",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Карчыга : рәсемле көлке журналы / баш мөх. Ш. Мөхәммәдов",
+            "Оренбург : Паровая типо-литография т-ва Каримовъ, Хусаиновъ и Ко, 1906.№ 5 ",
+            "1907"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Karchiga_1907_5",
+        "download_code": "nbrt_pRF_Karchiga_1907_5",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/megpqthdqy/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/vcwgtdukvr": {
+        "title": "Карчыга: рәсемле көлке журналы. – № 6",
+        "publish_year": "1907",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Карчыга : рәсемле көлке журналы / баш мөх. Ш. Мөхәммәдов",
+            "Оренбург : Типо-литография М.Ф.Каримовъ, 1906.№ 6 ",
+            "1907"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Karchiga_1907_6",
+        "download_code": "nbrt_pRF_Karchiga_1907_6",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vcwgtdukvr/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/wtyezgrkjs": {
+        "title": "Карчыга: рәсемле көлке журналы. – № 7",
+        "publish_year": "1907",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Карчыга : рәсемле көлке журналы / баш мөх. Ш. Мөхәммәдов",
+            "Оренбург : Паровая типо-литография т-ва Каримовъ, Хусаиновъ и Ко, 1906.№ 7 ",
+            "1907"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Karchiga_1907_7",
+        "download_code": "nbrt_pRF_Karchiga_1907_7",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/wtyezgrkjs/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/xqzwqkgrbx": {
+        "title": "Карчыга: рәсемле көлке журналы. – № 8",
+        "publish_year": "1907",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Карчыга : рәсемле көлке журналы / баш мөх. Ш. Мөхәммәдов",
+            "Оренбург : Паровая типо-литография т-ва Каримовъ, Хусаиновъ и Ко, 1906.№ 8 ",
+            "1907"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Karchiga_1907_8",
+        "download_code": "nbrt_pRF_Karchiga_1907_8",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/xqzwqkgrbx/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/zxtvgithsp": {
+        "title": "Карчыга: рәсемле көлке журналы. – № 9",
+        "publish_year": "1907",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Карчыга : рәсемле көлке журналы / баш мөх. Ш. Мөхәммәдов",
+            "Оренбург : Паровая типо-литография т-ва Каримовъ, Хусаиновъ и Ко, 1906.№ 9 ",
+            "1907"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Karchiga_1907_9",
+        "download_code": "nbrt_pRF_Karchiga_1907_9",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/zxtvgithsp/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/cqwleouokv": {
+        "title": "Карчыга: рәсемле көлке журналы. – № 1",
+        "publish_year": "1906",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Карчыга : рәсемле көлке журналы / баш мөх. Ш. Мөхәммәдов",
+            "Оренбург : Типо-литография М. Ф. Каримовъ, 1906.№ 1 ",
+            "1906"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Karchiga_1906_1",
+        "download_code": "nbrt_pRF_Karchiga_1906_1",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/cqwleouokv/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/ujsobusjhl": {
+        "title": "Карчыга: рәсемле көлке журналы. – № 3",
+        "publish_year": "1906",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Карчыга : рәсемле көлке журналы / баш мөх. Ш. Мөхәммәдов",
+            "Оренбург : Типо-литография М. Ф. Каримовъ, 1906.№ 3 ",
+            "1906"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Karchiga_1906_3",
+        "download_code": "nbrt_pRF_Karchiga_1906_3",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ujsobusjhl/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/nrywgshnjv": {
+        "title": "Кармак: сәяси вә әдәби, рәсемле һөҗү журналы. – № 5-6",
+        "publish_year": "1916",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Кармак : сәяси вә әдәби, рәсемле һөҗү журналы / баш мөх. М. Галәветдинов",
+            "Оренбург : Типо-литография Торговаго Дома \"А.А. Хусаиновъ и Ко\", 1915.№ 5-6 ",
+            "1916"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Karmak_1916_5_6",
+        "download_code": "nbrt_pRF_Karmak_1916_5_6",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/nrywgshnjv/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/oghhzbyeqc": {
+        "title": "Кармак: сәяси вә әдәби, рәсемле һөҗү журналы. – № 1-2",
+        "publish_year": "1917",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Кармак : сәяси вә әдәби, рәсемле һөҗү журналы /",
+            "баш мөх. Галәветдинов М",
+            "Оренбург : Типо-литография Торговаго Дома \"А.А. Хусаиновъ и Ко\", 1915.№ 1-2 ",
+            "1917"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Karmak_1917_1_2",
+        "download_code": "nbrt_pRF_Karmak_1917_1_2",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/oghhzbyeqc/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/qpsnfmmwbs": {
+        "title": "Карчыга: рәсемле көлке журналы. – № 2",
+        "publish_year": "1906",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Карчыга : рәсемле көлке журналы / баш мөх. Ш. Мөхәммәдов",
+            "Оренбург : Типо-литография М. Ф. Каримовъ, 1906.№ 2 ",
+            "1906"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Karchiga_1906_2",
+        "download_code": "nbrt_pRF_Karchiga_1906_2",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qpsnfmmwbs/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/lykpymwksl": {
+        "title": "Кармак: сәяси вә әдәби, рәсемле һөҗү журналы. – № 10-12",
+        "publish_year": "1917",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Кармак : сәяси вә әдәби, рәсемле һөҗү журналы / баш мөх. М. Галәветдинов",
+            "Оренбург : Типо-литография Торговаго Дома \"А. А. Хусаиновъ и Ко\", 1915.№ 10-12 ",
+            "1917"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Karmak_1917_10_12",
+        "download_code": "nbrt_pRF_Karmak_1917_10_12",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/lykpymwksl/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/piacoyxfxi": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 3 (март)",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 3 (март) ",
+            "1911"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1911_3",
+        "download_code": "nbrt_pRF_Iktisad_1911_3",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/piacoyxfxi/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/muqtrlmoqr": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 7 (июль)",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 7 (июль) ",
+            "1911"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1911_7",
+        "download_code": "nbrt_pRF_Iktisad_1911_7",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/muqtrlmoqr/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/prnsadlzph": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 4 (апрель)",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 4 (апрель) ",
+            "1911"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1911_4",
+        "download_code": "nbrt_pRF_Iktisad_1911_4",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/prnsadlzph/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/vmxxmjkolc": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 5-6 (май-июнь)",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 5-6 (май-июнь) ",
+            "1911"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1911_5_6",
+        "download_code": "nbrt_pRF_Iktisad_1911_5_6",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vmxxmjkolc/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/jgixytsojo": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 8-9-10 (август-сентябрь-октябрь)",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 8-9-10 (август-сентябрь-октябрь) ",
+            "1911"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1911_8_10",
+        "download_code": "nbrt_pRF_Iktisad_1911_8_10",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/jgixytsojo/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/yywcekojyu": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 11-12 (ноябрь-декабрь)",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 11-12 (ноябрь-декабрь) ",
+            "1911"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1911_11_12",
+        "download_code": "nbrt_pRF_Iktisad_1911_11_12",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/yywcekojyu/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/paonmpngjl": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 2 (февраль)",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 2 (февраль) ",
+            "1911"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1911_2",
+        "download_code": "nbrt_pRF_Iktisad_1911_2",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/paonmpngjl/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/eaejfjxurk": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 1 (гыйнвар)",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 1 (гыйнвар) ",
+            "1911"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1911_1",
+        "download_code": "nbrt_pRF_Iktisad_1911_1",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/eaejfjxurk/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/dzoewcnykp": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 2 (февраль)",
+        "publish_year": "1913",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 2 (февраль) ",
+            "1913"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1913_2",
+        "download_code": "nbrt_pRF_Iktisad_1913_2",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/dzoewcnykp/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/yfbxwlpmev": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 3 (март)",
+        "publish_year": "1913",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 3 (март) ",
+            "1913"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1913_3",
+        "download_code": "nbrt_pRF_Iktisad_1913_3",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/yfbxwlpmev/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/mjoorzeoik": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 11",
+        "publish_year": "1909",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 11 ",
+            "1909"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1909_11",
+        "download_code": "nbrt_pRF_Iktisad_1909_11",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mjoorzeoik/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/clyirvtqym": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 5",
+        "publish_year": "1909",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 5 ",
+            "1909"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1909_5",
+        "download_code": "nbrt_pRF_Iktisad_1909_5",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/clyirvtqym/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/oegoltnfxz": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 8",
+        "publish_year": "1909",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 8 ",
+            "1909"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1909_8",
+        "download_code": "nbrt_pRF_Iktisad_1909_8",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/oegoltnfxz/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/lzdjefdneu": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 9",
+        "publish_year": "1909",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 9 ",
+            "1909"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1909_9",
+        "download_code": "nbrt_pRF_Iktisad_1909_9",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/lzdjefdneu/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/ghbqvjrhnn": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 10",
+        "publish_year": "1909",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 10 ",
+            "1909"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1909_10",
+        "download_code": "nbrt_pRF_Iktisad_1909_10",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ghbqvjrhnn/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/mgqrsydnrz": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 6",
+        "publish_year": "1909",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 6 ",
+            "1909"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1909_6",
+        "download_code": "nbrt_pRF_Iktisad_1909_6",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mgqrsydnrz/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/xkybmbbdcp": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 7",
+        "publish_year": "1909",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 7 ",
+            "1909"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1909_7",
+        "download_code": "nbrt_pRF_Iktisad_1909_7",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/xkybmbbdcp/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/lskrdshbrv": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 10 (октябрь)",
+        "publish_year": "1910",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 10 (октябрь) ",
+            "1910"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1910_10",
+        "download_code": "nbrt_pRF_Iktisad_1910_10",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/lskrdshbrv/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/qzymrdhhxq": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 11 (ноябрь)",
+        "publish_year": "1910",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 11 (ноябрь) ",
+            "1910"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1910_11",
+        "download_code": "nbrt_pRF_Iktisad_1910_11",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qzymrdhhxq/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/qrwzrotjhz": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 12 (декабрь)",
+        "publish_year": "1910",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 12 (декабрь) ",
+            "1910"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1910_12",
+        "download_code": "nbrt_pRF_Iktisad_1910_12",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qrwzrotjhz/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/umpyndyzed": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 1 (гыйнвар)",
+        "publish_year": "1912",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 1 (гыйнвар) ",
+            "1912"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1912_1",
+        "download_code": "nbrt_pRF_Iktisad_1912_1",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/umpyndyzed/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/dftghdkfpu": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 6 (сентябрь)",
+        "publish_year": "1912",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 6 (сентябрь) ",
+            "1912"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1912_6",
+        "download_code": "nbrt_pRF_Iktisad_1912_6",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/dftghdkfpu/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/dfrryiwnxk": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 7 (октябрь)",
+        "publish_year": "1912",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 7 (октябрь) ",
+            "1912"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1912_7",
+        "download_code": "nbrt_pRF_Iktisad_1912_7",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/dfrryiwnxk/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/gfmwckmtzq": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 4 (март)",
+        "publish_year": "1910",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 4 (март) ",
+            "1910"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1910_4",
+        "download_code": "nbrt_pRF_Iktisad_1910_4",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/gfmwckmtzq/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/vwwpxoqlzw": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 5 (апрель)",
+        "publish_year": "1910",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 5 (апрель) ",
+            "1910"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1910_5",
+        "download_code": "nbrt_pRF_Iktisad_1910_5",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vwwpxoqlzw/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/kjyviigety": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 6 (май)",
+        "publish_year": "1910",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 6 (май) ",
+            "1910"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1910_6",
+        "download_code": "nbrt_pRF_Iktisad_1910_6",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/kjyviigety/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/qarbalhgsb": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 7 (июль)",
+        "publish_year": "1910",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 7 (июль) ",
+            "1910"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1910_7",
+        "download_code": "nbrt_pRF_Iktisad_1910_7",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qarbalhgsb/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/ikppslidor": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 8 (август)",
+        "publish_year": "1910",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 8 (август) ",
+            "1910"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1910_8",
+        "download_code": "nbrt_pRF_Iktisad_1910_8",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ikppslidor/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/nwrzlubrrp": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 9 (сентябрь)",
+        "publish_year": "1910",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 9 (сентябрь) ",
+            "1910"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1910_9",
+        "download_code": "nbrt_pRF_Iktisad_1910_9",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/nwrzlubrrp/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/wnowcihidq": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 2",
+        "publish_year": "1908",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 2 ",
+            "1908"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1908_2",
+        "download_code": "nbrt_pRF_Iktisad_1908_2",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/wnowcihidq/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/dihdcuacoo": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 3",
+        "publish_year": "1908",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 3 ",
+            "1908"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1908_3",
+        "download_code": "nbrt_pRF_Iktisad_1908_3",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/dihdcuacoo/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/wwxpclrspj": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 4",
+        "publish_year": "1908",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 4 ",
+            "1908"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1908_4",
+        "download_code": "nbrt_pRF_Iktisad_1908_4",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/wwxpclrspj/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/lxsonqrwkg": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 1 (ноябрь)",
+        "publish_year": "1909",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 1 (ноябрь) ",
+            "1909"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1909_1",
+        "download_code": "nbrt_pRF_Iktisad_1909_1",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/lxsonqrwkg/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/iavvlpboxk": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 2 (декабрь)",
+        "publish_year": "1909",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 2 (декабрь) ",
+            "1909"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1909_2",
+        "download_code": "nbrt_pRF_Iktisad_1909_2",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/iavvlpboxk/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/ggfeunwkjh": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 3 (гыйнвар)",
+        "publish_year": "1910",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 3 (гыйнвар) ",
+            "1910"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1910_3",
+        "download_code": "nbrt_pRF_Iktisad_1910_3",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ggfeunwkjh/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/qmbtttcemi": {
+        "title": "Гасрый мөселманлык: гыйльми, әхлякый вә фәлсәфи журнал. – № 13",
+        "publish_year": "1926",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Сөләйман, С.; Кырым мөселманнары Дини идарәсе; Крымлит",
+        "access": "open",
+        "integrated_description": [
+            "Гасрый мөселманлык : гыйльми, әхлякый вә фәлсәфи журнал",
+            "Крым, Симферополь : \"КПТ\" Бернче Дәүләт типо-литографиясе , 1924.№ 13 / Крымлит",
+            "под ред. С. Сөләйман",
+            "1926",
+            "татар телендә, гарәп графикасында",
+            "Редакциянең адресы Субхи урамы, 56",
+            "айга бер мәртәбә чыккан"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Gasri_M_1926_13",
+        "download_code": "nbrt_pRF_Gasri_M_1926_13",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qmbtttcemi/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/fnxjmbdpfh": {
+        "title": "Гасрый мөселманлык: гыйльми, әхлякый вә фәлсәфи журнал. – № 10",
+        "publish_year": "1926",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Сөләйман, С.; Кырым мөселманнары Дини идарәсе; Крымлит",
+        "access": "open",
+        "integrated_description": [
+            "Гасрый мөселманлык : гыйльми, әхлякый вә фәлсәфи журнал",
+            "Крым, Симферополь : \"КПТ\" Бернче Дәүләт типо-литографиясе, 1924.№ 10 / Крымлит",
+            "под ред. С. Сөләйман",
+            "1926",
+            "татар телендә, гарәп графикасында",
+            "Редакциянең адресы Субхи урамы, 56",
+            "айга бер мәртәбә чыккан"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Gasri_M_1926_10",
+        "download_code": "nbrt_pRF_Gasri_M_1926_10",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/fnxjmbdpfh/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/xoppukbwia": {
+        "title": "Гасрый мөселманлык: гыйльми, әхлякый вә фәлсәфи журнал. – № 14",
+        "publish_year": "1927",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Хәлил; Кырым мөселманнары Дини идарәсе; Крымлит",
+        "access": "open",
+        "integrated_description": [
+            "Гасрый мөселманлык : гыйльми, әхлякый вә фәлсәфи журнал",
+            "Крым, Симферополь : \"КПТ\" Бернче Дәүләт типо-литографиясе , 1924.№ 14 / Крымлит",
+            "под ред. Х. М. Хәлил",
+            "1927",
+            "татар телендә, гарәп графикасында",
+            "Редакциянең адресы Субхи урамы, 56",
+            "айга бер мәртәбә чыккан"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Gasri_M_1927_14",
+        "download_code": "nbrt_pRF_Gasri_M_1927_14",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/xoppukbwia/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/vzyuikprla": {
+        "title": "Гасрый мөселманлык: гыйльми, әхлякый вә фәлсәфи журнал. – № 15",
+        "publish_year": "1927",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Хәлил; Кырым мөселманнары Дини идарәсе; Крымлит",
+        "access": "open",
+        "integrated_description": [
+            "Гасрый мөселманлык : гыйльми, әхлякый вә фәлсәфи журнал",
+            "Крым, Симферополь : \"КПТ\" Бернче Дәүләт типо-литографиясе , 1924.№ 15 / Крымлит",
+            "под ред. Х.М. Хәлил",
+            "1927",
+            "татар телендә, гарәп графикасында",
+            "Редакциянең адресы Субхи урамы, 56",
+            "айга бер мәртәбә чыккан"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Gasri_M_1927_15",
+        "download_code": "nbrt_pRF_Gasri_M_1927_15",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vzyuikprla/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/efefnonqdb": {
+        "title": "Гасрый мөселманлык: гыйльми, әхлякый вә фәлсәфи журнал. – № 16",
+        "publish_year": "1927",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Хәлил; Кырым мөселманнары Дини идарәсе; Крымлит",
+        "access": "open",
+        "integrated_description": [
+            "Гасрый мөселманлык : гыйльми, әхлякый вә фәлсәфи журнал",
+            "Крым, Симферополь : \"КПТ\" Бернче Дәүләт типо-литографиясе , 1924.№ 16 / Крымлит",
+            "под ред. Х.М. Хәлил",
+            "1927",
+            "татар телендә, гарәп графикасында",
+            "Редакциянең адресы Субхи урамы, 56",
+            "айга бер мәртәбә чыккан"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Gasri_M_1927_16",
+        "download_code": "nbrt_pRF_Gasri_M_1927_16",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/efefnonqdb/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/doqywkbork": {
+        "title": "Икътисад: тиҗарәт, зирагать вә сәнәгать мәҗәлләсе. – № 1 (15 сентябрь)",
+        "publish_year": "1908",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Икътисад : тиҗарәт, зирагать вә сәнәгать мәҗәлләсе / мөхәр. М. Мортазин",
+            "Самара : \"Кәримов, Хөсәенов вә шөрәкәсе\" матбагасы, Оренбург, 1908.№ 1 (15 сентябрь) ",
+            "1908"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Iktisad_1908_1",
+        "download_code": "nbrt_pRF_Iktisad_1908_1",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/doqywkbork/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/hvkybhyiyx": {
+        "title": "Гасрый мөселманлык: гыйльми, әхлякый вә фәлсәфи журнал. – № 6",
+        "publish_year": "1925",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Хәлил; Кырым мөселманнары Дини идарәсе; Крымлит",
+        "access": "open",
+        "integrated_description": [
+            "Гасрый мөселманлык : гыйльми, әхлякый вә фәлсәфи журнал",
+            "Крым, Симферополь : \"КПТ\" Бернче Дәүләт типо-литографиясе, 1924.№ 6 / Крымлит",
+            "под ред. Х.М. Хәлил",
+            "1925",
+            "татар телендә, гарәп графикасында",
+            "Редакциянең адресы Субхи урамы, 56",
+            "айга бер мәртәбә чыккан"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Gasri_M_1925_6",
+        "download_code": "nbrt_pRF_Gasri_M_1925_6",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/hvkybhyiyx/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/dkfxvrkfcm": {
+        "title": "Гасрый мөселманлык: гыйльми, әхлякый вә фәлсәфи журнал. – № 8",
+        "publish_year": "1925",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Хәлил; Кырым мөселманнары Дини идарәсе; Крымлит",
+        "access": "open",
+        "integrated_description": [
+            "Гасрый мөселманлык : гыйльми, әхлякый вә фәлсәфи журнал",
+            "Крым, Симферополь : \"КПТ\" Бернче Дәүләт типо-литографиясе, 1924.№ 8 / Крымлит",
+            "под ред. Х.М. Хәлил",
+            "1925",
+            "татар телендә, гарәп графикасында",
+            "Редакциянең адресы Субхи урамы, 56",
+            "татар телендә, гарәп графикасында",
+            "Редакциянең адресы Субхи урамы, 56",
+            "айга бер мәртәбә чыккан"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Gasri_M_1925_8",
+        "download_code": "nbrt_pRF_Gasri_M_1925_8",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/dkfxvrkfcm/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/klzqczbukq": {
+        "title": "Гасрый мөселманлык: гыйльми, әхлякый вә фәлсәфи журнал. – № 12",
+        "publish_year": "1926",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Сөләйман, С.; Кырым мөселманнары Дини идарәсе; Крымлит",
+        "access": "open",
+        "integrated_description": [
+            "Гасрый мөселманлык : гыйльми, әхлякый вә фәлсәфи журнал",
+            "Крым, Симферополь : \"КПТ\" Бернче Дәүләт типо-литографиясе, 1924.№ 12 / Крымлит",
+            "под ред. С. Сөләйман",
+            "1926",
+            "татар телендә, гарәп графикасында",
+            "Редакциянең адресы Субхи урамы, 56",
+            "айга бер мәртәбә чыккан"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Gasri_M_1926_12",
+        "download_code": "nbrt_pRF_Gasri_M_1926_12",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/klzqczbukq/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/raypcgqdcx": {
+        "title": "Гасрый мөселманлык: гыйльми, әхлякый вә фәлсәфи журнал. – № 7",
+        "publish_year": "1925",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Хәлил; Кырым мөселманнары Дини идарәсе; Крымлит",
+        "access": "open",
+        "integrated_description": [
+            "Гасрый мөселманлык : гыйльми, әхлякый вә фәлсәфи журнал",
+            "Крым, Симферополь : \"КПТ\" Бернче Дәүләт типо-литографиясе, 1924.№ 7 / Крымлит",
+            "под ред. Х.М. Хәлил",
+            "1925",
+            "татар телендә, гарәп графикасында",
+            "Редакциянең адресы Субхи урамы, 56",
+            "айга бер мәртәбә чыккан"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Gasri_M_1925_7",
+        "download_code": "nbrt_pRF_Gasri_M_1925_7",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/raypcgqdcx/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/kukydimmqw": {
+        "title": "Гасрый мөселманлык: гыйльми, әхлякый вә фәлсәфи журнал. – № 9",
+        "publish_year": "1926",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Хәлил; Кырым мөселманнары Дини идарәсе; Крымлит",
+        "access": "open",
+        "integrated_description": [
+            "Гасрый мөселманлык : гыйльми, әхлякый вә фәлсәфи журнал",
+            "Крым, Симферополь : \"КПТ\" Бернче Дәүләт типо-литографиясе, 1924.№ 9 / Крымлит",
+            "под ред. Х.М. Хәлил",
+            "1926",
+            "татар телендә, гарәп графикасында",
+            "Редакциянең адресы Субхи урамы, 56",
+            "айга бер мәртәбә чыккан"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Gasri_M_1926_9",
+        "download_code": "nbrt_pRF_Gasri_M_1926_9",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/kukydimmqw/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/bpmbgbtsoj": {
+        "title": "Гасрый мөселманлык: гыйльми, әхлякый вә фәлсәфи журнал. – № 11",
+        "publish_year": "1926",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Сөләйман, С.; Кырым мөселманнары Дини идарәсе; Крымлит",
+        "access": "open",
+        "integrated_description": [
+            "Гасрый мөселманлык : гыйльми, әхлякый вә фәлсәфи журнал",
+            "Крым, Симферополь : \"КПТ\" Бернче Дәүләт типо-литографиясе, 1924.№ 11 / Крымлит",
+            "под ред. С. Сөләйман",
+            "1926",
+            "татар телендә, гарәп графикасында",
+            "Редакциянең адресы Субхи урамы, 56",
+            "айга бер мәртәбә чыккан"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Gasri_M_1926_11",
+        "download_code": "nbrt_pRF_Gasri_M_1926_11",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/bpmbgbtsoj/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/gkovlqtxii": {
+        "title": "Әл-Манар: Мисырда чыккан дини-сәяси журнал. – Ноябрь",
+        "publish_year": "1908",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Әл-Манар : Мисырда чыккан дини-сәяси журнал / баш мөхәр. Рәшид Рида",
+            "Каһирә, 1898.Ноябрь ",
+            "1908"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_AlManar_1908_November",
+        "download_code": "nbrt_pRF_AlManar_1908_November",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/gkovlqtxii/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/magpgtofdf": {
+        "title": "Әл-Манар: Мисырда чыккан дини-сәяси журнал. – № 5",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Әл-Манар : Мисырда чыккан дини-сәяси журнал / баш мөхәр. Рәшид Рида",
+            "Каһирә, 1898.№ 5 ",
+            "1911"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_AlManar_1911_5",
+        "download_code": "nbrt_pRF_AlManar_1911_5",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/magpgtofdf/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/ojrnvbduso": {
+        "title": "Әл-Манар: Мисырда чыккан дини-сәяси журнал. – № 8",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Әл-Манар : Мисырда чыккан дини-сәяси журнал / баш мөхәр. Рәшид Рида",
+            "Каһирә, 1898.№ 8 ",
+            "1911",
+            "Экз. деф"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_AlManar_1911_8",
+        "download_code": "nbrt_pRF_AlManar_1911_8",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ojrnvbduso/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/cyeulqdhor": {
+        "title": "Әл-Манар: Мисырда чыккан дини-сәяси журнал. – № 11",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Әл-Манар : Мисырда чыккан дини-сәяси журнал / баш мөхәр. Рәшид Рида",
+            "Каһирә, 1898.№ 11 ",
+            "1911"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_AlManar_1911_11",
+        "download_code": "nbrt_pRF_AlManar_1911_11",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/cyeulqdhor/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/bmqdizzlhu": {
+        "title": "Әл-Манар: Мисырда чыккан дини-сәяси журнал. – № 9",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Әл-Манар : Мисырда чыккан дини-сәяси журнал / баш мөхәр. Рәшид Рида",
+            "Каһирә, 1898.№ 9 ",
+            "1911",
+            "Экз. деф"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_AlManar_1911_9",
+        "download_code": "nbrt_pRF_AlManar_1911_9",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/bmqdizzlhu/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/lbpvzjvfzm": {
+        "title": "Әл-Манар: Мисырда чыккан дини-сәяси журнал. – № 10",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "access": "open",
+        "integrated_description": [
+            "Әл-Манар : Мисырда чыккан дини-сәяси журнал / баш мөхәр. Рәшид Рида",
+            "Каһирә, 1898.№ 10 ",
+            "1911",
+            "Экз. деф"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_AlManar_1911_10",
+        "download_code": "nbrt_pRF_AlManar_1911_10",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/lbpvzjvfzm/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/tzenjcgrpd": {
+        "title": "Бөек дуйгу : иҗтимагый, әдәби журнал. – № 10",
+        "publish_year": "1911",
+        "lang": "Арабский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Алып",
+        "access": "open",
+        "integrated_description": [
+            "Бөек дуйгу : иҗтимагый, әдәби журнал",
+            "Төркия, 1911.№ 10 / З. Алып",
+            "1911",
+            "төрек телендә, гарәп графикасында",
+            "унбиш көнгә бер мәртәбә чыккан"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_BoekDujgu_1913_10",
+        "download_code": "nbrt_pRF_BoekDujgu_1913_10",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/tzenjcgrpd/",
+        "downloaded": "full",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/zhmxbftlnd": {
+        "title": "Ишет мине!...: шигырьләр",
+        "publish_year": "2019",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Фәттахова",
+            "Поэзия татарская",
+            "Художественная литература",
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Художественная литература",
+            "Стихи",
+            "Шигырьләр"
+        ],
+        "author": "Фәттахова; Хәйретдинов, Р. Ф.",
+        "access": "limited",
+        "integrated_description": [
+            "Фәттахова, Лилия .Ишет мине!.. : шигырьләр / Л. Фәттахова",
+            "[рәс. Р. Ф. Хәйретдинов]",
+            "Казан : Татар. кит. нәшр., 2019",
+            "95 б.: рәс",
+            "На тат. яз",
+            "ISBN 978-5-298-03779-2",
+            "Оглавление.ББК 84(2=632.3)6-5"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_MAdab_Inv_T_1778929",
+        "download_code": "nbrt_MAdab_Inv_T_1778929",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/zhmxbftlnd/",
+        "available_pages": 100,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/ndulewyyyw": {
+        "title": "Атландым атның биленә: повестьлар, хикәяләр",
+        "publish_year": "2018",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Сафин",
+            "Татарская литература",
+            "Художественная литература",
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Художественная литература"
+        ],
+        "author": "Сафин",
+        "access": "limited",
+        "integrated_description": [
+            "Сафин, Рәис.Атландым атның биленә : повестьлар, хикәяләр / Р. Сафин",
+            "Казан : Татарстан китап нәшрияты, 2018",
+            "189, [2] б.: рәс. б-н",
+            "Эчт.: Атландым атның биленә",
+            "Автобус һәм кешеләр",
+            "Бүләк",
+            "Күл буенда",
+            "Күзле бүкән [һ. б.]",
+            "16+",
+            "ISBN 978-5-298-03561-3, 1100",
+            "Оглавление.ББК 84(2=632.3)6-4"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1743466",
+        "download_code": "nbrt_tatarica_Inv_T_1743466",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ndulewyyyw/",
+        "available_pages": 196,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/aumdlmhkdm": {
+        "title": "Сайланма әсәрләр: 5 т.. 3 том. – Шигырьләр, газәлләр, төрки шагыйрьләр иҗатыннан үрнәкләр (1961-2016)",
+        "publish_year": "2017",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Гаташ",
+            "Поэзия татарская",
+            "Художественная литература",
+            "Татар әдәбияты",
+            "Татарская литература",
+            "Матур әдәбият",
+            "Художественная литература",
+            "Шигырьләр",
+            "Стихи",
+            "Газели(лит.)",
+            "Үрнәкләр",
+            "Образцы"
+        ],
+        "author": "Хисамов",
+        "access": "limited",
+        "integrated_description": [
+            "Гаташ, Рәдиф .Сайланма әсәрләр : 5 т. / Рәдиф Гаташ",
+            "Казан : Татарстан китап нәшрияты, 2017 -",
+            "ISBN 978-5-298-03447-0.3 том: Шигырьләр, газәлләр, төрки шагыйрьләр иҗатыннан үрнәкләр (1961-2016) / [ахыргы сүз авт. Н. Хисамов]",
+            "2017",
+            "383 б.: портр",
+            "16+",
+            "ISBN 978-5-298-03450-0 ((3 т.))",
+            "Оглавление.ББК 84(2=632.3)6-5"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1736865",
+        "download_code": "nbrt_tatarica_Inv_T_1736865",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/aumdlmhkdm/",
+        "available_pages": 388,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/aiuvfiedvq": {
+        "title": "Сайланма әсәрләр: 5 т.. 2 том. – Шигырьләр, публицистик цикллар, поэмалар, робагыйлар (1972-2016)",
+        "publish_year": "2017",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Гаташ",
+            "Поэзия татарская",
+            "Художественная литература",
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Художественная литература",
+            "Шигырьләр",
+            "Стихи",
+            "Поэмалар",
+            "Поэмы",
+            "Рубаи",
+            "Робагыйлар"
+        ],
+        "author": "Заһидуллина",
+        "access": "limited",
+        "integrated_description": [
+            "Гаташ, Рәдиф .Сайланма әсәрләр : 5 т. / Рәдиф Гаташ",
+            "Казан : Татарстан китап нәшрияты, 2017 -",
+            "ISBN 978-5-298-03447-0.2 том: Шигырьләр, публицистик цикллар, поэмалар, робагыйлар (1972-2016) / [ахыргы сүз авт. Д. Заһидуллина]",
+            "2017",
+            "399 б.: портр",
+            "16+",
+            "ISBN 978-5-298-03449-4 ((2 т.))",
+            "Оглавление.ББК 84(2=632.3)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1736861",
+        "download_code": "nbrt_tatarica_Inv_T_1736861",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/aiuvfiedvq/",
+        "available_pages": 404,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/zydbbltgdc": {
+        "title": "Күкләр ак иде: шигырьләр",
+        "publish_year": "2018",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Татарская поэзия",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Шигырьләр",
+            "Художественная литература"
+        ],
+        "author": "Солтанова",
+        "access": "limited",
+        "integrated_description": [
+            "Солтанова, Роза.Күкләр ак иде : шигырьләр / Р. Г. Солтанова",
+            "Казан : Татарстан китап нәшрияты, 2018",
+            "142, [1] б",
+            "16+",
+            "ISBN 978-5-298-03568-2",
+            "Оглавление.ББК 84(2=632.3)6-4"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1742123",
+        "download_code": "nbrt_tatarica_Inv_T_1742123",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/zydbbltgdc/",
+        "available_pages": 148,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/ohbwmqtbua": {
+        "broken": true,
+        "title": "Туксан тугыз шаяру: робагыйлар",
+        "publish_year": "2017",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Шигырьләр",
+            "Робагыйлар",
+            "Татарская литература"
+        ],
+        "author": "Сирматов; Вәлиев, Р."
+    },
+    "/tt/ssearch/detail/bhouhemmka": {
+        "title": "Татар моңы: шигырьләр, җырлар, робагыйлар",
+        "publish_year": "2017",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Татарская литература",
+            "Шигырьләр",
+            "Матур әдәбият"
+        ],
+        "author": "Мөхәммәтшин",
+        "access": "limited",
+        "integrated_description": [
+            "Казан : Татарстан китап нәшрияты, 2017",
+            "287 б",
+            "16+",
+            "ISBN 978-5-298-03351-0",
+            "Оглавление"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1732734",
+        "download_code": "nbrt_tatarica_Inv_T_1732734",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/bhouhemmka/",
+        "available_pages": 292,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/gaafwdwmiq": {
+        "title": "Офыкларга карап...: шигырьләр, балладалар, поэмалар",
+        "publish_year": "2017",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Сибгатуллин",
+            "Поэзия татарская",
+            "Татар әдәбияты",
+            "Татар шигърияте",
+            "Татарская поэзия",
+            "Шигырьләр"
+        ],
+        "author": "Сибгатуллин; Хамматова; Сафин, Ф.",
+        "access": "limited",
+        "integrated_description": [
+            "Сибгатуллин, Кадыйр.Офыкларга карап.. : шигырьләр, балладалар, поэмалар / К. Һ. Сибгатуллин",
+            "[төз. Ф. Хамматова",
+            "кереш сүз авт. Ф. Сафин]",
+            "Казан : Татарстан китап нәшрияты, 2017",
+            "399 б",
+            "(\"Шагыйрь мөнбәре\" сериясе)",
+            "Библиогр.: б.393",
+            "12+",
+            "ISBN 978-5-298-03269-8",
+            "Оглавление"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1729324",
+        "download_code": "nbrt_tatarica_Inv_T_1729324",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/gaafwdwmiq/",
+        "available_pages": 404,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/egtelstark": {
+        "title": "Сайланма әсәрләр: 5 т.. 1 том. – Шигырьләр, лирик цикллар, тәрҗемәләр (1961-1972)",
+        "publish_year": "2017",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Гаташ",
+            "Поэзия татарская",
+            "Художественная литература",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Шигырьләр",
+            "Стихи",
+            "Тәрҗемәләр",
+            "Переводы (лит.)",
+            "Татарская литература",
+            "Матур әдәбият"
+        ],
+        "author": "Миңнегулов, Х.",
+        "access": "limited",
+        "integrated_description": [
+            "Гаташ, Рәдиф .Сайланма әсәрләр : 5 т. / Рәдиф Гаташ",
+            "Казан : Татарстан китап нәшрияты, 2017 -",
+            "ISBN 978-5-298-03447-0.1 том: Шигырьләр, лирик цикллар, тәрҗемәләр (1961-1972) / [кереш сүз авт. Х. Миңнегулов]",
+            "2017",
+            "327 б.: портр",
+            "16+",
+            "ISBN 978-5-298-03448-7 ((1 т.))",
+            "Оглавление"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1736859",
+        "download_code": "nbrt_tatarica_Inv_T_1736859",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/egtelstark/",
+        "available_pages": 332,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/vtvlsuhhse": {
+        "title": "Яктылык сулышы: шигырьләр, поэмалар, сонетлар һәм тәкълитләр",
+        "publish_year": "2017",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Ситдыйкова",
+            "Поэзия татарская",
+            "Татар әдәбияты",
+            "Шигырьләр",
+            "Татарская литература",
+            "Стихи"
+        ],
+        "author": "Ситдыйкова; Сафин, Ф.",
+        "access": "limited",
+        "integrated_description": [
+            "Ситдыйкова, Әлфия.Яктылык сулышы : шигырьләр, поэмалар, сонетлар һәм тәкълитләр / Ә. Ситдыйкова",
+            "[кереш сүз авт. Ф. Сафин]",
+            "Казан : Татарстан китап нәшрияты, 2017",
+            "254, [1] б",
+            "16+",
+            "ISBN 978-5-298-03391-6",
+            "Оглавление"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1734610",
+        "download_code": "nbrt_tatarica_Inv_T_1734610",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/vtvlsuhhse/",
+        "available_pages": 260,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/htvnbdkzlm": {
+        "title": "Күңелдәге хатлар: шигырьләр",
+        "publish_year": "2017",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Поэзия татарская",
+            "Художественная литература",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Татарская литература",
+            "Шигырьләр"
+        ],
+        "author": "Сафина; Гыйльманов; Шәех",
+        "access": "limited",
+        "integrated_description": [
+            "Сафина, Эльвира.Күңелдәге хатлар : шигырьләр / Э. И. Сафина",
+            "[мөх-ре Г. Гыйльманов",
+            "кереш сүз авт. Л. Шәех]",
+            "Казан : Ихлас, 2017",
+            "159 б",
+            "ISBN 978-5-85247-928-0",
+            "Оглавление"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1736916",
+        "download_code": "nbrt_tatarica_Inv_T_1736916",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/htvnbdkzlm/",
+        "available_pages": 164,
+        "downloaded": "limited",
+        "decrypted": true,
+        "needs_full_download": true,
+        "matched_by": "doc_url"
+    },
+    "/tt/ssearch/detail/oogjefqdoo": {
+        "title": "Сүзгә - мәрхәбә!: [фәлсәфи трактат, публицистик язмалар, әдәби тәнкыйть мәкаләләре, хикәяләр, бәяннар]",
+        "publish_year": "2017",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Татарская литература",
+            "Татарская литература",
+            "Публицистика",
+            "Матур әдәбият",
+            "Татар әдәбияты"
+        ],
+        "author": "Низами",
+        "access": "limited",
+        "integrated_description": [
+            "Низами, Рашат.Сүзгә - мәрхәбә! : [фәлсәфи трактат, публицистик язмалар, әдәби тәнкыйть мәкаләләре, хикәяләр, бәяннар] / Р. Низами",
+            "Казан : Татарстан китап нәшрияты, 2017",
+            "205, [2] б",
+            "ISBN 978-5-298-03394-7",
+            "Оглавление.ББК 84(2=632.3)6-4"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1743074",
+        "download_code": "nbrt_tatarica_Inv_T_1743074",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/oogjefqdoo/",
+        "available_pages": 212,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/pkoyqrpeic": {
+        "title": "Каен җылысы: шигырьләр",
+        "publish_year": "2018",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Поэзия татарская",
+            "Татарская поэзия",
+            "Художественная литература",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Шигырьләр"
+        ],
+        "author": "Мөслимова",
+        "access": "limited",
+        "integrated_description": [
+            "Мөслимова, Фәйрүзә.Каен җылысы : шигырьләр / Ф. Ә. Мөслимова",
+            "Казан : Татарстан китап нәшрияты, 2018",
+            "174, [1] б",
+            "16+",
+            "ISBN 978-5-298-03539-2",
+            "Оглавление"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1742126",
+        "download_code": "nbrt_tatarica_Inv_T_1742126",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/pkoyqrpeic/",
+        "available_pages": 180,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/ywenifvmbv": {
+        "broken": true,
+        "title": "Йолдыз ява: шигырьләр, җырлар, хикәяләр, истәлекләр",
+        "publish_year": "[2017]",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Татарская литература",
+            "Матур әдәбият"
+        ],
+        "author": "Кәримова"
+    },
+    "/tt/ssearch/detail/pigdwlnnvm": {
+        "title": "Китап: роман, хикәяләр",
+        "publish_year": "2017",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "tags": [
+            "Кәбиров",
+            "Татарская литература",
+            "Художественная литература",
+            "Татарская литература",
+            "Татар әдәбияты",
+            "Матур әдәбият",
+            "Художественная литература"
+        ],
+        "author": "Кәбиров",
+        "access": "limited",
+        "integrated_description": [
+            "Кәбиров, Марат.Китап : роман, хикәяләр / М. Р. Кәбиров",
+            "Казан : Татарстан китап нәшрияты, 2017",
+            "461, [2] б",
+            "Эчт.: Китап",
+            "Фәрештә",
+            "Параллель дөнья һ. б",
+            "16+",
+            "ISBN 978-5-298-03369-5",
+            "Оглавление"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1734616",
+        "download_code": "nbrt_tatarica_Inv_T_1734616",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/pigdwlnnvm/",
+        "available_pages": 466,
+        "downloaded": "limited",
+        "decrypted": true
     },
     "/tt/ssearch/detail/uecngpviuq": {
         "title": "Алтынчәч: Опера өчен либр. 3 актта, 5 картинада, пролог б-н",
