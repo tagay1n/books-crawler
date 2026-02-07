@@ -15,6 +15,7 @@ import base64
 import copy
 from upload_docs import upload_doc, upload_metadata
 import hashlib
+from unidecode import unidecode
 
 def decrypt():
     index = load_index_file()
@@ -133,10 +134,8 @@ def decrypt_doc_parts(context):
         acc.set_metadata(_metadata)
 
         # save the final pdf
-        file_name = _safe_filename(scribed_metadata["title"])
-        if len(file_name) > 100:
-            file_name = f"{file_name[:98]}__"
-        output_path = os.path.normpath(os.path.join(context["work_dir"], f"{file_name}.pdf"))
+        file_name = _build_output_filename(scribed_metadata)
+        output_path = os.path.normpath(os.path.join(context["work_dir"], file_name))
         with open(output_path, "wb") as file:
             file.write(acc.write())
 
@@ -223,6 +222,25 @@ def _safe_filename(name: str, default: str = "document") -> str:
     if cleaned.lower() in reserved:
         cleaned = f"_{cleaned}"
     return cleaned
+
+
+def _build_output_filename(meta: dict) -> str:
+    title = meta.get("title", "document")
+    download_code = meta.get("download_code", "")
+
+    translit = unidecode(title)
+    translit = re.sub(r"\s+", "_", translit).strip("_")
+
+    if download_code:
+        combined = f"{translit}__{download_code}"
+    else:
+        combined = translit
+
+    combined = _safe_filename(combined)
+    if len(combined) > 100:
+        combined = f"{combined[:98]}__"
+
+    return f"{combined}.pdf"
 
 
 def _calculate_md5(file_path: str):
