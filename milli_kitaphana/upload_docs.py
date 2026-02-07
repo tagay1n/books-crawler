@@ -15,7 +15,7 @@ def upload_doc(path_to_pdf, config, is_limited):
     _, _ = client.upload_or_replace(
         path_to_pdf, 
         remote_dir=remote_dir,
-        conflict_resolution=ConflictResolution.SKIP
+        conflict_resolution=ConflictResolution.REPLACE_IF_DIFFERENT
     )
     # res = client.publish(remote_path)
     # res = client.get_meta(res.path, fields=['md5'])
