@@ -27,7 +27,7 @@ base_dir = get_in_workdir(os.path.join("../__artifacts/milli.kitaphana"))
 
 def read_config():
     # read config file from the same directory
-    with open(get_in_workdir("config.yaml"), "r") as f:
+    with open(get_in_workdir("config.yaml"), "r", encoding="utf-8-sig") as f:
         return yaml.safe_load(f)
     
     
@@ -35,7 +35,7 @@ def load_index_file(index_file=None):
     if not index_file:
         index_file = get_index_file_loc()
     if os.path.exists(index_file):
-        with open(index_file, "r", encoding="utf-8") as f:
+        with open(index_file, "r", encoding="utf-8-sig") as f:
             books = json.load(f)
     else:
         books = {}

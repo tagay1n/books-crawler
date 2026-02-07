@@ -53,7 +53,7 @@ def _load_filter():
     filter_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "filter.json"))
     if not os.path.exists(filter_path):
         return None
-    with open(filter_path, "r", encoding="utf-8") as f:
+    with open(filter_path, "r", encoding="utf-8-sig") as f:
         data = json.load(f)
     codes = {c.strip() for c in data.get("download_codes", [])}
     titles = {t.strip().lower() for t in data.get("titles", [])}
