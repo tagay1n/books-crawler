@@ -1,23 +1,37 @@
-# Milli Kitaphana pipeline
+# Milli Kitaphana
 
-This folder indexes, downloads, and decrypts documents from the Milli Kitaphana site.
-Downloads can be split into sublists to run workers in parallel.
+Crawler/downloader/decryptor for `kitap.tatar.ru`.
 
-## Commands
-- `python milli_kitaphana/cli.py index` - build or update `__artifacts/milli.kitaphana/books-index.json`.
-- `python milli_kitaphana/cli.py split --parts N` - split pending docs into N sublists.
-- `python milli_kitaphana/cli.py download` - download missing docs (supports `--proxy` and `--limited`).
-- `python milli_kitaphana/cli.py decrypt` - decrypt downloaded parts into PDFs.
-- `python milli_kitaphana/cli.py merge-index <path>` - merge a partial index into the main one.
+Main state lives in `__artifacts/milli.kitaphana/books-index.json`.
+
+## CLI commands
+
+- `python milli_kitaphana/cli.py index`
+  - Crawl cards and refresh index entries.
+- `python milli_kitaphana/cli.py split --parts N [--dest PATH] [--prefix NAME]`
+  - Split pending docs into sub-index files under `__artifacts/milli.kitaphana/subindexes/` by default.
+- `python milli_kitaphana/cli.py download [--limited] [--index-name NAME]`
+  - Without `--limited`: process docs where `broken != true` and `downloaded is None`.
+  - With `--limited`: process docs where `broken != true`, `needs_full_download == true`, and `downloaded in {None, "limited"}`.
+- `python milli_kitaphana/cli.py decrypt`
+  - Decrypt downloaded parts and update index status.
+- `python milli_kitaphana/cli.py merge-index PATH`
+  - Merge a worker index into the main index.
+
+## Helper script
+
+- `python milli_kitaphana/mark_existing_limited.py`
+  - Reads non-full documents from Postgres, matches them to index records, and marks `needs_full_download`.
+  - Uses local upstream metadata cache at `~/.monocorpus/misc/upstream_metadata`.
 
 ## Config
-`milli_kitaphana/config.yaml` holds API endpoints, crypto keys, and storage credentials.
 
-## Artifacts
-- Index: `__artifacts/milli.kitaphana/books-index.json`
-- Split lists: `__artifacts/milli.kitaphana/subindexes/`
-- Download and decrypt artifacts are stored under `__artifacts/milli.kitaphana/`.
+- File: `milli_kitaphana/config.yaml`
+- Read with `utf-8-sig` to tolerate BOM on Windows.
+- Keep placeholders in git (`<SET ME>`); do not commit real tokens/keys.
 
-## Filtering
-If `filter.json` exists in the repo root, `split` will only include entries that match
-`download_codes` or `titles` in that file.
+## Optional filter
+
+If root `filter.json` exists, `split` keeps only entries matching:
+- `download_codes`
+- `titles`
