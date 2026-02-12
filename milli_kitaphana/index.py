@@ -14,7 +14,7 @@ requests.packages.urllib3.disable_warnings(
     requests.packages.urllib3.exceptions.InsecureRequestWarning)
 
 
-ENTRY_POINT = "https://kitap.tatar.ru/tt/ssearch/detail/dtulfrbxlj/"
+ENTRY_POINT = "https://kitap.tatar.ru/tt/ssearch/ecollection/"
 LANGUAGE_QUERIES = ["tat", "ara"]
 
 

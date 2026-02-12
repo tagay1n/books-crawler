@@ -5,7 +5,7 @@ import os
 import shutil
 import time
 from contextlib import contextmanager
-from datetime import datetime, timezone
+from datetime import datetime
 
 import requests
 import yaml
@@ -17,8 +17,9 @@ requests.packages.urllib3.disable_warnings(
 
 
 def get_in_workdir(file):
-    """Return file in the current directory where script file is located"""
-    return os.path.join(os.path.dirname(__file__), file)
+    """Return normalized absolute path under the milli_kitaphana directory."""
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.abspath(os.path.normpath(os.path.join(script_dir, file)))
 
 
 HOST = "https://kitap.tatar.ru"
@@ -48,12 +49,12 @@ def load_index_file(index_file=None):
         
 def get_index_dir():
     """Return dedicated storage directory for index files."""
-    return os.path.join(index_root_dir, index_dir_name)
+    return os.path.normpath(os.path.join(index_root_dir, index_dir_name))
 
 
 def get_backups_dir():
     """Return dedicated storage directory for index backups."""
-    return os.path.join(index_root_dir, backups_dir_name)
+    return os.path.normpath(os.path.join(index_root_dir, backups_dir_name))
 
 
 def get_index_file_loc():
@@ -73,9 +74,9 @@ def backup_index_snapshot():
     backups_dir = get_backups_dir()
     os.makedirs(backups_dir, exist_ok=True)
 
-    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%fZ")
-    backup_file_name = f"{timestamp}_{index_file_name}.zip"
-    backup_path = os.path.join(backups_dir, backup_file_name)
+    # Human-readable local timestamp: YYYY-MM-DD_HH-MM-SS
+    backup_file_name = f"{os.path.splitext(index_file_name)[0]}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.zip"
+    backup_path = os.path.abspath(os.path.normpath(os.path.join(backups_dir, backup_file_name)))
 
     with zipfile.ZipFile(backup_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
         if os.path.exists(index_file):
@@ -153,32 +154,58 @@ def open_lock(index_file, wait_seconds=0.5):
 
 def download_part(context, part):
     work_dir = context["work_dir"]
-    part_name, _ = part.split(".")
-    enc_zip_path = os.path.join(work_dir, part_name + "_encrypted.zip")
-    enc_unzip_dir = os.path.join(work_dir, part_name + "_encrypted")
+    enc_zip_path, enc_zip_part_path, enc_unzip_dir, enc_file_path = get_part_paths(work_dir, part)
 
     url = HOST + context['meta']["format_url"].format(url=part)
     # download the encrypted zip file
     with request(method="GET", url=url, stream=True, proxies=context.get('proxies')) as response:
         os.makedirs(work_dir, exist_ok=True)
+        if os.path.exists(enc_zip_part_path):
+            os.remove(enc_zip_part_path)
         # save the encrypted zip file
-        with open(enc_zip_path, "wb") as enc_zip:
+        with open(enc_zip_part_path, "wb") as enc_zip:
             task = context["progress"].download(part)
-            total_size = 0
             for chunk in response.iter_content(chunk_size=1024):
                 enc_zip.write(chunk)
                 chunk_len = len(chunk)
-                total_size += chunk_len
                 context['progress']._aux.update(task, advance=chunk_len)
             context['progress']._aux.update(
                 task, description=f"Downloaded {part}")
             context['progress']._aux.stop_task(task)
 
+    os.replace(enc_zip_part_path, enc_zip_path)
+
     # unzip the encrypted zip file
     with zipfile.ZipFile(enc_zip_path, 'r') as enc_zip:
+        bad_entry = enc_zip.testzip()
+        if bad_entry:
+            raise ValueError(f"Corrupted encrypted zip for '{part}', bad entry: {bad_entry}")
+        if "enc.dat" not in enc_zip.namelist():
+            raise ValueError(f"Encrypted zip for '{part}' does not contain enc.dat")
         enc_zip.extractall(enc_unzip_dir)
+    if not is_valid_encrypted_part(enc_file_path):
+        raise ValueError(f"Encrypted payload for '{part}' is invalid")
 
     return enc_unzip_dir
+
+
+def get_part_paths(work_dir, part):
+    part_name, _ = part.rsplit(".", 1)
+    enc_zip_path = os.path.join(work_dir, part_name + "_encrypted.zip")
+    enc_zip_part_path = enc_zip_path + ".part"
+    enc_unzip_dir = os.path.join(work_dir, part_name + "_encrypted")
+    enc_file_path = os.path.join(enc_unzip_dir, "enc.dat")
+    return enc_zip_path, enc_zip_part_path, enc_unzip_dir, enc_file_path
+
+
+def is_valid_encrypted_part(enc_file_path):
+    if not os.path.exists(enc_file_path):
+        return False
+    file_size = os.path.getsize(enc_file_path)
+    if file_size <= 0:
+        return False
+    # AES-CBC ciphertext is block aligned.
+    return file_size % 16 == 0
 
 
 def request(method, url, params=None, data=None, stream=False, headers={}, proxies=None):

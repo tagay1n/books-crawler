@@ -35,6 +35,8 @@ from utils import (
     get_list_file_loc,
     get_not_downloaded_docs,
     backup_index_snapshot,
+    get_part_paths,
+    is_valid_encrypted_part,
     open_lock,
     load_index_file,
     read_config,
@@ -346,9 +348,40 @@ def _download_part_task(context, part, num, counter, total):
         print(f"Part {num} does not have an URL")
         context['meta']['access'] = "limited"
         return None
-    res = num, part_url, download_part(context, part_url)
+
+    if enc_unzip_dir := _try_reuse_local_part(context, part_url):
+        res = num, part_url, enc_unzip_dir
+    else:
+        res = num, part_url, download_part(context, part_url)
+
     context['progress'].main(f"Downloaded ({next(counter) + 1}/{total}) parts")
     return res
+
+
+def _try_reuse_local_part(context, part_url):
+    work_dir = context["work_dir"]
+    enc_zip_path, enc_zip_part_path, enc_unzip_dir, enc_file_path = get_part_paths(work_dir, part_url)
+
+    if os.path.exists(enc_zip_part_path):
+        os.remove(enc_zip_part_path)
+
+    if is_valid_encrypted_part(enc_file_path):
+        return os.path.normpath(enc_unzip_dir)
+
+    if not os.path.exists(enc_zip_path):
+        return None
+
+    try:
+        with zipfile.ZipFile(enc_zip_path, "r") as enc_zip:
+            if enc_zip.testzip() is not None or "enc.dat" not in enc_zip.namelist():
+                return None
+            enc_zip.extractall(enc_unzip_dir)
+        if is_valid_encrypted_part(enc_file_path):
+            return os.path.normpath(enc_unzip_dir)
+    except Exception:
+        return None
+
+    return None
 
 
 def _datetime_to_bytes(dt):
