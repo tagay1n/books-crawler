@@ -1,6 +1,6 @@
 """Scrapes Milli Kitaphana search pages, builds a metadata index, and merges it with existing records."""
 
-from utils import load_index_file, dump_index
+from utils import load_index_file, dump_index, backup_index_snapshot
 import requests
 import bs4 as bs
 from urllib.parse import urlparse
@@ -14,12 +14,14 @@ requests.packages.urllib3.disable_warnings(
     requests.packages.urllib3.exceptions.InsecureRequestWarning)
 
 
-ENTRY_POINT = "https://kitap.tatar.ru/tt/ssearch/ecollection/"
+ENTRY_POINT = "https://kitap.tatar.ru/tt/ssearch/detail/dtulfrbxlj/"
 LANGUAGE_QUERIES = ["tat", "ara"]
 
 
 def index():
     print("Creating index of books")
+    backup_path = backup_index_snapshot()
+    print(f"Created index backup: {backup_path}")
     new_index = {}
     for lang_code in LANGUAGE_QUERIES:
         lang_index = _create_newest_index(lang_code)

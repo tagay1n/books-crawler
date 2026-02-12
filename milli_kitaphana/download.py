@@ -34,6 +34,7 @@ from utils import (
     get_index_file_loc,
     get_list_file_loc,
     get_not_downloaded_docs,
+    backup_index_snapshot,
     open_lock,
     load_index_file,
     read_config,
@@ -49,6 +50,8 @@ DETAILS_URL = HOST + "/tt/dl/edoc2"
 
 
 def download(limited, index_name):
+    backup_path = backup_index_snapshot()
+    print(f"Created index backup: {backup_path}")
     global_index_file = get_index_file_loc()
     worker_index_file = get_list_file_loc(index_name) if index_name else global_index_file
     worker_is_global = worker_index_file == global_index_file
@@ -58,7 +61,9 @@ def download(limited, index_name):
     # a dictionary with download code as key and book's card path as a value
     # the card path is a key in the index 
     code_to_card_path = {v['download_code']: k for k, v in global_index.items() if 'download_code' in v}
+    print(f"Loaded {len(index_part)} items from the index for downloading")
     not_downloaded_docs = get_not_downloaded_docs(index_part, limited)
+    print(f"Found {len(not_downloaded_docs)} not downloaded document(s) in the index")
     if not not_downloaded_docs:
         print("No docs for downloading, exiting...")
         return

@@ -48,7 +48,7 @@ Each pipeline has its own CLI/scripts and its own local state in `__artifacts/` 
 
 ## State files
 
-- `__artifacts/milli.kitaphana/books-index.json` stores Milli Kitaphana crawl/download state.
+- `__artifacts/milli.kitaphana/_index/books-index.json` stores Milli Kitaphana crawl/download state.
 - `__artifacts/litres/books-index.json` stores Litres state.
 - `__artifacts/common.crawl/docs-index.json` stores Common Crawl state.
 - `~/.common-crawl/` stores downloaded Common Crawl files and caches.

@@ -2,7 +2,7 @@
 
 Crawler/downloader/decryptor for `kitap.tatar.ru`.
 
-Main state lives in `__artifacts/milli.kitaphana/books-index.json`.
+Main state lives in `__artifacts/milli.kitaphana/_index/books-index.json`.
 
 ## CLI commands
 

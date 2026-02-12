@@ -8,7 +8,7 @@ import re
 from Crypto.Util.Padding import unpad
 import zipfile
 import pymupdf
-from utils import read_config, load_index_file, dump_index, download_part, base_dir
+from utils import read_config, load_index_file, dump_index, download_part, base_dir, backup_index_snapshot
 from progress_wrapper import ProgressWrapper
 import json
 import base64
@@ -18,6 +18,8 @@ import hashlib
 from unidecode import unidecode
 
 def decrypt():
+    backup_path = backup_index_snapshot()
+    print(f"Created index backup: {backup_path}")
     index = load_index_file()
     if not (not_decrypted_docs := _get_not_decrypted_docs(index)):
         print("No docs for decrypting, exiting...")

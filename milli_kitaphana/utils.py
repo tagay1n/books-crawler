@@ -5,6 +5,7 @@ import os
 import shutil
 import time
 from contextlib import contextmanager
+from datetime import datetime, timezone
 
 import requests
 import yaml
@@ -20,9 +21,12 @@ def get_in_workdir(file):
     return os.path.join(os.path.dirname(__file__), file)
 
 
-index_file_name = "books-index.json"
 HOST = "https://kitap.tatar.ru"
+index_file_name = "books-index.json"
+index_dir_name = "_index"
+backups_dir_name = "_backups"
 base_dir = get_in_workdir(os.path.join("../__artifacts/milli.kitaphana"))
+index_root_dir = get_in_workdir("../__artifacts/milli.kitaphana")
 
 
 def read_config():
@@ -42,10 +46,44 @@ def load_index_file(index_file=None):
     return books
         
         
+def get_index_dir():
+    """Return dedicated storage directory for index files."""
+    return os.path.join(index_root_dir, index_dir_name)
+
+
+def get_backups_dir():
+    """Return dedicated storage directory for index backups."""
+    return os.path.join(index_root_dir, backups_dir_name)
+
+
 def get_index_file_loc():
-    index_dir = get_in_workdir("../__artifacts/milli.kitaphana")
+    os.makedirs(index_root_dir, exist_ok=True)
+    index_dir = get_index_dir()
     os.makedirs(index_dir, exist_ok=True)
     return os.path.join(index_dir, index_file_name)
+
+
+def backup_index_snapshot():
+    """
+    Create a zip backup of current index state before a mutating command runs.
+
+    Returns full path to the created backup archive.
+    """
+    index_file = get_index_file_loc()
+    backups_dir = get_backups_dir()
+    os.makedirs(backups_dir, exist_ok=True)
+
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S_%fZ")
+    backup_file_name = f"{timestamp}_{index_file_name}.zip"
+    backup_path = os.path.join(backups_dir, backup_file_name)
+
+    with zipfile.ZipFile(backup_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+        if os.path.exists(index_file):
+            zf.write(index_file, arcname=index_file_name)
+        else:
+            zf.writestr(index_file_name, "{}\n")
+
+    return backup_path
 
 
 def dump_index(idx, index_file=None):
