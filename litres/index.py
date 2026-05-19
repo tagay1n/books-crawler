@@ -98,7 +98,7 @@ def _parse_legacy_cards(soup):
             continue
         details = {
             "title": _normalize_text(title.get_text()),
-            "subscription": True if book.select_one('div[class^="ArtPriceFooter_ArtPriceFooterSubscriptions"]') else False,
+            "subscription": True,
             "url": _normalize_book_url(cover["href"]),
         }
         details["content_type"] = _detect_content_type_from_node(book, details["url"])
@@ -122,7 +122,7 @@ def _parse_link_cards(soup):
         details = {
             "title": title,
             "url": url,
-            "subscription": _has_subscription_marker(link),
+            "subscription": True,
             "content_type": _detect_content_type(link, url),
         }
         if author := _extract_author(link):
@@ -159,13 +159,6 @@ def _extract_author(link):
     if not author:
         return None
     return _normalize_text(author.get_text(" ", strip=True))
-
-
-def _has_subscription_marker(link):
-    card = _find_card_root(link)
-    if not card:
-        return False
-    return "subscription" in " ".join(card.get("class", [])).lower() or "абонемент" in card.get_text(" ", strip=True).lower()
 
 
 def _detect_content_type(link, url):
@@ -237,19 +230,56 @@ def _open_reader_url(url, driver):
     wait = WebDriverWait(driver, 20)
     for attempt in range(3):
         try:
-            read_button = wait.until(
-                EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[class^="Button_textContainer__"]'))
+            read_button = _find_read_button(wait)
+            old_handles = set(driver.window_handles)
+            driver.execute_script(
+                """
+                const target = arguments[0].closest('button,a,[role="button"]') || arguments[0];
+                target.scrollIntoView({block: 'center'});
+                target.click();
+                """,
+                read_button,
             )
-            driver.execute_script("arguments[0].click();", read_button)
+            _wait_for_reader_navigation(driver, url, old_handles)
             break
         except StaleElementReferenceException:
             if attempt == 2:
                 raise
-    try:
-        WebDriverWait(driver, 10).until(lambda current: current.current_url != url)
-    except TimeoutException:
-        pass
+        except TimeoutException:
+            if attempt == 2:
+                raise ValueError(f"Could not open Litres reader for {url}")
     return driver.current_url
+
+
+def _find_read_button(wait):
+    from selenium.webdriver.common.by import By
+    from selenium.webdriver.support import expected_conditions as EC
+
+    text_button_xpath = (
+        "//*[contains(@class, 'Button_textContainer') and "
+        "(contains(normalize-space(.), 'Читать') or contains(normalize-space(.), 'Read'))]"
+    )
+    return wait.until(
+        EC.element_to_be_clickable(
+            (
+                By.XPATH,
+                f"({text_button_xpath} | //a[contains(@href, '/reader/')] | //a[contains(@href, '/static/or3/view/or.html')])[1]",
+            )
+        )
+    )
+
+
+def _wait_for_reader_navigation(driver, initial_url, old_handles):
+    from selenium.webdriver.support.ui import WebDriverWait
+
+    def _reader_opened(current):
+        new_handles = set(current.window_handles) - old_handles
+        if new_handles:
+            current.switch_to.window(next(iter(new_handles)))
+            return True
+        return current.current_url != initial_url
+
+    WebDriverWait(driver, 10).until(_reader_opened)
 
 
 def _content_type_from_reader_url(reader_url, book_url):

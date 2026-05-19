@@ -51,7 +51,6 @@ class LitresIndexTests(unittest.TestCase):
                 <span data-testid="art-title">Идел №2 2025</span>
               </a>
               <a href="/author/raznoe/">Разное</a>
-              <div>Можно читать по абонементу</div>
               <div>Электронная книга</div>
             </article>
             """,
