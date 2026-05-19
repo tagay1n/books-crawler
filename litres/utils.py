@@ -5,9 +5,6 @@ import os.path
 
 import requests
 import yaml
-from selenium.webdriver.chrome.service import Service as ChromeService
-from seleniumwire import webdriver
-from webdriver_manager.chrome import ChromeDriverManager
 
 
 def get_in_workdir(file):
@@ -44,12 +41,13 @@ def get_sid():
 
 def create_driver():
     """
-    Create a new Selenium driver instance with request interceptor
+    Create a Selenium driver and preload Litres SID as a browser cookie.
     """
+    from selenium.webdriver.chrome.service import Service as ChromeService
+    from selenium import webdriver
+    from webdriver_manager.chrome import ChromeDriverManager
 
-    def _interceptor(request):
-        # add the missing headers
-        request.headers['Cookie'] = f"SID={get_sid()};"
+    from consts import domain
 
     options = webdriver.ChromeOptions()
     options.headless = True
@@ -59,7 +57,8 @@ def create_driver():
         service=ChromeService(ChromeDriverManager().install()),
         options=options
     )
-    driver.request_interceptor = _interceptor
+    driver.get(domain)
+    driver.add_cookie({"name": "SID", "value": get_sid(), "domain": ".litres.ru", "path": "/"})
     return driver
 
 
