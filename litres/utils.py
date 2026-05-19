@@ -2,6 +2,7 @@
 
 import hashlib
 import os.path
+from pathlib import Path
 
 import requests
 import yaml
@@ -53,13 +54,18 @@ def create_driver():
     options.headless = True
     options.add_argument("--headless")
 
-    driver = webdriver.Chrome(
-        service=ChromeService(ChromeDriverManager().install()),
-        options=options
-    )
+    driver_path = _find_cached_chromedriver() or ChromeDriverManager().install()
+    driver = webdriver.Chrome(service=ChromeService(driver_path), options=options)
     driver.get(domain)
     driver.add_cookie({"name": "SID", "value": get_sid(), "domain": ".litres.ru", "path": "/"})
     return driver
+
+
+def _find_cached_chromedriver():
+    candidates = sorted(Path.home().glob(".wdm/drivers/chromedriver/linux64/*/chromedriver-linux64/chromedriver"))
+    if not candidates:
+        return None
+    return str(candidates[-1])
 
 
 def get_hash(src):

@@ -1,5 +1,6 @@
 """Downloads Litres text books by fetching JS page fragments, converts the structured content into markdown with images and footnotes, and stores artifacts under workdir."""
 
+import contextlib
 import json
 import os
 import re
@@ -8,11 +9,9 @@ from urllib.parse import urlparse, parse_qs
 import requests
 import typer
 from rich.progress import track
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.support.ui import WebDriverWait
 
 from consts import domain
+from index import _open_reader_url
 from utils import get_in_workdir, create_driver, get_hash, get_sid
 
 
@@ -25,61 +24,108 @@ def visit_text_books_pages():
 
     print(f"Visiting {len(books)} text docs")
 
-    for book in track(books, description="Downloading text books"):
-        print(f"Processing book: {book['full_name']}")
-        artifacts_dir = _download_page_descriptions(book)
-        with open(path_to_idx, "w") as f:
-            json.dump(all_books, f, indent=4, ensure_ascii=False)
-        _make_up_markdown(artifacts_dir, book)
+    failed = 0
+    with create_driver() as driver:
+        for book in track(books, description="Downloading text books"):
+            print(f"Processing book: {book['full_name']}")
+            try:
+                artifacts_dir = _download_page_descriptions(book, driver=driver)
+                _make_up_markdown(artifacts_dir, book, driver=driver)
+                book.pop("download_error", None)
+            except Exception as e:
+                failed += 1
+                book["download_error"] = str(e)
+                print(f"Error processing text book: {book['url']}")
+                print(e)
+            with open(path_to_idx, "w") as f:
+                json.dump(all_books, f, indent=4, ensure_ascii=False)
+    if failed:
+        print(f"Finished with {failed} text book download error(s)")
 
 
-def _download_page_descriptions(book):
+def _download_page_descriptions(book, driver=None):
     url = book['url']
     digest = book.get('hash') or get_hash(url)
     artifacts_dir = get_in_workdir("../__artifacts/litres/js")
     os.makedirs(artifacts_dir, exist_ok=True)
     completed_dir = os.path.join(artifacts_dir, digest)
     if os.path.exists(completed_dir):
+        if not book.get("resource_url"):
+            book["resource_url"] = _resolve_resource_url(url, driver)
         return completed_dir
     incompleted_dir = completed_dir + ".part"
     os.makedirs(incompleted_dir, exist_ok=True)
 
-    with create_driver() as driver:
-        driver.get(url)
-        read_button = WebDriverWait(driver, 20).until(
-            EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[class^="Button_textContainer__"]')))
-        read_button.click()
-        reader_url = driver.current_url
-        parsed_url = urlparse(reader_url)
-        queries = parse_qs(parsed_url.query)
-        base_url = queries['baseurl'][0]
-        resource_url = f"{domain}{base_url}json/"
-        book['resource_url'] = resource_url
-        counter = 0
-        headers = {
-            "Cookie": f"SID={get_sid()};",
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-        }
-        while True:
-            file_name = f"{'{:03d}'.format(counter)}.js"
-            counter += 1
-            output_path = os.path.join(incompleted_dir, file_name)
-            if not os.path.exists(output_path):
-                file_url = f"{resource_url}{file_name}"
-                resp = requests.get(file_url, headers=headers)
-                if resp.status_code == 404:
-                    break
-                elif resp.status_code == 200:
-                    with open(output_path, "wb") as f:
-                        f.write(resp.content)
-                else:
-                    raise ValueError(f"Could not download file: {file_url}, resp: {resp}")
+    resource_url = _resolve_resource_url(url, driver)
+    book['resource_url'] = resource_url
+    counter = 0
+    headers = _headers()
+    while True:
+        file_name = f"{'{:03d}'.format(counter)}.js"
+        counter += 1
+        output_path = os.path.join(incompleted_dir, file_name)
+        if not os.path.exists(output_path):
+            file_url = f"{resource_url}{file_name}"
+            resp = requests.get(file_url, headers=headers, timeout=20)
+            if resp.status_code == 404:
+                break
+            elif resp.status_code == 200:
+                with open(output_path, "wb") as f:
+                    f.write(resp.content)
+            else:
+                raise ValueError(f"Could not download file: {file_url}, resp: {resp}")
 
     os.rename(incompleted_dir, completed_dir)
     return completed_dir
 
 
-def _make_up_markdown(input_dir, book):
+def _resolve_resource_url(url, driver=None):
+    if resource_url := _guess_resource_url(url):
+        if _resource_url_exists(resource_url):
+            return resource_url
+
+    with _driver_context(driver) as active_driver:
+        reader_url = _open_reader_url(url, active_driver)
+        base_url = _base_url_from_reader_url(reader_url, url)
+        return f"{domain}{base_url}json/"
+
+
+def _guess_resource_url(url):
+    if match := re.search(r"-(\d+)/?$", urlparse(url).path):
+        return f"{domain}/pub/t/{match.group(1)}.json/"
+    return None
+
+
+def _resource_url_exists(resource_url):
+    try:
+        resp = requests.get(f"{resource_url}000.js", headers=_headers(), timeout=20)
+    except requests.RequestException:
+        return False
+    return resp.status_code == 200
+
+
+def _headers():
+    return {
+        "Cookie": f"SID={get_sid()};",
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+    }
+
+
+def _driver_context(driver=None):
+    if driver:
+        return contextlib.nullcontext(driver)
+    return create_driver()
+
+
+def _base_url_from_reader_url(reader_url, book_url):
+    parsed_url = urlparse(reader_url)
+    queries = parse_qs(parsed_url.query)
+    if base_url := queries.get("baseurl"):
+        return base_url[0]
+    raise ValueError(f"Could not find text resource base URL for {book_url}; reader URL was {reader_url}")
+
+
+def _make_up_markdown(input_dir, book, driver=None):
     # directory for resulting markdown file
     output_dir = get_in_workdir(f"../__artifacts/litres/markdown/{book['full_name']}")
     os.makedirs(output_dir, exist_ok=True)
@@ -94,11 +140,11 @@ def _make_up_markdown(input_dir, book):
     files = sorted([f for f in os.listdir(input_dir) if f.endswith('.js')], key=lambda x: int(x.split(".")[0]))
     all_footnotes = []
     context = {'f': all_footnotes, 'book': book, 'workdir': output_dir, 'footn_counter': 1}
-    with open(partial_output, "w") as out:
+    with open(partial_output, "w") as out, _driver_context(driver) as active_driver:
         for f in files:
-            with open(os.path.join(input_dir, f), "r") as f, create_driver() as driver:
+            with open(os.path.join(input_dir, f), "r") as f:
                 results = []
-                for item in driver.execute_script("let c = " + f.read() + "; return c;"):
+                for item in active_driver.execute_script("let c = " + f.read() + "; return c;"):
                     if res := textify(item, context).rstrip('\n'):
                         results.append(res)
                 out.write('\n\n'.join(results))
@@ -144,7 +190,7 @@ def textify(item, ctxt, prefix="", suffix=""):
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
                 }
                 if not os.path.exists(image_location):
-                    with requests.get(image_url, headers=headers) as r:
+                    with requests.get(image_url, headers=headers, timeout=20) as r:
                         r.raise_for_status()
                         with open(image_location, "wb") as f:
                             f.write(r.content)
@@ -197,4 +243,4 @@ def textify(item, ctxt, prefix="", suffix=""):
 
 
 def _clear_string(s):
-    return s.replace('\xad', '').replace('\xa0', ' ').replace(' ', '').replace('*', '\*').replace('`', '\`')
+    return s.replace('\xad', '').replace('\xa0', ' ').replace(' ', '').replace('*', '\\*').replace('`', '\\`')
