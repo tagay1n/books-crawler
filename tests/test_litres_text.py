@@ -33,6 +33,63 @@ class _FakeDriver:
 
 
 class LitresTextTests(unittest.TestCase):
+    def test_get_text_books_to_visit_skips_successfully_marked_books(self):
+        books = {
+            "done": {
+                "content_type": "text",
+                "markdown_file": "/tmp/book.md",
+            },
+            "failed": {
+                "content_type": "text",
+                "markdown_file": "/tmp/old.md",
+                "download_error": "temporary failure",
+            },
+            "pending": {
+                "content_type": "text",
+            },
+            "pdf": {
+                "content_type": "pdf",
+            },
+        }
+
+        self.assertEqual(
+            litres_text._get_text_books_to_visit(books),
+            [books["failed"], books["pending"]],
+        )
+
+    def test_make_up_markdown_returns_existing_output_file(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            book = {"full_name": "Existing Book"}
+            output_dir = base / "markdown" / book["full_name"]
+            output_dir.mkdir(parents=True)
+            output_file = output_dir / f"{book['full_name']}.md"
+            output_file.write_text("done", encoding="utf-8")
+
+            def _get_in_workdir(path):
+                if path.startswith("../__artifacts/litres/markdown/"):
+                    return str(base / "markdown" / book["full_name"])
+                return str(base / path)
+
+            with mock.patch.object(litres_text, "get_in_workdir", side_effect=_get_in_workdir):
+                self.assertEqual(
+                    litres_text._make_up_markdown(str(base / "js"), book),
+                    str(output_file),
+                )
+
+    def test_markdown_output_name_sanitizes_and_shortens_long_title(self):
+        book = {
+            "full_name": "A/B | " + ("Very Long Title " * 20),
+            "url": "https://www.litres.ru/book/a/book-123/",
+        }
+
+        output_name = litres_text._markdown_output_name(book)
+
+        self.assertLessEqual(len(output_name), litres_text.MAX_OUTPUT_NAME_LENGTH)
+        self.assertNotIn("/", output_name)
+        self.assertNotIn("|", output_name)
+        self.assertRegex(output_name, r"__[a-f0-9]{8}$")
+
     def test_base_url_from_reader_url(self):
         self.assertEqual(
             litres_text._base_url_from_reader_url(

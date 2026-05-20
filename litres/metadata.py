@@ -7,7 +7,7 @@ import bs4 as bs
 import requests
 from rich.progress import track
 
-from utils import get_in_workdir, get_sid
+from utils import dump_json_atomic, get_in_workdir, get_sid
 
 
 def scrap_metadata():
@@ -54,5 +54,4 @@ def scrap_metadata():
 
         b['metadata'] = metadata
 
-    with open(path_to_idx, "w") as f:
-        json.dump(_all_books, f, indent=4, ensure_ascii=False)
+    dump_json_atomic(_all_books, path_to_idx)

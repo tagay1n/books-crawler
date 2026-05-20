@@ -1,6 +1,8 @@
-"""Utilities for Litres workflows: config loading, SID authentication, Selenium driver setup, hashing, and workdir path helpers."""
+"""Utilities for Litres workflows: config loading, SID authentication, Selenium driver setup, hashing, JSON writes, and workdir path helpers."""
 
 import hashlib
+import json
+import os
 import os.path
 from pathlib import Path
 
@@ -11,6 +13,21 @@ import yaml
 def get_in_workdir(file):
     """Return file in the current directory where script file is located"""
     return os.path.join(os.path.dirname(__file__), file)
+
+
+def dump_json_atomic(data, path):
+    """Write JSON through a temporary file so Ctrl+C cannot leave the target truncated."""
+    tmp_path = f"{path}.tmp.{os.getpid()}"
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    try:
+        with open(tmp_path, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=4, ensure_ascii=False)
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp_path, path)
+    finally:
+        if os.path.exists(tmp_path):
+            os.remove(tmp_path)
 
 
 def read_config():

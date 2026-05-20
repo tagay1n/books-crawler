@@ -131,6 +131,34 @@ class LitresIndexTests(unittest.TestCase):
 
         self.assertEqual(details["content_type"], "pdf")
 
+    def test_merge_overwrites_stale_pdf_type_without_pdf_artifacts(self):
+        existing = {
+            "content_type": "pdf",
+            "url": "https://www.litres.ru/book/a/book-1/",
+        }
+        parsed = {
+            "title": "New title",
+            "content_type": "pdf",
+            "url": "https://www.litres.ru/book/a/book-1/",
+        }
+
+        details = litres_index._merge_book_details(existing, parsed, lambda _url: "text")
+
+        self.assertEqual(details["content_type"], "text")
+
+    def test_merge_does_not_resolve_explicit_text_without_stale_pdf_type(self):
+        resolver = mock.Mock(return_value="pdf")
+        parsed = {
+            "title": "New title",
+            "content_type": "text",
+            "url": "https://www.litres.ru/book/a/book-1/",
+        }
+
+        details = litres_index._merge_book_details({}, parsed, resolver)
+
+        self.assertEqual(details["content_type"], "text")
+        resolver.assert_not_called()
+
     def test_merge_raises_when_card_type_is_unknown(self):
         parsed = {
             "title": "New title",
@@ -189,9 +217,32 @@ class LitresIndexTests(unittest.TestCase):
                 "https://www.litres.ru/book/a/book-1/",
             )
 
+    def test_content_type_from_book_page_html_detects_text_art_type(self):
+        html = r'{\"id\":56748420,\"title\":\"Book\",\"art_type\":0,\"release_file_id\":99938191}'
+
+        self.assertEqual(
+            litres_index._content_type_from_book_page_html(
+                html,
+                "https://www.litres.ru/book/a/book-56748420/",
+            ),
+            "text",
+        )
+
+    def test_content_type_from_book_page_html_detects_pdf_art_type(self):
+        html = r'{\"id\":69431533,\"title\":\"Book\",\"art_type\":4,\"release_file_id\":99972571}'
+
+        self.assertEqual(
+            litres_index._content_type_from_book_page_html(
+                html,
+                "https://www.litres.ru/book/a/book-69431533/",
+            ),
+            "pdf",
+        )
+
     def test_reader_resolver_reuses_single_driver(self):
         driver = mock.Mock()
         with (
+            mock.patch.object(litres_index, "_content_type_from_book_page", return_value=None),
             mock.patch.object(litres_index, "create_driver", return_value=driver) as create_driver,
             mock.patch.object(litres_index, "_open_reader_url", side_effect=["https://www.litres.ru/reader/?file=1", "https://www.litres.ru/reader/?file=2"]),
         ):
@@ -204,6 +255,16 @@ class LitresIndexTests(unittest.TestCase):
 
         create_driver.assert_called_once_with()
         driver.quit.assert_called_once_with()
+
+    def test_reader_resolver_prefers_book_page_art_type(self):
+        with (
+            mock.patch.object(litres_index, "_content_type_from_book_page", return_value="text"),
+            mock.patch.object(litres_index, "create_driver") as create_driver,
+        ):
+            resolver = litres_index._ReaderContentTypeResolver()
+            self.assertEqual(resolver("https://www.litres.ru/book/a/book-1/"), "text")
+
+        create_driver.assert_not_called()
 
     def test_raise_if_blocked_detects_ddos_guard(self):
         with self.assertRaises(RuntimeError):

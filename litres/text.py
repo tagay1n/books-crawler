@@ -4,6 +4,7 @@ import contextlib
 import json
 import os
 import re
+import unicodedata
 from urllib.parse import urlparse, parse_qs
 
 import requests
@@ -12,7 +13,9 @@ from rich.progress import track
 
 from consts import domain
 from index import _open_reader_url
-from utils import get_in_workdir, create_driver, get_hash, get_sid
+from utils import create_driver, dump_json_atomic, get_in_workdir, get_hash, get_sid
+
+MAX_OUTPUT_NAME_LENGTH = 96
 
 
 def visit_text_books_pages():
@@ -20,27 +23,48 @@ def visit_text_books_pages():
     with open(path_to_idx, "r") as f:
         all_books = json.load(f)
 
-    books = [book for book in all_books.values() if book['content_type'] == 'text']
+    books = _get_text_books_to_visit(all_books)
 
     print(f"Visiting {len(books)} text docs")
 
     failed = 0
-    with create_driver() as driver:
-        for book in track(books, description="Downloading text books"):
-            print(f"Processing book: {book['full_name']}")
-            try:
-                artifacts_dir = _download_page_descriptions(book, driver=driver)
-                _make_up_markdown(artifacts_dir, book, driver=driver)
-                book.pop("download_error", None)
-            except Exception as e:
-                failed += 1
-                book["download_error"] = str(e)
-                print(f"Error processing text book: {book['url']}")
-                print(e)
-            with open(path_to_idx, "w") as f:
-                json.dump(all_books, f, indent=4, ensure_ascii=False)
+    try:
+        with create_driver() as driver:
+            for book in track(books, description="Downloading text books"):
+                print(f"Processing book: {book['full_name']}")
+                print(f"Book URL: {book['url']}")
+                try:
+                    artifacts_dir = _download_page_descriptions(book, driver=driver)
+                    book["markdown_file"] = _make_up_markdown(artifacts_dir, book, driver=driver)
+                    book.pop("download_error", None)
+                except Exception as e:
+                    failed += 1
+                    book["download_error"] = str(e)
+                    print(f"Error processing text book: {book['url']}")
+                    print(e)
+                _save_books_index(path_to_idx, all_books)
+    except KeyboardInterrupt:
+        _save_books_index(path_to_idx, all_books)
+        print(f"Interrupted; saved current index state to {path_to_idx}")
+        raise
     if failed:
         print(f"Finished with {failed} text book download error(s)")
+
+
+def _get_text_books_to_visit(all_books):
+    """
+    Return text books that still need markdown output or previously failed.
+    """
+    return [
+        book
+        for book in all_books.values()
+        if book.get("content_type") == "text"
+        and (book.get("download_error") or not book.get("markdown_file"))
+    ]
+
+
+def _save_books_index(path_to_idx, all_books):
+    dump_json_atomic(all_books, path_to_idx)
 
 
 def _download_page_descriptions(book, driver=None):
@@ -127,13 +151,14 @@ def _base_url_from_reader_url(reader_url, book_url):
 
 def _make_up_markdown(input_dir, book, driver=None):
     # directory for resulting markdown file
-    output_dir = get_in_workdir(f"../__artifacts/litres/markdown/{book['full_name']}")
+    output_name = _markdown_output_name(book)
+    output_dir = get_in_workdir(f"../__artifacts/litres/markdown/{output_name}")
     os.makedirs(output_dir, exist_ok=True)
 
     # path to resulting markdown file
-    output_file = os.path.join(output_dir, f"{book['full_name']}.md")
+    output_file = os.path.join(output_dir, f"{output_name}.md")
     if os.path.exists(output_file):
-        return
+        return output_file
     # temporary file to store partial results, will be renamed to output_file at the end
     partial_output = output_file + ".part"
 
@@ -154,6 +179,7 @@ def _make_up_markdown(input_dir, book, driver=None):
             out.write('\n\n'.join(all_footnotes))
 
     os.rename(partial_output, output_file)
+    return output_file
 
 
 def textify(item, ctxt, prefix="", suffix=""):
@@ -244,3 +270,18 @@ def textify(item, ctxt, prefix="", suffix=""):
 
 def _clear_string(s):
     return s.replace('\xad', '').replace('\xa0', ' ').replace(' ', '').replace('*', '\\*').replace('`', '\\`')
+
+
+def _markdown_output_name(book):
+    name = _safe_path_name(book["full_name"])
+    if len(name) <= MAX_OUTPUT_NAME_LENGTH:
+        return name
+    suffix = get_hash(book["url"])[:8]
+    return f"{name[:MAX_OUTPUT_NAME_LENGTH - len(suffix) - 2].rstrip()}__{suffix}"
+
+
+def _safe_path_name(value):
+    value = unicodedata.normalize("NFC", value)
+    value = re.sub(r'[<>:"/\\|?*\x00-\x1f]', " ", value)
+    value = re.sub(r"\s+", " ", value).strip(" .")
+    return value or "book"

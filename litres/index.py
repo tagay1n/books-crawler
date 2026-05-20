@@ -2,13 +2,14 @@
 
 import json
 import os.path
+import re
 from urllib.parse import parse_qs, urljoin, urlparse
 
 import bs4 as bs
 import requests
 
 from consts import TOTAL_PAGES, entry_point, domain
-from utils import create_driver, get_sid, get_in_workdir, get_hash
+from utils import create_driver, dump_json_atomic, get_sid, get_in_workdir, get_hash
 
 
 BOOK_PATH_MARKERS = ("/book/", "/audiobook/")
@@ -44,34 +45,38 @@ def index():
     updated = 0
     reader_resolver = _ReaderContentTypeResolver()
     try:
-        for i in range(1, TOTAL_PAGES + 1):
-            paginated_url = f"{entry_point}&page={i}"
-            print(f"Processing page: {paginated_url}")
-            with requests.get(paginated_url, headers=headers) as r:
-                r.raise_for_status()
-                _raise_if_blocked(r.text, paginated_url)
-                soup = bs.BeautifulSoup(r.text, "html.parser")
-                cards = _parse_books(soup)
-                page_added = 0
-                page_updated = 0
-                for parsed in cards:
-                    discovered += 1
-                    h = get_hash(parsed["url"])
-                    if h in books:
-                        details = _merge_book_details(books[h], parsed, reader_resolver)
-                        page_updated += 1
-                        updated += 1
-                    else:
-                        details = _merge_book_details({}, parsed, reader_resolver)
-                        page_added += 1
-                        added += 1
-                    books[h] = details
-                print(f"Page {i}: found {len(cards)} book card(s), added {page_added}, updated {page_updated}")
+        try:
+            for i in range(1, TOTAL_PAGES + 1):
+                paginated_url = f"{entry_point}&page={i}"
+                print(f"Processing page: {paginated_url}")
+                with requests.get(paginated_url, headers=headers) as r:
+                    r.raise_for_status()
+                    _raise_if_blocked(r.text, paginated_url)
+                    soup = bs.BeautifulSoup(r.text, "html.parser")
+                    cards = _parse_books(soup)
+                    page_added = 0
+                    page_updated = 0
+                    for parsed in cards:
+                        discovered += 1
+                        h = get_hash(parsed["url"])
+                        if h in books:
+                            details = _merge_book_details(books[h], parsed, reader_resolver)
+                            page_updated += 1
+                            updated += 1
+                        else:
+                            details = _merge_book_details({}, parsed, reader_resolver)
+                            page_added += 1
+                            added += 1
+                        books[h] = details
+                    print(f"Page {i}: found {len(cards)} book card(s), added {page_added}, updated {page_updated}")
+        except KeyboardInterrupt:
+            dump_json_atomic(books, index_file)
+            print(f"Interrupted; saved current index state to {index_file}")
+            raise
     finally:
         reader_resolver.close()
 
-    with open(index_file, "w") as f:
-        json.dump(books, f, indent=4, ensure_ascii=False)
+    dump_json_atomic(books, index_file)
 
     print(f"Discovered {discovered} book card(s), added {added}, updated {updated}")
     print(f"Index contains {len(books)} books")
@@ -180,39 +185,46 @@ def _detect_content_type_from_node(node, url):
 
 
 def _merge_book_details(existing, parsed, content_type_resolver=None):
+    parsed = dict(parsed)
     parsed_type = parsed.get("content_type")
+    should_verify_type = parsed_type in {None, "pdf"} or existing.get("content_type") == "pdf"
+    resolved_type = content_type_resolver(parsed["url"]) if content_type_resolver and should_verify_type else None
+    parsed_type = resolved_type or parsed.get("content_type")
     if parsed_type is None:
-        parsed = dict(parsed)
-        parsed["content_type"] = _known_content_type(existing, parsed["url"], content_type_resolver)
+        parsed_type = _known_content_type(existing, parsed["url"])
     elif _has_pdf_artifacts(existing) and parsed_type != "pdf":
         raise ValueError(
             f"Litres content type conflict for {parsed['url']}: "
             f"existing index has PDF artifacts but catalog says {parsed_type}"
         )
+    parsed["content_type"] = parsed_type
     existing.update(parsed)
     return existing
 
 
-def _known_content_type(existing, url, content_type_resolver=None):
+def _known_content_type(existing, url):
     if _has_pdf_artifacts(existing):
         return "pdf"
-    if content_type_resolver:
-        return content_type_resolver(url)
     raise ValueError(f"Could not determine Litres content type for {url}")
 
 
 class _ReaderContentTypeResolver:
     def __init__(self):
         self._driver = None
+        self._session = requests.Session()
+        self._session.headers.update(_litres_headers())
 
     def __call__(self, url):
         print(f"Resolving Litres content type from reader: {url}")
+        if content_type := _content_type_from_book_page(url, self._session):
+            return content_type
         return _content_type_from_reader_url(_open_reader_url(url, self._get_driver()), url)
 
     def close(self):
         if self._driver:
             self._driver.quit()
             self._driver = None
+        self._session.close()
 
     def _get_driver(self):
         if not self._driver:
@@ -293,10 +305,54 @@ def _content_type_from_reader_url(reader_url, book_url):
     raise ValueError(f"Could not determine Litres content type for {book_url}; reader URL was {reader_url}")
 
 
+def _content_type_from_book_page(url, session=None):
+    request = session.get if session else requests.get
+    kwargs = {"timeout": 30}
+    if not session:
+        kwargs["headers"] = _litres_headers()
+    with request(url, **kwargs) as r:
+        r.raise_for_status()
+        _raise_if_blocked(r.text, url)
+        return _content_type_from_book_page_html(r.text, url)
+
+
+def _litres_headers():
+    return {
+        "Cookie": f"SID={get_sid()};",
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+    }
+
+
+def _content_type_from_book_page_html(html, url):
+    book_id = _book_id_from_url(url)
+    if not book_id:
+        return None
+    patterns = (
+        rf'\\"id\\":{book_id}.*?\\"art_type\\":(\d+)',
+        rf'"id":{book_id}.*?"art_type":(\d+)',
+    )
+    for pattern in patterns:
+        if match := re.search(pattern, html):
+            return _content_type_from_art_type(match.group(1), url)
+    return None
+
+
+def _book_id_from_url(url):
+    match = re.search(r"-(\d+)/?$", urlparse(url).path)
+    return match.group(1) if match else None
+
+
+def _content_type_from_art_type(art_type, url):
+    if str(art_type) == "4":
+        return "pdf"
+    if str(art_type) == "0":
+        return "text"
+    raise ValueError(f"Unsupported Litres art_type={art_type} for {url}")
+
+
 def _has_pdf_artifacts(details):
     return bool(
-        details.get("content_type") == "pdf"
-        or details.get("file_id")
+        details.get("file_id")
         or details.get("ext")
         or details.get("pdf_file")
     )
