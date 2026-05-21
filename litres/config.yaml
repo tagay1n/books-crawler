@@ -1,3 +1,13 @@
 sid:
-app-id:
 yandex.oauth_token:
+s3:
+  endpoint_url: https://storage.yandexcloud.net
+  aws_access_key_id:
+  aws_secret_access_key:
+  bucket:
+pdf:
+  jpeg_quality: 92
+  max_width: 2400
+  dpi: 300
+  browser_headless: false
+  browser_challenge_wait_seconds: 180

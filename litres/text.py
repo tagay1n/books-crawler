@@ -15,9 +15,6 @@ from consts import domain
 from index import _open_reader_url
 from utils import create_driver, dump_json_atomic, get_in_workdir, get_hash, get_sid
 
-MAX_OUTPUT_NAME_LENGTH = 96
-
-
 def visit_text_books_pages():
     path_to_idx = get_in_workdir("../__artifacts/litres/books-index.json")
     with open(path_to_idx, "r") as f:
@@ -273,15 +270,12 @@ def _clear_string(s):
 
 
 def _markdown_output_name(book):
-    name = _safe_path_name(book["full_name"])
-    if len(name) <= MAX_OUTPUT_NAME_LENGTH:
-        return name
-    suffix = get_hash(book["url"])[:8]
-    return f"{name[:MAX_OUTPUT_NAME_LENGTH - len(suffix) - 2].rstrip()}__{suffix}"
+    return _legacy_path_name(book["full_name"])
 
 
-def _safe_path_name(value):
+def _legacy_path_name(value):
     value = unicodedata.normalize("NFC", value)
-    value = re.sub(r'[<>:"/\\|?*\x00-\x1f]', " ", value)
+    value = value.replace("/", "|")
+    value = re.sub(r"[\x00-\x1f]", " ", value)
     value = re.sub(r"\s+", " ", value).strip(" .")
     return value or "book"

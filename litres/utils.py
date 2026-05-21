@@ -42,7 +42,7 @@ def get_sid():
     raise ValueError("sid is not set in litres/config.yaml")
 
 
-def create_driver():
+def create_driver(headless=True):
     """
     Create a Selenium driver and preload Litres SID as a browser cookie.
     """
@@ -53,11 +53,18 @@ def create_driver():
     from consts import domain
 
     options = webdriver.ChromeOptions()
-    options.headless = True
-    options.add_argument("--headless")
+    if headless:
+        options.add_argument("--headless=new")
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option("useAutomationExtension", False)
 
     driver_path = _find_cached_chromedriver() or ChromeDriverManager().install()
     driver = webdriver.Chrome(service=ChromeService(driver_path), options=options)
+    driver.execute_cdp_cmd(
+        "Page.addScriptToEvaluateOnNewDocument",
+        {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});"},
+    )
     driver.get(domain)
     driver.add_cookie({"name": "SID", "value": get_sid(), "domain": ".litres.ru", "path": "/"})
     return driver

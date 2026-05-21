@@ -77,18 +77,16 @@ class LitresTextTests(unittest.TestCase):
                     str(output_file),
                 )
 
-    def test_markdown_output_name_sanitizes_and_shortens_long_title(self):
+    def test_markdown_output_name_preserves_legacy_hf_style(self):
         book = {
-            "full_name": "A/B | " + ("Very Long Title " * 20),
+            "full_name": "A/B | Кая бара бу дөнья?",
             "url": "https://www.litres.ru/book/a/book-123/",
         }
 
         output_name = litres_text._markdown_output_name(book)
 
-        self.assertLessEqual(len(output_name), litres_text.MAX_OUTPUT_NAME_LENGTH)
+        self.assertEqual(output_name, "A|B | Кая бара бу дөнья?")
         self.assertNotIn("/", output_name)
-        self.assertNotIn("|", output_name)
-        self.assertRegex(output_name, r"__[a-f0-9]{8}$")
 
     def test_base_url_from_reader_url(self):
         self.assertEqual(

@@ -242,6 +242,7 @@ class LitresIndexTests(unittest.TestCase):
     def test_reader_resolver_reuses_single_driver(self):
         driver = mock.Mock()
         with (
+            mock.patch.object(litres_index, "get_sid", return_value="sid"),
             mock.patch.object(litres_index, "_content_type_from_book_page", return_value=None),
             mock.patch.object(litres_index, "create_driver", return_value=driver) as create_driver,
             mock.patch.object(litres_index, "_open_reader_url", side_effect=["https://www.litres.ru/reader/?file=1", "https://www.litres.ru/reader/?file=2"]),
@@ -258,6 +259,7 @@ class LitresIndexTests(unittest.TestCase):
 
     def test_reader_resolver_prefers_book_page_art_type(self):
         with (
+            mock.patch.object(litres_index, "get_sid", return_value="sid"),
             mock.patch.object(litres_index, "_content_type_from_book_page", return_value="text"),
             mock.patch.object(litres_index, "create_driver") as create_driver,
         ):

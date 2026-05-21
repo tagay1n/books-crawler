@@ -42,6 +42,15 @@ def hf():
 
 
 @app.command()
+def s3_media():
+    """
+    Upload markdown media to S3 and rewrite image links
+    """
+    import s3_media
+    s3_media.upload_media_to_s3()
+
+
+@app.command()
 def upload():
     """
     Upload books to yandex disk, create public links and save details to the Google Sheets
