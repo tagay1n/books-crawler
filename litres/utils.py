@@ -6,7 +6,6 @@ import os
 import os.path
 from pathlib import Path
 
-import requests
 import yaml
 
 
@@ -40,21 +39,7 @@ def get_sid():
     config = read_config()
     if sid := config.get('sid'):
         return sid
-    auth_url = "https://api.litres.ru/foundation/api/auth/login"
-    data = {
-        "login": "REDACTED_LITRES_LOGIN",
-        "password": "REDACTED_LITRES_PASSWORD",
-    }
-    if not (app_id := config['app-id']):
-        raise ValueError("app-id is not set in config")
-    auth_headers = {
-        "app-id": app_id,
-    }
-    with requests.post(auth_url, json=data, headers=auth_headers) as r:
-        r.raise_for_status()
-        sid = r.json()['payload']['data']['sid']
-        print(f"Requested new SID: {sid}, consider updating config")
-        return sid
+    raise ValueError("sid is not set in litres/config.yaml")
 
 
 def create_driver():

@@ -27,8 +27,7 @@ Litres crawler for index build, PDF/text downloads, metadata enrichment, and upl
 File: `litres/config.yaml`
 
 Used keys:
-- `app-id`
-- `sid` (optional; if missing, code requests SID via auth endpoint)
+- `sid` (required)
 - `yandex.oauth_token` (for upload step)
 
 ## Artifacts
