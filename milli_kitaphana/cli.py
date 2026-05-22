@@ -14,7 +14,10 @@ def index():
     
     
 @app.command()
-def download(limited: bool = False, index_name: str = None):
+def download(
+    limited: bool = typer.Option(False, "--limited/--no-limited"),
+    index_name: str = typer.Option(None, "--index-name"),
+):
     """
     Read index file and download documents what have not been downloaded yet
     """

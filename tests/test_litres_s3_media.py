@@ -33,14 +33,15 @@ class LitresS3MediaTests(unittest.TestCase):
             output = root / "markdown-s3"
             markdown_root = root / "markdown"
             markdown_root.mkdir()
-            book_dir = root / "Китап | Book - Author"
+            book_name = "Китап - Book - Author"
+            book_dir = root / book_name
             media_dir = book_dir / "media"
             media_dir.mkdir(parents=True)
             image = media_dir / "cover image.png"
             image.write_bytes(b"png")
             second_image = media_dir / "page.jpeg"
             second_image.write_bytes(b"jpg")
-            markdown = book_dir / "Китап | Book - Author.md"
+            markdown = book_dir / f"{book_name}.md"
             markdown.write_text(
                 "![cover](media/cover image.png)\n"
                 "![page](media/page.jpeg)\n"
@@ -76,7 +77,7 @@ class LitresS3MediaTests(unittest.TestCase):
             ):
                 litres_s3_media.upload_media_to_s3()
 
-            doc_id = hashlib.md5("Китап | Book - Author".encode("utf-8")).hexdigest()
+            doc_id = hashlib.md5(book_name.encode("utf-8")).hexdigest()
             self.assertEqual(len(client.uploads), 2)
             self.assertEqual(client.uploads[0][0][:3], (str(image), "bucket", f"{doc_id}-0.png"))
             self.assertEqual(client.uploads[0][1]["ExtraArgs"]["ContentType"], "image/png")
