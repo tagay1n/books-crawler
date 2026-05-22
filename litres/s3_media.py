@@ -139,7 +139,7 @@ def _write_rewritten_markdown(markdown_file, output_file, url_by_relative_path):
 
 def _normalize_relative_url(value):
     parsed = urlparse(str(value))
-    return str(PurePosixPath(unquote(parsed.path)))
+    return str(PurePosixPath(unquote(parsed.path).replace("\\", "/")))
 
 
 def _is_absolute_url(value):

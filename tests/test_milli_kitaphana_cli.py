@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 from unittest import mock
 
+from click.utils import strip_ansi
 from typer.testing import CliRunner
 
 
@@ -22,8 +23,9 @@ class MilliCliTests(unittest.TestCase):
     def test_download_help_has_limited_option(self):
         res = self.runner.invoke(mk_cli.app, ["download", "--help"])
         self.assertEqual(res.exit_code, 0, res.output)
-        self.assertIn("--limited", res.output)
-        self.assertNotIn("--with-limited", res.output)
+        output = strip_ansi(res.output)
+        self.assertIn("--limited", output)
+        self.assertNotIn("--with-limited", output)
 
     def test_download_command_forwards_limited_and_index_name(self):
         fake_download = types.ModuleType("download")

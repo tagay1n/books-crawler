@@ -99,6 +99,12 @@ class LitresS3MediaTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "s3.bucket"):
             litres_s3_media._required_config({"bucket": "<SET ME>"}, "bucket")
 
+    def test_normalize_relative_url_accepts_windows_paths(self):
+        self.assertEqual(
+            litres_s3_media._normalize_relative_url(r"media\cover image.png"),
+            "media/cover image.png",
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
