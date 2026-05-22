@@ -4,6 +4,7 @@ import contextlib
 import json
 import os
 import re
+import shutil
 import unicodedata
 from urllib.parse import urlparse, parse_qs
 
@@ -14,6 +15,11 @@ from rich.progress import track
 from consts import domain
 from index import _open_reader_url
 from utils import create_driver, dump_json_atomic, get_in_workdir, get_hash, get_sid
+
+PREVIEW_MARKERS = (
+    "The end of the free preview",
+)
+
 
 def visit_text_books_pages():
     path_to_idx = get_in_workdir("../__artifacts/litres/books-index.json")
@@ -36,6 +42,7 @@ def visit_text_books_pages():
                     book.pop("download_error", None)
                 except Exception as e:
                     failed += 1
+                    book.pop("markdown_file", None)
                     book["download_error"] = str(e)
                     print(f"Error processing text book: {book['url']}")
                     print(e)
@@ -70,14 +77,16 @@ def _download_page_descriptions(book, driver=None):
     artifacts_dir = get_in_workdir("../__artifacts/litres/js")
     os.makedirs(artifacts_dir, exist_ok=True)
     completed_dir = os.path.join(artifacts_dir, digest)
-    if os.path.exists(completed_dir):
+    if os.path.exists(completed_dir) and not _must_refresh_text_cache(book):
         if not book.get("resource_url"):
-            book["resource_url"] = _resolve_resource_url(url, driver)
+            book["resource_url"] = _resolve_resource_url(url, driver, prefer_reader=book.get("subscription"))
         return completed_dir
     incompleted_dir = completed_dir + ".part"
+    if os.path.exists(incompleted_dir):
+        shutil.rmtree(incompleted_dir)
     os.makedirs(incompleted_dir, exist_ok=True)
 
-    resource_url = _resolve_resource_url(url, driver)
+    resource_url = _resolve_resource_url(url, driver, prefer_reader=book.get("subscription"))
     book['resource_url'] = resource_url
     counter = 0
     headers = _headers()
@@ -96,15 +105,33 @@ def _download_page_descriptions(book, driver=None):
             else:
                 raise ValueError(f"Could not download file: {file_url}, resp: {resp}")
 
+    if os.path.exists(completed_dir):
+        backup_dir = completed_dir + ".stale"
+        if os.path.exists(backup_dir):
+            shutil.rmtree(backup_dir)
+        os.rename(completed_dir, backup_dir)
     os.rename(incompleted_dir, completed_dir)
     return completed_dir
 
 
-def _resolve_resource_url(url, driver=None):
+def _must_refresh_text_cache(book):
+    return book.get("subscription") and (
+        not book.get("resource_url") or _is_public_text_resource_url(book.get("resource_url"))
+    )
+
+
+def _resolve_resource_url(url, driver=None, prefer_reader=False):
+    if prefer_reader:
+        return _resolve_resource_url_from_reader(url, driver)
+
     if resource_url := _guess_resource_url(url):
         if _resource_url_exists(resource_url):
             return resource_url
 
+    return _resolve_resource_url_from_reader(url, driver)
+
+
+def _resolve_resource_url_from_reader(url, driver=None):
     with _driver_context(driver) as active_driver:
         reader_url = _open_reader_url(url, active_driver)
         base_url = _base_url_from_reader_url(reader_url, url)
@@ -123,6 +150,10 @@ def _resource_url_exists(resource_url):
     except requests.RequestException:
         return False
     return resp.status_code == 200
+
+
+def _is_public_text_resource_url(resource_url):
+    return bool(resource_url and "/pub/t/" in resource_url)
 
 
 def _headers():
@@ -155,7 +186,10 @@ def _make_up_markdown(input_dir, book, driver=None):
     # path to resulting markdown file
     output_file = os.path.join(output_dir, f"{output_name}.md")
     if os.path.exists(output_file):
-        return output_file
+        if _contains_preview_marker(output_file):
+            os.remove(output_file)
+        else:
+            return output_file
     # temporary file to store partial results, will be renamed to output_file at the end
     partial_output = output_file + ".part"
 
@@ -175,6 +209,7 @@ def _make_up_markdown(input_dir, book, driver=None):
             out.write('\n\n')
             out.write('\n\n'.join(all_footnotes))
 
+    _raise_if_preview_markdown(partial_output, book)
     os.rename(partial_output, output_file)
     return output_file
 
@@ -267,6 +302,21 @@ def textify(item, ctxt, prefix="", suffix=""):
 
 def _clear_string(s):
     return s.replace('\xad', '').replace('\xa0', ' ').replace(' ', '').replace('*', '\\*').replace('`', '\\`')
+
+
+def _contains_preview_marker(path):
+    with open(path, "r", encoding="utf-8") as f:
+        content = f.read()
+    return any(marker in content for marker in PREVIEW_MARKERS)
+
+
+def _raise_if_preview_markdown(path, book):
+    if _contains_preview_marker(path):
+        os.remove(path)
+        raise ValueError(
+            "Litres returned preview-only text. "
+            f"Reader-authenticated resource URL was not resolved for {book['url']}."
+        )
 
 
 def _markdown_output_name(book):

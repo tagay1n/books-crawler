@@ -78328,7 +78328,7 @@
             "summary": "Әлеге китапта татар әдәбияты классигы, каһар­ман-шагыйрь, Советлар Союзы Герое, Ленин премиясе лауреаты Муса Җәлил иҗатыннан иң яхшы шигъри үрнәкләр тәкъдим ителә."
         },
         "resource_url": "https://www.litres.ru/download_book_subscr/56554105/71988196/json/",
-        "download_error": "Could not download file: https://www.litres.ru/download_book_subscr/56554105/71988196/json/000.js, resp: <Response [429]>"
+        "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Сайланма әсәрләр - Муса Джалиль/Сайланма әсәрләр - Муса Джалиль.md"
     },
     "12bdcf4495a915ea99658a5a6ad3d368": {
         "title": "Идегәй. Татар халык дастаны",
@@ -88449,7 +88449,7 @@
             "summary": "Әлеге китапта авторның әңгәмәләре, әдәби портретлары, иҗат бәяләмәләре, язмалары, уйланулары, сәяхәтнамәләре һәм хикәяләре урын алды."
         },
         "resource_url": "https://www.litres.ru/download_book_subscr/67730355/93760568/json/",
-        "download_error": "Could not download file: https://www.litres.ru/download_book_subscr/67730355/93760568/json/000.js, resp: <Response [429]>"
+        "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Үзем белән очрашу - Ленар Шаех/Үзем белән очрашу - Ленар Шаех.md"
     },
     "aa6aa7909f3b692eb5507b6adf2fcb84": {
         "title": "Тәрҗемә һәм дөрес сөйләм мәсьәләләре",
@@ -202936,7 +202936,7 @@
         "content_type": "text",
         "author": "Народное творчество (Фольклор)",
         "full_name": "Үзем белдем, диген - Народное творчество (Фольклор)",
-        "resource_url": "https://www.litres.ru/pub/t/73731948.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73731948/132381543/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Үзем белдем, диген - Народное творчество (Фольклор)/Үзем белдем, диген - Народное творчество (Фольклор).md"
     },
     "da02fd6d0345ecd19a842053eeb00a9a": {
@@ -203008,7 +203008,7 @@
         "content_type": "text",
         "author": "Диля Хайретдинова",
         "full_name": "Мәхәббәттән татлы җимеш - Диля Хайретдинова",
-        "resource_url": "https://www.litres.ru/pub/t/73545898.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73545898/130877963/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Мәхәббәттән татлы җимеш - Диля Хайретдинова/Мәхәббәттән татлы җимеш - Диля Хайретдинова.md"
     },
     "4632ae36111aec84f57794247e41efd3": {
@@ -203018,7 +203018,7 @@
         "content_type": "text",
         "author": "Талгат Галиуллин",
         "full_name": "Ана корт - Талгат Галиуллин",
-        "resource_url": "https://www.litres.ru/pub/t/73545918.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73545918/130878073/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Ана корт - Талгат Галиуллин/Ана корт - Талгат Галиуллин.md"
     },
     "63f485474b508a96c9cfc36eae3089a9": {
@@ -203028,7 +203028,7 @@
         "content_type": "text",
         "author": "Марат Кәбиров",
         "full_name": "Киллер - Марат Кәбиров",
-        "resource_url": "https://www.litres.ru/pub/t/73544833.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73544833/130873678/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Киллер - Марат Кәбиров/Киллер - Марат Кәбиров.md"
     },
     "ae98f4b718718b11b5ac5351531ed8bd": {
@@ -203038,7 +203038,7 @@
         "content_type": "text",
         "author": "Рафис Курбанов",
         "full_name": "Тәүбә көне - Рафис Курбанов",
-        "resource_url": "https://www.litres.ru/pub/t/73544848.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73544848/130873853/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Тәүбә көне - Рафис Курбанов/Тәүбә көне - Рафис Курбанов.md"
     },
     "3e435169117ecf87537b8e0a913216b7": {
@@ -203048,7 +203048,7 @@
         "content_type": "text",
         "author": "Аида Хайртдинова",
         "full_name": "Кышкы юл озын иде - Аида Хайртдинова",
-        "resource_url": "https://www.litres.ru/pub/t/73544913.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73544913/130874098/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Кышкы юл озын иде - Аида Хайртдинова/Кышкы юл озын иде - Аида Хайртдинова.md"
     },
     "63cddc14d6736797106d424712921ae7": {
@@ -203058,8 +203058,8 @@
         "content_type": "text",
         "author": "Шамсия Зигангирова",
         "full_name": "Мәхәббәт ничәү була? - Шамсия Зигангирова",
-        "resource_url": "https://www.litres.ru/pub/t/73545288.json/",
-        "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Мәхәббәт ничәү була - Шамсия Зигангирова/Мәхәббәт ничәү була - Шамсия Зигангирова.md"
+        "resource_url": "https://www.litres.ru/download_book_subscr/73545288/130875743/json/",
+        "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Мәхәббәт ничәү була? - Шамсия Зигангирова/Мәхәббәт ничәү була? - Шамсия Зигангирова.md"
     },
     "2a39a8cf7bb474f3812154328e0c239f": {
         "title": "Изге ат",
@@ -203068,7 +203068,7 @@
         "content_type": "text",
         "author": "Назифа Каримова",
         "full_name": "Изге ат - Назифа Каримова",
-        "resource_url": "https://www.litres.ru/pub/t/73545698.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73545698/130877228/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Изге ат - Назифа Каримова/Изге ат - Назифа Каримова.md"
     },
     "1f0eabb06e15c4883cf5ad00221f449e": {
@@ -203078,7 +203078,7 @@
         "content_type": "text",
         "author": "Лилия Сираева",
         "full_name": "Рәкыйп Хәмитов. Копчёный - Лилия Сираева",
-        "resource_url": "https://www.litres.ru/pub/t/73529448.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73529448/130789053/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Рәкыйп Хәмитов. Копчёный - Лилия Сираева/Рәкыйп Хәмитов. Копчёный - Лилия Сираева.md"
     },
     "20ffeefa4be10caf8b24113839d9b286": {
@@ -203088,8 +203088,8 @@
         "content_type": "text",
         "author": "Зиннур Хуснутдинов",
         "full_name": "Әтием кайда, Суслонгер?! - Зиннур Хуснутдинов",
-        "resource_url": "https://www.litres.ru/pub/t/73545338.json/",
-        "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Әтием кайда, Суслонгер ! - Зиннур Хуснутдинов/Әтием кайда, Суслонгер ! - Зиннур Хуснутдинов.md"
+        "resource_url": "https://www.litres.ru/download_book_subscr/73545338/130876178/json/",
+        "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Әтием кайда, Суслонгер?! - Зиннур Хуснутдинов/Әтием кайда, Суслонгер?! - Зиннур Хуснутдинов.md"
     },
     "17b208dac2ba2af4187558ef6cddbad2": {
         "title": "Кыргый атауга сәяхәт",
@@ -203098,7 +203098,7 @@
         "content_type": "text",
         "author": "Ринат Мухамадиев",
         "full_name": "Кыргый атауга сәяхәт - Ринат Мухамадиев",
-        "resource_url": "https://www.litres.ru/pub/t/73529098.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73529098/130788208/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Кыргый атауга сәяхәт - Ринат Мухамадиев/Кыргый атауга сәяхәт - Ринат Мухамадиев.md"
     },
     "a8e074da3321a159d865590e4a5cc556": {
@@ -203108,7 +203108,7 @@
         "content_type": "text",
         "author": "Дильбар Сулейманова",
         "full_name": "Соң түгел! - Дильбар Сулейманова",
-        "resource_url": "https://www.litres.ru/pub/t/73530248.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73530248/130792953/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Соң түгел! - Дильбар Сулейманова/Соң түгел! - Дильбар Сулейманова.md"
     },
     "674fb9e1b12c669c881acedb194ae1e2": {
@@ -203118,7 +203118,7 @@
         "content_type": "text",
         "author": "Рафкат Шагеев",
         "full_name": "Элеккечә түгел без генә - Рафкат Шагеев",
-        "resource_url": "https://www.litres.ru/pub/t/73530493.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73530493/130793663/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Элеккечә түгел без генә - Рафкат Шагеев/Элеккечә түгел без генә - Рафкат Шагеев.md"
     },
     "28191dc0f8db1352c382fa567fb29a08": {
@@ -203128,7 +203128,7 @@
         "content_type": "text",
         "author": "Ильшат Билалов",
         "full_name": "Тауда язылган язмыш - Ильшат Билалов",
-        "resource_url": "https://www.litres.ru/pub/t/73515213.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73515213/130713563/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Тауда язылган язмыш - Ильшат Билалов/Тауда язылган язмыш - Ильшат Билалов.md"
     },
     "06f10e25cdbb75c12d52337f83144af5": {
@@ -203138,7 +203138,7 @@
         "content_type": "text",
         "author": "Айгиз Баймухаметов",
         "full_name": "Нахак - Айгиз Баймухаметов",
-        "resource_url": "https://www.litres.ru/pub/t/73502328.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73502328/130613403/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Нахак - Айгиз Баймухаметов/Нахак - Айгиз Баймухаметов.md"
     },
     "c3b375e2c14831392a8d58bd62f9bc1b": {
@@ -203148,7 +203148,7 @@
         "content_type": "text",
         "author": "Фарит Имамов",
         "full_name": "Мәхәббәт талисманы - Фарит Имамов",
-        "resource_url": "https://www.litres.ru/pub/t/73514373.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73514373/130709913/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Мәхәббәт талисманы - Фарит Имамов/Мәхәббәт талисманы - Фарит Имамов.md"
     },
     "3b81e94a6bb6f533a96cb00ba506915f": {
@@ -203158,7 +203158,7 @@
         "content_type": "text",
         "author": "Айгуль Ахметгалиева",
         "full_name": "Һәркемгә бер кояш - Айгуль Ахметгалиева",
-        "resource_url": "https://www.litres.ru/pub/t/73514673.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73514673/130711718/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Һәркемгә бер кояш - Айгуль Ахметгалиева/Һәркемгә бер кояш - Айгуль Ахметгалиева.md"
     },
     "0cff2f9178562ddae456d133c84ac8d6": {
@@ -203168,7 +203168,7 @@
         "content_type": "text",
         "author": "Фирдаус Гильмутдинов",
         "full_name": "Суслонгер - Фирдаус Гильмутдинов",
-        "resource_url": "https://www.litres.ru/pub/t/73514763.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73514763/130712318/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Суслонгер - Фирдаус Гильмутдинов/Суслонгер - Фирдаус Гильмутдинов.md"
     },
     "64178be5cc93709e488d75aa46f33585": {
@@ -203178,7 +203178,7 @@
         "content_type": "text",
         "author": "Зульфат Хакимханов",
         "full_name": "Ятимгә дә яз килә - Зульфат Хакимханов",
-        "resource_url": "https://www.litres.ru/pub/t/73502253.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73502253/130612653/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Ятимгә дә яз килә - Зульфат Хакимханов/Ятимгә дә яз килә - Зульфат Хакимханов.md"
     },
     "11809dd5c8b18716fa3a81c428dbc565": {
@@ -203188,7 +203188,7 @@
         "content_type": "text",
         "author": "Карим Кара",
         "full_name": "Җиләкле алан - Карим Кара",
-        "resource_url": "https://www.litres.ru/pub/t/73490193.json/",
+        "resource_url": "https://www.litres.ru/download_book_subscr/73490193/130541383/json/",
         "markdown_file": "/home/tans1q/projects/books-crawler/litres/../__artifacts/litres/markdown/Җиләкле алан - Карим Кара/Җиләкле алан - Карим Кара.md"
     }
 }

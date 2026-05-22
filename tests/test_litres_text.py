@@ -107,7 +107,7 @@ class LitresTextTests(unittest.TestCase):
     def test_download_page_descriptions_uses_shared_reader_opening(self):
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)
-            book = {"url": "https://www.litres.ru/book/a/book-without-id/"}
+            book = {"url": "https://www.litres.ru/book/a/book-without-id/", "subscription": True}
 
             def _get_in_workdir(path):
                 if path == "../__artifacts/litres/js":
@@ -140,7 +140,7 @@ class LitresTextTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             base = Path(tmp)
             driver = _FakeDriver()
-            book = {"url": "https://www.litres.ru/book/a/book-without-id/"}
+            book = {"url": "https://www.litres.ru/book/a/book-without-id/", "subscription": True}
 
             def _get_in_workdir(path):
                 if path == "../__artifacts/litres/js":
@@ -178,6 +178,91 @@ class LitresTextTests(unittest.TestCase):
 
         self.assertEqual(resource_url, "https://www.litres.ru/pub/t/12345.json/")
         open_reader_url.assert_not_called()
+
+    def test_resolve_resource_url_prefers_reader_when_requested(self):
+        with (
+            mock.patch.object(
+                litres_text,
+                "_open_reader_url",
+                return_value="https://www.litres.ru/reader/?baseurl=/download_book_subscr/1/2/",
+            ) as open_reader_url,
+        ):
+            resource_url = litres_text._resolve_resource_url(
+                "https://www.litres.ru/book/a/book-12345/",
+                driver="driver",
+                prefer_reader=True,
+            )
+
+        self.assertEqual(resource_url, "https://www.litres.ru/download_book_subscr/1/2/json/")
+        open_reader_url.assert_called_once_with("https://www.litres.ru/book/a/book-12345/", "driver")
+
+    def test_download_page_descriptions_refreshes_public_subscription_cache(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            driver = _FakeDriver()
+            book = {
+                "url": "https://www.litres.ru/book/a/book-12345/",
+                "subscription": True,
+                "resource_url": "https://www.litres.ru/pub/t/12345.json/",
+            }
+            cached_dir = base / "js" / litres_text.get_hash(book["url"])
+            cached_dir.mkdir(parents=True)
+            (cached_dir / "000.js").write_bytes(b"preview")
+
+            def _get_in_workdir(path):
+                if path == "../__artifacts/litres/js":
+                    return str(base / "js")
+                return str(base / path)
+
+            def _fake_get(url, **_kwargs):
+                if url.endswith("000.js"):
+                    return _FakeResponse(200, b"full")
+                return _FakeResponse(404)
+
+            with (
+                mock.patch.object(litres_text, "get_in_workdir", side_effect=_get_in_workdir),
+                mock.patch.object(
+                    litres_text,
+                    "_open_reader_url",
+                    return_value="https://www.litres.ru/reader/?baseurl=/download_book_subscr/1/2/",
+                ) as open_reader_url,
+                mock.patch.object(litres_text, "get_sid", return_value="sid"),
+                mock.patch.object(litres_text.requests, "get", side_effect=_fake_get),
+            ):
+                output_dir = Path(litres_text._download_page_descriptions(book, driver=driver))
+
+            open_reader_url.assert_called_once_with("https://www.litres.ru/book/a/book-12345/", driver)
+            self.assertEqual(book["resource_url"], "https://www.litres.ru/download_book_subscr/1/2/json/")
+            self.assertEqual((output_dir / "000.js").read_bytes(), b"full")
+            self.assertEqual((base / "js" / f"{litres_text.get_hash(book['url'])}.stale" / "000.js").read_bytes(), b"preview")
+
+    def test_make_up_markdown_rejects_preview_marker(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            base = Path(tmp)
+            input_dir = base / "js"
+            input_dir.mkdir()
+            (input_dir / "000.js").write_text("[{t:'p',c:'The end of the free preview'}]", encoding="utf-8")
+            book = {
+                "full_name": "Preview Book",
+                "url": "https://www.litres.ru/book/a/book-1/",
+                "resource_url": "https://www.litres.ru/download_book_subscr/1/2/json/",
+            }
+
+            def _get_in_workdir(path):
+                if path.startswith("../__artifacts/litres/markdown/"):
+                    return str(base / "markdown" / book["full_name"])
+                return str(base / path)
+
+            fake_driver = mock.Mock()
+            fake_driver.execute_script.return_value = [{"t": "p", "c": "The end of the free preview"}]
+
+            with (
+                mock.patch.object(litres_text, "get_in_workdir", side_effect=_get_in_workdir),
+            ):
+                with self.assertRaisesRegex(ValueError, "preview-only text"):
+                    litres_text._make_up_markdown(str(input_dir), book, driver=fake_driver)
+
+            self.assertFalse((base / "markdown" / book["full_name"] / f"{book['full_name']}.md").exists())
 
 
 if __name__ == "__main__":
