@@ -40,13 +40,7 @@ def decrypt():
                 work_dir = os.path.join(base_dir, code)
                 context["work_dir"] = work_dir
                 path_to_pdf = decrypt_doc_parts(context)
-                del context['meta']['enc_part_paths']
-                del context['meta']['format_url']
-                del context['meta']['decryption_key']
-                del context['meta']['decryption_key_iv']
-                upstream_metadata = copy.deepcopy(context["meta"])
-                del upstream_metadata['downloaded']
-                del upstream_metadata['decrypted']
+                upstream_metadata = _upstream_metadata(context["meta"])
 
                 # save metadata
                 path_to_metadata = os.path.join(context['work_dir'], "metadata.zip")
@@ -68,6 +62,7 @@ def decrypt():
                 
                 pw.main(f"[bold green]Decryption complete '{context['md5']}' '{context['meta']['title']}'[/bold green]")
                 # shutil.rmtree(context['work_dir'])
+                _remove_decryption_recovery_fields(context["meta"])
                 context['meta']['decrypted'] = True
         except KeyboardInterrupt:
             return
@@ -85,6 +80,25 @@ def _get_not_decrypted_docs(index):
             not_decrypted_docs.append((card_path, meta))
         
     return not_decrypted_docs
+
+
+def _upstream_metadata(meta):
+    upstream_metadata = copy.deepcopy(meta)
+    for field in (
+        "downloaded",
+        "decrypted",
+        "enc_part_paths",
+        "format_url",
+        "decryption_key",
+        "decryption_key_iv",
+    ):
+        upstream_metadata.pop(field, None)
+    return upstream_metadata
+
+
+def _remove_decryption_recovery_fields(meta):
+    for field in ("enc_part_paths", "format_url", "decryption_key", "decryption_key_iv"):
+        meta.pop(field, None)
             
 
 def decrypt_doc_parts(context):
