@@ -15,7 +15,7 @@ def index():
     
 @app.command()
 def download(
-    limited: bool = typer.Option(False, "--limited/--no-limited"),
+    limited: bool = typer.Option(False, "--limited", "--no-limited"),
     index_name: str = typer.Option(None, "--index-name"),
 ):
     """

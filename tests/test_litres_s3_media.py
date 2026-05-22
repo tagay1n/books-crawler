@@ -79,9 +79,11 @@ class LitresS3MediaTests(unittest.TestCase):
 
             doc_id = hashlib.md5(book_name.encode("utf-8")).hexdigest()
             self.assertEqual(len(client.uploads), 2)
-            self.assertEqual(client.uploads[0][0][:3], (str(image), "bucket", f"{doc_id}-0.png"))
+            self.assertEqual(Path(client.uploads[0][0][0]).resolve(), image.resolve())
+            self.assertEqual(client.uploads[0][0][1:3], ("bucket", f"{doc_id}-0.png"))
             self.assertEqual(client.uploads[0][1]["ExtraArgs"]["ContentType"], "image/png")
-            self.assertEqual(client.uploads[1][0][:3], (str(second_image), "bucket", f"{doc_id}-1.jpeg"))
+            self.assertEqual(Path(client.uploads[1][0][0]).resolve(), second_image.resolve())
+            self.assertEqual(client.uploads[1][0][1:3], ("bucket", f"{doc_id}-1.jpeg"))
             self.assertEqual(client.uploads[1][1]["ExtraArgs"]["ContentType"], "image/jpeg")
             self.assertEqual(
                 (output / f"{doc_id}.md").read_text(encoding="utf-8"),
