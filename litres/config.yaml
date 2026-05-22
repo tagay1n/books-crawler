@@ -1,10 +1,10 @@
-sid:
-yandex.oauth_token:
+sid: <SET ME>
+yandex.oauth_token: <SET ME>
 s3:
   endpoint_url: https://storage.yandexcloud.net
-  aws_access_key_id:
-  aws_secret_access_key:
-  bucket:
+  aws_access_key_id: <SET ME>
+  aws_secret_access_key: <SET ME>
+  bucket: <SET ME>
 pdf:
   jpeg_quality: 92
   max_width: 2400

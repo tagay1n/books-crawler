@@ -110,6 +110,13 @@ class LitresPdfTests(unittest.TestCase):
             )
         )
 
+    def test_invalid_selenium_session_error_is_detected(self):
+        from selenium.common.exceptions import InvalidSessionIdException, WebDriverException
+
+        self.assertTrue(litres_pdf._is_invalid_selenium_session_error(InvalidSessionIdException("invalid session id")))
+        self.assertTrue(litres_pdf._is_invalid_selenium_session_error(WebDriverException("invalid session id")))
+        self.assertFalse(litres_pdf._is_invalid_selenium_session_error(WebDriverException("other selenium failure")))
+
     def test_auth_response_raises_actionable_error(self):
         response = litres_pdf._response_details(
             _FakeResponse("text/html; charset=utf-8", b"<html>login</html>")
@@ -465,6 +472,15 @@ class LitresPdfTests(unittest.TestCase):
             with pymupdf.open(pdf_file) as doc:
                 self.assertEqual(1, doc.page_count)
             self.assertEqual([], list(docs_dir.glob("*.tmp.*")))
+
+    def test_temporary_path_uses_short_basename_for_long_pdf_names(self):
+        long_name = "Тату яшәгәндә генә. Татарстан композиторларының балаларга атап язган җырлары | Когда мы дружим. Песни композиторов Татарстана для дет.pdf"
+
+        tmp_path = litres_pdf._temporary_path(f"/tmp/{long_name}")
+
+        self.assertLessEqual(len(os.path.basename(tmp_path).encode("utf-8")), 255)
+        self.assertTrue(tmp_path.endswith(".pdf"))
+        self.assertIn(".tmp.", os.path.basename(tmp_path))
 
     def test_get_pdf_browser_headless_reads_boolean_config(self):
         original_read_config = litres_pdf.read_config

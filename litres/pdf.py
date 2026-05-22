@@ -5,6 +5,7 @@ import json
 import os.path
 import base64
 import glob
+import hashlib
 import re
 from urllib.parse import parse_qs, urlparse
 
@@ -48,6 +49,15 @@ def visit_pdf_books_pages():
     session = _create_litres_session()
     driver = None
 
+    def _close_driver():
+        nonlocal driver
+        if driver:
+            try:
+                driver.quit()
+            except Exception:
+                pass
+            driver = None
+
     def _get_driver():
         nonlocal driver
         if driver is None:
@@ -58,53 +68,59 @@ def visit_pdf_books_pages():
         try:
             for book in pdf_books[:]:
                 url = book['url']
-                try:
-                    if _has_pdf_runtime_details(book):
-                        actual_type = "pdf"
-                    else:
-                        actual_type = _get_content_type_from_book_page(url, session, driver_provider=_get_driver)
-                        if actual_type and actual_type != "pdf":
-                            print(f"Skipping non-PDF book: {url} ({actual_type})")
-                            book["content_type"] = actual_type
+                for attempt in range(2):
+                    try:
+                        if _has_pdf_runtime_details(book):
+                            actual_type = "pdf"
+                        else:
+                            actual_type = _get_content_type_from_book_page(url, session, driver_provider=_get_driver)
+                            if actual_type and actual_type != "pdf":
+                                print(f"Skipping non-PDF book: {url} ({actual_type})")
+                                book["content_type"] = actual_type
+                                _save_books_index(path_to_idx, all_books)
+                                break
+                        if book.get("file_id"):
+                            file_id = book["file_id"]
+                        else:
+                            file_id = _get_file_id(url, session=session, driver_provider=_get_driver)
+                            book['file_id'] = file_id
                             _save_books_index(path_to_idx, all_books)
+                        print(f"Visiting book page: {file_id}")
+                        if book.get('ext'):
+                            page_extensions = book['ext']
+                        else:
+                            page_extensions = _get_page_extensions(file_id, session=session, driver_provider=_get_driver)
+
+                        if file_id != book.get('file_id') or page_extensions != book.get('ext'):
+                            book['file_id'] = file_id
+                            book['ext'] = page_extensions
+                            _save_books_index(path_to_idx, all_books)
+
+                        download_page_images(
+                            file_id,
+                            page_extensions,
+                            session=session,
+                            driver=driver,
+                            driver_provider=_get_driver,
+                            book_page_url=url,
+                        )
+                        book['pdf_file'] = _create_pdf(book)
+                        _save_books_index(path_to_idx, all_books)
+                        break
+                    except Exception as e:
+                        if attempt == 0 and _is_invalid_selenium_session_error(e):
+                            print("Litres browser session is invalid; restarting browser and retrying current book")
+                            _close_driver()
                             continue
-                    if book.get("file_id"):
-                        file_id = book["file_id"]
-                    else:
-                        file_id = _get_file_id(url, session=session, driver_provider=_get_driver)
-                        book['file_id'] = file_id
-                        _save_books_index(path_to_idx, all_books)
-                    print(f"Visiting book page: {file_id}")
-                    if book.get('ext'):
-                        page_extensions = book['ext']
-                    else:
-                        page_extensions = _get_page_extensions(file_id, session=session, driver_provider=_get_driver)
-
-                    if file_id != book.get('file_id') or page_extensions != book.get('ext'):
-                        book['file_id'] = file_id
-                        book['ext'] = page_extensions
-                        _save_books_index(path_to_idx, all_books)
-
-                    download_page_images(
-                        file_id,
-                        page_extensions,
-                        session=session,
-                        driver=driver,
-                        driver_provider=_get_driver,
-                        book_page_url=url,
-                    )
-                    book['pdf_file'] = _create_pdf(book)
-                    _save_books_index(path_to_idx, all_books)
-                except Exception as e:
-                    print(f"Error processing book: {url}")
-                    print(e)
+                        print(f"Error processing book: {url}")
+                        print(e)
+                        break
         except KeyboardInterrupt:
             _save_books_index(path_to_idx, all_books)
             print(f"Interrupted; saved current index state to {path_to_idx}")
             raise
     finally:
-        if driver:
-            driver.quit()
+        _close_driver()
 
 
 def _get_pdf_books_to_visit(all_books):
@@ -367,6 +383,16 @@ def _should_retry_response_with_browser(response):
     return content_type.startswith("text/html") and any(marker.lower() in text for marker in BLOCKED_MARKERS)
 
 
+def _is_invalid_selenium_session_error(exc):
+    try:
+        from selenium.common.exceptions import InvalidSessionIdException, WebDriverException
+    except ImportError:
+        return "invalid session id" in str(exc).lower()
+    return isinstance(exc, InvalidSessionIdException) or (
+        isinstance(exc, WebDriverException) and "invalid session id" in str(exc).lower()
+    )
+
+
 def _create_litres_session():
     session = requests.Session()
     session.headers.update(_get_litres_headers())
@@ -521,7 +547,10 @@ def _binary_response_details(content, content_type, status=200):
 
 
 def _temporary_path(path):
-    return f"{path}.tmp.{os.getpid()}"
+    directory = os.path.dirname(path)
+    suffix = os.path.splitext(path)[1]
+    digest = hashlib.md5(os.path.abspath(path).encode("utf-8")).hexdigest()
+    return os.path.join(directory, f".tmp.{os.getpid()}.{digest}{suffix}")
 
 
 def _remove_if_exists(path):
@@ -530,8 +559,9 @@ def _remove_if_exists(path):
 
 
 def _remove_stale_temporary_files(directory):
-    for tmp_file in glob.glob(os.path.join(directory, "*.tmp.*")):
-        _remove_if_exists(tmp_file)
+    for pattern in ("*.tmp.*", ".tmp.*"):
+        for tmp_file in glob.glob(os.path.join(directory, pattern)):
+            _remove_if_exists(tmp_file)
 
 
 def _create_pdf(book):
