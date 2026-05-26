@@ -20,11 +20,6 @@ from utils import create_driver, dump_json_atomic, get_sid, get_in_workdir, read
 
 PDF_REQUEST_TIMEOUT_SECONDS = 30
 PDF_RESPONSE_SNIPPET_BYTES = 300
-PDF_DEFAULT_JPEG_QUALITY = 92
-PDF_DEFAULT_MAX_WIDTH = 2400
-PDF_DEFAULT_DPI = 300
-PDF_DEFAULT_BROWSER_HEADLESS = True
-PDF_DEFAULT_BROWSER_CHALLENGE_WAIT_SECONDS = 180
 RAW_PAGE_DPI = 300
 
 
@@ -585,9 +580,13 @@ def _create_pdf(book):
         with pymupdf.open() as doc:
             # sort pages by number
             images = sorted([f for f in os.listdir(artifacts_dir)], key=lambda x: int(x.split(".")[0]))
-            for page in track(images, description=f"Creating pdf for file: {file_id}"):
-                image_bytes = _compressed_page_jpeg_bytes(os.path.join(artifacts_dir, page), options)
-                with pymupdf.open(stream=image_bytes, filetype="jpeg") as img:
+            for page_number, page in enumerate(track(images, description=f"Creating pdf for file: {file_id}")):
+                image_bytes, image_filetype = _page_image_bytes_for_pdf(
+                    os.path.join(artifacts_dir, page),
+                    page_number,
+                    options,
+                )
+                with pymupdf.open(stream=image_bytes, filetype=image_filetype) as img:
                     rect = img[0].rect  # pic dimension
                     with pymupdf.open("pdf", img.convert_to_pdf()) as img_pdf:
                         page = doc.new_page(width=rect.width, height=rect.height)
@@ -613,12 +612,12 @@ def _is_valid_pdf_file(path):
 
 
 def _get_pdf_compression_options():
-    config = read_config() or {}
-    pdf_config = config.get("pdf") or {}
+    pdf_config = _get_pdf_config()
     options = {
-        "jpeg_quality": int(pdf_config.get("jpeg_quality", PDF_DEFAULT_JPEG_QUALITY)),
-        "max_width": pdf_config.get("max_width", PDF_DEFAULT_MAX_WIDTH),
-        "dpi": int(pdf_config.get("dpi", PDF_DEFAULT_DPI)),
+        "jpeg_quality": int(_required_config_value(pdf_config, "pdf.jpeg_quality")),
+        "max_width": _required_config_value(pdf_config, "pdf.max_width", allow_none=True),
+        "dpi": int(_required_config_value(pdf_config, "pdf.dpi")),
+        "lossless_first_pages": int(_required_config_value(pdf_config, "pdf.lossless_first_pages")),
     }
     if options["max_width"] is not None:
         options["max_width"] = int(options["max_width"])
@@ -629,21 +628,46 @@ def _get_pdf_compression_options():
         raise ValueError("pdf.max_width must be positive or null")
     if options["dpi"] <= 0:
         raise ValueError("pdf.dpi must be positive")
+    if options["lossless_first_pages"] < 0:
+        raise ValueError("pdf.lossless_first_pages must be zero or positive")
     return options
 
 
 def _get_pdf_browser_headless():
-    config = read_config() or {}
-    pdf_config = config.get("pdf") or {}
-    return _config_bool(pdf_config.get("browser_headless", PDF_DEFAULT_BROWSER_HEADLESS), "pdf.browser_headless")
+    pdf_config = _get_pdf_config()
+    return _config_bool(
+        _required_config_value(pdf_config, "pdf.browser_headless"),
+        "pdf.browser_headless",
+    )
 
 
 def _get_pdf_browser_challenge_wait_seconds():
-    config = read_config() or {}
-    pdf_config = config.get("pdf") or {}
-    value = int(pdf_config.get("browser_challenge_wait_seconds", PDF_DEFAULT_BROWSER_CHALLENGE_WAIT_SECONDS))
+    pdf_config = _get_pdf_config()
+    value = int(_required_config_value(pdf_config, "pdf.browser_challenge_wait_seconds"))
     if value <= 0:
         raise ValueError("pdf.browser_challenge_wait_seconds must be positive")
+    return value
+
+
+def _get_pdf_config():
+    config = read_config()
+    if not isinstance(config, dict):
+        raise ValueError("litres/config.yaml is empty or invalid")
+    pdf_config = config.get("pdf")
+    if not isinstance(pdf_config, dict):
+        raise ValueError("pdf is not set in litres/config.yaml")
+    return pdf_config
+
+
+def _required_config_value(config, name, allow_none=False):
+    key = name.rsplit(".", 1)[-1]
+    if key not in config:
+        raise ValueError(f"{name} is not set in litres/config.yaml")
+    value = config.get(key)
+    if value is None and allow_none:
+        return value
+    if value is None or value == "":
+        raise ValueError(f"{name} is not set in litres/config.yaml")
     return value
 
 
@@ -675,6 +699,27 @@ def _compressed_page_jpeg_bytes(image_path, options):
         output,
         format="JPEG",
         quality=options["jpeg_quality"],
+        dpi=(options["dpi"], options["dpi"]),
+        optimize=True,
+    )
+    return output.getvalue()
+
+
+def _page_image_bytes_for_pdf(image_path, page_number, options):
+    if page_number < options["lossless_first_pages"]:
+        return _lossless_page_png_bytes(image_path, options), "png"
+    return _compressed_page_jpeg_bytes(image_path, options), "jpeg"
+
+
+def _lossless_page_png_bytes(image_path, options):
+    with Image.open(image_path) as source:
+        source.load()
+        image = source.copy()
+
+    output = io.BytesIO()
+    image.save(
+        output,
+        format="PNG",
         dpi=(options["dpi"], options["dpi"]),
         optimize=True,
     )

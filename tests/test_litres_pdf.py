@@ -445,6 +445,55 @@ class LitresPdfTests(unittest.TestCase):
             with Image.open(raw_page) as image:
                 self.assertEqual((200, 100), image.size)
 
+    def test_page_image_bytes_for_pdf_keeps_first_pages_lossless(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            raw_page = Path(tmpdir) / "0.png"
+            Image.new("RGB", (200, 100), "white").save(raw_page, format="PNG")
+            options = {"jpeg_quality": 70, "max_width": 50, "dpi": 120, "lossless_first_pages": 1}
+
+            first_bytes, first_filetype = litres_pdf._page_image_bytes_for_pdf(raw_page, 0, options)
+            second_bytes, second_filetype = litres_pdf._page_image_bytes_for_pdf(raw_page, 1, options)
+
+            self.assertEqual("png", first_filetype)
+            with Image.open(io.BytesIO(first_bytes)) as image:
+                self.assertEqual("PNG", image.format)
+                self.assertEqual((200, 100), image.size)
+            self.assertEqual("jpeg", second_filetype)
+            with Image.open(io.BytesIO(second_bytes)) as image:
+                self.assertEqual("JPEG", image.format)
+                self.assertEqual((50, 25), image.size)
+
+    def test_get_pdf_compression_options_reads_lossless_first_pages(self):
+        original_read_config = litres_pdf.read_config
+        try:
+            litres_pdf.read_config = lambda: {"pdf": _pdf_config(lossless_first_pages=3)}
+
+            options = litres_pdf._get_pdf_compression_options()
+        finally:
+            litres_pdf.read_config = original_read_config
+
+        self.assertEqual(3, options["lossless_first_pages"])
+
+    def test_get_pdf_compression_options_rejects_negative_lossless_first_pages(self):
+        original_read_config = litres_pdf.read_config
+        try:
+            litres_pdf.read_config = lambda: {"pdf": _pdf_config(lossless_first_pages=-1)}
+
+            with self.assertRaisesRegex(ValueError, "lossless_first_pages"):
+                litres_pdf._get_pdf_compression_options()
+        finally:
+            litres_pdf.read_config = original_read_config
+
+    def test_get_pdf_compression_options_requires_values(self):
+        original_read_config = litres_pdf.read_config
+        try:
+            litres_pdf.read_config = lambda: {"pdf": {"jpeg_quality": 80}}
+
+            with self.assertRaisesRegex(ValueError, "pdf.max_width"):
+                litres_pdf._get_pdf_compression_options()
+        finally:
+            litres_pdf.read_config = original_read_config
+
     def test_create_pdf_replaces_invalid_existing_pdf_atomically(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             root = Path(tmpdir)
@@ -460,7 +509,7 @@ class LitresPdfTests(unittest.TestCase):
             original_read_config = litres_pdf.read_config
             try:
                 litres_pdf.get_in_workdir = lambda path: str(root / path.removeprefix("../"))
-                litres_pdf.read_config = lambda: {"pdf": {"jpeg_quality": 80, "max_width": 60, "dpi": 120}}
+                litres_pdf.read_config = lambda: {"pdf": _pdf_config(jpeg_quality=80, max_width=60, dpi=120)}
                 self.assertEqual(
                     litres_pdf._create_pdf({"file_id": "12345", "full_name": "Book"}),
                     str(pdf_file),
@@ -524,6 +573,19 @@ class LitresPdfTests(unittest.TestCase):
                 )
         finally:
             litres_pdf._open_reader_url = original_open_reader_url
+
+
+def _pdf_config(**overrides):
+    config = {
+        "jpeg_quality": 92,
+        "max_width": 2400,
+        "dpi": 300,
+        "lossless_first_pages": 1,
+        "browser_headless": True,
+        "browser_challenge_wait_seconds": 180,
+    }
+    config.update(overrides)
+    return config
 
 
 if __name__ == "__main__":

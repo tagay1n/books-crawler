@@ -15,6 +15,42 @@ def index():
 
 
 @app.command()
+def discover():
+    """
+    Discover likely Tatar books from broad Litres searches and write candidates index
+    """
+    import discover
+    discover.discover_candidates()
+
+
+@app.command()
+def export_candidates_review():
+    """
+    Export discovery candidates to an editable TSV review file
+    """
+    import candidates
+    candidates.export_review()
+
+
+@app.command()
+def sync_candidates_review():
+    """
+    Sync reviewed candidate statuses from TSV back to candidates index
+    """
+    import candidates
+    candidates.sync_review()
+
+
+@app.command()
+def import_candidates():
+    """
+    Import accepted discovery candidates into the main books index
+    """
+    import candidates
+    candidates.import_accepted()
+
+
+@app.command()
 def pdf():
     """
     Download pdf books from the website

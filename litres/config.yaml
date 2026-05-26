@@ -9,5 +9,17 @@ pdf:
   jpeg_quality: 92
   max_width: 2400
   dpi: 300
+  lossless_first_pages: 1
   browser_headless: false
   browser_challenge_wait_seconds: 180
+discover:
+  search_queries:
+    - на татарском
+    - на татарском языке
+    - татарский язык
+    - татар телендә
+    - татарча
+  max_pages_per_query: 20
+  min_score: 40
+  search_request_retries: 3
+  browser_headless: true

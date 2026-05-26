@@ -27,7 +27,7 @@ def upload_media_to_s3():
     output_root = Path(get_in_workdir(OUTPUT_DIR)).resolve()
     output_root.mkdir(parents=True, exist_ok=True)
 
-    config = read_config()["s3"]
+    config = _required_config_section(read_config(), "s3")
     client = _create_s3_client(config)
     bucket = _required_config(config, "bucket")
     endpoint_url = _required_config(config, "endpoint_url").rstrip("/")
@@ -85,6 +85,15 @@ def _create_s3_client(config):
         aws_secret_access_key=_required_config(config, "aws_secret_access_key"),
         endpoint_url=_required_config(config, "endpoint_url"),
     )
+
+
+def _required_config_section(config, key):
+    if not isinstance(config, dict):
+        raise ValueError("litres/config.yaml is empty or invalid")
+    section = config.get(key)
+    if not isinstance(section, dict):
+        raise ValueError(f"{key} is not set in litres/config.yaml")
+    return section
 
 
 def _required_config(config, key):
