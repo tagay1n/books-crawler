@@ -61,8 +61,9 @@ class MilliPipelineSmokeTests(unittest.TestCase):
         new_index = {"/tt/ssearch/detail/abc": {"title": "Book A"}}
 
         with mock.patch.object(mk_index, "LANGUAGE_QUERIES", ["tat"]):
-            with mock.patch.object(mk_index, "_create_newest_index", return_value=new_index):
-                mk_index.index()
+            with mock.patch.object(mk_index, "COLLECTION_QUERIES", []):
+                with mock.patch.object(mk_index, "_create_newest_index", return_value=new_index):
+                    mk_index.index()
 
         index_after_index = mk_utils.load_index_file()
         self.assertIn("/tt/ssearch/detail/abc", index_after_index)
