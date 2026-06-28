@@ -1805,21 +1805,23 @@
         "lang": "Татарский",
         "collection": "Матур әдәбият",
         "author": "Шәмси, С.; Бәйрәмова, Ф.; Шәмсетдинов, Р.; Тилк, Л.",
-        "access": "open",
+        "access": "limited",
         "integrated_description": [
             "Шәмси, С.Җәяүле буран : повесть һәм хикәяләр / С. Шәмси",
             "[ред. Ф. Бәйрәмова]",
             "[худ. Р. Шәмсетдинов]",
-            "Казан : Татар.кит.нәшр., 1988",
-            "159б",
-            "00.75"
+            "Казан : Татар. кит. нәшр., 1988",
+            "159 б",
+            "Ограниченный доступ из сети Интернет"
         ],
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_mAdab_Inv_63099",
         "download_code": "nbrt_mAdab_Inv_63099",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ovcrqcdvns/",
-        "available_pages": 164,
+        "available_pages": 17,
         "needs_full_download": true,
-        "matched_by": "doc_url"
+        "matched_by": "doc_url",
+        "downloaded": "limited",
+        "decrypted": true
     },
     "/tt/ssearch/detail/dvafhapxfq": {
         "title": "Җир хуҗасы: повестьлар",
@@ -2262,20 +2264,23 @@
         "publish_year": "1991",
         "lang": "Татарский",
         "collection": "Периодические издания Республики Татарстан",
-        "access": "open",
+        "access": "limited",
         "integrated_description": [
             "Мәгариф = Просвещение : Айлык иҗтимагый-педагогик hәм фәнни-әдәби гомумитатар журналы / гл. ред. Г. Шәмсетдинов",
             "420066, Казан ш. Декабристлар ур., 2 нче йорт, 47 нче а/я : \"ТАТМЕДИА\" Ачык акционерлык җәмгыяте, 1913",
             "ISSN 0868-8001.№ 8 ",
             "1991",
-            "Айга бер тапкыр чыга"
+            "Айга бер тапкыр чыга",
+            "Ограниченный доступ из сети Интернет"
         ],
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRT_Magarif_1991_8",
         "download_code": "nbrt_pRT_Magarif_1991_8",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/kippgkuxeq/",
-        "available_pages": 68,
+        "available_pages": 7,
         "needs_full_download": true,
-        "matched_by": "doc_url"
+        "matched_by": "doc_url",
+        "downloaded": "limited",
+        "decrypted": true
     },
     "/tt/ssearch/detail/umlkctqxbn": {
         "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 12 июнь (№ 134)",
@@ -2371,20 +2376,23 @@
             "Художественная литература"
         ],
         "author": "Шәрәфетдинова",
-        "access": "open",
+        "access": "limited",
         "integrated_description": [
             "Шәрәфетдинова, Әнисә.Күңел теле : шигырьләр / Әнисә Шәрәфетдинова",
             "Казан : Матбугат йорты, 2003",
             "96 б",
+            "Ограниченный доступ из сети Интернет",
             "ISBN 5-94259-083-4",
             "Оглавление"
         ],
         "doc_url": "http://kitap.tatar.ru/dl/nbrt_mAdab_Inv_T_1597837",
         "download_code": "nbrt_mAdab_Inv_T_1597837",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/fvqonhtmbw/",
-        "available_pages": 104,
+        "available_pages": 11,
         "needs_full_download": true,
-        "matched_by": "doc_url"
+        "matched_by": "doc_url",
+        "downloaded": "limited",
+        "decrypted": true
     },
     "/tt/ssearch/detail/mckysblbkw": {
         "title": "Кызыл Татарстан: иҗтимагый-сәяси газета. – 11 июнь (№ 133)",
@@ -425521,5 +425529,27 @@
         "downloaded": "full",
         "decrypted": true,
         "available_pages": 60
+    },
+    "/ru/ssearch/detail/tqsaralcwg": {
+        "title": "Башлангыч мәктәптә мәктәп участогы: башлангыч мәктәп укытучылары өчен методик ярдәмлек",
+        "author": "Шалаев, В. Ф.",
+        "publish_year": "1950",
+        "lang": "Русский",
+        "collection": "Татарика",
+        "classification": "УДК 371(07)",
+        "integrated_description": [
+            "Шалаев, В. Ф.Башлангыч мәктәптә мәктәп участогы : башлангыч мәктәп укытучылары өчен методик ярдәмлек / В. Ф. Шалаев",
+            "Казан : Татгосиздат, 1950",
+            "159 б.: рәс. белән",
+            "Ограниченный доступ из сети Интернет",
+            "УДК 371(07)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_3823_51",
+        "download_code": "nbrt_tatarica_Inv_3823_51",
+        "doc_card_url": "https://kitap.tatar.ru/ru/ssearch/detail/tqsaralcwg/",
+        "access": "limited",
+        "downloaded": "limited",
+        "decrypted": true,
+        "available_pages": 17
     }
 }
