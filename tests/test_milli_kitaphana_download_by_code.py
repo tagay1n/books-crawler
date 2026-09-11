@@ -45,7 +45,7 @@ class MilliDownloadByCodeTests(unittest.TestCase):
     def tearDown(self):
         shutil.rmtree(self.tmp_dir, ignore_errors=True)
 
-    def test_download_by_code_handles_mixed_parts_and_access_downgrade(self):
+    def test_download_by_code_skips_all_document_parts_when_any_are_missing(self):
         meta_dir = os.path.join(self.tmp_dir, "meta")
         os.makedirs(meta_dir, exist_ok=True)
         with open(os.path.join(meta_dir, "source.json"), "w", encoding="utf-8") as f:
@@ -64,10 +64,7 @@ class MilliDownloadByCodeTests(unittest.TestCase):
                         mk_download._download_by_code(context)
 
         self.assertEqual(context["meta"]["access"], "limited")
-        self.assertEqual(
-            context["meta"]["enc_part_paths"],
-            [{"num": 0, "part_url": "part1.zip", "enc_unzip_dir": os.path.normpath("/tmp/reused")}],
-        )
+        self.assertNotIn("enc_part_paths", context["meta"])
         m_download_part.assert_called_once_with(context, "part0.zip")
 
 
