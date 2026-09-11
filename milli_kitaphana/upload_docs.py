@@ -29,5 +29,9 @@ def upload_doc(path_to_pdf, config, is_limited):
 
 def persist_upstream_metadata(md5, payload_json, database_url):
     """Insert one upstream metadata record without reading or updating existing rows."""
+    database_url = str(database_url or "").strip()
+    if not database_url or database_url == "<SET ME>":
+        raise ValueError("database_url is required")
+
     with psycopg.connect(database_url) as connection:
         connection.execute(UPSTREAM_METADATA_INSERT, (md5, Jsonb(payload_json)))
