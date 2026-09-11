@@ -13,7 +13,7 @@ from progress_wrapper import ProgressWrapper
 import json
 import base64
 import copy
-from upload_docs import upload_doc, upload_metadata
+from upload_docs import upload_doc, persist_upstream_metadata
 import hashlib
 from unidecode import unidecode
 
@@ -26,6 +26,9 @@ def decrypt():
         return
     print(f"About to decrypt {len(not_decrypted_docs)} document(s)")
     config = read_config()
+    database_url = str(config.get("database_url") or "").strip()
+    if not database_url or database_url == "<SET ME>":
+        raise ValueError("database_url is not set in milli_kitaphana/config.yaml")
     
     for card_path, meta in not_decrypted_docs:
         try:
@@ -42,12 +45,6 @@ def decrypt():
                 path_to_pdf = decrypt_doc_parts(context)
                 upstream_metadata = _upstream_metadata(context["meta"])
 
-                # save metadata
-                path_to_metadata = os.path.join(context['work_dir'], "metadata.zip")
-                with zipfile.ZipFile(path_to_metadata, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
-                    meta_json = json.dumps(upstream_metadata, indent=None, separators=(',', ':'), ensure_ascii=False)
-                    zf.writestr("metadata.json", meta_json)
-
                 pw.main(f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
                 context['md5'] = _calculate_md5(path_to_pdf)
                 upload_doc(
@@ -56,9 +53,12 @@ def decrypt():
                     is_limited=meta["downloaded"] == "limited"
                 )
                 
-                # upload metadata to s3
-                pw.main(f"Uploading artifacts to object storage --> {context['md5']}")
-                upload_metadata(path_to_metadata=path_to_metadata, path_to_pdf=path_to_pdf, context=context)
+                pw.main(f"Persisting upstream metadata --> {context['md5']}")
+                persist_upstream_metadata(
+                    md5=context["md5"],
+                    payload_json=upstream_metadata,
+                    database_url=database_url,
+                )
                 
                 pw.main(f"[bold green]Decryption complete '{context['md5']}' '{context['meta']['title']}'[/bold green]")
                 # shutil.rmtree(context['work_dir'])

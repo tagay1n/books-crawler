@@ -112,12 +112,12 @@ class MilliPipelineSmokeTests(unittest.TestCase):
                 f.write(b"%PDF-1.4\n")
             return out
 
-        with mock.patch.object(mk_decrypt, "read_config", return_value={"cfg": 1}):
+        with mock.patch.object(mk_decrypt, "read_config", return_value={"database_url": "postgresql://db"}):
             with mock.patch.object(mk_decrypt, "ProgressWrapper", _DummyProgressWrapper):
                 with mock.patch.object(mk_decrypt, "decrypt_doc_parts", side_effect=_fake_decrypt_doc_parts):
                     with mock.patch.object(mk_decrypt, "_calculate_md5", return_value="md5-book-a"):
                         with mock.patch.object(mk_decrypt, "upload_doc", return_value=None):
-                            with mock.patch.object(mk_decrypt, "upload_metadata", return_value=None):
+                            with mock.patch.object(mk_decrypt, "persist_upstream_metadata", return_value=None):
                                 mk_decrypt.decrypt()
 
         index_after_decrypt = mk_utils.load_index_file()

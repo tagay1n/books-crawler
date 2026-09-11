@@ -1,10 +1,16 @@
-"""Uploads PDFs to Yandex Disk and metadata zips to object storage."""
+"""Uploads PDFs to Yandex Disk and stores upstream metadata in PostgreSQL."""
 
 import posixpath
-from boto3 import Session
-
+import psycopg
+from psycopg.types.json import Jsonb
 
 from yadisk_client import YaDisk, ConflictResolution
+
+
+UPSTREAM_METADATA_INSERT = """
+    INSERT INTO monocorpus.library_upstream_metadata (md5, payload_json)
+    VALUES (%s, %s)
+"""
 
 
 def upload_doc(path_to_pdf, config, is_limited):
@@ -19,27 +25,9 @@ def upload_doc(path_to_pdf, config, is_limited):
     # res = client.publish(remote_path)
     # res = client.get_meta(res.path, fields=['md5'])
     # return res.md5
-    
-def upload_metadata(path_to_metadata, path_to_pdf, context):
-    config = context['config']
-    client = Session().client(
-        service_name='s3',
-        aws_access_key_id=config['yandex']['cloud']['aws_access_key_id'],
-        aws_secret_access_key=config['yandex']['cloud']['aws_secret_access_key'],
-        endpoint_url='https://storage.yandexcloud.net'
-    )
-    meta_key = f"{context['md5']}.zip"
-    meta_bucket = config["yandex"]["cloud"]['bucket']['upstream_metadata']
-    client.upload_file(
-        path_to_metadata,
-        meta_bucket,
-        meta_key
-    )
-    doc_key = f"{context['md5']}.pdf"
-    doc_bucket = config["yandex"]["cloud"]['bucket']['document']
-    if not client.list_objects_v2(Bucket=doc_bucket, Prefix=doc_key, MaxKeys=1).get("Contents", []):
-        client.upload_file(
-            path_to_pdf,
-            doc_bucket,
-            doc_key
-        )
+
+
+def persist_upstream_metadata(md5, payload_json, database_url):
+    """Insert one upstream metadata record without reading or updating existing rows."""
+    with psycopg.connect(database_url) as connection:
+        connection.execute(UPSTREAM_METADATA_INSERT, (md5, Jsonb(payload_json)))

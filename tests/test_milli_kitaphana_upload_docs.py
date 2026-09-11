@@ -12,28 +12,21 @@ if str(MILLI_DIR) not in sys.path:
 import upload_docs as mk_upload  # noqa: E402
 
 
-class _FakeS3Client:
-    def __init__(self, doc_exists):
-        self.doc_exists = doc_exists
-        self.upload_calls = []
+class _FakeConnection:
+    def __init__(self, execute_error=None):
+        self.execute_calls = []
+        self.execute_error = execute_error
 
-    def upload_file(self, src, bucket, key):
-        self.upload_calls.append((src, bucket, key))
+    def __enter__(self):
+        return self
 
-    def list_objects_v2(self, Bucket, Prefix, MaxKeys):
-        if self.doc_exists:
-            return {"Contents": [{"Key": Prefix}]}
-        return {}
+    def __exit__(self, exc_type, exc, tb):
+        return False
 
-
-class _FakeSession:
-    def __init__(self, client):
-        self._client = client
-        self.client_calls = []
-
-    def client(self, **kwargs):
-        self.client_calls.append(kwargs)
-        return self._client
+    def execute(self, statement, params):
+        self.execute_calls.append((statement, params))
+        if self.execute_error:
+            raise self.execute_error
 
 
 class MilliUploadDocsTests(unittest.TestCase):
@@ -56,47 +49,44 @@ class MilliUploadDocsTests(unittest.TestCase):
             "/root/target/full",
         )
 
-    def test_upload_metadata_uploads_doc_only_when_missing(self):
-        config = {
-            "yandex": {
-                "cloud": {
-                    "aws_access_key_id": "k",
-                    "aws_secret_access_key": "s",
-                    "bucket": {
-                        "upstream_metadata": "meta-bucket",
-                        "document": "doc-bucket",
-                    },
-                }
-            }
-        }
-        context = {"config": config, "md5": "abc123"}
+    def test_persist_upstream_metadata_inserts_jsonb_record(self):
+        connection = _FakeConnection()
+        payload = {"title": "Kitap", "download_code": "abc"}
 
-        # Missing document in bucket => metadata + pdf are uploaded.
-        client_missing = _FakeS3Client(doc_exists=False)
-        sess_missing = _FakeSession(client_missing)
-        with mock.patch.object(mk_upload, "Session", return_value=sess_missing):
-            mk_upload.upload_metadata("/tmp/meta.zip", "/tmp/doc.pdf", context=context)
+        with mock.patch.object(mk_upload.psycopg, "connect", return_value=connection) as connect:
+            mk_upload.persist_upstream_metadata(
+                "a" * 32,
+                payload,
+                "postgresql://writer:secret@example.test/defaultdb?sslmode=require",
+            )
 
-        self.assertEqual(
-            client_missing.upload_calls,
-            [
-                ("/tmp/meta.zip", "meta-bucket", "abc123.zip"),
-                ("/tmp/doc.pdf", "doc-bucket", "abc123.pdf"),
-            ],
+        connect.assert_called_once_with(
+            "postgresql://writer:secret@example.test/defaultdb?sslmode=require"
         )
+        self.assertEqual(len(connection.execute_calls), 1)
+        statement, params = connection.execute_calls[0]
+        self.assertIn("INSERT INTO monocorpus.library_upstream_metadata", statement)
+        self.assertNotIn("ON CONFLICT", statement)
+        self.assertEqual(params[0], "a" * 32)
+        self.assertEqual(params[1].obj, payload)
 
-        # Existing document in bucket => metadata only.
-        client_exists = _FakeS3Client(doc_exists=True)
-        sess_exists = _FakeSession(client_exists)
-        with mock.patch.object(mk_upload, "Session", return_value=sess_exists):
-            mk_upload.upload_metadata("/tmp/meta.zip", "/tmp/doc.pdf", context=context)
+    def test_persist_upstream_metadata_requires_database_url(self):
+        with self.assertRaisesRegex(ValueError, "database_url"):
+            mk_upload.persist_upstream_metadata("a" * 32, {}, "")
+        with self.assertRaisesRegex(ValueError, "database_url"):
+            mk_upload.persist_upstream_metadata("a" * 32, {}, "<SET ME>")
 
-        self.assertEqual(
-            client_exists.upload_calls,
-            [
-                ("/tmp/meta.zip", "meta-bucket", "abc123.zip"),
-            ],
-        )
+    def test_persist_upstream_metadata_propagates_duplicate_error(self):
+        duplicate = RuntimeError("duplicate key")
+        connection = _FakeConnection(execute_error=duplicate)
+
+        with mock.patch.object(mk_upload.psycopg, "connect", return_value=connection):
+            with self.assertRaisesRegex(RuntimeError, "duplicate key"):
+                mk_upload.persist_upstream_metadata(
+                    "a" * 32,
+                    {"title": "Kitap"},
+                    "postgresql://db",
+                )
 
 
 if __name__ == "__main__":

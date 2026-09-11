@@ -14,7 +14,7 @@ Main state lives in `__artifacts/milli.kitaphana/_index/books-index.json`.
   - Without `--limited`: process docs where `broken != true` and `downloaded is None`.
   - With `--limited`: process docs where `broken != true`, `needs_full_download == true`, and `downloaded in {None, "limited"}`.
 - `python milli_kitaphana/cli.py decrypt`
-  - Decrypt downloaded parts and update index status.
+  - Decrypt downloaded parts, upload PDFs to Yandex Disk, persist upstream metadata in PostgreSQL, and update index status.
 - `python milli_kitaphana/cli.py merge-index PATH`
   - Merge a worker index into the main index.
 
@@ -27,8 +27,16 @@ Main state lives in `__artifacts/milli.kitaphana/_index/books-index.json`.
 ## Config
 
 - File: `milli_kitaphana/config.yaml`
+- Example: `milli_kitaphana/config.example.yaml`
 - Read with `utf-8-sig` to tolerate BOM on Windows.
 - Keep placeholders in git (`<SET ME>`); do not commit real tokens/keys.
+- Set `database_url` to the TLS-enabled Aiven PostgreSQL URI for the insert-only crawler user before running `decrypt`.
+
+The Aiven login `books_crawler` inherits the non-login role
+`library_upstream_metadata_insert`. That role has only `CONNECT` on `defaultdb`,
+`USAGE` on `monocorpus`, and column-level `INSERT (md5, payload_json)` on
+`monocorpus.library_upstream_metadata`. It must not be granted read, update, or
+delete access.
 
 ## Optional filter
 
