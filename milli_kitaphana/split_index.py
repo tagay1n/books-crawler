@@ -65,10 +65,10 @@ def _load_filter():
 def _is_allowed(meta, filters):
     if not filters:
         return True
-    code = meta["download_code"]
-    title = meta["title"]
-    if code in filters['download_codes']:
+    code = meta.get("download_code")
+    title = meta.get("title")
+    if code and code in filters['download_codes']:
         return True
-    if title.strip().lower() in filters['titles']:
+    if isinstance(title, str) and title.strip().lower() in filters['titles']:
         return True
     return False

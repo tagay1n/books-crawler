@@ -67,6 +67,13 @@ class MilliSplitListsTests(unittest.TestCase):
                 kept.update(json.load(f))
         self.assertEqual(set(kept.keys()), {"/b", "/c"})
 
+    def test_filter_tolerates_incomplete_metadata(self):
+        filters = {"download_codes": {"code_1"}, "titles": {"keep me"}}
+
+        self.assertTrue(mk_split._is_allowed({"download_code": "code_1"}, filters))
+        self.assertTrue(mk_split._is_allowed({"title": "Keep Me"}, filters))
+        self.assertFalse(mk_split._is_allowed({}, filters))
+
     def test_load_filter_returns_none_when_missing(self):
         fake_module_file = os.path.join(self.tmp_dir, "milli_kitaphana", "split_index.py")
         os.makedirs(os.path.dirname(fake_module_file), exist_ok=True)
