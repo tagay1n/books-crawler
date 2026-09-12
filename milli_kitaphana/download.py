@@ -1,7 +1,6 @@
 """Downloads Milli Kitaphana documents by scraping cards, performing key exchange, fetching encrypted parts, and updating the index with download state."""
 
 import base64
-import copy
 import hashlib
 import itertools
 import json
@@ -75,7 +74,6 @@ def download(limited, index_name):
     config = read_config()
     
     for card_path, meta in not_downloaded_docs:
-        original_meta = copy.deepcopy(meta)
         try:
             _scrap_doc_card(card_path, meta, proxies=None)
             download_code = meta['download_code']
@@ -103,14 +101,8 @@ def download(limited, index_name):
                 _get_dh_params(context)
                 _dh_key_exchange(context)
                 _download_by_code(context)
-
-            if meta["access"] != "open":
-                meta.clear()
-                meta.update(original_meta)
-                print(f"Ignoring limited document '{meta['title']}'")
-                continue
-
-            meta["downloaded"] = "full"
+                
+            meta["downloaded"] = "full" if meta['access'] == "open" else 'limited'
             meta["decrypted"] = False
             
         except KeyboardInterrupt:
@@ -330,10 +322,6 @@ def _download_by_code(context):
         source_meta = json.load(file)
 
     parts = source_meta["parts"]
-
-    if any(not part.get("url") for part in parts):
-        context['meta']['access'] = "limited"
-        return
 
     parts_count = len(parts)
     with ThreadPool(processes=2) as pool:

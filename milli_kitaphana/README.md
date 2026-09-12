@@ -13,7 +13,6 @@ Main state lives in `__artifacts/milli.kitaphana/_index/books-index.json`.
 - `python milli_kitaphana/cli.py download [--limited] [--index-name NAME]`
   - Without `--limited`: process docs where `broken != true` and `downloaded is None`.
   - With `--limited`: process docs where `broken != true`, `needs_full_download == true`, and `downloaded in {None, "limited"}`.
-  - Documents with missing parts are treated as limited and ignored without changing their index entry.
 - `python milli_kitaphana/cli.py decrypt`
   - Decrypt downloaded parts, upload PDFs to Yandex Disk, persist upstream metadata in PostgreSQL, and update index status.
 - `python milli_kitaphana/cli.py merge-index PATH`
