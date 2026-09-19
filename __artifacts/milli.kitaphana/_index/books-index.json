@@ -1,4 +1,342 @@
 {
+    "/tt/ssearch/detail/oicruryyrh": {
+        "title": "Синтаксис: җидееллык һәм урта мәктәпләрнең 6-7 класслары өчен дәреслек",
+        "publish_year": "1952",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Татар теле",
+            "Татарский язык",
+            "Тел белеме",
+            "Языкознание",
+            "Дәреслекләр",
+            "Учебники"
+        ],
+        "author": "Корбангалиев, М.; Хисмәтуллин, Х.; Шакирова, Р."
+    },
+    "/tt/ssearch/detail/anuduqmzfn": {
+        "title": "Татар теле грамматикасы: җидееллык һәм урта мәктәпләрнең 6-7 класслары өчен дәреслек. Кис. 2. – Синтаксис",
+        "publish_year": "1955",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Татар теле",
+            "Татарский язык",
+            "Тел белеме",
+            "Языкознание",
+            "Дәреслекләр",
+            "Учебники",
+            "Башлангыч мәктәпләр",
+            "Начальная школа",
+            "Синтаксис"
+        ]
+    },
+    "/tt/ssearch/detail/ujuaapjfng": {
+        "title": "Татар теленең алфавит һәм орфография тарихы",
+        "publish_year": "1960",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Языкознание",
+            "Татарский язык",
+            "Алфавит",
+            "Орфография",
+            "Татар теле",
+            "Тел белеме"
+        ],
+        "author": "Курбатов; СССР Фәннәр Академиясе. Казан филиалы; Тел, әдәбият һәм тарих институты"
+    },
+    "/tt/ssearch/detail/woyzndjgtd": {
+        "title": "Әлифба: башлангыч мәктәпләр өчен",
+        "publish_year": "1939",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Татар теле һәм әдәбияты",
+            "Татарский язык и литература",
+            "Тел белеме",
+            "Языкознание",
+            "Дәреслекләр",
+            "Учебники",
+            "Букварь",
+            "Әлифба"
+        ],
+        "author": "Корбангалиев, М.",
+        "classification": "УДК 4(с)тат(075)",
+        "integrated_description": [
+            "Корбангалиев, М.Әлифба : башлангыч мәктәпләр өчен / М. Корбангалиев",
+            "Казан : Татгосиздат, 1939",
+            "100 б.: рәс",
+            "УДК 4(с)тат(075)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_621",
+        "download_code": "nbrt_tatarica_Inv_621",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/woyzndjgtd/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 108
+    },
+    "/tt/ssearch/detail/hhmjchsbvu": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №5-6. – №5-6",
+        "publish_year": "1935",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№5-6: №5-6 ",
+            "1935",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1935_5_6",
+        "download_code": "nbrt_pRF_Chayan_1935_5_6",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/hhmjchsbvu/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 15
+    },
+    "/tt/ssearch/detail/kkxkgrxgbv": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №7-8. – №7-8",
+        "publish_year": "1935",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№7-8: №7-8 ",
+            "1935",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1935_7_8",
+        "download_code": "nbrt_pRF_Chayan_1935_7_8",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/kkxkgrxgbv/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 12
+    },
+    "/tt/ssearch/detail/dggbdcgnau": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №9-10. – №9-10",
+        "publish_year": "1935",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№9-10: №9-10 ",
+            "1935",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1935_9_10",
+        "download_code": "nbrt_pRF_Chayan_1935_9_10",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/dggbdcgnau/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 15
+    },
+    "/tt/ssearch/detail/reygciqsax": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №11-12. – №11-12",
+        "publish_year": "1935",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№11-12: №11-12 ",
+            "1935",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1935_11_12",
+        "download_code": "nbrt_pRF_Chayan_1935_11_12",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/reygciqsax/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 16
+    },
+    "/tt/ssearch/detail/qxjqylsfkz": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №13-14. – №13-14",
+        "publish_year": "1935",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№13-14: №13-14 ",
+            "1935",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1935_13_14",
+        "download_code": "nbrt_pRF_Chayan_1935_13_14",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qxjqylsfkz/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 12
+    },
+    "/tt/ssearch/detail/alkhjxwrba": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №15-16. – №15-16",
+        "publish_year": "1935",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№15-16: №15-16 ",
+            "1935",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1935_15_16",
+        "download_code": "nbrt_pRF_Chayan_1935_15_16",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/alkhjxwrba/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 12
+    },
+    "/tt/ssearch/detail/awcffewmim": {
+        "title": "\"Йосыф китабы\": \"Кыйссаи Йосыф\" поэмасының Татарстан Респпубликасы Милли китапханәсендә саклана торган кулъязмаларына тасвирламалар",
+        "publish_year": "2026",
+        "lang": "Татарский",
+        "collection": "Серия «Татар археографиясе»",
+        "tags": [
+            "Кул Гали",
+            "Татарская литература",
+            "Татар археографиясе",
+            "Татарская литература",
+            "Кул Гали \"Кыйссаи Юсуф\"",
+            "Кол Гали \"Йосыф кыйссасы\"",
+            "Старинные рукописи",
+            "Кулъязмалар",
+            "Татарская археография"
+        ],
+        "author": "Мәрданов",
+        "integrated_description": [
+            "\"Йосыф китабы\" : \"Кыйссаи Йосыф\" поэмасының Татарстан Респпубликасы Милли китапханәсендә саклана торган кулъязмаларына тасвирламалар / төзүчесе, кулъязмаларны тасвирлаучы һәм махсус мәкаләләр авторы - археограф, текстолог Раиф Мәрданов",
+            "Казан : Милли китап, 2026",
+            "192, [1] б",
+            "(Татар археографиясе",
+            "37 нчы китап)",
+            "Библиогр., аңлатмалар юл асты иск",
+            "Свободный доступ из сети Интернет",
+            "ISBN 978-5-88473-113-4",
+            "Оглавление"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_T_1938652",
+        "download_code": "nbrt_tatarica_Inv_T_1938652",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/awcffewmim/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 196
+    },
+    "/tt/ssearch/detail/zypzctqcwh": {
+        "title": "Сугышчы-кавалерист өчен истәлек",
+        "publish_year": "1942",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Кавалерия"
+        ],
+        "author": "Хасанова, А.; Кызыл Армиянең баш политик управлениесе һәм Кызыл Армия кавалериясенең инспекциясе",
+        "classification": "УДК 357",
+        "integrated_description": [
+            "Сугышчы-кавалерист өчен истәлек / Кызыл Армиянең баш политик управлениесе һәм Кызыл Армия кавалериясенең инспекциясе",
+            "[җав. ред. А. Хасанова]",
+            "Москва",
+            "Казан : Воениздат : Татгосиздат, 1942",
+            "19 б",
+            "Свободный доступ из сети Интернет",
+            "УДК 357"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1526_43",
+        "download_code": "nbrt_tatarica_Inv_1526_43",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/zypzctqcwh/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 20
+    },
+    "/tt/ssearch/detail/gsyvdqegej": {
+        "title": "Бөек Ватан сугышында СССРның хәрби диңгез флоты",
+        "publish_year": "1947",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Морской флот",
+            "Великая Отечественная война",
+            "История",
+            "Флот",
+            "Бөек Ватан сугышы",
+            "Тарих"
+        ]
+    },
+    "/tt/ssearch/detail/epuiwdoujo": {
+        "title": "Башлангыч мәктәпләр өчен программалар",
+        "publish_year": "1950",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Начальная школа",
+            "Программы",
+            "Планы",
+            "Татарский язык",
+            "Арифметика",
+            "Природоведение",
+            "География",
+            "История",
+            "Рисование",
+            "Педагогика",
+            "Башлангыч мәктәпләр",
+            "Программалар",
+            "Татар теле",
+            "Табигать белеме",
+            "Тарих",
+            "Матур язу",
+            "Рәсем сәнгате"
+        ],
+        "author": "Хайбуллин, С."
+    },
+    "/tt/ssearch/detail/pxnkovoail": {
+        "title": "Программалар: Татар теле. Арифметика. География",
+        "publish_year": "1952",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Татар теле",
+            "Татарский язык",
+            "Тел белеме",
+            "Языкознание",
+            "Укыту программалары",
+            "Программы обучения"
+        ],
+        "author": "Гобәйдуллин; Хәким, С."
+    },
+    "/tt/ssearch/detail/hivjeoixmj": {
+        "title": "Хәзерге татар теле фонетикасына кереш",
+        "publish_year": "1954",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Языкознание",
+            "Татарский язык",
+            "Фонетика",
+            "Татар теле",
+            "Тел белеме"
+        ],
+        "author": "Шакирова, Р. Ф.; СССР Фәннәр Академиясе Казан филиалы; Тел, әдәбият һәм тарих институты"
+    },
+    "/tt/ssearch/detail/ctypdofvqt": {
+        "title": "Татар теленең орфоэпик нигезләре",
+        "publish_year": "1953",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Языкознание",
+            "Татарский язык",
+            "Орфоэпия",
+            "Татар теле",
+            "Тел белеме"
+        ],
+        "author": "Җәләй, Л.; Сабиров, К."
+    },
     "/tt/ssearch/detail/ttkyecyxpz": {
         "title": "Татар теле дәреслеге: башлангыч мәктәпнең 4 нче классы өчен. Кис. 4. – Грамматика һәм орфография",
         "publish_year": "1942",
@@ -41,7 +379,7 @@
         "available_pages": 132
     },
     "/tt/ssearch/detail/fjiqefaspw": {
-        "title": "Инструкцияләр : мактаулы \"Герой-ана\" исеме бирүне тәкъдим итү һәм \"Герой-ана\" орденнарын тапшыру тәртибе турында",
+        "title": "Инструкцияләр: мактаулы \"Герой-ана\" исеме бирүне тәкъдим итү һәм \"Герой-ана\" орденнарын тапшыру тәртибе турында",
         "lang": "Татарский",
         "collection": "Татарика",
         "tags": [
@@ -76,7 +414,7 @@
         "available_pages": 8
     },
     "/tt/ssearch/detail/vyyoheigrj": {
-        "title": "Иваново сайлау округы сайлаучылары җыелышында сөйләнгән речь : 7 март, 1950 ел",
+        "title": "Иваново сайлау округы сайлаучылары җыелышында сөйләнгән речь: 7 март, 1950 ел",
         "publish_year": "1950",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -90,7 +428,7 @@
         "author": "Косыгин, А. Н."
     },
     "/tt/ssearch/detail/cscvapfqso": {
-        "title": "СССРның санитария оборонасына хәзер : ГТО нормаларын тапшыруга әзерләнү өчен ярдәмлек",
+        "title": "СССРның санитария оборонасына хәзер: ГТО нормаларын тапшыруга әзерләнү өчен ярдәмлек",
         "publish_year": "1942",
         "lang": "Татарский",
         "collection": "Татарика",
@@ -134,7 +472,57 @@
             "ВОСПИТАНИЕ ТРУДОВОЕ",
             "НАЧАЛЬНАЯ ШКОЛА"
         ],
-        "author": "Гайфетдинова, С.Ф."
+        "author": "Гайфетдинова, С. Ф."
+    },
+    "/tt/ssearch/detail/ehsxxtnfml": {
+        "title": "Татар теле дәреслеге: грамматика һәм дөрес язу: 1 нче класслар өчен. – Кис. 1",
+        "publish_year": "1944",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Татар теле",
+            "Татарский язык",
+            "Тел белеме",
+            "Языкознание",
+            "Дәреслекләр",
+            "Учебники",
+            "Башлангыч мәктәпләр",
+            "Начальная школа"
+        ],
+        "classification": "УДК 4(с)тат(075)",
+        "integrated_description": [
+            "Корбангалиев, М. Х.Татар теле дәреслеге : грамматика һәм дөрес язу: 1 нче класслар өчен / М. Х. Корбангалиев",
+            "Казань, 1944 -.Кис. 1 ",
+            ": Татгосиздат, 1944",
+            "36 б",
+            "Свободный доступ из сети Интернет",
+            "Оглавление",
+            "УДК 4(с)тат(075)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1733_44",
+        "download_code": "nbrt_tatarica_Inv_1733_44",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ehsxxtnfml/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 40
+    },
+    "/tt/ssearch/detail/cgsmvseeeq": {
+        "title": "Татар теле: грамматика, дөрес язу һәм сөйләм телен үстерү: башлангыч мәктәпнең 1 нче классы өчен дәреслек",
+        "publish_year": "1947",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Татар теле",
+            "Татарский язык",
+            "Тел белеме",
+            "Языкознание",
+            "Дәреслекләр",
+            "Учебники",
+            "Башлангыч мәктәпләр",
+            "Начальная школа"
+        ],
+        "author": "Галлямова, М. Ш."
     },
     "/tt/ssearch/detail/hmvjmxwigd": {
         "title": "Татар теле дәреслеге: башлангыч мәктәпнең 4 нче классы өчен. Кис. 4. – Грамматика һәм орфография",
@@ -184,20 +572,22 @@
         ],
         "author": "Хангильдин, В. Н.; Гайнуллин, М. Х.; Җәләй, Л. Җ.; Хәмидуллин, Ф. Х.; Сабиров, К. С.; СССР Фәннәр Академиясе. Казан филиалы; Тел, әдәбият һәм тарих институты"
     },
-    "/tt/ssearch/detail/jmcyqrhnpt": {
-        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №15-16. – №15-16",
-        "publish_year": "1934",
+    "/tt/ssearch/detail/iciiwgksmi": {
+        "title": "Туган тел: башлангыч мәктәпнең 1 классы өчен уку китабы",
+        "publish_year": "1946",
         "lang": "Татарский",
-        "collection": "Фонд татарской и восточной периодики",
-        "integrated_description": [
-            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
-            "Казан, 1923-1941.№15-16: №15-16 ",
-            "1934",
-            "Свободный доступ из сети Интернет"
+        "collection": "Татарика",
+        "tags": [
+            "Татар теле һәм әдәбияты",
+            "Татарский язык и литература",
+            "Тел белеме",
+            "Языкознание",
+            "Учебники",
+            "Дәреслекләр",
+            "Начальная школа",
+            "Башлангыч мәктәпләр"
         ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1934_15_16",
-        "download_code": "nbrt_pRF_Chayan_1934_15_16",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/jmcyqrhnpt/"
+        "author": "Галлямова"
     },
     "/tt/ssearch/detail/ybmvudgffg": {
         "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №17-18. – №17-18",
@@ -256,21 +646,6 @@
         "decrypted": true,
         "available_pages": 8
     },
-    "/tt/ssearch/detail/muogqqmcud": {
-        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №2-3. – №2-3",
-        "publish_year": "1935",
-        "lang": "Татарский",
-        "collection": "Фонд татарской и восточной периодики",
-        "integrated_description": [
-            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
-            "Казан, 1923-1941.№2-3: №2-3 ",
-            "1935",
-            "Свободный доступ из сети Интернет"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1935_2_3",
-        "download_code": "nbrt_pRF_Chayan_1935_2_3",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/muogqqmcud/"
-    },
     "/tt/ssearch/detail/tqcqakiplc": {
         "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №4. – №4",
         "publish_year": "1935",
@@ -290,22 +665,43 @@
         "decrypted": true,
         "available_pages": 12
     },
-    "/tt/ssearch/detail/iciiwgksmi": {
-        "title": "Туган тел : башлангыч мәктәпнең 1 классы өчен уку китабы",
-        "publish_year": "1946",
+    "/tt/ssearch/detail/jmcyqrhnpt": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №15-16. – №15-16",
+        "publish_year": "1934",
         "lang": "Татарский",
-        "collection": "Татарика",
-        "tags": [
-            "Татар теле һәм әдәбияты",
-            "Татарский язык и литература",
-            "Тел белеме",
-            "Языкознание",
-            "Учебники",
-            "Дәреслекләр",
-            "Начальная школа",
-            "Башлангыч мәктәпләр"
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№15-16: №15-16 ",
+            "1934",
+            "Свободный доступ из сети Интернет"
         ],
-        "author": "Галлямова"
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1934_15_16",
+        "download_code": "nbrt_pRF_Chayan_1934_15_16",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/jmcyqrhnpt/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 11
+    },
+    "/tt/ssearch/detail/muogqqmcud": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №2-3. – №2-3",
+        "publish_year": "1935",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№2-3: №2-3 ",
+            "1935",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1935_2_3",
+        "download_code": "nbrt_pRF_Chayan_1935_2_3",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/muogqqmcud/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 15
     },
     "/tt/ssearch/detail/gomhdchlkl": {
         "title": "Татар теле дәреслеге: башлангыч мәктәпнең 3 нче классы өчен. Кис. 3. – Грамматика һәм дөрес язу",
@@ -3666,7 +4062,25 @@
             "Поэмы",
             "Поэмалар"
         ],
-        "author": "Шәрифуллина; Гамбәр; Хәсәншин; Зөлфәт"
+        "author": "Шәрифуллина; Гамбәр; Хәсәншин; Зөлфәт",
+        "integrated_description": [
+            "Шәрифуллина, Эльмира.Сөюемнән мин бер чибәр идем.. : шигырьләр, поэмалар / Эльмира Шәрифуллина",
+            "мөхәррире Н. Гамбәр",
+            "рәссамы Р. Хәсәншин",
+            "кереш сүз язучы Зөлфәт",
+            "Казан : Рухият, 2005",
+            "527б.: портр",
+            "Эчт.: Бер кычкырды кәккүк: поэма",
+            "Тәмуг кисәве: поэма",
+            "Без - Тукайлы!: поэма һ. б",
+            "Ограниченный доступ из сети ИнтернетСодерж.:Бер кычкырды кәккүк : поэма.Тәмуг кисәве : поэма.Без - Тукайлы! : поэма.Каюм коесы : поэма",
+            "ISBN 5-89706-081-9",
+            "Оглавление"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_MAdab_Inv_T_1621189",
+        "download_code": "nbrt_MAdab_Inv_T_1621189",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mbdmxjpnkc/",
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_MAdab_Inv_T_1621189.1&version=e5250851944999756889&part={url}"
     },
     "/tt/ssearch/detail/mmaboibqbi": {
         "title": "Офыклардан офыкларга: шигырьләр",
@@ -5642,14 +6056,19 @@
         "available_pages": 28
     },
     "/tt/ssearch/detail/guyxfumkcw": {
-        "title": "Çәgrafiәdәn eş kitabь: kolxoz jәşlәre mәktәplәreneñ 1 nce uqu jlь өcen",
-        "publish_year": "1932",
+        "title": "1953/54 уку елына җидееллык һәм урта мәктәпләрнең 5 классларында күчереш имтиханнары өчен билетлар",
+        "publish_year": "1954",
         "lang": "Татарский",
-        "collection": "Яналиф",
+        "collection": "Татарика",
         "tags": [
-            "Дәреслекләр",
-            "Учебники",
-            "География"
+            "ПЕДАГОГИКА",
+            "ПЕДАГОГИКА",
+            "ИМТИХАННАР",
+            "ТАТАР ТЕЛЕ",
+            "АРИФМЕТИКА",
+            "ЭКЗАМЕНЫ",
+            "ТАТАРСКИЙ ЯЗЫК",
+            "АРИФМЕТИКА"
         ],
         "classification": "УДК 373",
         "integrated_description": [
@@ -6223,11 +6642,11 @@
         "available_pages": 72
     },
     "/tt/ssearch/detail/ddrtofjbbv": {
-        "title": "Алтын әтәч: Пушкин хикәясеннән алынды",
-        "publish_year": "1909",
+        "title": "Алтын әтәч: Пушкин хикәясеннән алынмыш",
+        "publish_year": "1908",
         "lang": "Татарский",
         "collection": "Прижизненные издания Г. Тукая",
-        "author": "Тукай",
+        "author": "Тукай; Сабах көтепханәсе",
         "classification": "УДК Т1",
         "integrated_description": [
             "Тукай, Габдулла.Алтын әтәч : Пушкин хикәясеннән алынды / Г. Тукай",
@@ -9660,9 +10079,9 @@
         "download_code": "nbrt_tatarica_Inv_1444_42",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mvnazfyzrh/",
         "access": "open",
+        "available_pages": 36,
         "downloaded": "full",
-        "decrypted": true,
-        "available_pages": 36
+        "decrypted": true
     },
     "/tt/ssearch/detail/isjufiznyc": {
         "title": "Тәрбияләүдәге хаталар һәм балаларда нервлылык",
@@ -13156,16 +13575,18 @@
         "title": "Şigerlәr",
         "publish_year": "1939",
         "lang": "Татарский",
-        "collection": "Матур әдәбият, Яналиф",
+        "collection": "Матур әдәбият, Прижизненные издания М. Джалиля",
         "tags": [
             "Татарская литература",
             "Татар әдәбияты",
             "Художественная литература",
             "Матур әдәбият",
             "Стихи",
-            "Шигырьләр"
+            "Шигырьләр",
+            "Поэмы",
+            "Поэмалар"
         ],
-        "author": "Çәlil",
+        "author": "Çәlil; Gazьj, I.",
         "classification": "УДК Т2",
         "integrated_description": [
             "Çәlil, Musa.Şigerlәr / M. Çәlil",
@@ -13269,16 +13690,16 @@
         "decrypted": true
     },
     "/tt/ssearch/detail/ksgwzvyimj": {
-        "title": "Алтынчәч: Опера өчен либр. 3 актта, 5 картинада, пролог б-н",
+        "title": "Алтынчәч: опера өчен либретто",
         "publish_year": "1941",
         "lang": "Татарский",
-        "collection": "Матур әдәбият",
+        "collection": "Матур әдәбият, Прижизненные издания М. Джалиля",
         "tags": [
             "Либретто",
             "Музыкаль әсәрләр",
             "Музыкальные произведения"
         ],
-        "author": "Җәлил",
+        "author": "Җәлил; Җәлил; Кашшаф, Г.; Мөхәммәтҗанов, Ш.",
         "classification": "УДК 792",
         "integrated_description": [
             "Җәлил, Муса.Алтынчәч : Опера өчен либр. 3 актта, 5 картинада, пролог б-н : Әдәби вариант / М. Җәлил",
@@ -218470,53 +218891,6 @@
         "downloaded": "full",
         "decrypted": true
     },
-    "/tt/ssearch/detail/uchdlbwvot": {
-        "title": "Сайланма әсәрләр: 2 томда. – Т. 2",
-        "publish_year": "1959",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "author": "Бурнаш",
-        "access": "limited",
-        "integrated_description": [
-            "Бурнаш, Фәтхи.Сайланма әсәрләр : 2 томда / Ф. Бурнаш",
-            "тышл. худ. И. Языкин",
-            "төз. В. Бурнаш",
-            "Казан : Татарстан китап нәшрияты, 1959 -.Т. 2 / Ф. Бурнаш",
-            "1959",
-            "300 б",
-            "9-05"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_29083",
-        "download_code": "nbrt_tatarica_Inv_29083",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/uchdlbwvot/",
-        "available_pages": 31,
-        "downloaded": "limited",
-        "decrypted": true
-    },
-    "/tt/ssearch/detail/qtmsriohwo": {
-        "title": "Сайланма әсәрләр: 2 томда. – Т. 1",
-        "publish_year": "1959",
-        "lang": "Татарский",
-        "collection": "Матур әдәбият",
-        "author": "Бурнаш",
-        "access": "limited",
-        "integrated_description": [
-            "Бурнаш, Фәтхи.Сайланма әсәрләр : 2 томда / Ф. Бурнаш",
-            "тышл. худ. И. Языкин",
-            "төз. В. Бурнаш",
-            "Казан : Татарстан китап нәшрияты, 1959 -.Т. 1 / Ф. Бурнаш",
-            "1959",
-            "278 б.: портр. б-н",
-            "Библиогр. белешмә: Б. 277",
-            "9-10"
-        ],
-        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_29082",
-        "download_code": "nbrt_tatarica_Inv_29082",
-        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qtmsriohwo/",
-        "available_pages": 29,
-        "downloaded": "limited",
-        "decrypted": true
-    },
     "/tt/ssearch/detail/vlefuqstrr": {
         "title": "Сайланма әсәрләр",
         "publish_year": "1963",
@@ -218564,6 +218938,53 @@
         "download_code": "nbrt_tatarica_Inv_66697",
         "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/snquwzuheq/",
         "available_pages": 55,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/uchdlbwvot": {
+        "title": "Сайланма әсәрләр: 2 томда. – Т. 2",
+        "publish_year": "1959",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "author": "Бурнаш",
+        "access": "limited",
+        "integrated_description": [
+            "Бурнаш, Фәтхи.Сайланма әсәрләр : 2 томда / Ф. Бурнаш",
+            "тышл. худ. И. Языкин",
+            "төз. В. Бурнаш",
+            "Казан : Татарстан китап нәшрияты, 1959 -.Т. 2 / Ф. Бурнаш",
+            "1959",
+            "300 б",
+            "9-05"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_29083",
+        "download_code": "nbrt_tatarica_Inv_29083",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/uchdlbwvot/",
+        "available_pages": 31,
+        "downloaded": "limited",
+        "decrypted": true
+    },
+    "/tt/ssearch/detail/qtmsriohwo": {
+        "title": "Сайланма әсәрләр: 2 томда. – Т. 1",
+        "publish_year": "1959",
+        "lang": "Татарский",
+        "collection": "Матур әдәбият",
+        "author": "Бурнаш",
+        "access": "limited",
+        "integrated_description": [
+            "Бурнаш, Фәтхи.Сайланма әсәрләр : 2 томда / Ф. Бурнаш",
+            "тышл. худ. И. Языкин",
+            "төз. В. Бурнаш",
+            "Казан : Татарстан китап нәшрияты, 1959 -.Т. 1 / Ф. Бурнаш",
+            "1959",
+            "278 б.: портр. б-н",
+            "Библиогр. белешмә: Б. 277",
+            "9-10"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_29082",
+        "download_code": "nbrt_tatarica_Inv_29082",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/qtmsriohwo/",
+        "available_pages": 29,
         "downloaded": "limited",
         "decrypted": true
     },
