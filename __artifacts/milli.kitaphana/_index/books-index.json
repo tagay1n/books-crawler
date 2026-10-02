@@ -1,4 +1,408 @@
 {
+    "/tt/ssearch/detail/lpyerrnjks": {
+        "title": "Орфографик күнегүләр җыентыгы : җидееллык һәм урта мәктәпләрнең 5-6 класслары өчен",
+        "publish_year": "1950",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Татар теле",
+            "Татарский язык",
+            "Тел белеме",
+            "Языкознание",
+            "Методик кулланмалар",
+            "Методические рекомендации",
+            "Орфография"
+        ],
+        "author": "Сәйфуллин; Фазлуллин, М."
+    },
+    "/tt/ssearch/detail/holjycwyav": {
+        "title": "Әлифба : башлангыч мәктәпләр өчен",
+        "publish_year": "1940",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Татар теле һәм әдәбияты",
+            "Татарский язык и литература",
+            "Тел белеме",
+            "Языкознание",
+            "Дәреслекләр",
+            "Учебники",
+            "Букварь",
+            "Әлифба"
+        ],
+        "author": "Корбангалиев, М.",
+        "classification": "УДК 4(с)тат(075)",
+        "integrated_description": [
+            "Корбангалиев, М.Әлифба : башлангыч мәктәпләр өчен / М. Корбангалиев",
+            "Казан : Татгосиздат, 1940",
+            "102 б.: рәс",
+            "Свободный доступ из сети Интернет",
+            "УДК 4(с)тат(075)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_867_40",
+        "download_code": "nbrt_tatarica_Inv_867_40",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/holjycwyav/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 112
+    },
+    "/tt/ssearch/detail/lexpcoysvp": {
+        "title": "Башлангыч мәктәб (начальная школа): педагогик журнал. – № 2",
+        "publish_year": "1937",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Башкиров, Ш.; Маликов, Г.; Булатова, С.; Татарстан мәгариф халык комиссариаты ; Татглавлит",
+        "integrated_description": [
+            "Башлангыч мәктәб (начальная школа) : педагогик журнал",
+            "Казан : \"Камиль-Якуб\" ис. китап фабрикасы, 191936.№ 2 / Татглавлит",
+            "под ред. Ш. Башкиров",
+            "под ред. Г. Маликов",
+            "под ред. С. Булатова",
+            "1937",
+            "татар телендә, латин графикасында",
+            "1938-1990 елларда «Совет мәктәбе» исеме белән чыга",
+            "1991 елдан «Мәгариф» исеме белән чыга",
+            "1936-1937 елларда чыга",
+            "айга бер мәртәбә чыккан",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_BasMaktap_1937_2",
+        "download_code": "nbrt_pRF_BasMaktap_1937_2",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/lexpcoysvp/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 58
+    },
+    "/tt/ssearch/detail/aoooiabnmr": {
+        "title": "Башлангыч мәктәб (начальная школа): педагогик журнал. – № 3",
+        "publish_year": "1937",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Бакиров, Г.; Маликов, Г.; Татарстан мәгариф халык комиссариаты ; Татглавлит",
+        "integrated_description": [
+            "Башлангыч мәктәб (начальная школа) : педагогик журнал",
+            "Казан : \"Камиль-Якуб\" ис. китап фабрикасы, 191936.№ 3 / Татглавлит",
+            "под ред. Г. Бакиров",
+            "под ред. Г. Маликов",
+            "1937",
+            "татар телендә, латин графикасында",
+            "1938-1990 елларда «Совет мәктәбе» исеме белән чыга",
+            "1991 елдан «Мәгариф» исеме белән чыга",
+            "1936-1937 елларда чыга",
+            "айга бер мәртәбә чыккан",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_BasMaktap_1937_3",
+        "download_code": "nbrt_pRF_BasMaktap_1937_3",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/aoooiabnmr/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 54
+    },
+    "/tt/ssearch/detail/gpmhwhhihn": {
+        "title": "Башлангыч мәктәб (начальная школа): педагогик журнал. – № 4-5",
+        "publish_year": "1937",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "author": "Абдрашитов; Маликов, Г.; Татарстан мәгариф халык комиссариаты ; Татглавлит",
+        "integrated_description": [
+            "Башлангыч мәктәб (начальная школа) : педагогик журнал",
+            "Казан : \"Камиль-Якуб\" ис. китап фабрикасы, 191936.№ 4-5 / Татглавлит",
+            "под ред. Г. Бакиров",
+            "под ред. Г. Маликов",
+            "1937",
+            "татар телендә, латин графикасында",
+            "1938-1990 елларда «Совет мәктәбе» исеме белән чыга",
+            "1991 елдан «Мәгариф» исеме белән чыга",
+            "1936-1937 елларда чыга",
+            "айга бер мәртәбә чыккан",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_BasMaktap_1937_4_5",
+        "download_code": "nbrt_pRF_BasMaktap_1937_4_5",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/gpmhwhhihn/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 68
+    },
+    "/tt/ssearch/detail/wnpeuaemby": {
+        "title": "Уку китабы: беренче класс өчен. – Кит. 1",
+        "publish_year": "1939",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Татар теле",
+            "Татарский язык",
+            "Тел белеме",
+            "Языкознание",
+            "Дәреслекләр",
+            "Учебники"
+        ],
+        "classification": "УДК 4(с)тат(075)",
+        "integrated_description": [
+            "Корбангалиев, М. Х.Уку китабы : беренче класс өчен / М. Х. Корбангалиев",
+            "Казан, 1939 -.Кит. 1 ",
+            ": Татгосиздат, 1939",
+            "130 б.: рәс",
+            "Свободный доступ из сети Интернет",
+            "Оглавление",
+            "УДК 4(с)тат(075)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_2010_39",
+        "download_code": "nbrt_tatarica_Inv_2010_39",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/wnpeuaemby/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 168
+    },
+    "/tt/ssearch/detail/nbhfjedwlj": {
+        "title": "Татар теленең тарихи фонетикасы буенча материаллар",
+        "publish_year": "1954",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Языкознание",
+            "Татарский язык",
+            "Фонетика",
+            "История",
+            "Татар теле",
+            "Тел белеме",
+            "Тарих"
+        ],
+        "author": "Җәләй, Л."
+    },
+    "/tt/ssearch/detail/wlhmdtmhzo": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №1-2. – №1-2",
+        "publish_year": "1936",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№1-2: №1-2 ",
+            "1936",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1936_1_2",
+        "download_code": "nbrt_pRF_Chayan_1936_1_2",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/wlhmdtmhzo/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 12
+    },
+    "/tt/ssearch/detail/speuhvpstq": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №3-4. – №3-4",
+        "publish_year": "1936",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№3-4: №3-4 ",
+            "1936",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1936_3_4",
+        "download_code": "nbrt_pRF_Chayan_1936_3_4",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/speuhvpstq/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 12
+    },
+    "/tt/ssearch/detail/iqcpxrpobo": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №5. – №5",
+        "publish_year": "1936",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№5: №5 ",
+            "1936",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1936_5",
+        "download_code": "nbrt_pRF_Chayan_1936_5",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/iqcpxrpobo/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 11
+    },
+    "/tt/ssearch/detail/icjdqpnktr": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №6. – №6",
+        "publish_year": "1936",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№6: №6 ",
+            "1936",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1936_6",
+        "download_code": "nbrt_pRF_Chayan_1936_6",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/icjdqpnktr/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 12
+    },
+    "/tt/ssearch/detail/bktptgqgul": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №7. – №7",
+        "publish_year": "1936",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№7: №7 ",
+            "1936",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1936_7",
+        "download_code": "nbrt_pRF_Chayan_1936_7",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/bktptgqgul/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 12
+    },
+    "/tt/ssearch/detail/jqwqsnchrv": {
+        "title": "Чаян: әдәби, сәяси, рәсемле айлык көлке журналы. №8. – №8",
+        "publish_year": "1936",
+        "lang": "Татарский",
+        "collection": "Фонд татарской и восточной периодики",
+        "integrated_description": [
+            "Чаян : әдәби, сәяси, рәсемле айлык көлке журналы",
+            "Казан, 1923-1941.№8: №8 ",
+            "1936",
+            "Свободный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_pRF_Chayan_1936_8",
+        "download_code": "nbrt_pRF_Chayan_1936_8",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/jqwqsnchrv/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 11
+    },
+    "/tt/ssearch/detail/cgkjiutyov": {
+        "title": "1891/30 ел образецындагы 7,62 ммлы винтовка : куллану һәм саклау буенча истәлек",
+        "publish_year": "1942",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Оружие",
+            "Корал",
+            "Ату кораллары"
+        ],
+        "author": "Байбеков, Г.; Кызыл Армиянең Баш Артиллерия Управлениесе",
+        "classification": "УДК 356",
+        "integrated_description": [
+            "1891/30 ел образецындагы 7,62 ммлы винтовка : куллану һәм саклау буенча истәлек / Кызыл Армиянең Баш Артиллерия Управлениесе",
+            "Г. Байбеков тәрҗ",
+            "Казан : Татгосиздат, 1942",
+            "24 б",
+            "Свободный доступ из сети Интернет",
+            "УДК 356"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1512_43",
+        "download_code": "nbrt_tatarica_Inv_1512_43",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/cgkjiutyov/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 24
+    },
+    "/tt/ssearch/detail/rgdkclofbl": {
+        "title": "Уку программаларын кабатлау турында күрсәтмәләр",
+        "publish_year": "1945",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Программы",
+            "Педагогика",
+            "Программалар"
+        ],
+        "author": ".Шафиев, Г.",
+        "classification": "УДК 375(07)",
+        "integrated_description": [
+            "Уку программаларын кабатлау турында күрсәтмәләр / җав. редактор Г. Шафиев",
+            "Казан : Татгосиздат, 1945",
+            "19 б",
+            "Свободный доступ из сети Интернет",
+            "УДК 375(07)"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_1846_45",
+        "download_code": "nbrt_tatarica_Inv_1846_45",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/rgdkclofbl/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 20
+    },
+    "/tt/ssearch/detail/ttshiqyqqk": {
+        "title": "Ватан сугышының агымдагы моменты һәм агитаторның бурычлары",
+        "publish_year": "1942",
+        "lang": "Татарский",
+        "collection": "Татарика",
+        "tags": [
+            "Великая Отечественная война",
+            "1941-1945",
+            "История",
+            "Агитация",
+            "Бөек Ватан сугышы",
+            "Тарих",
+            "Армия"
+        ],
+        "author": "Александров, Г.",
+        "classification": "УДК 355+9(с)27",
+        "integrated_description": [
+            "Александров, Г.Ватан сугышының агымдагы моменты һәм агитаторның бурычлары / Г. Александров",
+            "Казан : Татгосиздат, 1942",
+            "31 б",
+            "Свободный доступ из сети Интернет",
+            "УДК 355+9(с)27"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_7129_46",
+        "download_code": "nbrt_tatarica_Inv_7129_46",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/ttshiqyqqk/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 32
+    },
+    "/tt/ssearch/detail/mkrycepbhs": {
+        "title": "Сугыш вакытында заводтагы башлангыч партоешманың эше турында",
+        "publish_year": "1943",
+        "lang": "Татарский",
+        "tags": [
+            "Агитация",
+            "Коммунистические партии",
+            "Коммунистлар партиясе"
+        ],
+        "author": "Борисов, Б.; Кәрим, Х.",
+        "classification": "УДК 355+3КП",
+        "integrated_description": [
+            "Борисов, Б.Сугыш вакытында заводтагы башлангыч партоешманың эше турында / Б. Борисов",
+            "Х. Кәрим тәрҗ",
+            "Казан : Татгосиздат, 1943",
+            "35 б",
+            "Свободный доступ из сети Интернет",
+            "УДК 355+3КП"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_20366",
+        "download_code": "nbrt_tatarica_Inv_20366",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/mkrycepbhs/",
+        "access": "open",
+        "downloaded": "full",
+        "decrypted": true,
+        "available_pages": 36
+    },
     "/tt/ssearch/detail/lghqfekhwt": {
         "title": "Башлангыч мәктәб (начальная школа): педагогик журнал. – № 1",
         "publish_year": "1936",
@@ -11328,7 +11732,18 @@
             "Уеннар",
             "Методик кулланмалар"
         ],
-        "author": "Блехер, Ф. Н."
+        "author": "Блехер, Ф. Н.",
+        "classification": "УДК 372.2+373(07)",
+        "integrated_description": [
+            "Блехер, Ф. Н.Дидактик уеннар һәм дидактик материаллар : сан, зурлык, форма, пространство һәм вакыт : мәктәп учреждениеләр тәрбиячеләре өчен / Ф. Н. Блехер",
+            "Казан : Татгосиздат, 1951",
+            "171 б.: рәс. белән",
+            "Ограниченный доступ из сети Интернет"
+        ],
+        "doc_url": "http://kitap.tatar.ru/dl/nbrt_tatarica_Inv_3987_51",
+        "download_code": "nbrt_tatarica_Inv_3987_51",
+        "doc_card_url": "https://kitap.tatar.ru/tt/ssearch/detail/smeufpbuiz/",
+        "format_url": "/tt/dl/draw_edoc2_part?code=nbrt_tatarica_Inv_3987_51.1&version=e5250763156254232340&part={url}"
     },
     "/tt/ssearch/detail/wewvqlgbhn": {
         "title": "Балалар тәрбияләү турында лекцияләр",
