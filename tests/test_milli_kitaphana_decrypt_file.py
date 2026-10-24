@@ -75,6 +75,16 @@ class MilliDecryptFileTests(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     mk_decrypt._decrypt_file(context, "part2.pdf", self.enc_dir)
 
+    def test_real_aes_decryption_preserves_data_across_chunk_boundaries(self):
+        from Crypto.Util.Padding import pad
+        payload = bytes(range(256)) * 513
+        cipher = mk_decrypt.AES.new(b"k" * 16, mk_decrypt.AES.MODE_CBC, iv=b"i" * 16)
+        with open(os.path.join(self.enc_dir, "enc.dat"), "wb") as file:
+            file.write(cipher.encrypt(pad(payload, 16)))
+        output = mk_decrypt._decrypt_file(self._base_context(), "part3.pdf", self.enc_dir)
+        with open(output, "rb") as file:
+            self.assertEqual(file.read(), payload)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -5,6 +5,7 @@ import os
 import shutil
 import time
 from contextlib import contextmanager
+from contextvars import ContextVar
 from datetime import datetime
 
 import requests
@@ -28,6 +29,18 @@ index_dir_name = "_index"
 backups_dir_name = "_backups"
 base_dir = get_in_workdir(os.path.join("../__artifacts/milli.kitaphana"))
 index_root_dir = get_in_workdir("../__artifacts/milli.kitaphana")
+_http_session = ContextVar("milli_kitaphana_http_session", default=None)
+
+
+@contextmanager
+def request_session():
+    """Reuse connections during one document's audit without sharing threads."""
+    with requests.Session() as session:
+        token = _http_session.set(session)
+        try:
+            yield session
+        finally:
+            _http_session.reset(token)
 
 
 def read_config():
@@ -115,6 +128,8 @@ def get_list_file_loc(name, lists_dir=None):
 def get_not_downloaded_docs(index, limited):
     not_downloaded_docs = []
     for card_path, meta in index.items():
+        if meta.get("record_type") == "collection":
+            continue
         if meta.get("broken", False):
             continue
 
@@ -212,7 +227,8 @@ def request(method, url, params=None, data=None, stream=False, headers={}, proxi
     headers.update({
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
     })
-    resp = requests.request(
+    requester = _http_session.get() or requests
+    resp = requester.request(
         method=method,
         url=url,
         params=params,

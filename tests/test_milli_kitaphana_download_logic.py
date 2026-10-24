@@ -92,8 +92,9 @@ class MilliDownloadLogicTests(unittest.TestCase):
         self.assertEqual(meta["downloaded"], "full")
         self.assertFalse(meta["decrypted"])
 
-    def test_download_sets_downloaded_and_decrypted_flags_for_limited_doc(self):
+    def test_download_leaves_limited_doc_unchanged(self):
         meta = {"title": "Book", "download_code": "code_2", "doc_card_url": "u"}
+        original_meta = copy.deepcopy(meta)
         global_index = {"/card": meta}
 
         with mock.patch.object(mk_download, "backup_index_snapshot", return_value="/tmp/b.zip"):
@@ -114,8 +115,7 @@ class MilliDownloadLogicTests(unittest.TestCase):
                                                         with mock.patch.object(mk_download, "_download_by_code", side_effect=_fake_download_by_code):
                                                             mk_download.download(limited=False, index_name=None)
 
-        self.assertEqual(meta["downloaded"], "limited")
-        self.assertFalse(meta["decrypted"])
+        self.assertEqual(meta, original_meta)
 
     def test_download_worker_index_updates_worker_and_global_files(self):
         global_index_file = "/tmp/global.json"

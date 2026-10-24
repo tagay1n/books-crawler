@@ -175,21 +175,22 @@ def _decrypt_file(context, part, enc_unzip_dir):
             mode=AES.MODE_CBC,
             iv=base64.b64decode(context['meta']["decryption_key_iv"])
         )
-        # read encrypted file by chunks 512 bytes at a time
-        decrypted_data = b""
+        # Accumulate chunks once; repeated bytes concatenation copies the whole
+        # document on every iteration and makes large recovery runs quadratic.
+        decrypted_chunks = []
         total_size = os.path.getsize(enc_file_path)
         task = context["progress"].decrypt(part, total_size)
         while True:
-            chunk = file.read(512)
+            chunk = file.read(64 * 1024)
             if not chunk:
                 break
-            decrypted_data += aes_key.decrypt(chunk)
+            decrypted_chunks.append(aes_key.decrypt(chunk))
             context['progress']._aux.update(task, advance=len(chunk))
         context['progress']._aux.update(task, description=f"Decrypted {part}")
         context['progress']._aux.stop_task(task)
 
     # unpad the decrypted data
-    decrypted_data = unpad(decrypted_data, AES.block_size)
+    decrypted_data = unpad(b"".join(decrypted_chunks), AES.block_size)
     # save the decrypted file
     dec_path = os.path.join(work_dir, part_name + "_decrypted." + ext)
 

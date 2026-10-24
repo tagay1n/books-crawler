@@ -13,12 +13,34 @@ Main state lives in `__artifacts/milli.kitaphana/_index/books-index.json`.
 - `python milli_kitaphana/cli.py download [--limited] [--index-name NAME]`
   - Without `--limited`: process docs where `broken != true` and `downloaded is None`.
   - With `--limited`: process docs where `broken != true`, `needs_full_download == true`, and `downloaded in {None, "limited"}`.
+  - Documents with missing parts are treated as limited and ignored without changing their index entry.
 - `python milli_kitaphana/cli.py decrypt`
   - Decrypt downloaded parts, upload PDFs to Yandex Disk, persist upstream metadata in PostgreSQL, and update index status.
 - `python milli_kitaphana/cli.py merge-index PATH`
   - Merge a worker index into the main index.
 
 ## Helper script
+
+- `python milli_kitaphana/recover.py [--download] [--workers 4] [--retry-failed]`
+  - Audits every unfinished document, including broken records, limited downloads,
+    and full downloads whose decryption/upload workflow is unfinished.
+  - Checks current catalog links and bounded typo corrections against the server,
+    then reads document metadata to distinguish complete documents from previews.
+    If a detail page fails, the exact search result's cover image filename can
+    supply an inventory code, which is validated against the document endpoint.
+  - Saves a resumable journal at `__artifacts/milli.kitaphana/_recovery/report.json`.
+    Reusing that report skips entries already audited; use a new report path with
+    `--report PATH` for a fresh audit. `--retry-failed` rechecks failed requests.
+  - With `--download`, backs up the index, persists validated link corrections,
+    downloads complete documents, builds local PDFs, and verifies their page counts
+    before updating the index. Limited documents retain their download state.
+  - Resolves obsolete cards against a unique completed record with a live-validated
+    identical download code, or exactly matching title, year, author, language,
+    and collection, storing `duplicate_of`.
+    Catalog collection records are labeled `record_type: collection` and excluded
+    from document download queues.
+  - Does not upload or write to PostgreSQL. Recovered records retain `decrypted:
+    false` so the existing `decrypt` command can finish that workflow later.
 
 - `python milli_kitaphana/mark_existing_limited.py`
   - Reads non-full documents from Postgres, matches them to index records, and marks `needs_full_download`.
