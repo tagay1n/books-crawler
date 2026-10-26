@@ -10,7 +10,7 @@ Repository with four independent pipelines for collecting Tatar books and metada
 Each pipeline has its own CLI/scripts and its own local state in `__artifacts/` or `~/`.
 
 The new shared CLI supports local discovery and document downloads from the
-Мәгариф archive and Tatarica library. See [local ingestion](docs/local-ingestion.md) for configuration,
+Мәгариф archive, Tatarica library, and Darul-Kutub catalog. See [local ingestion](docs/local-ingestion.md) for configuration,
 commands, artifact locations, and recovery. The legacy pipeline commands below
 continue to operate independently.
 

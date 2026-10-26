@@ -4,6 +4,10 @@ from dataclasses import asdict, dataclass, field
 import json
 
 
+class CatalogChanged(ValueError):
+    """The provider changed the catalog being enumerated; start a fresh scan."""
+
+
 @dataclass
 class PageRequest:
     url: str
@@ -27,3 +31,5 @@ class ListingPage:
     entries: int = 0
     advertised: int | None = None
     validation: bool = False
+    fingerprint: str | None = None
+    detect_repeats: bool = False

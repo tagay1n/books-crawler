@@ -1,13 +1,15 @@
 # Local document ingestion
 
-The shared `cli.py` implements two sources:
+The shared `cli.py` implements three sources:
 
 - `magarif`: <https://magarif-uku.ru/documents>, collecting archive attachments.
 - `tatarica`: <https://tatarica.org/tat/razdely/tatarika-kitaphanse>, collecting
   document editions linked from the library catalog's books and journal articles.
+- `darul_kutub`: <https://darul-kutub.com/search>, collecting originals for books
+  and journal issues across all languages in the public search catalog.
 
-Both sources use the same local downloader and manifest implementation. Neither
-adapter crawls its whole website. Existing legacy collectors remain independent.
+All sources use the same local downloader and manifest implementation. Each
+adapter follows its selected catalog. Existing legacy collectors remain independent.
 
 Use the repository virtual environment and its existing `requirements.txt`.
 Copy `ingestion.example.yaml` to `ingestion.yaml`, review its paths and limits,
@@ -23,6 +25,9 @@ python cli.py --config ingestion.yaml download --source magarif --recheck
 python cli.py --config ingestion.yaml discover --source tatarica --max-pages 2
 python cli.py --config ingestion.yaml status --source tatarica
 python cli.py --config ingestion.yaml download --source tatarica --limit 1
+python cli.py --config ingestion.yaml discover --source darul_kutub --max-pages 2
+python cli.py --config ingestion.yaml status --source darul_kutub
+python cli.py --config ingestion.yaml download --source darul_kutub --limit 1
 ```
 
 `sources` and command help do not need configuration. Other commands require
@@ -34,7 +39,8 @@ these adapters.
 Only the selected source needs a `sources.<source>.archive_url` configuration
 entry. Existing Magarif-only YAML files remain valid. To enable Tatarica in an
 existing file, add the `sources.tatarica` entry from the example; keep your chosen
-paths, budgets, and network settings.
+paths, budgets, and network settings. Enable Darul-Kutub the same way with the
+`sources.darul_kutub` entry.
 
 `discover` follows source-specific catalog pagination and stores record metadata
 plus file descriptors without downloading originals. It checkpoints listing
@@ -69,6 +75,21 @@ it does not turn them into inferred authors, publication dates, or language fact
 HTML-only records retain their available metadata without generating an HTML or
 text artifact. Unrelated encyclopedia navigation and recommendations are excluded.
 
+Darul-Kutub follows the search catalog's native next-page links. Article results
+map to their parent book or journal issue; reader page hints do not create new
+publications. Coverage counts raw search rows separately from unique publications.
+Adjacent pages can contain different articles from the same issue, so repeated
+pages are detected using row titles, links, and source text together.
+
+Publication metadata preserves titles, authors, publisher, description, and raw
+bibliographic details when supplied. Language labels remain in the source text;
+no inferred language field is added. All exposed original file parts are queued,
+including parts in hidden volume tabs. Direct reader originals are preferred over
+download buttons of the same format; button URLs remain metadata evidence, and
+other offered formats remain eligible. Button-route IDs are not publication IDs.
+The adapter does not assume that reader and button responses contain identical
+bytes. Unsupported originals remain visible in the backlog.
+
 With the example configuration, artifacts live under:
 
 ```text
@@ -85,6 +106,8 @@ use supplied CMS page IDs when available, and file assets use supplied download
 IDs. URLs are the fallback when native IDs are absent. URL aliases and renamed
 records retain their provenance without creating another native-ID identity.
 Magarif's existing URL identities and saved files require no migration.
+Darul-Kutub uses `__artifacts/ingestion/darul_kutub/`, publication IDs from
+`/books/<id>/`, and original URLs for file identity within each publication.
 
 Each source uses an exclusive writer lock. `status` only reads the manifest and
 does not issue network requests or create artifact files. It reports recorded
@@ -130,15 +153,15 @@ is reported separately. Commands return nonzero for newly encountered failures.
 
 Discovery summaries and `status` include coverage: catalog entries enumerated,
 unique URLs and native records inspected, remaining listing/record work, and
-Tatarica's advertised count. Listing requests, including a final count check,
+the provider's advertised count when available. Listing requests, including a final count check,
 consume the page cap; record-detail requests are bounded by the shared deadline
 and network controls. A page cap or deadline keeps discovery incomplete and
 preserves the pending frontier for the next invocation.
 
-Tatarica currently advertises substantially more catalog records than the default
+Tatarica and Darul-Kutub advertise substantially more catalog entries than the default
 page cap can enumerate in one run. Repeat `discover` to continue. The count is
 catalog entries, not available PDFs or confirmed Tatar documents. Empty or short
-responses before the expected end, repeated POST batches, missing structure, and
+responses before the expected end, repeated batches, missing structure, and
 failed records prevent completion. A final root-page check compares the current
 advertised count with enumeration; a mismatch reports an error and makes the
 next invocation start a fresh scan, retaining committed records and files.

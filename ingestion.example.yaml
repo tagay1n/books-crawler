@@ -6,6 +6,8 @@ sources:
     archive_url: https://magarif-uku.ru/documents
   tatarica:
     archive_url: https://tatarica.org/tat/razdely/tatarika-kitaphanse
+  darul_kutub:
+    archive_url: https://darul-kutub.com/search
 limits:
   max_pages: 25
   max_items: 25

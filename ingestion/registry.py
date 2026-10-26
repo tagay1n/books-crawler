@@ -1,4 +1,4 @@
-from . import magarif, tatarica
+from . import darul_kutub, magarif, tatarica
 
 
-SOURCES = {"magarif": magarif, "tatarica": tatarica}
+SOURCES = {"magarif": magarif, "tatarica": tatarica, "darul_kutub": darul_kutub}

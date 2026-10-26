@@ -7,7 +7,7 @@ from uuid import uuid4
 import requests
 from urllib3.exceptions import HTTPError as TransportError
 
-from .paging import PageRequest
+from .paging import CatalogChanged, PageRequest
 from .state import now
 
 
@@ -92,10 +92,12 @@ def discover(http, manifest, adapter, summary, log):
                             raise ValueError("Catalog count changed or enumeration disagrees with the advertised count; next discovery starts a fresh scan.")
                         scan["verified"] = True
                     else:
-                        signature = hashlib.sha256(json.dumps(page.records).encode()).hexdigest()
-                        if request.method == "POST" and signature in scan["batch_signatures"]:
+                        payload = page.fingerprint if page.fingerprint is not None else json.dumps(page.records)
+                        signature = hashlib.sha256(payload.encode()).hexdigest()
+                        check_repeats = request.method == "POST" or page.detect_repeats
+                        if check_repeats and signature in scan["batch_signatures"]:
                             raise ValueError("Catalog returned a repeated pagination batch; discovery remains incomplete.")
-                        if request.method == "POST":
+                        if check_repeats:
                             scan["batch_signatures"][signature] = key
                         if page.advertised is not None:
                             scan["advertised"] = page.advertised
@@ -114,6 +116,8 @@ def discover(http, manifest, adapter, summary, log):
                             existing.add(following.key())
                     errors.pop(key, None)
                 except READ_ERRORS as error:
+                    if isinstance(error, CatalogChanged):
+                        scan["restart_required"] = True
                     errors[key] = {"at": now(), "error": str(error)}
                     summary["errors"].append({"url": request.url, "stage": "discover", "error": str(error)})
                     log(f"Catalog discovery failed: {request.url}: {error}")
