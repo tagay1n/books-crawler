@@ -375,7 +375,7 @@ class IngestionTests(unittest.TestCase):
     def test_cli_help_sources_config_failure_and_no_network_status(self):
         runner = CliRunner()
         self.assertEqual(0, runner.invoke(app, ["--help"]).exit_code)
-        self.assertEqual("magarif", runner.invoke(app, ["sources"]).stdout.strip())
+        self.assertEqual(["magarif", "tatarica"], runner.invoke(app, ["sources"]).stdout.splitlines())
         missing = runner.invoke(app, ["download", "--source", "magarif"])
         self.assertEqual(1, missing.exit_code)
         self.assertIn("--config", missing.output)

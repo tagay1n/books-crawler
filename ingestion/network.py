@@ -50,14 +50,22 @@ class HTTP:
         self.session.close()
 
     def get(self, url, headers=None):
+        return self.request("GET", url, headers=headers)
+
+    def request(self, method, url, *, headers=None, data=None):
+        if method not in {"GET", "POST"}:
+            raise ValueError(f"Unsupported retrieval method: {method}")
         self.budget.check()
         if self.last_request is not None:
             self.budget.wait(max(0, self.settings.pacing_seconds - (time.monotonic() - self.last_request)))
         self.last_request = time.monotonic()
         remaining = max(0.001, self.budget.deadline - self.last_request)
         self.summary["requests"] += 1
-        response = self.session.get(url, stream=True, headers=headers or {}, timeout=(
-            min(remaining, self.settings.connect_timeout_seconds), min(remaining, self.settings.read_timeout_seconds)))
+        kwargs = {"stream": True, "headers": headers or {}, "timeout": (
+            min(remaining, self.settings.connect_timeout_seconds), min(remaining, self.settings.read_timeout_seconds))}
+        if method == "POST":
+            kwargs["data"] = data or {}
+        response = (self.session.get if method == "GET" else self.session.post)(url, **kwargs)
         try:
             response.raise_for_status()
         except requests.RequestException:
@@ -84,9 +92,9 @@ class HTTP:
                 self.summary["network_retries"] += 1
                 self.budget.wait(delay)
 
-    def text(self, url):
+    def text(self, url, *, method="GET", data=None):
         def fetch():
-            with self.get(url) as response:
+            with self.request(method, url, data=data) as response:
                 chunks, size = [], 0
                 while True:
                     self.budget.check()

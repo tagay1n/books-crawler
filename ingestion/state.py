@@ -73,10 +73,15 @@ class Manifest:
     def save(self):
         atomic_json(self.path, self.data)
 
-    def observe(self, metadata, assets, parser_version=1):
+    def observe(self, metadata, assets, parser_version=1, *, record_key=None):
         record_url = metadata["url"]
+        record_key = record_key or record_url
         fingerprint = hashlib.sha256(json.dumps(metadata, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
-        record = self.data["records"].setdefault(record_url, {"observations": [], "first_seen": now()})
+        record = self.data["records"].setdefault(record_key, {"observations": [], "first_seen": now()})
+        if record_key != record_url:
+            origins = record.setdefault("origin_urls", [])
+            if record_url not in origins:
+                origins.append(record_url)
         history = record["observations"]
         changed = (not history or history[-1]["fingerprint"] != fingerprint
                    or history[-1]["parser_version"] != parser_version)
@@ -86,14 +91,16 @@ class Manifest:
         record["last_seen"] = now()
         record["attachment_count"] = len(assets)
         for asset in self.data["assets"].values():
-            if asset["record_url"] == record_url:
+            if asset.get("record_key", asset["record_url"]) == record_key:
                 asset["current"] = False
         for descriptor in assets:
-            key = hashlib.sha256((record_url + "\n" + descriptor["url"]).encode()).hexdigest()
+            key = hashlib.sha256((record_key + "\n" + descriptor.get("source_asset_key", descriptor["url"])).encode()).hexdigest()
             asset = self.data["assets"].setdefault(key, {
                 "id": key, "record_url": record_url, "status": "pending", "results": [],
             })
             asset.update(descriptor, current=True, observation_id=history[-1]["id"])
+            if record_key != record_url:
+                asset.update(record_key=record_key, record_url=record_url)
             if descriptor.get("unsupported_reason"):
                 asset["status"] = "unsupported"
                 asset["last_error"] = descriptor["unsupported_reason"]
@@ -108,6 +115,9 @@ class Manifest:
         for asset in self.data["assets"].values():
             if asset.get("current", True):
                 counts[asset["status"]] = counts.get(asset["status"], 0) + 1
-        return {"source": self.data["source"], "records": len(self.data["records"]),
+        result = {"source": self.data["source"], "records": len(self.data["records"]),
                 "records_without_attachments": sum(r.get("attachment_count") == 0 for r in self.data["records"].values()),
                 "current_assets": counts, "historical_results": sum(len(a["results"]) for a in self.data["assets"].values())}
+        if "discovery" in self.data:
+            result["discovery"] = self.data["discovery"].copy()
+        return result

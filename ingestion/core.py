@@ -2,7 +2,6 @@ import hashlib
 import os
 import shutil
 import tempfile
-from collections import deque
 from dataclasses import replace
 from email.message import Message
 from pathlib import Path, PurePosixPath
@@ -12,13 +11,13 @@ from uuid import uuid4
 import requests
 from urllib3.exceptions import HTTPError as TransportError
 
-from . import magarif
+from .discovery import discover
 from .documents import DOCUMENT_EXTENSIONS, same_origin
 from .network import Budget, BudgetStop, HTTP, InvalidDocument
+from .registry import SOURCES
 from .state import Manifest, atomic_json, now, source_lock
 
 
-SOURCES = {"magarif": magarif}
 MIME_EXTENSIONS = {
     "application/pdf": ".pdf", "image/vnd.djvu": ".djvu", "image/x-djvu": ".djvu",
     "application/epub+zip": ".epub", "text/plain": ".txt", "text/html": ".html",
@@ -190,52 +189,6 @@ def acquire(http, manifest, asset, temporary, summary):
     manifest.save()
 
 
-def discover(http, manifest, adapter, summary, log):
-    root = http.settings.archive_url
-    queue, visited, records = deque([root]), set(), set()
-    errors = manifest.data.setdefault("discovery_errors", {})
-    complete = True
-    while queue:
-        page = queue.popleft()
-        if page in visited:
-            continue
-        if len(visited) >= http.settings.max_pages:
-            summary["stops"].append("discovery page cap")
-            complete = False
-            break
-        visited.add(page)
-        try:
-            links, pages = adapter.listing(http.text(page), page, root)
-            summary["pages"] += 1
-            errors.pop(page, None)
-        except (requests.RequestException, TransportError, ValueError) as error:
-            errors[page] = {"at": now(), "error": str(error)}
-            summary["errors"].append({"url": page, "stage": "discover", "error": str(error)})
-            complete = False
-            break
-        queue.extend(url for url in pages if url not in visited)
-        for url in links:
-            if url in records:
-                continue
-            records.add(url)
-            try:
-                metadata, assets = adapter.record(http.text(url), url)
-                changed = manifest.observe(metadata, assets)
-                summary["records"] += 1
-                summary["observations"] += int(changed)
-                errors.pop(url, None)
-                log(f"Discovered: {metadata['title']} ({len(assets)} attachments)")
-            except (requests.RequestException, TransportError, ValueError) as error:
-                errors[url] = {"at": now(), "error": str(error)}
-                summary["errors"].append({"url": url, "stage": "discover", "error": str(error)})
-                complete = False
-                log(f"Discovery failed: {url}: {error}")
-        manifest.save()
-    manifest.data["discovery"] = {"checked_at": now(), "complete": complete, "pages": len(visited)}
-    manifest.save()
-    summary["discovery_complete"] = complete
-
-
 def download(http, manifest, summary, log, recheck):
     workspace = manifest.directory / ".tmp"
     workspace.mkdir(parents=True, exist_ok=True)
@@ -279,7 +232,6 @@ def run(settings, source, command, *, recheck=False, log=print):
                     discover(http, manifest, SOURCES[source], summary, log)
                 except BudgetStop as error:
                     summary["stops"].append(str(error))
-                    manifest.data["discovery"] = {"checked_at": now(), "complete": False}
                     summary["discovery_complete"] = False
             if command in {"download", "run"}:
                 download(http, manifest, summary, log, recheck)

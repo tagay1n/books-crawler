@@ -27,7 +27,7 @@ def execute(ctx, command, source, limit=None, max_pages=None, recheck=False):
     try:
         if source not in SOURCES:
             raise ValueError(f"Unknown source: {source}. Available: {', '.join(SOURCES)}")
-        settings = restricted_settings(load_settings(ctx.obj), limit, max_pages)
+        settings = restricted_settings(load_settings(ctx.obj, source), limit, max_pages)
         result = run(settings, source, command, recheck=recheck, log=typer.echo)
         typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
     except (ValueError, OSError, RuntimeError) as error:

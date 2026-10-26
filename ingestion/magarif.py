@@ -6,6 +6,16 @@ from bs4 import BeautifulSoup
 
 
 from .documents import DOCUMENT_EXTENSIONS, canonical, same_origin
+from .paging import ListingPage, PageRequest
+
+
+ARCHIVE_URL = "https://magarif-uku.ru/documents"
+PARSER_VERSION = 1
+
+
+def parse_listing(html, request, root):
+    records, pages = listing(html, request.url, root)
+    return ListingPage(records, [PageRequest(url) for url in pages])
 
 
 def listing(html, page_url, archive_url):

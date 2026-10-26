@@ -4,6 +4,8 @@ from urllib.parse import urlsplit
 
 import yaml
 
+from .registry import SOURCES
+
 
 @dataclass(frozen=True)
 class Settings:
@@ -21,7 +23,9 @@ class Settings:
     retry_attempts: int
 
 
-def load_settings(path: Path | None) -> Settings:
+def load_settings(path: Path | None, source: str = "magarif") -> Settings:
+    if source not in SOURCES:
+        raise ValueError(f"Unknown source: {source}")
     if path is None:
         raise ValueError("Select an operational YAML file with --config; examples are never loaded automatically.")
     path = path.expanduser().resolve()
@@ -39,16 +43,15 @@ def load_settings(path: Path | None) -> Settings:
         return value
 
     limits, network, sources = section("limits"), section("network"), section("sources")
-    magarif = sources.get("magarif")
-    if not isinstance(magarif, dict):
-        raise ValueError("Missing sources.magarif configuration.")
-    archive_url = magarif.get("archive_url")
+    selected = sources.get(source)
+    if not isinstance(selected, dict):
+        raise ValueError(f"Missing sources.{source} configuration.")
+    archive_url = selected.get("archive_url")
     if not isinstance(archive_url, str):
-        raise ValueError("sources.magarif.archive_url must be a URL.")
+        raise ValueError(f"sources.{source}.archive_url must be a URL.")
     parsed = urlsplit(archive_url)
-    if (parsed.scheme != "https" or parsed.netloc != "magarif-uku.ru"
-            or parsed.path.rstrip("/") != "/documents" or parsed.query or parsed.fragment):
-        raise ValueError("magarif.archive_url must be https://magarif-uku.ru/documents")
+    if (archive_url.rstrip("/") != SOURCES[source].ARCHIVE_URL or parsed.query or parsed.fragment):
+        raise ValueError(f"{source}.archive_url must be {SOURCES[source].ARCHIVE_URL}")
     root = data.get("artifacts_root")
     if not isinstance(root, str) or not root.strip():
         raise ValueError("artifacts_root must be a nonempty path.")
