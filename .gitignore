@@ -6,3 +6,4 @@ __artifacts
 **/*.pyc
 common-crawl/__pycache__/*
 milli_kitaphana/__pycache__/*
+ingestion.yaml

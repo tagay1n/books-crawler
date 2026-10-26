@@ -1,0 +1,18 @@
+# Local pilot defaults. Copy to ingestion.yaml and select it with --config.
+# Relative paths are resolved against this YAML file, not the current directory.
+artifacts_root: __artifacts/ingestion
+sources:
+  magarif:
+    archive_url: https://magarif-uku.ru/documents
+limits:
+  max_pages: 25
+  max_items: 25
+  max_download_bytes: 1073741824
+  max_file_bytes: 104857600
+  disk_reserve_bytes: 536870912
+  soft_deadline_seconds: 900
+network:
+  connect_timeout_seconds: 10
+  read_timeout_seconds: 60
+  pacing_seconds: 1
+  retry_attempts: 3
