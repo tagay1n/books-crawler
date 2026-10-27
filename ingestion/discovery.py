@@ -53,6 +53,9 @@ def discover(http, manifest, adapter, summary, log):
                 attempted.add(url)
                 try:
                     metadata, assets = adapter.record(http.text(url), url)
+                    contexts = scan.get("record_context", {}).get(url)
+                    if contexts:
+                        metadata["catalog_context"] = contexts
                     identity = adapter.record_key(metadata) if hasattr(adapter, "record_key") else metadata["url"]
                     changed = manifest.observe(metadata, assets, version, record_key=identity)
                     scan["pending_records"].remove(url)
@@ -104,6 +107,17 @@ def discover(http, manifest, adapter, summary, log):
                         scan["listing_pages"] += 1
                         scan["enumerated_entries"] += page.entries if page.advertised is not None else len(page.records)
                         for record_url in page.records:
+                            context = page.record_context.get(record_url)
+                            if context:
+                                contexts = scan.setdefault("record_context", {}).setdefault(record_url, [])
+                                if context not in contexts:
+                                    contexts.append(context)
+                                    # A newly found listing relationship is upstream evidence too.
+                                    if record_url in scan["checked_urls"]:
+                                        scan["checked_urls"].remove(record_url)
+                                        attempted.discard(record_url)
+                                        if record_url not in scan["pending_records"]:
+                                            scan["pending_records"].append(record_url)
                             if record_url not in scan["enumerated_urls"]:
                                 scan["enumerated_urls"].append(record_url)
                                 scan["pending_records"].append(record_url)

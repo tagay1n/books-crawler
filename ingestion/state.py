@@ -88,6 +88,8 @@ class Manifest:
         if changed:
             history.append({"id": uuid4().hex, "observed_at": now(), "fingerprint": fingerprint,
                             "parser_version": parser_version, "metadata": metadata})
+            if "pdf" in record:
+                record["pdf"]["status"] = "incomplete"
         record["last_seen"] = now()
         record["attachment_count"] = len(assets)
         for asset in self.data["assets"].values():
@@ -120,4 +122,13 @@ class Manifest:
                 "current_assets": counts, "historical_results": sum(len(a["results"]) for a in self.data["assets"].values())}
         if "discovery" in self.data:
             result["discovery"] = self.data["discovery"].copy()
+        issues = [r for r in self.data["records"].values()
+                  if r["observations"][-1]["metadata"].get("expected_pages") is not None]
+        if issues:
+            result["pdf_issues"] = {state: sum(r.get("pdf", {}).get("status", "incomplete") == state
+                                               for r in issues)
+                                    for state in ("complete", "incomplete", "failed")}
+            result["image_pages"] = {"expected": sum(r["observations"][-1]["metadata"]["expected_pages"] for r in issues),
+                                     "downloaded": sum(a.get("current", True) and a.get("kind") == "page_image"
+                                                       and a["status"] == "downloaded" for a in self.data["assets"].values())}
         return result

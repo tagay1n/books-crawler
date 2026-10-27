@@ -1,12 +1,14 @@
 # Local document ingestion
 
-The shared `cli.py` implements three sources:
+The shared `cli.py` implements four sources:
 
 - `magarif`: <https://magarif-uku.ru/documents>, collecting archive attachments.
 - `tatarica`: <https://tatarica.org/tat/razdely/tatarika-kitaphanse>, collecting
   document editions linked from the library catalog's books and journal articles.
 - `darul_kutub`: <https://darul-kutub.com/search>, collecting originals for books
   and journal issues across all languages in the public search catalog.
+- `kazanutlary`: <https://kazanutlary.ru/j-archive>, collecting scanned issue
+  images and assembling complete PDFs locally with PyMuPDF.
 
 All sources use the same local downloader and manifest implementation. Each
 adapter follows its selected catalog. Existing legacy collectors remain independent.
@@ -28,6 +30,9 @@ python cli.py --config ingestion.yaml download --source tatarica --limit 1
 python cli.py --config ingestion.yaml discover --source darul_kutub --max-pages 2
 python cli.py --config ingestion.yaml status --source darul_kutub
 python cli.py --config ingestion.yaml download --source darul_kutub --limit 1
+python cli.py --config ingestion.yaml discover --source kazanutlary --max-pages 2
+python cli.py --config ingestion.yaml download --source kazanutlary --limit 1
+python cli.py --config ingestion.yaml status --source kazanutlary
 ```
 
 `sources` and command help do not need configuration. Other commands require
@@ -90,6 +95,44 @@ other offered formats remain eligible. Button-route IDs are not publication IDs.
 The adapter does not assume that reader and button responses contain identical
 bytes. Unsupported originals remain visible in the backlog.
 
+Kazan Utları follows every linked year listing across Казан утлары, Яңалиф,
+Совет әдәбияты, Атака, and Безнең юл. Native year URLs are preserved even when
+their slugs differ from their visible labels. Duplicate navigation links are
+collapsed. Issue article-index pages and unrelated footer PDFs are excluded.
+Issue metadata retains headings, descriptions when supplied, journal/year listing
+context, and the literal reader configuration. Listing context is checkpointed
+and appended as source evidence when an issue appears in another listing.
+
+The reader's `count` is interpreted as the total image count: indices `000`
+through `count - 1`, including the first reader image. Four inspected issues exposed this many
+images while their reader's inclusive loop requested an additional nonexistent
+image. This indexing discrepancy is preserved in metadata. Unrecognized reader
+structures fail discovery instead of producing guessed image sequences. Catalog
+completion means traversal of linked listings; no site-wide total is advertised.
+
+For `kazanutlary`, `--limit` and `max_items` count **issues**, including their image
+downloads and assembly. Other sources continue counting individual files. Byte,
+file-size, deadline, pacing, and disk-reserve controls still apply. Interrupted
+issues resume from verified image files on the next invocation. A failed page
+does not discard the other pages, and an issue remains incomplete until every
+expected page is available. No partial PDF is published.
+
+JPEGs are retained as upstream originals in `files/`. PyMuPDF embeds them in
+numeric order, preserving image quality, proportions, and orientation. Generated
+PDFs live in `__artifacts/ingestion/kazanutlary/derived/<sha256>.pdf`; they are
+derived artifacts, not upstream PDFs. The manifest records PDF hashes, size,
+page count, assembler version, source observation, input fingerprint, and ordered
+image asset/result IDs and hashes. Assembly enforces the configured file-size cap
+and publishes atomically after reopening and checking the page count. There is
+no OCR or text extraction.
+
+`download` verifies local images and PDFs, reuses unchanged complete issues, and
+rebuilds missing, damaged, or outdated PDFs. `--recheck` revalidates image URLs;
+changed inputs create another retained PDF result. Failed rechecks leave the
+issue unresolved while preserving historical files. Status includes recorded
+image progress and complete/incomplete/failed PDF issue counts; it remains a
+read-only manifest view rather than an integrity audit.
+
 With the example configuration, artifacts live under:
 
 ```text
@@ -115,6 +158,71 @@ counts, not a new filesystem/integrity audit. The manifest is saved atomically
 after individual records and completed downloads. Metadata changes append
 observations; unchanged consecutive observations are not duplicated. Original
 download results retain their captured observation IDs.
+
+## Miras cookie-based access pilot
+
+Miras currently has an HTTP access pilot, not a full discovery/download adapter
+listed by `sources`. Add `sources.miras.archive_url` from the example to your
+operational YAML and supply a Miras-only session export from your ordinary,
+manually verified browser:
+
+```bash
+python cli.py --config ingestion.yaml probe --source miras \
+  --session-file ~/Downloads/books-crawler/miras/miras-session.json
+```
+
+The existing session export remains compatible. The command uses its cookies
+and actual browser user agent with the shared HTTP downloader. It does not
+launch or control a browser. Cookie values are never logged. Session JSON is
+sensitive: keep it private and out of Git. The helper's former export filename,
+`miras-session.json`, is explicitly ignored by the repository.
+
+When access expires, verify Miras again in your normal browser and refresh the
+export. A cookie-export tool can supply browser cookie fields; wrap the
+Miras-only cookies and current browser user agent in this format:
+
+```json
+{
+  "format": "miras-session-v1",
+  "origin": "https://miras.info",
+  "user_agent": "YOUR_ACTUAL_BROWSER_USER_AGENT",
+  "cookies": [
+    {
+      "domain": "miras.info",
+      "name": "EXPORTED_COOKIE_NAME",
+      "value": "EXPORTED_COOKIE_VALUE",
+      "path": "/",
+      "secure": true
+    }
+  ]
+}
+```
+
+Preserve cookie domains and paths exactly. `expirationDate` is optional and uses
+Unix seconds; expired cookies are skipped. Domains outside `miras.info` and
+`.miras.info` are rejected. Do not include cookies from other websites.
+
+The pilot reads one catalog page and the sample «Авыл кызы» record, extracts the
+current PDF URL from its reader, and acquires one PDF. Shared pacing, retries,
+timeouts, byte/file-size limits, disk reserve, hashes, format checks, and atomic
+publication apply. PyMuPDF also verifies that the PDF opens. Files, a manifest,
+and diagnostic reports remain under `__artifacts/ingestion/miras/pilot/`.
+Successful sample history is retained if a later access attempt fails.
+Normal `discover`, `download`, `run`, and `status` commands remain unavailable
+for Miras until the full adapter is implemented.
+
+Live check on 2026-10-27: exported cookies enabled HTTP access to the catalog,
+sample record, and its 5,486,334-byte, 64-page PDF without retries. This verifies
+that session and sample, not full catalog coverage or future session lifetime.
+
+### Remembered fallback: ordinary-browser extension
+
+If cookie-based HTTP access becomes insufficient, reconsider a small extension
+that reads Miras pages and downloads PDFs inside a normal verified browser,
+without a debugging connection. The experiment on 2026-10-27 downloaded a PDF
+with the same SHA-256 as the HTTP copy. Its implementation and sample-import CLI
+have been removed; this is a fallback idea only. The earlier Playwright approach
+was rejected by SafeLine WAF with “Debugging Detected” and has also been removed.
 
 `download` processes pending/failed current assets, verifies existing local bytes
 before skipping successes, and reacquires missing or damaged local copies.
@@ -177,5 +285,5 @@ its own `.tmp/run-*` directory; a later run does not need or automatically delet
 it. A published file whose manifest commit was interrupted may be downloaded
 again and deduplicated. The local manifest is the progress authority.
 
-This delivery stores originals locally. It does not upload, import catalog data,
-classify language, assemble page sets, expand archives, or run scheduled jobs.
+This delivery stores originals and Kazan Utları derived PDFs locally. It does not
+upload, import catalog data, classify language, expand archives, or run scheduled jobs.

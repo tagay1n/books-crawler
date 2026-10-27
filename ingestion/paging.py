@@ -33,3 +33,4 @@ class ListingPage:
     validation: bool = False
     fingerprint: str | None = None
     detect_repeats: bool = False
+    record_context: dict = field(default_factory=dict)

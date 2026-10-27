@@ -7,3 +7,4 @@ __artifacts
 common-crawl/__pycache__/*
 milli_kitaphana/__pycache__/*
 ingestion.yaml
+**/miras-session.json

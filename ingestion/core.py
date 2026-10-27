@@ -52,11 +52,11 @@ def file_digests(path):
     return sha.hexdigest(), md5.hexdigest(), size
 
 
-def valid_local(directory, result):
+def valid_local(directory, result, *, folder="files"):
     if not result:
         return False
     path = (directory / result["path"]).resolve()
-    if not path.is_relative_to((directory / "files").resolve()):
+    if not path.is_relative_to((directory / folder).resolve()):
         raise ValueError("Manifest contains a file reference outside its managed files directory.")
     if not path.is_file() or path.stat().st_size != result["size"]:
         return False
@@ -85,7 +85,7 @@ def validate_document(prefix, extension, mime):
         raise InvalidDocument("Response does not have an RTF signature.")
 
 
-def acquire(http, manifest, asset, temporary, summary):
+def acquire(http, manifest, asset, temporary, summary, *, extensions=None, validate_file=None):
     settings, budget = http.settings, http.budget
     previous = asset["results"][-1] if asset["results"] else None
     local_ok = valid_local(manifest.directory, previous)
@@ -113,7 +113,7 @@ def acquire(http, manifest, asset, temporary, summary):
                 filename_header["Content-Disposition"] = response.headers.get("Content-Disposition", "")
                 filename = filename_header.get_filename() or unquote(PurePosixPath(urlsplit(response.url).path).name)
                 extension = asset.get("extension") or PurePosixPath(filename).suffix.lower() or MIME_EXTENSIONS.get(mime)
-                if extension not in DOCUMENT_EXTENSIONS:
+                if extension not in (DOCUMENT_EXTENSIONS if extensions is None else extensions):
                     raise InvalidDocument(f"Unsupported attachment format or MIME: {extension or mime!r}")
                 length = response.headers.get("Content-Length")
                 expected = int(length) if length is not None and response.headers.get("Content-Encoding", "identity") == "identity" else None
@@ -155,6 +155,8 @@ def acquire(http, manifest, asset, temporary, summary):
                 if expected is not None and size != expected:
                     raise requests.ConnectionError("Incomplete transfer: Content-Length mismatch.")
                 validate_document(prefix, extension, mime)
+                if validate_file is not None:
+                    validate_file(partial)
                 digest = sha.hexdigest()
                 target = manifest.directory / "files" / (digest + extension)
                 target.parent.mkdir(parents=True, exist_ok=True)
@@ -234,7 +236,11 @@ def run(settings, source, command, *, recheck=False, log=print):
                     summary["stops"].append(str(error))
                     summary["discovery_complete"] = False
             if command in {"download", "run"}:
-                download(http, manifest, summary, log, recheck)
+                if getattr(SOURCES[source], "DOWNLOAD_UNIT", None) == "issue":
+                    from .image_issues import download as download_issues
+                    download_issues(http, manifest, summary, log, recheck)
+                else:
+                    download(http, manifest, summary, log, recheck)
         except BudgetStop as error:
             summary["stops"].append(str(error))
         except (OSError, KeyboardInterrupt) as error:

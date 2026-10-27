@@ -10,9 +10,16 @@ Repository with four independent pipelines for collecting Tatar books and metada
 Each pipeline has its own CLI/scripts and its own local state in `__artifacts/` or `~/`.
 
 The new shared CLI supports local discovery and document downloads from the
-Мәгариф archive, Tatarica library, and Darul-Kutub catalog. See [local ingestion](docs/local-ingestion.md) for configuration,
+Мәгариф archive, Tatarica library, Darul-Kutub catalog, and Kazan Utları archive.
+Kazan Utları page images are retained and assembled into PDFs with PyMuPDF.
+See [local ingestion](docs/local-ingestion.md) for configuration,
 commands, artifact locations, and recovery. The legacy pipeline commands below
 continue to operate independently.
+
+Miras has a cookie-based HTTP access pilot:
+`python cli.py --config ingestion.yaml probe --source miras --session-file PATH`.
+See [local ingestion](docs/local-ingestion.md#miras-cookie-based-access-pilot)
+for its session format and the remembered browser-extension fallback.
 
 ## Setup
 

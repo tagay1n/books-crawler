@@ -4,7 +4,7 @@ from urllib.parse import urlsplit
 
 import yaml
 
-from .registry import SOURCES
+from .registry import PILOT_SOURCES, SOURCES
 
 
 @dataclass(frozen=True)
@@ -24,8 +24,9 @@ class Settings:
 
 
 def load_settings(path: Path | None, source: str = "magarif") -> Settings:
-    if source not in SOURCES:
+    if source not in SOURCES and source not in PILOT_SOURCES:
         raise ValueError(f"Unknown source: {source}")
+    expected_url = SOURCES[source].ARCHIVE_URL if source in SOURCES else PILOT_SOURCES[source]
     if path is None:
         raise ValueError("Select an operational YAML file with --config; examples are never loaded automatically.")
     path = path.expanduser().resolve()
@@ -50,8 +51,8 @@ def load_settings(path: Path | None, source: str = "magarif") -> Settings:
     if not isinstance(archive_url, str):
         raise ValueError(f"sources.{source}.archive_url must be a URL.")
     parsed = urlsplit(archive_url)
-    if (archive_url.rstrip("/") != SOURCES[source].ARCHIVE_URL or parsed.query or parsed.fragment):
-        raise ValueError(f"{source}.archive_url must be {SOURCES[source].ARCHIVE_URL}")
+    if (archive_url.rstrip("/") != expected_url or parsed.query or parsed.fragment):
+        raise ValueError(f"{source}.archive_url must be {expected_url}")
     root = data.get("artifacts_root")
     if not isinstance(root, str) or not root.strip():
         raise ValueError("artifacts_root must be a nonempty path.")

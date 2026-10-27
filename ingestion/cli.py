@@ -23,6 +23,25 @@ def sources_command():
         typer.echo(source)
 
 
+@app.command()
+def probe(ctx: typer.Context, source: str = typer.Option(..., "--source"),
+          session_file: Path = typer.Option(..., "--session-file", help="Miras-only cookie and user-agent JSON from your verified browser.")):
+    """Check Miras HTTP access with exported cookies and acquire one sample PDF."""
+    from .registry import PILOT_SOURCES
+    try:
+        if source not in PILOT_SOURCES:
+            raise ValueError(f"Unknown access pilot: {source}. Available: {', '.join(PILOT_SOURCES)}")
+        settings = load_settings(ctx.obj, source)
+        from .miras_session import run_cookie_probe
+        result = run_cookie_probe(settings, session_file, log=typer.echo)
+        typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
+    except (ValueError, OSError, RuntimeError) as error:
+        typer.echo(f"Error: {error}", err=True)
+        raise typer.Exit(1)
+    if not result["success"]:
+        raise typer.Exit(1)
+
+
 def execute(ctx, command, source, limit=None, max_pages=None, recheck=False):
     try:
         if source not in SOURCES:
@@ -46,7 +65,7 @@ def discover(ctx: typer.Context, source: str = typer.Option(..., "--source"),
 
 @app.command()
 def download(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-             limit: Optional[int] = typer.Option(None, "--limit"),
+             limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary."),
              recheck: bool = typer.Option(False, "--recheck", help="Also revalidate completed downloads.")):
     """Download committed local work; retry failed or missing originals."""
     execute(ctx, "download", source, limit=limit, recheck=recheck)
@@ -54,7 +73,7 @@ def download(ctx: typer.Context, source: str = typer.Option(..., "--source"),
 
 @app.command("run")
 def run_command(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-                limit: Optional[int] = typer.Option(None, "--limit"),
+                limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary."),
                 max_pages: Optional[int] = typer.Option(None, "--max-pages"),
                 recheck: bool = typer.Option(False, "--recheck")):
     """Discover, then download eligible files within the same run budget."""
