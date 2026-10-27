@@ -1,4 +1,4 @@
-from . import commons, darul_kutub, internet_archive, isxaki, kazanutlary, kfu, magarif, miras, tatarica, tatkniga
+from . import commons, darul_kutub, internet_archive, isxaki, kazanutlary, kfu, magarif, miras, tatarica, tatargalyame, tatkniga
 
 
 SOURCES = {"magarif": magarif, "tatarica": tatarica, "darul_kutub": darul_kutub,
@@ -6,7 +6,8 @@ SOURCES = {"magarif": magarif, "tatarica": tatarica, "darul_kutub": darul_kutub,
            "isxaki": isxaki, "internet_archive": internet_archive,
            "kfu_books": kfu.CollectionAdapter("27574"),
            "kfu_manuscripts": kfu.CollectionAdapter("18503"),
-           "kfu_il": kfu.CollectionAdapter("28060", tatar_only=True)}
+           "kfu_il": kfu.CollectionAdapter("28060", tatar_only=True),
+           "tatargalyame": tatargalyame}
 
 # Keep the original diagnostic command available after promoting its adapter.
 PILOT_SOURCES = {"miras": miras.ARCHIVE_URL}
