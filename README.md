@@ -11,7 +11,8 @@ Each pipeline has its own CLI/scripts and its own local state in `__artifacts/` 
 The new shared CLI supports local discovery and document downloads from the
 Мәгариф archive, Tatarica library, Darul-Kutub catalog, Kazan Utları archive,
 Tatkniga's public library, Miras books, Isxaki's book/work collections, and
-Tatar-labelled Internet Archive text items with public original document uploads.
+Tatar-labelled Internet Archive text items with public original document uploads,
+and KFU's Turkic–Tatar books and manuscript collections with public direct files.
 Tatkniga downloads direct files for Tatar-labelled
 editions and assembles supported public readers, including those with no language
 label. Tatkniga and Kazan Utları page images are retained and assembled into PDFs
@@ -83,6 +84,11 @@ for its session format and recovery instructions.
   - `python cli.py --config ingestion.yaml discover --source internet_archive --max-pages 2`
   - `python cli.py --config ingestion.yaml download --source internet_archive --limit 1`
   - `python cli.py --config ingestion.yaml status --source internet_archive`
+- KFU historical books and manuscripts (all collection languages; public direct documents only):
+  - `python cli.py --config ingestion.yaml discover --source kfu_books --max-pages 1`
+  - `python cli.py --config ingestion.yaml discover --source kfu_manuscripts --max-pages 1`
+  - `python cli.py --config ingestion.yaml download --source kfu_books --limit 1`
+  - `python cli.py --config ingestion.yaml status --source kfu_manuscripts`
 
 ## State files
 
@@ -93,6 +99,7 @@ for its session format and recovery instructions.
 - `__artifacts/ingestion/tatkniga/` stores the new Tatkniga manifest and local files.
 - `__artifacts/ingestion/isxaki/` stores collection metadata and unchanged original document files.
 - `__artifacts/ingestion/internet_archive/` stores Archive metadata, original-upload files, and resumable discovery state.
+- `__artifacts/ingestion/kfu_books/` and `kfu_manuscripts/` store independent collection manifests, files, and restricted-file evidence.
 - `__artifacts/ingestion/miras/` stores the full Miras catalog and PDFs; `pilot/` retains the original access experiment separately.
 - `tatkniga/workdir/` and `paid_files.csv` retain historical data; they are not imported automatically.
 

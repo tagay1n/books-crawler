@@ -1,6 +1,6 @@
 # Local document ingestion
 
-The shared `cli.py` implements eight acquisition sources and one discovery-only source:
+The shared `cli.py` implements ten acquisition sources and one discovery-only source:
 
 - `magarif`: <https://magarif-uku.ru/documents>, collecting archive attachments.
 - `tatarica`: <https://tatarica.org/tat/razdely/tatarika-kitaphanse>, collecting
@@ -21,6 +21,10 @@ The shared `cli.py` implements eight acquisition sources and one discovery-only 
   original editions, three works periods, and books about Iskhaki.
 - `internet_archive`: <https://archive.org>, collecting public original document
   uploads from text items explicitly labelled as Tatar.
+- `kfu_books`: <https://repo.kpfu.ru/jspui/handle/net/27574>, collecting public
+  direct document files from the Turkic–Tatar books collection.
+- `kfu_manuscripts`: <https://repo.kpfu.ru/jspui/handle/net/18503>, collecting public
+  direct document files from the Turkic–Tatar manuscript collection.
 
 All sources use the same local downloader and manifest implementation. Each
 adapter follows its selected catalog. Existing legacy collectors remain independent.
@@ -144,6 +148,87 @@ An isolated pilot under `internet_archive/pilot/` acquired the original
 The pilot verified the observation link and repeated the CLI download with one
 skip and zero network requests. This sample establishes transfer/integrity
 behavior, not complete corpus coverage or verified content language.
+
+### KFU historical books and manuscripts
+
+Configure the two source entries from `ingestion.example.yaml`. Both collections
+use the same adapter but maintain independent local manifests and discovery
+checkpoints. All records in the selected collections are admitted; supplied
+language labels are retained without filtering or content-language inference.
+
+```bash
+python cli.py --config ingestion.yaml discover --source kfu_books --max-pages 1
+python cli.py --config ingestion.yaml discover --source kfu_manuscripts --max-pages 1
+python cli.py --config ingestion.yaml download --source kfu_books --limit 1
+python cli.py --config ingestion.yaml download --source kfu_manuscripts --limit 1
+python cli.py --config ingestion.yaml run --source kfu_books --max-pages 1 --limit 1
+python cli.py --config ingestion.yaml status --source kfu_books
+python cli.py --config ingestion.yaml status --source kfu_manuscripts
+```
+
+Discovery follows each collection's native `?offset=` links (currently 20 records
+per page), with validated displayed ranges, counts, record identities, and next
+offsets. A final root-page count check also consumes the discovery page budget.
+Repeat `discover` to resume pending records and the listing frontier. Count changes
+or repeated identities require a fresh scan without deleting historical evidence.
+The current advertised totals, 135 books and 256 manuscripts, are catalog records,
+not counts of public PDFs. Traversal is not a transactional snapshot of the site.
+
+Each record retains its native handle, Dublin Core metadata, bibliographic rows,
+original-script titles, collection provenance, and per-file descriptions. Record
+identity is the handle; asset identity is the bitstream sequence and native
+filename within that handle. If the source changes a bitstream route, it creates
+a new asset identity; earlier evidence remains retained. Changing a file's bytes
+at the same URL requires an explicit `download --recheck` when no reliable
+content-version hint is supplied.
+
+Restriction labels are interpreted per `.fileBlock`, not across the entire book.
+A file marked “Ограниченный доступ”, showing a lock, or offering “Запросить копию”
+is held as `kfu_restricted`. A public PDF remains eligible even when the same
+record's ZIP package is restricted. Supported direct document formats reuse the
+shared downloader; HTML, ZIP packages, images, and page-image readers are retained
+only as metadata. Thumbnails are not documents and duplicate thumbnail/download
+links do not create separate assets. No image-reader traversal, archive expansion,
+or PDF assembly occurs for these sources.
+
+Restricted document URLs, names, displayed sizes, formats, and copy-request links
+remain available in the manifest. Restrictions are not download failures, and
+`status` reports held document assets in `unsupported_reasons.kfu_restricted`.
+A later discovery that observes the same file as public can return it to the
+download queue. An allegedly public file returning login/error HTML or an
+unexpected redirect fails acquisition without becoming a successful document.
+
+Files stay under `__artifacts/ingestion/kfu_books/files/` or
+`__artifacts/ingestion/kfu_manuscripts/files/`, with the existing SHA-256/MD5,
+byte/file limits, disk reserve, recovery, and atomic publication behavior.
+Displayed sizes such as “17,53 MB” are approximate source descriptions; transfer
+headers and actual acquired bytes provide integrity evidence. Requests are
+read-only, anonymous, and restricted to the repository's HTTPS source routes.
+
+Restricted-file follow-up is deferred: investigate whether registration or
+institutional access can legitimately grant permission, contact the library, or
+request approved copies. The example `net/28280` (Ядкәр) exposes restricted PDF
+and ZIP files; requesting its PDF anonymously returns HTML titled “Вход” despite
+HTTP 200. `net/28236` exposes a public PDF and a restricted ZIP. The adapter does
+not register accounts, authenticate, contact anyone, or submit request forms.
+
+Manual verification on 2026-10-27 inspected the first two pages of each
+collection: 40 book records and 40 manuscript records. Both scans retained the
+next request at `offset=40` and have no unresolved discovery errors. The book
+sample exposed 27 eligible direct documents and 13 restricted document assets;
+the manuscript sample exposed one eligible direct document, with the other 39
+records retained as metadata without direct supported documents. Restricted
+packages and image-reader evidence remain in the per-record file inventory.
+These are partial-scan results, not full-collection availability counts.
+
+The CLI acquired the public `net/28236` PDF (`t88064.pdf`, 17,947,124 bytes) with
+one request and no retries. Re-reading the saved file confirmed its recorded
+size, MD5 `c3f8ebbe01bf316fa0c256360aa5c77e`, SHA-256
+`12d23afb7a2cfb1ee948c2c112d9e0b3bce899834cfded4b68e5b9e3df3097bd`,
+and acquisition-observation link. A repeated CLI download on an isolated copy
+of that completed sample skipped it with zero requests. The main queues retain
+26 pending book documents and one pending manuscript document. No automated
+tests were created or run; verification used code inspection and manual CLI runs.
 
 ### Shared configuration and operation
 
