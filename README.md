@@ -10,8 +10,10 @@ Each pipeline has its own CLI/scripts and its own local state in `__artifacts/` 
 
 The new shared CLI supports local discovery and document downloads from the
 Мәгариф archive, Tatarica library, Darul-Kutub catalog, Kazan Utları archive,
-and directly downloadable Tatar-labelled editions in Tatkniga's public library.
-Kazan Utları page images are retained and assembled into PDFs with PyMuPDF.
+and Tatkniga's public library. Tatkniga downloads direct files for Tatar-labelled
+editions and assembles supported public readers, including those with no language
+label. Tatkniga and Kazan Utları page images are retained and assembled into PDFs
+with PyMuPDF.
 See [local ingestion](docs/local-ingestion.md) for configuration,
 commands, artifact locations, and recovery. The legacy pipeline commands below
 continue to operate independently.

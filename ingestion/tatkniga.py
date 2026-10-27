@@ -1,4 +1,4 @@
-"""Current Tatkniga library: direct documents with explicit Tatar language labels."""
+"""Current Tatkniga library: direct documents and public image-based readers."""
 
 import json
 import re
@@ -12,7 +12,7 @@ from .paging import CatalogChanged, ListingPage, PageRequest
 
 
 ARCHIVE_URL = "https://tatkniga.ru/catalog/biblioteka/"
-PARSER_VERSION = 1
+PARSER_VERSION = 2
 BOOK_PATH = re.compile(r"/catalog/biblioteka/[^/]+\.html")
 PRODUCT_ID = re.compile(r"bx_\d+_(\d+)")
 DIRECT_FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
@@ -193,3 +193,18 @@ def record(html, page_url):
 
 def record_key(metadata):
     return "product:" + metadata["product_id"] if metadata.get("product_id") else metadata["url"]
+
+
+def resolve_record(http, metadata, assets):
+    from .tatkniga_reader import resolve
+
+    return resolve(http, metadata, assets)
+
+
+def download(http, manifest, summary, log, recheck):
+    from .core import download as download_documents
+    from .image_issues import download as download_books
+
+    summary.update(download_unit="file_or_book", pdf_assembled=0, pdf_reused=0)
+    download_documents(http, manifest, summary, log, recheck)
+    download_books(http, manifest, summary, log, recheck, unit="file_or_book")

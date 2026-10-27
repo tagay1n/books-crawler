@@ -1,4 +1,4 @@
-"""Issue-level acquisition and derived PDFs from ordered upstream page images."""
+"""Publication-level acquisition and derived PDFs from ordered upstream JPEGs."""
 
 import hashlib
 import json
@@ -72,7 +72,7 @@ def assemble(http, manifest, record, assets, temporary, summary):
                     with pymupdf.open("pdf", image.convert_to_pdf()) as page:
                         output.insert_pdf(page)
             output.set_metadata({"title": record["observations"][-1]["metadata"]["title"],
-                                 "creator": "BooksCrawler image issue assembler",
+                                 "creator": "BooksCrawler image publication assembler",
                                  "producer": ASSEMBLER_VERSION})
             budget.check()
             output.save(partial, garbage=3, deflate=True)
@@ -102,37 +102,41 @@ def assemble(http, manifest, record, assets, temporary, summary):
         partial.unlink(missing_ok=True)
 
 
-def download(http, manifest, summary, log, recheck):
-    summary.update(download_unit="issue", pdf_assembled=0, pdf_reused=0)
+def download(http, manifest, summary, log, recheck, *, unit="issue"):
+    summary.update(download_unit=unit, pdf_assembled=0, pdf_reused=0)
     workspace = manifest.directory / ".tmp"
     workspace.mkdir(parents=True, exist_ok=True)
     grouped = {}
     for asset in manifest.data["assets"].values():
-        if asset.get("current", True):
+        if (asset.get("current", True) and asset.get("kind") == "page_image"
+                and asset["status"] != "unsupported"):
             grouped.setdefault(asset.get("record_key", asset["record_url"]), []).append(asset)
     with tempfile.TemporaryDirectory(prefix="run-", dir=workspace) as temporary:
         temporary = Path(temporary)
         for key, record in manifest.data["records"].items():
             http.budget.check()
             metadata = record["observations"][-1]["metadata"]
+            if metadata.get("expected_pages") is None:
+                continue
             assets = sorted(grouped.get(key, []), key=lambda a: a.get("page_index", -1))
             state = record.setdefault("pdf", {"status": "incomplete", "results": []})
-            ready = bool(assets) and all(a["status"] == "downloaded" and a["results"]
-                                        and valid_local(manifest.directory, a["results"][-1]) for a in assets)
-            current = state["results"][-1] if state["results"] else None
-            fingerprint = inputs_for(record, assets)[0] if ready else None
-            if (not recheck and ready and current and current["input_fingerprint"] == fingerprint
-                    and valid_local(manifest.directory, current, folder="derived")):
-                state.update(status="complete", last_checked=now())
-                state.pop("last_error", None)
-                summary["skipped"] += len(assets)
-                summary["pdf_reused"] += 1
-                manifest.save()
-                continue
-            state["status"] = "incomplete"
-            manifest.save()
-            http.budget.start_item()
             try:
+                if [a["page_index"] for a in assets] != list(range(metadata["expected_pages"])):
+                    raise ValueError("Current images do not match the expected page sequence.")
+                ready = bool(assets) and all(a["status"] == "downloaded" and a["results"]
+                                            and valid_local(manifest.directory, a["results"][-1]) for a in assets)
+                current = state["results"][-1] if state["results"] else None
+                fingerprint = inputs_for(record, assets)[0] if ready else None
+                if (not recheck and ready and current and current["input_fingerprint"] == fingerprint
+                        and valid_local(manifest.directory, current, folder="derived")):
+                    state.update(status="complete", last_checked=now())
+                    state.pop("last_error", None)
+                    summary["skipped"] += len(assets)
+                    summary["pdf_reused"] += 1
+                    continue
+                state["status"] = "incomplete"
+                manifest.save()
+                http.budget.start_item()
                 for asset in assets:
                     http.budget.check()
                     previous = asset["results"][-1] if asset["results"] else None
@@ -150,7 +154,7 @@ def download(http, manifest, summary, log, recheck):
                         log(f"Image download failed: {asset['url']}: {error}")
                 if not assets or any(a["status"] != "downloaded" for a in assets):
                     state["last_error"] = "Expected page images remain unresolved; no complete PDF published."
-                    log(f"Issue incomplete: {metadata['title']}")
+                    log(f"Publication incomplete: {metadata['title']}")
                 else:
                     assemble(http, manifest, record, assets, temporary, summary)
                     log(f"PDF ready: {metadata['title']} ({len(assets)} pages)")

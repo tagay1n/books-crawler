@@ -10,7 +10,8 @@ The shared `cli.py` implements five sources:
 - `kazanutlary`: <https://kazanutlary.ru/j-archive>, collecting scanned issue
   images and assembling complete PDFs locally with PyMuPDF.
 - `tatkniga`: <https://tatkniga.ru/catalog/biblioteka/>, collecting directly
-  linked files with explicit Tatar or Tatar-containing bilingual language labels.
+  linked files with explicit Tatar or Tatar-containing bilingual language labels,
+  plus supported public flipbook pages assembled into local PDFs.
 
 All sources use the same local downloader and manifest implementation. Each
 adapter follows its selected catalog. Existing legacy collectors remain independent.
@@ -114,17 +115,51 @@ separate references. Metadata retains supplied titles, authors, descriptions,
 bibliographic property names/values, and language labels. An explicit recognized
 Tatar language label (including `тат`) selects an edition; bilingual labels must
 explicitly include Tatar. Titles and descriptions are not used to infer language,
-and Crimean Tatar is not treated as Tatar. Missing or unrecognized language labels
-remain visible for review. No empty language claim is synthesized.
+and Crimean Tatar is not treated as Tatar. Missing language labels hold direct
+files for review; public FlipHTML5 readers may be acquired without a language
+label. Unrecognized labels remain held for review for both acquisition methods.
+No empty or inferred language claim is synthesized. Reader eligibility is recorded
+separately as `reader_language_selection`; the original `language_selection` stays
+unchanged.
 
-Only directly linked supported document files on the Tatkniga origin are queued.
-HTML readers, page sets, audio, archive expansion, and external-host documents are
-deferred or unsupported. Interactive-reader links are retained without following
-them. Repeated read links collapse to one descriptor. `status` and run summaries
-include optional `unsupported_reasons` counts: `reader_deferred`,
-`language_unknown`, `language_excluded`, `external_origin`, and
-`format_unsupported`. These counts describe current attachment descriptors;
-record metadata also retains each publication's `language_selection`.
+Directly linked supported documents and recognized FlipHTML5 readers under
+`/upload/interactive_books/` on the Tatkniga origin are eligible. Discovery follows
+the reader's linked `javascript/config.js`, parses its explicit `fliphtml5_pages`
+JSON list without executing JavaScript, and verifies the count against
+`totalPageCount`. Recognized PageSpeed script/bundle URLs are resolved to the
+original configuration source they name. Display captions and bibliographic page
+counts do not define the image sequence. Listed large JPEGs are preferred, with
+listed normal JPEGs used when a large image is not declared. Thumbnails and guessed
+URLs are not used.
+Reader/configuration URLs and raw configuration remain in metadata.
+
+Repeated links collapse to one reader. Multiple distinct supported reader links
+require review. An eligible direct PDF takes precedence over reader assembly.
+Other readers, audio, archive expansion, and external-host documents remain
+deferred or unsupported. `status` and run summaries include optional
+`unsupported_reasons` counts: `reader_deferred`, `reader_unsupported`,
+`reader_ambiguous`, `reader_superseded`, `language_unknown`, `language_excluded`,
+`external_origin`, and `format_unsupported`. Failed reader/configuration requests
+or inconsistent declared page lists leave discovery incomplete and retryable.
+
+For Tatkniga, `--limit` and `max_items` count either a direct file or a whole reader
+book. Direct files are processed first, with the remaining item budget shared by
+reader books. Verified JPEGs are retained in `files/` and assembled in reader
+order, including covers and blank pages. Assembled PDFs are published atomically
+to `__artifacts/ingestion/tatkniga/derived/<sha256>.pdf` only after all expected
+pages are available and the PDF page count is verified. These are image PDFs
+without OCR; interactive media and exercises are not included. Image quality,
+proportions, and orientation are preserved.
+
+Interrupted books resume from verified images. Missing, damaged, or outdated PDFs
+are rebuilt; unchanged complete books require no network requests. `--recheck`
+revalidates images and retains old PDF versions when inputs change. A failed
+recheck leaves the book incomplete while preserving historical files. PDF results
+record ordered input IDs and hashes, assembler version, source observation, size,
+and page count. Status adds `pdf_books` completion counts and `image_pages`
+progress; it reads the manifest rather than auditing local file integrity.
+Parser version 2 restarts discovery to refresh old reader descriptors while
+preserving observations and downloads; run `discover` after upgrading.
 
 Tatkniga uses `__artifacts/ingestion/tatkniga/` with the shared manifest and
 downloader. The old Selenium scripts have been retired; `tatkniga/workdir/`,
@@ -149,8 +184,9 @@ structures fail discovery instead of producing guessed image sequences. Catalog
 completion means traversal of linked listings; no site-wide total is advertised.
 
 For `kazanutlary`, `--limit` and `max_items` count **issues**, including their image
-downloads and assembly. Other sources continue counting individual files. Byte,
-file-size, deadline, pacing, and disk-reserve controls still apply. Interrupted
+downloads and assembly. Tatkniga uses the mixed file/book units described above;
+remaining sources count individual files. Byte, file-size, deadline, pacing,
+and disk-reserve controls still apply. Interrupted
 issues resume from verified image files on the next invocation. A failed page
 does not discard the other pages, and an issue remains incomplete until every
 expected page is available. No partial PDF is published.

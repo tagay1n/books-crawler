@@ -3,6 +3,8 @@ import time
 import requests
 from urllib3.exceptions import HTTPError as TransportError
 
+from .documents import same_origin
+
 
 class BudgetStop(Exception):
     """An intentional boundary; unstarted or incomplete work stays eligible."""
@@ -93,8 +95,19 @@ class HTTP:
                 self.budget.wait(delay)
 
     def text(self, url, *, method="GET", data=None):
+        return self.text_response(url, method=method, data=data)[0]
+
+    def text_response(self, url, *, method="GET", data=None, origin=None):
+        """Inspect bounded text and retain its final URL for relative references."""
+        if origin is not None and not same_origin(url, origin):
+            raise ValueError("Inspection URL is outside the configured source origin.")
+
         def fetch():
             with self.request(method, url, data=data) as response:
+                if origin is not None and not same_origin(response.url, origin):
+                    raise ValueError("Inspection redirected outside the configured source origin.")
+                if origin is not None and response.status_code != 200:
+                    raise ValueError("Expected a complete reader/configuration response.")
                 chunks, size = [], 0
                 while True:
                     self.budget.check()
@@ -105,5 +118,5 @@ class HTTP:
                     if size > 2 * 1024 * 1024:
                         raise ValueError(f"HTML page exceeds the 2 MiB inspection limit: {url}")
                     chunks.append(chunk)
-                return b"".join(chunks).decode("utf-8", errors="replace")
+                return b"".join(chunks).decode("utf-8", errors="replace"), response.url
         return self.retry(fetch)

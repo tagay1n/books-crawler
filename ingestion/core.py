@@ -197,7 +197,8 @@ def download(http, manifest, summary, log, recheck):
     with tempfile.TemporaryDirectory(prefix="run-", dir=workspace) as temporary:
         for asset in manifest.data["assets"].values():
             http.budget.check()
-            if not asset.get("current", True) or asset["status"] == "unsupported":
+            if (not asset.get("current", True) or asset["status"] == "unsupported"
+                    or asset.get("kind") == "page_image"):
                 continue
             previous = asset["results"][-1] if asset["results"] else None
             if asset["status"] == "downloaded" and not recheck and valid_local(manifest.directory, previous):
@@ -236,7 +237,9 @@ def run(settings, source, command, *, recheck=False, log=print):
                     summary["stops"].append(str(error))
                     summary["discovery_complete"] = False
             if command in {"download", "run"}:
-                if getattr(SOURCES[source], "DOWNLOAD_UNIT", None) == "issue":
+                if hasattr(SOURCES[source], "download"):
+                    SOURCES[source].download(http, manifest, summary, log, recheck)
+                elif getattr(SOURCES[source], "DOWNLOAD_UNIT", None) == "issue":
                     from .image_issues import download as download_issues
                     download_issues(http, manifest, summary, log, recheck)
                 else:

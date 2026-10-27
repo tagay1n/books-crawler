@@ -13,8 +13,26 @@ python cli.py --config ingestion.yaml status --source tatkniga
 Use the `sources.tatkniga` entry from `ingestion.example.yaml`. The adapter follows
 `https://tatkniga.ru/catalog/biblioteka/` and downloads directly linked supported
 document files for explicitly Tatar-labelled or Tatar-containing bilingual editions.
-Interactive readers remain deferred. Missing language labels are held for review;
-other languages remain visible with an exclusion reason. All files stay local.
+It also downloads the ordered JPEG pages of public FlipHTML5 readers and assembles
+one image PDF per book, including covers and blank pages. An eligible direct PDF
+is preferred when available. Reader books with missing language labels are allowed
+without making a language claim; explicit non-Tatar languages are excluded, and
+unrecognized labels remain held for review. Direct-file language rules are unchanged.
+Other reader formats remain visible as deferred or unsupported. All files stay local.
+
+Run `discover` once after upgrading to resolve readers already in your manifest.
+Then use the existing `download` or `run` command. For Tatkniga, `--limit 1` counts
+one direct document or one entire reader book. Direct files are processed first.
+Interrupted books resume from verified images; a PDF is published only after all
+expected pages are acquired and validated. `--recheck` revalidates source images.
+
+Original JPEGs remain in `__artifacts/ingestion/tatkniga/files/`; assembled PDFs
+are in `__artifacts/ingestion/tatkniga/derived/<sha256>.pdf`. The manifest retains
+page order, reader configuration, image hashes, and PDF provenance. `status`
+reports `pdf_books` completion counts and `image_pages` progress. PDFs preserve
+the source image quality and have no OCR; audio, video, and exercises are omitted.
+
+Offline regression tests: `python -m unittest discover -s tests -v`.
 
 See [local ingestion](../docs/local-ingestion.md) for budgets, recovery, metadata,
 and language-selection behavior.

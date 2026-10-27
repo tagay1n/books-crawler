@@ -132,9 +132,10 @@ class Manifest:
         issues = [r for r in self.data["records"].values()
                   if r["observations"][-1]["metadata"].get("expected_pages") is not None]
         if issues:
-            result["pdf_issues"] = {state: sum(r.get("pdf", {}).get("status", "incomplete") == state
-                                               for r in issues)
-                                    for state in ("complete", "incomplete", "failed")}
+            pdf_key = "pdf_books" if self.data["source"] == "tatkniga" else "pdf_issues"
+            result[pdf_key] = {
+                state: sum(r.get("pdf", {}).get("status", "incomplete") == state for r in issues)
+                for state in ("complete", "incomplete", "failed")}
             result["image_pages"] = {"expected": sum(r["observations"][-1]["metadata"]["expected_pages"] for r in issues),
                                      "downloaded": sum(a.get("current", True) and a.get("kind") == "page_image"
                                                        and a["status"] == "downloaded" for a in self.data["assets"].values())}
