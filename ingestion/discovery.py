@@ -93,11 +93,17 @@ def discover(http, manifest, adapter, summary, log):
                     summary["pages"] += 1
                     if page.validation:
                         if (page.advertised != scan.get("advertised")
-                                or scan["enumerated_entries"] != scan.get("advertised")):
+                                or scan["enumerated_entries"] != scan.get("advertised")
+                                or (getattr(adapter, "UNIQUE_RECORDS", False)
+                                    and len(scan["enumerated_urls"]) != page.advertised)):
                             scan["restart_required"] = True
                             raise ValueError("Catalog count changed or enumeration disagrees with the advertised count; next discovery starts a fresh scan.")
                         scan["verified"] = True
                     else:
+                        if getattr(adapter, "UNIQUE_RECORDS", False):
+                            if (len(set(page.records)) != len(page.records)
+                                    or set(page.records).intersection(scan["enumerated_urls"])):
+                                raise CatalogChanged("Catalog repeated item identities; next discovery starts a fresh scan.")
                         payload = page.fingerprint if page.fingerprint is not None else json.dumps(page.records)
                         signature = hashlib.sha256(payload.encode()).hexdigest()
                         check_repeats = request.method == "POST" or page.detect_repeats

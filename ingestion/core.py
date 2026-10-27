@@ -63,6 +63,12 @@ def valid_local(directory, result, *, folder="files"):
     return file_digests(path)[0] == result["sha256"]
 
 
+def source_version_matches(asset):
+    """Opt-in source hints do not alter older adapters' download behavior."""
+    return ("source_version" not in asset
+            or asset.get("verified_source_version") == asset["source_version"])
+
+
 def check_space(directory, reserve, upcoming=0):
     if shutil.disk_usage(directory).free - upcoming < reserve:
         raise OSError("Insufficient free disk space for the configured reserve and transfer.")
@@ -90,7 +96,8 @@ def acquire(http, manifest, asset, temporary, summary, *, extensions=None, valid
     previous = asset["results"][-1] if asset["results"] else None
     local_ok = valid_local(manifest.directory, previous)
     headers = {}
-    if local_ok:
+    version_ok = source_version_matches(asset)
+    if local_ok and version_ok:
         if asset.get("etag", previous.get("etag")):
             headers["If-None-Match"] = asset.get("etag", previous.get("etag"))
         if asset.get("last_modified", previous.get("last_modified")):
@@ -99,12 +106,16 @@ def acquire(http, manifest, asset, temporary, summary, *, extensions=None, valid
     def attempt():
         partial = temporary / (asset["id"] + ".part")
         try:
+            if hasattr(http, "validate_acquisition"):
+                http.validate_acquisition(asset)
             with http.get(asset["url"], headers=headers) as response:
-                if not same_origin(response.url, settings.archive_url):
+                if hasattr(http, "validate_download_response"):
+                    http.validate_download_response(response, asset)
+                elif not same_origin(response.url, settings.archive_url):
                     raise InvalidDocument("Attachment redirected outside the configured source origin.")
                 if response.status_code == 304:
-                    if not local_ok:
-                        raise InvalidDocument("Unexpected 304 without a verified local original.")
+                    if not local_ok or not version_ok:
+                        raise InvalidDocument("Unexpected 304 without a verified local original at the current source version.")
                     return None
                 if response.status_code != 200:
                     raise InvalidDocument(f"Expected a complete document response, received HTTP {response.status_code}.")
@@ -159,6 +170,10 @@ def acquire(http, manifest, asset, temporary, summary, *, extensions=None, valid
                 validate_document(prefix, extension, mime)
                 validation = validate_file(partial) if validate_file is not None else None
                 digest = sha.hexdigest()
+                source_validation = {}
+                if hasattr(http, "validate_acquired_asset"):
+                    source_validation = http.validate_acquired_asset(
+                        asset, {"size": size, "sha256": digest, "md5": md5.hexdigest()})
                 target = manifest.directory / "files" / (digest + extension)
                 target.parent.mkdir(parents=True, exist_ok=True)
                 reused = target.is_file() and file_digests(target)[0] == digest
@@ -166,7 +181,8 @@ def acquire(http, manifest, asset, temporary, summary, *, extensions=None, valid
                     summary["reused_blobs"] += 1
                 else:
                     os.replace(partial, target)
-                return {**(validation if isinstance(validation, dict) else {}),
+                return {**(validation if isinstance(validation, dict) else {}), **source_validation,
+                        **({"source_version": asset["source_version"]} if "source_version" in asset else {}),
                         "id": uuid4().hex, "observation_id": asset["observation_id"],
                         "url": asset["url"], "final_url": response.url, "filename": filename,
                         "sha256": digest, "md5": md5.hexdigest(), "size": size, "mime": mime,
@@ -189,6 +205,8 @@ def acquire(http, manifest, asset, temporary, summary, *, extensions=None, valid
     if result is not None:
         asset["etag"], asset["last_modified"] = result.get("etag"), result.get("last_modified")
     asset["status"], asset["last_checked"] = "downloaded", now()
+    if "source_version" in asset:
+        asset["verified_source_version"] = asset["source_version"]
     asset.pop("last_error", None)
     manifest.save()
 
@@ -203,7 +221,8 @@ def download(http, manifest, summary, log, recheck, *, extensions=None, validate
                     or asset.get("kind") == "page_image"):
                 continue
             previous = asset["results"][-1] if asset["results"] else None
-            if asset["status"] == "downloaded" and not recheck and valid_local(manifest.directory, previous):
+            if (asset["status"] == "downloaded" and not recheck and source_version_matches(asset)
+                    and valid_local(manifest.directory, previous)):
                 summary["skipped"] += 1
                 continue
             http.budget.start_item()

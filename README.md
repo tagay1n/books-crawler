@@ -10,7 +10,8 @@ Each pipeline has its own CLI/scripts and its own local state in `__artifacts/` 
 
 The new shared CLI supports local discovery and document downloads from the
 Мәгариф archive, Tatarica library, Darul-Kutub catalog, Kazan Utları archive,
-Tatkniga's public library, Miras books, and Isxaki's book/work collections.
+Tatkniga's public library, Miras books, Isxaki's book/work collections, and
+Tatar-labelled Internet Archive text items with public original document uploads.
 Tatkniga downloads direct files for Tatar-labelled
 editions and assembles supported public readers, including those with no language
 label. Tatkniga and Kazan Utları page images are retained and assembled into PDFs
@@ -78,6 +79,10 @@ for its session format and recovery instructions.
   - `python cli.py --config ingestion.yaml discover --source isxaki`
   - `python cli.py --config ingestion.yaml download --source isxaki --limit 1`
   - `python cli.py --config ingestion.yaml status --source isxaki`
+- Internet Archive (explicit Tatar language labels; original uploads only):
+  - `python cli.py --config ingestion.yaml discover --source internet_archive --max-pages 2`
+  - `python cli.py --config ingestion.yaml download --source internet_archive --limit 1`
+  - `python cli.py --config ingestion.yaml status --source internet_archive`
 
 ## State files
 
@@ -87,6 +92,7 @@ for its session format and recovery instructions.
 - `~/.common-crawl/` stores downloaded Common Crawl files and caches.
 - `__artifacts/ingestion/tatkniga/` stores the new Tatkniga manifest and local files.
 - `__artifacts/ingestion/isxaki/` stores collection metadata and unchanged original document files.
+- `__artifacts/ingestion/internet_archive/` stores Archive metadata, original-upload files, and resumable discovery state.
 - `__artifacts/ingestion/miras/` stores the full Miras catalog and PDFs; `pilot/` retains the original access experiment separately.
 - `tatkniga/workdir/` and `paid_files.csv` retain historical data; they are not imported automatically.
 

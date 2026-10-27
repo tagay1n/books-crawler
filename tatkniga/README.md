@@ -32,7 +32,6 @@ page order, reader configuration, image hashes, and PDF provenance. `status`
 reports `pdf_books` completion counts and `image_pages` progress. PDFs preserve
 the source image quality and have no OCR; audio, video, and exercises are omitted.
 
-Offline regression tests: `python -m unittest discover -s tests -v`.
 
 See [local ingestion](../docs/local-ingestion.md) for budgets, recovery, metadata,
 and language-selection behavior.
