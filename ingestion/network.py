@@ -14,6 +14,10 @@ class InvalidDocument(ValueError):
     pass
 
 
+class SourceAccessError(Exception):
+    """Source access was rejected; stop without consuming the remaining backlog."""
+
+
 class Budget:
     def __init__(self, settings):
         self.settings = settings

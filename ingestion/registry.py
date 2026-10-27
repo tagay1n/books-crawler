@@ -1,8 +1,8 @@
-from . import darul_kutub, kazanutlary, magarif, tatarica, tatkniga
+from . import darul_kutub, kazanutlary, magarif, miras, tatarica, tatkniga
 
 
 SOURCES = {"magarif": magarif, "tatarica": tatarica, "darul_kutub": darul_kutub,
-           "kazanutlary": kazanutlary, "tatkniga": tatkniga}
+           "kazanutlary": kazanutlary, "tatkniga": tatkniga, "miras": miras}
 
-# Access experiments are not implemented discovery/download adapters.
-PILOT_SOURCES = {"miras": "https://miras.info/projects/mirasxane/books"}
+# Keep the original diagnostic command available after promoting its adapter.
+PILOT_SOURCES = {"miras": miras.ARCHIVE_URL}

@@ -42,12 +42,12 @@ def probe(ctx: typer.Context, source: str = typer.Option(..., "--source"),
         raise typer.Exit(1)
 
 
-def execute(ctx, command, source, limit=None, max_pages=None, recheck=False):
+def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, session_file=None):
     try:
         if source not in SOURCES:
             raise ValueError(f"Unknown source: {source}. Available: {', '.join(SOURCES)}")
         settings = restricted_settings(load_settings(ctx.obj, source), limit, max_pages)
-        result = run(settings, source, command, recheck=recheck, log=typer.echo)
+        result = run(settings, source, command, recheck=recheck, session_file=session_file, log=typer.echo)
         typer.echo(json.dumps(result, ensure_ascii=False, indent=2))
     except (ValueError, OSError, RuntimeError) as error:
         typer.echo(f"Error: {error}", err=True)
@@ -58,26 +58,29 @@ def execute(ctx, command, source, limit=None, max_pages=None, recheck=False):
 
 @app.command()
 def discover(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-             max_pages: Optional[int] = typer.Option(None, "--max-pages")):
+             max_pages: Optional[int] = typer.Option(None, "--max-pages"),
+             session_file: Optional[Path] = typer.Option(None, "--session-file", help="Miras-only browser session export.")):
     """Discover archive records and attachments without downloading originals."""
-    execute(ctx, "discover", source, max_pages=max_pages)
+    execute(ctx, "discover", source, max_pages=max_pages, session_file=session_file)
 
 
 @app.command()
 def download(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-             limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary."),
-             recheck: bool = typer.Option(False, "--recheck", help="Also revalidate completed downloads.")):
+             limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary, files/books for tatkniga."),
+             recheck: bool = typer.Option(False, "--recheck", help="Also revalidate completed downloads."),
+             session_file: Optional[Path] = typer.Option(None, "--session-file", help="Miras-only browser session export.")):
     """Download committed local work; retry failed or missing originals."""
-    execute(ctx, "download", source, limit=limit, recheck=recheck)
+    execute(ctx, "download", source, limit=limit, recheck=recheck, session_file=session_file)
 
 
 @app.command("run")
 def run_command(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-                limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary."),
+                limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary, files/books for tatkniga."),
                 max_pages: Optional[int] = typer.Option(None, "--max-pages"),
-                recheck: bool = typer.Option(False, "--recheck")):
+                recheck: bool = typer.Option(False, "--recheck"),
+                session_file: Optional[Path] = typer.Option(None, "--session-file", help="Miras-only browser session export.")):
     """Discover, then download eligible files within the same run budget."""
-    execute(ctx, "run", source, limit=limit, max_pages=max_pages, recheck=recheck)
+    execute(ctx, "run", source, limit=limit, max_pages=max_pages, recheck=recheck, session_file=session_file)
 
 
 @app.command()

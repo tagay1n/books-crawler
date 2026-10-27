@@ -12,7 +12,7 @@ sources:
     archive_url: https://kazanutlary.ru/j-archive
   tatkniga:
     archive_url: https://tatkniga.ru/catalog/biblioteka/
-  # Cookie-based pilot only: probe --source miras --session-file PATH
+  # Pass --session-file PATH to discover/download/run; status needs no session.
   miras:
     archive_url: https://miras.info/projects/mirasxane/books/
 limits:

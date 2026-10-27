@@ -13,7 +13,7 @@ from urllib3.exceptions import HTTPError as TransportError
 
 from .discovery import discover
 from .documents import DOCUMENT_EXTENSIONS, same_origin
-from .network import Budget, BudgetStop, HTTP, InvalidDocument
+from .network import Budget, BudgetStop, HTTP, InvalidDocument, SourceAccessError
 from .registry import SOURCES
 from .state import Manifest, atomic_json, now, source_lock
 
@@ -145,6 +145,8 @@ def acquire(http, manifest, asset, temporary, summary, *, extensions=None, valid
                             raise InvalidDocument("Streamed file exceeds max_file_bytes.")
                         check_space(manifest.directory, settings.disk_reserve_bytes, len(chunk))
                         prefix = (prefix + chunk)[:1024]
+                        if size == len(chunk) and hasattr(http, "validate_document_prefix"):
+                            http.validate_document_prefix(prefix)
                         sha.update(chunk)
                         md5.update(chunk)
                         handle.write(chunk)
@@ -155,8 +157,7 @@ def acquire(http, manifest, asset, temporary, summary, *, extensions=None, valid
                 if expected is not None and size != expected:
                     raise requests.ConnectionError("Incomplete transfer: Content-Length mismatch.")
                 validate_document(prefix, extension, mime)
-                if validate_file is not None:
-                    validate_file(partial)
+                validation = validate_file(partial) if validate_file is not None else None
                 digest = sha.hexdigest()
                 target = manifest.directory / "files" / (digest + extension)
                 target.parent.mkdir(parents=True, exist_ok=True)
@@ -165,7 +166,8 @@ def acquire(http, manifest, asset, temporary, summary, *, extensions=None, valid
                     summary["reused_blobs"] += 1
                 else:
                     os.replace(partial, target)
-                return {"id": uuid4().hex, "observation_id": asset["observation_id"],
+                return {**(validation if isinstance(validation, dict) else {}),
+                        "id": uuid4().hex, "observation_id": asset["observation_id"],
                         "url": asset["url"], "final_url": response.url, "filename": filename,
                         "sha256": digest, "md5": md5.hexdigest(), "size": size, "mime": mime,
                         "path": target.relative_to(manifest.directory).as_posix(), "acquired_at": now(),
@@ -191,7 +193,7 @@ def acquire(http, manifest, asset, temporary, summary, *, extensions=None, valid
     manifest.save()
 
 
-def download(http, manifest, summary, log, recheck):
+def download(http, manifest, summary, log, recheck, *, extensions=None, validate_file=None):
     workspace = manifest.directory / ".tmp"
     workspace.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="run-", dir=workspace) as temporary:
@@ -206,7 +208,8 @@ def download(http, manifest, summary, log, recheck):
                 continue
             http.budget.start_item()
             try:
-                acquire(http, manifest, asset, Path(temporary), summary)
+                acquire(http, manifest, asset, Path(temporary), summary,
+                        extensions=extensions, validate_file=validate_file)
                 log(f"Acquired: {asset['label'] or asset['url']}")
             except (requests.RequestException, TransportError, ValueError) as error:
                 asset["status"], asset["last_error"] = "failed", str(error)
@@ -215,12 +218,17 @@ def download(http, manifest, summary, log, recheck):
                 log(f"Download failed: {asset['url']}: {error}")
 
 
-def run(settings, source, command, *, recheck=False, log=print):
+def run(settings, source, command, *, recheck=False, session_file=None, log=print):
     if source not in SOURCES:
         raise ValueError(f"Unknown source: {source}. Available: {', '.join(SOURCES)}")
     directory = settings.artifacts_root / source
     if command == "status":
         return Manifest(directory, source).status()
+    adapter = SOURCES[source]
+    if getattr(adapter, "REQUIRES_SESSION", False) and session_file is None:
+        raise ValueError(f"{source} requires --session-file from your verified browser.")
+    if session_file is not None and not getattr(adapter, "REQUIRES_SESSION", False):
+        raise ValueError("--session-file is supported only for Miras.")
     summary = {"id": uuid4().hex, "source": source, "command": command, "started_at": now(),
                "pages": 0, "records": 0, "observations": 0, "downloaded": 0, "reused_blobs": 0,
                "not_modified": 0, "unchanged_downloads": 0, "skipped": 0,
@@ -230,6 +238,8 @@ def run(settings, source, command, *, recheck=False, log=print):
         budget = Budget(settings)
         http = HTTP(settings, budget, summary)
         try:
+            if hasattr(adapter, "prepare_http"):
+                adapter.prepare_http(http, session_file)
             if command in {"discover", "run"}:
                 try:
                     discover(http, manifest, SOURCES[source], summary, log)
@@ -246,6 +256,11 @@ def run(settings, source, command, *, recheck=False, log=print):
                     download(http, manifest, summary, log, recheck)
         except BudgetStop as error:
             summary["stops"].append(str(error))
+        except SourceAccessError as error:
+            if command in {"discover", "run"}:
+                summary.setdefault("discovery_complete", False)
+            summary["errors"].append({"stage": "access", "error": str(error)})
+            log(str(error))
         except (OSError, KeyboardInterrupt) as error:
             summary["errors"].append({"stage": "operation", "error": str(error) or "Interrupted"})
         finally:

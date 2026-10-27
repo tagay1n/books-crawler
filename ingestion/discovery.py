@@ -53,11 +53,11 @@ def discover(http, manifest, adapter, summary, log):
                 attempted.add(url)
                 try:
                     metadata, assets = adapter.record(http.text(url), url)
-                    if hasattr(adapter, "resolve_record"):
-                        metadata, assets = adapter.resolve_record(http, metadata, assets)
                     contexts = scan.get("record_context", {}).get(url)
                     if contexts:
                         metadata["catalog_context"] = contexts
+                    if hasattr(adapter, "resolve_record"):
+                        metadata, assets = adapter.resolve_record(http, metadata, assets)
                     identity = adapter.record_key(metadata) if hasattr(adapter, "record_key") else metadata["url"]
                     changed = manifest.observe(metadata, assets, version, record_key=identity)
                     scan["pending_records"].remove(url)

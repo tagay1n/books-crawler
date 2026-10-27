@@ -98,7 +98,7 @@ def run_cookie_probe(settings, session_file, *, log=print):
             summary["cookie_count"] = load_session(http, session)
             log("Trying the exported Miras session with the HTTP downloader; cookie values are not logged.")
             metadata = None
-            for url, parser, name in ((settings.archive_url + "/", catalog, "http_catalog"),
+            for url, parser, name in ((settings.archive_url.rstrip("/") + "/", catalog, "http_catalog"),
                                        (SAMPLE_RECORD, book, "http_record")):
                 try:
                     result = parser(http.text(url))

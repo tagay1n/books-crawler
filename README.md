@@ -10,7 +10,7 @@ Each pipeline has its own CLI/scripts and its own local state in `__artifacts/` 
 
 The new shared CLI supports local discovery and document downloads from the
 Мәгариф archive, Tatarica library, Darul-Kutub catalog, Kazan Utları archive,
-and Tatkniga's public library. Tatkniga downloads direct files for Tatar-labelled
+Tatkniga's public library, and Miras books. Tatkniga downloads direct files for Tatar-labelled
 editions and assembles supported public readers, including those with no language
 label. Tatkniga and Kazan Utları page images are retained and assembled into PDFs
 with PyMuPDF.
@@ -18,10 +18,12 @@ See [local ingestion](docs/local-ingestion.md) for configuration,
 commands, artifact locations, and recovery. The legacy pipeline commands below
 continue to operate independently.
 
-Miras has a cookie-based HTTP access pilot:
-`python cli.py --config ingestion.yaml probe --source miras --session-file PATH`.
-See [local ingestion](docs/local-ingestion.md#miras-cookie-based-access-pilot)
-for its session format and the remembered browser-extension fallback.
+Miras downloads exposed original PDFs across all languages using a session
+exported from an ordinary verified browser. Pass `--session-file PATH` to its
+`discover`, `download`, or `run` command; `status` needs no session. The original
+`probe --source miras --session-file PATH` diagnostic remains available.
+See [local ingestion](docs/local-ingestion.md#miras-books-and-browser-session-access)
+for its session format and recovery instructions.
 
 ## Setup
 
@@ -62,6 +64,10 @@ for its session format and the remembered browser-extension fallback.
   - `python cli.py --config ingestion.yaml discover --source tatkniga`
   - `python cli.py --config ingestion.yaml download --source tatkniga --limit 1`
   - `python cli.py --config ingestion.yaml status --source tatkniga`
+- Miras (books, all languages):
+  - `python cli.py --config ingestion.yaml discover --source miras --session-file PATH --max-pages 2`
+  - `python cli.py --config ingestion.yaml download --source miras --session-file PATH --limit 2`
+  - `python cli.py --config ingestion.yaml status --source miras`
 
 ## State files
 
@@ -70,6 +76,7 @@ for its session format and the remembered browser-extension fallback.
 - `__artifacts/common.crawl/docs-index.json` stores Common Crawl state.
 - `~/.common-crawl/` stores downloaded Common Crawl files and caches.
 - `__artifacts/ingestion/tatkniga/` stores the new Tatkniga manifest and local files.
+- `__artifacts/ingestion/miras/` stores the full Miras catalog and PDFs; `pilot/` retains the original access experiment separately.
 - `tatkniga/workdir/` and `paid_files.csv` retain historical data; they are not imported automatically.
 
 See folder READMEs for pipeline-specific behavior, options, and caveats.
