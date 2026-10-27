@@ -18,6 +18,11 @@ See [local ingestion](docs/local-ingestion.md) for configuration,
 commands, artifact locations, and recovery. The legacy pipeline commands below
 continue to operate independently.
 
+Wikimedia Commons also supports discovery of document-format books through its
+metadata API. Use `discover --source commons` and `status --source commons`;
+cover/title-page images are skipped entirely. This source does not support
+document downloads or the combined `run` command.
+
 Miras downloads exposed original PDFs across all languages using a session
 exported from an ordinary verified browser. Pass `--session-file PATH` to its
 `discover`, `download`, or `run` command; `status` needs no session. The original

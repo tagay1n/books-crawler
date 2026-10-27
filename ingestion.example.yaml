@@ -15,6 +15,9 @@ sources:
   # Pass --session-file PATH to discover/download/run; status needs no session.
   miras:
     archive_url: https://miras.info/projects/mirasxane/books/
+  # Discovery only: document files; cover/title-page images are skipped entirely.
+  commons:
+    archive_url: https://commons.wikimedia.org/wiki/Category:Tatar-language_books
 limits:
   max_pages: 25
   max_items: 25

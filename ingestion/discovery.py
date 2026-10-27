@@ -20,8 +20,9 @@ def discover(http, manifest, adapter, summary, log):
     scan = manifest.data.get("discovery_scan")
     if (not scan or scan.get("complete") or scan.get("restart_required")
             or scan.get("root") != root or scan.get("adapter_version") != version):
+        initial = adapter.initial_request(root) if hasattr(adapter, "initial_request") else PageRequest(root)
         scan = {"version": 1, "id": uuid4().hex, "root": root, "adapter_version": version,
-                "started_at": now(), "complete": False, "frontier": [PageRequest(root).dump()],
+                "started_at": now(), "complete": False, "frontier": [initial.dump()],
                 "visited": [], "pending_records": [], "enumerated_urls": [], "checked_urls": [],
                 "record_keys": [], "enumerated_entries": 0, "listing_pages": 0, "batch_signatures": {}}
         manifest.data["discovery_scan"] = scan

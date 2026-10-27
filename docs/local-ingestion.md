@@ -1,6 +1,6 @@
 # Local document ingestion
 
-The shared `cli.py` implements six sources:
+The shared `cli.py` implements six acquisition sources and one discovery-only source:
 
 - `magarif`: <https://magarif-uku.ru/documents>, collecting archive attachments.
 - `tatarica`: <https://tatarica.org/tat/razdely/tatarika-kitaphanse>, collecting
@@ -14,6 +14,9 @@ The shared `cli.py` implements six sources:
   plus supported public flipbook pages assembled into local PDFs.
 - `miras`: <https://miras.info/projects/mirasxane/books/>, collecting exposed
   original book PDFs across all languages using an exported browser session.
+- `commons`: <https://commons.wikimedia.org/wiki/Category:Tatar-language_books>,
+  discovering document-format book candidates through the public metadata API.
+  Only `discover` and `status` are supported for this source.
 
 All sources use the same local downloader and manifest implementation. Each
 adapter follows its selected catalog. Existing legacy collectors remain independent.
@@ -241,6 +244,50 @@ observations; unchanged consecutive observations are not duplicated. Original
 download results retain their captured observation IDs.
 
 <a id="miras-cookie-based-access-pilot"></a>
+
+## Wikimedia Commons discovery only
+
+Add `sources.commons` from the example to the selected operational YAML:
+
+```bash
+python cli.py --config ingestion.yaml discover --source commons --max-pages 2
+python cli.py --config ingestion.yaml status --source commons
+```
+
+The seed is native category ID `70354556` (Tatar-language books). Discovery follows
+its subcategories by native ID and API continuation tokens, with ten members per
+batch. `--max-pages` counts category-member API batches; file-metadata lookups use
+the same pacing, retry, deadline, and 2 MiB inspection limits as other adapters.
+Shared categories and files are deduplicated; category cycles do not recurse.
+Valid empty batches may advance, while missing categories, API errors, repeated
+batches, and invalid cursors leave work incomplete. Expired/cyclic cursors restart
+the next scan without discarding prior observations.
+
+Only the existing document formats, excluding HTML/HTM, become candidates. Image
+filenames are filtered before file-metadata lookups, and their IDs, titles, and
+metadata are not retained as records or descriptors. Returned MIME must agree
+with the document format. Category membership is admission evidence, not verified
+language or book completeness. No original documents or previews are requested.
+
+File-page IDs supply stable record identities (`file:<id>`), and each record has
+one current-original representation. Retained metadata includes the native title,
+reported MIME, size, page count, upload timestamp, source SHA-1, description URLs,
+and multilingual extended metadata with credits and licensing claims. Unknown
+metadata fields remain intact. Source page counts and hashes are upstream claims,
+not locally verified results. Tracking parameters are removed from file locators;
+continuation tokens remain in checkpoints rather than metadata observations.
+
+Missing or unavailable originals remain metadata-only records. Partial scans do
+not establish disappearance. Unchanged scans update last-seen time without new
+observations; changed metadata or upload versions retain their history. Files
+reached through multiple categories share one record, with API-reported category
+membership and the seed scope retained as evidence.
+
+State and summaries live under `__artifacts/ingestion/commons/`. `download` and
+`run` are rejected before requests or writes. A source-specific request guard
+restricts traffic to the read-only Commons metadata endpoint, including redirects.
+Requests identify the crawler with its repository contact URL; no session export
+is needed. No database or storage migration is involved.
 
 ## Miras books and browser-session access
 

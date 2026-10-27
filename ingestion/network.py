@@ -61,6 +61,8 @@ class HTTP:
     def request(self, method, url, *, headers=None, data=None):
         if method not in {"GET", "POST"}:
             raise ValueError(f"Unsupported retrieval method: {method}")
+        if hasattr(self, "validate_request"):
+            self.validate_request(method, url, data)
         self.budget.check()
         if self.last_request is not None:
             self.budget.wait(max(0, self.settings.pacing_seconds - (time.monotonic() - self.last_request)))

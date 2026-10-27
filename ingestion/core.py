@@ -221,10 +221,13 @@ def download(http, manifest, summary, log, recheck, *, extensions=None, validate
 def run(settings, source, command, *, recheck=False, session_file=None, log=print):
     if source not in SOURCES:
         raise ValueError(f"Unknown source: {source}. Available: {', '.join(SOURCES)}")
+    adapter = SOURCES[source]
+    supported = getattr(adapter, "SUPPORTED_COMMANDS", {"discover", "download", "run", "status"})
+    if command not in supported:
+        raise ValueError(f"{source} supports only: {', '.join(sorted(supported))}.")
     directory = settings.artifacts_root / source
     if command == "status":
         return Manifest(directory, source).status()
-    adapter = SOURCES[source]
     if getattr(adapter, "REQUIRES_SESSION", False) and session_file is None:
         raise ValueError(f"{source} requires --session-file from your verified browser.")
     if session_file is not None and not getattr(adapter, "REQUIRES_SESSION", False):
