@@ -15,7 +15,8 @@ from .paging import CatalogChanged, ListingPage, PageRequest
 
 
 ORIGIN = "https://repo.kpfu.ru"
-COLLECTIONS = {"27574": "books", "18503": "manuscripts", "28060": "il"}
+COLLECTIONS = {"27574": "books", "18503": "manuscripts", "28060": "il", "25046": "shura"}
+PERIODICALS = {"28060": ("Ил", "newspaper"), "25046": ("Шура", "journal")}
 DOCUMENT_FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
 TATAR_LABELS = {"tt", "tat", "tatar", "татарский", "татарча", "татар теле"}
 OTHER_LANGUAGE_LABELS = {"ru", "rus", "russian", "русский", "ar", "ara", "arabic", "арабский",
@@ -31,10 +32,10 @@ def language_selection(values):
     return "excluded" if labels and labels <= OTHER_LANGUAGE_LABELS else "review"
 
 
-def select_tatar(metadata, assets):
+def select_tatar(metadata, assets, *, publication="Il"):
     selection = language_selection(metadata.get("language_raw", []))
     metadata.update(language_selection=selection,
-                    admission_reason="Il issue acquisition requires an explicit source Tatar language label; metadata remains an unverified source claim.")
+                    admission_reason=f"{publication} issue acquisition requires an explicit source Tatar language label; metadata remains an unverified source claim.")
     if selection != "selected":
         code = "language_excluded" if selection == "excluded" else "language_unknown"
         reason = ("Source language metadata does not identify a Tatar-containing issue." if selection == "excluded"
@@ -325,16 +326,18 @@ class CollectionAdapter:
 
     def record(self, html, page_url):
         metadata, assets = record(html, page_url)
-        if self.collection_id == "28060":
+        if self.collection_id in PERIODICALS:
+            title, kind = PERIODICALS[self.collection_id]
             metadata["publication"] = {
-                "title": "Ил", "kind": "newspaper", "issue_title_raw": metadata["title_raw"],
+                "title": title, "kind": kind, "issue_title_raw": metadata["title_raw"],
                 "publication_dates_raw": [row["value_raw"] for row in metadata["bibliography_raw"]
                                           if "dc_date_issued" in row["field_classes"]],
                 "series_raw": [row["value_raw"] for row in metadata["bibliography_raw"]
                                if "dc_relation_ispartofseries" in row["field_classes"]],
             }
-        return select_tatar(metadata, assets) if self.tatar_only else (metadata, assets)
+        return (select_tatar(metadata, assets, publication="Shura" if self.collection_id == "25046" else "Il")
+                if self.tatar_only else (metadata, assets))
 
     def download(self, http, manifest, summary, log, recheck):
         return download(http, manifest, summary, log, recheck,
-                        unit="file_or_issue" if self.collection_id == "28060" else "file_or_book")
+                        unit="file_or_issue" if self.collection_id in PERIODICALS else "file_or_book")
