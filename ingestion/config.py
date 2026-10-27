@@ -21,6 +21,7 @@ class Settings:
     read_timeout_seconds: float
     pacing_seconds: float
     retry_attempts: int
+    max_derived_pdf_bytes: int = 512 * 1024 * 1024
 
 
 def load_settings(path: Path | None, source: str = "magarif") -> Settings:
@@ -75,4 +76,7 @@ def load_settings(path: Path | None, source: str = "magarif") -> Settings:
         **{key: number(network, key) for key in (
             "connect_timeout_seconds", "read_timeout_seconds", "pacing_seconds")},
         retry_attempts=number(network, "retry_attempts", True),
+        max_derived_pdf_bytes=number(
+            {"max_derived_pdf_bytes": limits.get("max_derived_pdf_bytes", 512 * 1024 * 1024)},
+            "max_derived_pdf_bytes", True),
     )

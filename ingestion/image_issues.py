@@ -1,14 +1,16 @@
 """Publication-level acquisition and derived PDFs from ordered upstream JPEGs."""
 
 import hashlib
+from io import BytesIO
 import json
+import math
 import os
 from pathlib import Path
 import tempfile
 from uuid import uuid4
 
 import pymupdf
-from PIL import Image
+from PIL import Image, ImageOps, __version__ as PILLOW_VERSION
 
 from .core import acquire, check_space, file_digests, valid_local
 from .discovery import READ_ERRORS
@@ -17,6 +19,40 @@ from .state import now
 
 
 ASSEMBLER_VERSION = "jpeg-pages-v1/pymupdf-" + pymupdf.VersionBind
+COLOUR_POLICY = {"dpi": 200, "jpeg_quality": 85, "mode": "RGB"}
+CONVERSION_VERSION = "colour-lanczos-v1"
+
+
+def image_policy(record):
+    policy = record["observations"][-1]["metadata"].get("pdf_image_policy")
+    if policy is not None and policy != COLOUR_POLICY:
+        raise ValueError("Unsupported PDF image conversion policy.")
+    return policy
+
+
+def colour_page(path):
+    """Derive a 200 DPI colour page without changing the retained original."""
+    with Image.open(path) as source:
+        dpi = source.info.get("dpi")
+        if (not dpi or len(dpi) != 2
+                or any(not math.isfinite(float(d)) or float(d) < 200 for d in dpi)):
+            raise ValueError("200 DPI assembly requires source JPEG resolution metadata of at least 200 DPI.")
+        xdpi, ydpi = map(float, dpi)
+        orientation = source.getexif().get(274, 1)
+        profile = source.info.get("icc_profile") if source.mode == "RGB" else None
+        if source.mode not in {"RGB", "L"}:
+            raise ValueError("Colour assembly requires RGB or grayscale source JPEGs.")
+        image = ImageOps.exif_transpose(source)
+        if orientation in {5, 6, 7, 8}:
+            xdpi, ydpi = ydpi, xdpi
+        width, height = image.width * 72 / xdpi, image.height * 72 / ydpi
+        image = image.convert("RGB").resize(
+            (math.ceil(image.width * 200 / xdpi), math.ceil(image.height * 200 / ydpi)),
+            Image.Resampling.LANCZOS)
+        encoded = BytesIO()
+        image.save(encoded, format="JPEG", quality=85, optimize=True, dpi=(200, 200),
+                   **({"icc_profile": profile} if profile else {}))
+        return encoded.getvalue(), width, height
 
 
 def validate_jpeg(path):
@@ -42,6 +78,10 @@ def inputs_for(record, assets):
               for a in assets]
     payload = {"assembler_version": ASSEMBLER_VERSION, "source_observation_id": observation["id"],
                "pages": [{k: item[k] for k in ("asset_id", "page_index", "sha256")} for item in inputs]}
+    policy = image_policy(record)
+    if policy is not None:
+        payload.update(image_policy=policy, pillow_version=PILLOW_VERSION,
+                       conversion_version=CONVERSION_VERSION)
     fingerprint = hashlib.sha256(json.dumps(payload, sort_keys=True).encode()).hexdigest()
     return fingerprint, inputs
 
@@ -67,10 +107,15 @@ def assemble(http, manifest, record, assets, temporary, summary):
                 budget.check()
                 check_space(manifest.directory, settings.disk_reserve_bytes, estimated)
                 path = manifest.directory / asset["results"][-1]["path"]
-                # MuPDF embeds the original JPEG stream and honors its orientation.
-                with pymupdf.open(path) as image:
-                    with pymupdf.open("pdf", image.convert_to_pdf()) as page:
-                        output.insert_pdf(page)
+                if image_policy(record) is not None:
+                    encoded, width, height = colour_page(path)
+                    page = output.new_page(width=width, height=height)
+                    page.insert_image(page.rect, stream=encoded)
+                else:
+                    # Existing adapters retain their original JPEG embedding policy.
+                    with pymupdf.open(path) as image:
+                        with pymupdf.open("pdf", image.convert_to_pdf()) as page:
+                            output.insert_pdf(page)
             output.set_metadata({"title": record["observations"][-1]["metadata"]["title"],
                                  "creator": "BooksCrawler image publication assembler",
                                  "producer": ASSEMBLER_VERSION})
@@ -80,8 +125,8 @@ def assemble(http, manifest, record, assets, temporary, summary):
             os.fsync(handle.fileno())
         budget.check()
         sha, md5, size = file_digests(partial)
-        if size > settings.max_file_bytes:
-            raise ValueError("Assembled PDF exceeds max_file_bytes.")
+        if size > settings.max_derived_pdf_bytes:
+            raise ValueError("Assembled PDF exceeds max_derived_pdf_bytes.")
         with pymupdf.open(partial) as document:
             if document.page_count != len(assets):
                 raise ValueError("Assembled PDF page count does not match its inputs.")
@@ -93,6 +138,9 @@ def assemble(http, manifest, record, assets, temporary, summary):
                                  "assembler_version": ASSEMBLER_VERSION, "input_fingerprint": fingerprint,
                                  "source_observation_id": record["observations"][-1]["id"], "inputs": inputs,
                                  "path": target.relative_to(manifest.directory).as_posix(),
+                                 "image_policy": image_policy(record),
+                                 "pillow_version": PILLOW_VERSION if image_policy(record) else None,
+                                 "conversion_version": CONVERSION_VERSION if image_policy(record) else None,
                                  "sha256": sha, "md5": md5, "size": size, "pages": len(assets)})
         state.update(status="complete", last_checked=now())
         state.pop("last_error", None)

@@ -132,7 +132,7 @@ class Manifest:
         issues = [r for r in self.data["records"].values()
                   if r["observations"][-1]["metadata"].get("expected_pages") is not None]
         if issues:
-            pdf_key = "pdf_books" if self.data["source"] == "tatkniga" else "pdf_issues"
+            pdf_key = "pdf_books" if self.data["source"] in {"tatkniga", "kfu_books", "kfu_manuscripts"} else "pdf_issues"
             result[pdf_key] = {
                 state: sum(r.get("pdf", {}).get("status", "incomplete") == state for r in issues)
                 for state in ("complete", "incomplete", "failed")}

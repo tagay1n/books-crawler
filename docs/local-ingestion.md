@@ -22,9 +22,9 @@ The shared `cli.py` implements ten acquisition sources and one discovery-only so
 - `internet_archive`: <https://archive.org>, collecting public original document
   uploads from text items explicitly labelled as Tatar.
 - `kfu_books`: <https://repo.kpfu.ru/jspui/handle/net/27574>, collecting public
-  direct document files from the Turkic–Tatar books collection.
+  direct document files and supported JPEG readers from the Turkic–Tatar books collection.
 - `kfu_manuscripts`: <https://repo.kpfu.ru/jspui/handle/net/18503>, collecting public
-  direct document files from the Turkic–Tatar manuscript collection.
+  direct document files and supported JPEG readers from the Turkic–Tatar manuscript collection.
 
 All sources use the same local downloader and manifest implementation. Each
 adapter follows its selected catalog. Existing legacy collectors remain independent.
@@ -186,10 +186,48 @@ Restriction labels are interpreted per `.fileBlock`, not across the entire book.
 A file marked “Ограниченный доступ”, showing a lock, or offering “Запросить копию”
 is held as `kfu_restricted`. A public PDF remains eligible even when the same
 record's ZIP package is restricted. Supported direct document formats reuse the
-shared downloader; HTML, ZIP packages, images, and page-image readers are retained
-only as metadata. Thumbnails are not documents and duplicate thumbnail/download
-links do not create separate assets. No image-reader traversal, archive expansion,
-or PDF assembly occurs for these sources.
+shared downloader. HTML and ZIP packages remain metadata; archives are not expanded.
+Thumbnails are skipped and duplicate thumbnail/download links do not create separate assets.
+
+When no eligible public direct PDF is available, discovery resolves public
+`Set of JPEG` readers. It checks the advertised bitstream range, numbered filename
+endpoints, file count, and the reader's explicitly linked IIIF manifest. The manifest
+must contain one sequence with the same number of canvases, numbered in order,
+with distinct full JPEG resources. Original bitstream URLs are expanded only within
+the declared sequence and numbered filename ranges; IIIF image derivatives and
+thumbnails are not downloaded. Multiple sets are ordered by nonoverlapping bitstream
+ranges. An unrecognized filename pattern (for example `001.jpg ... Целый.jpg`)
+holds all public image sets in that record as `reader_unsupported` for review.
+Reader fetch or malformed-manifest failures leave the record pending for retry.
+Restricted readers are never fetched. Public direct PDFs take priority without
+fetching the reader. Reader and manifest requests use the ordinary request pacing,
+timeouts, retries, deadline, and 2 MiB text response cap.
+
+KFU image PDFs use **200 DPI colour, JPEG quality 85**, with Lanczos downsampling,
+EXIF orientation handling, retained RGB ICC profiles, and the original physical page
+dimensions. No grayscale conversion or lower-resolution fallback is used. A source
+JPEG without valid DPI metadata, below 200 DPI, or outside RGB/grayscale colour modes
+prevents publication and remains available for review; images are not upscaled to
+claim missing detail. The original JPEG bytes remain unchanged in `files/`.
+
+`--limit` counts each direct file or entire image book as one item. Completed image
+downloads survive byte caps, deadlines, and interruptions. A later `download` resumes
+from verified originals, and publishes `derived/<sha256>.pdf` atomically only after
+every expected page is present and the PDF page count is verified. No incomplete
+PDF is published. Policy, Pillow version, original hashes, source observation, page
+order, and conversion version participate in the assembly fingerprint. Missing or
+damaged PDFs are rebuilt; unchanged complete books are reused without network access.
+`--recheck` revalidates original images. `status` reports `pdf_books` and `image_pages`.
+
+The optional `limits.max_derived_pdf_bytes` bounds assembled PDFs separately from
+individual downloaded originals. Its default is 536870912 bytes (512 MiB); the
+existing `max_file_bytes` still bounds each original image/document. Both limits
+are enforced, and assembly also respects the shared disk reserve and deadline.
+Keeping originals requires additional disk space beyond the compressed PDF.
+
+Discovery parser version 2 starts a fresh collection scan so previously observed
+image-only records can acquire page descriptors. Existing original files and
+historical observations remain retained. Repeat discovery to complete that scan.
 
 Restricted document URLs, names, displayed sizes, formats, and copy-request links
 remain available in the manifest. Restrictions are not download failures, and
@@ -212,7 +250,7 @@ and ZIP files; requesting its PDF anonymously returns HTML titled “Вход”
 HTTP 200. `net/28236` exposes a public PDF and a restricted ZIP. The adapter does
 not register accounts, authenticate, contact anyone, or submit request forms.
 
-Manual verification on 2026-10-27 inspected the first two pages of each
+Initial direct-file verification on 2026-10-27 inspected the first two pages of each
 collection: 40 book records and 40 manuscript records. Both scans retained the
 next request at `offset=40` and have no unresolved discovery errors. The book
 sample exposed 27 eligible direct documents and 13 restricted document assets;
@@ -227,8 +265,20 @@ size, MD5 `c3f8ebbe01bf316fa0c256360aa5c77e`, SHA-256
 `12d23afb7a2cfb1ee948c2c112d9e0b3bce899834cfded4b68e5b9e3df3097bd`,
 and acquisition-observation link. A repeated CLI download on an isolated copy
 of that completed sample skipped it with zero requests. The main queues retain
-26 pending book documents and one pending manuscript document. No automated
+26 pending book documents and one pending manuscript document at that point. No automated
 tests were created or run; verification used code inspection and manual CLI runs.
+
+Colour-reader verification on 2026-10-27 used public manuscript `net/27026`
+([Хикмәт]): its two retained RGB JPEGs total 2,572,071 bytes at 300 DPI. The CLI
+produced a two-page 1,394,253-byte colour PDF, with embedded image resolution at
+least 200 DPI on both axes. Poppler rendering confirmed the red annotations and
+blue stamp remain coloured. Repeating the download reused the PDF with zero
+requests. A byte-capped run saved the first image without publishing a PDF; its
+next invocation skipped that image and acquired only the second. A deliberately
+small derived-PDF cap rejected publication, and restoring the cap rebuilt from
+the originals without network requests. Bounded CLI discovery also resolved all
+558 page descriptors for `net/28071` and 111 pages across two ordered readers for
+`net/27974`, then preserved the remaining catalog work at its soft deadline.
 
 ### Shared configuration and operation
 
@@ -634,6 +684,8 @@ These checks do not perform structural document validation or OCR.
 
 The local-pilot example caps discovery at 25 pages, acquisition at 25 started
 items, attempted download body bytes at 1 GiB, and individual files at 100 MiB.
+Assembled PDFs have a separate optional `limits.max_derived_pdf_bytes` cap,
+defaulting to 512 MiB; individual downloaded originals retain the file-size cap.
 It reserves 512 MiB of disk and uses a 15-minute soft deadline. Requests are
 sequential, paced one second apart, and use 10-second connection/60-second read
 timeouts with at most three attempts for retryable transport/server failures.
@@ -676,5 +728,5 @@ its own `.tmp/run-*` directory; a later run does not need or automatically delet
 it. A published file whose manifest commit was interrupted may be downloaded
 again and deduplicated. The local manifest is the progress authority.
 
-This delivery stores originals and Kazan Utları derived PDFs locally. It does not
+This delivery stores originals and supported reader-derived PDFs locally. It does not
 upload, import catalog data, classify language, expand archives, or run scheduled jobs.

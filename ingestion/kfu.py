@@ -1,6 +1,7 @@
-"""KFU historical collections: public direct documents and access evidence."""
+"""KFU historical collections: public documents and colour page-image PDFs."""
 
 import json
+from email.message import Message
 from pathlib import PurePosixPath
 import re
 from urllib.parse import parse_qs, unquote, urlsplit
@@ -36,6 +37,15 @@ def bitstream(url):
             or any(ord(c) < 32 or ord(c) == 127 for c in name)):
         raise ValueError("Unsafe KFU bitstream filename.")
     return match[1], match[2], name
+
+
+def reader_reference(url):
+    parsed = urlsplit(url)
+    match = re.fullmatch(r"(net/[1-9]\d*)/([1-9]\d*)-([1-9]\d*)/view", parsed.query)
+    if (not same_origin(url, ORIGIN) or parsed.path != "/jspui/bitstream.jsp"
+            or parsed.fragment or match is None or int(match[3]) < int(match[2])):
+        raise ValueError("Invalid KFU image-reader URL.")
+    return match[1], int(match[2]), int(match[3])
 
 
 def offset(url, root):
@@ -148,6 +158,22 @@ def record(html, page_url):
         inventory.append(entry)
         documents = [link for link in links if urlsplit(link["url"]).path.startswith("/jspui/bitstream/")]
         entry["selection_reason"] = "reader_or_metadata_only"
+        for link in links:
+            target = link["url"]
+            if urlsplit(target).path != "/jspui/bitstream.jsp":
+                continue
+            reference, first, last = reader_reference(target)
+            if reference != item_handle:
+                raise ValueError("KFU image reader belongs to another record.")
+            code = "kfu_restricted" if restricted else "kfu_reader"
+            assets[target] = {"url": target, "label": descriptions.get("Файл:") or "Image reader",
+                              "source_asset_key": f"reader:{first}-{last}",
+                              "filename_raw": descriptions.get("Файл:"),
+                              "displayed_count_raw": descriptions.get("Объем:"),
+                              "format_raw": descriptions.get("Формат:"),
+                              "unsupported_code": code,
+                              "unsupported_reason": "Restricted KFU image reader." if restricted else "Reader awaits page enumeration."}
+            entry["selection_reason"] = code
         for link in documents:
             target = link["url"]
             reference, sequence, name = bitstream(target)
@@ -183,6 +209,20 @@ def record_key(metadata):
     return metadata["handle"]
 
 
+def resolve_record(http, metadata, assets):
+    from .kfu_reader import resolve
+
+    return resolve(http, metadata, assets)
+
+
+def download(http, manifest, summary, log, recheck):
+    from .core import download as download_documents
+    from .image_issues import download as download_images
+
+    download_documents(http, manifest, summary, log, recheck)
+    download_images(http, manifest, summary, log, recheck, unit="file_or_book")
+
+
 def prepare_http(http, session_file):
     http.session.headers.update({"Accept-Language": "ru,en;q=0.5"})
 
@@ -191,6 +231,12 @@ def prepare_http(http, session_file):
             raise ValueError("KFU acquisition must stay on its HTTPS source origin.")
         if urlsplit(url).path.startswith("/jspui/bitstream/"):
             return ("file", *bitstream(url))
+        if urlsplit(url).path == "/jspui/bitstream.jsp":
+            return ("reader", *reader_reference(url))
+        parsed = urlsplit(url)
+        manifest = re.fullmatch(r"/api/manifest/(net/[1-9]\d*)/([1-9]\d*)-([1-9]\d*)/info.json", parsed.path)
+        if manifest and not parsed.query and not parsed.fragment and int(manifest[3]) >= int(manifest[2]):
+            return ("manifest", manifest[1], int(manifest[2]), int(manifest[3]))
         native = handle(url)
         if native.rsplit("/", 1)[1] in COLLECTIONS:
             offset(url, http.settings.archive_url)
@@ -218,6 +264,12 @@ def prepare_http(http, session_file):
         for hop in [*response.history, response]:
             if bitstream(hop.url) != expected:
                 raise InvalidDocument("KFU download response belongs to a different file.")
+        if asset.get("kind") == "page_image":
+            disposition = Message()
+            disposition["Content-Disposition"] = response.headers.get("Content-Disposition", "")
+            filename = disposition.get_filename()
+            if filename is not None and filename != asset["filename_raw"]:
+                raise InvalidDocument("KFU original image filename disagrees with the advertised numbered range.")
 
     http.validate_request = validate_request
     http.session.hooks["response"].append(check_response)
@@ -225,13 +277,15 @@ def prepare_http(http, session_file):
 
 
 class CollectionAdapter:
-    PARSER_VERSION = 1
+    PARSER_VERSION = 2
     UNIQUE_RECORDS = True
     parse_listing = staticmethod(parse_listing)
     verification_request = staticmethod(verification_request)
     record = staticmethod(record)
     record_key = staticmethod(record_key)
     prepare_http = staticmethod(prepare_http)
+    resolve_record = staticmethod(resolve_record)
+    download = staticmethod(download)
 
     def __init__(self, collection_id):
         if collection_id not in COLLECTIONS:
