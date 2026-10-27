@@ -12,7 +12,7 @@ The new shared CLI supports local discovery and document downloads from the
 Мәгариф archive, Tatarica library, Darul-Kutub catalog, Kazan Utları archive,
 Tatkniga's public library, Miras books, Isxaki's book/work collections, and
 Tatar-labelled Internet Archive text items with public original document uploads,
-and KFU's Turkic–Tatar books and manuscript collections with public direct files
+and KFU's Turkic–Tatar books, manuscripts, and «Ил» newspaper issues with public direct files
 and supported public JPEG readers.
 Tatkniga downloads direct files for Tatar-labelled
 editions and assembles supported public readers, including those with no language
@@ -92,6 +92,10 @@ for its session format and recovery instructions.
   - `python cli.py --config ingestion.yaml discover --source kfu_manuscripts --max-pages 1`
   - `python cli.py --config ingestion.yaml download --source kfu_books --limit 1`
   - `python cli.py --config ingestion.yaml status --source kfu_manuscripts`
+- KFU «Ил» newspaper (explicit Tatar language labels required):
+  - `python cli.py --config ingestion.yaml discover --source kfu_il --max-pages 1`
+  - `python cli.py --config ingestion.yaml download --source kfu_il --limit 1`
+  - `python cli.py --config ingestion.yaml status --source kfu_il`
 
 ## State files
 
@@ -103,6 +107,7 @@ for its session format and recovery instructions.
 - `__artifacts/ingestion/isxaki/` stores collection metadata and unchanged original document files.
 - `__artifacts/ingestion/internet_archive/` stores Archive metadata, original-upload files, and resumable discovery state.
 - `__artifacts/ingestion/kfu_books/` and `kfu_manuscripts/` store independent collection manifests, original files, derived colour PDFs, and restricted-file evidence.
+- `__artifacts/ingestion/kfu_il/` stores Il issue metadata, language/access decisions, original files, and an independent resumable discovery queue.
 - `__artifacts/ingestion/miras/` stores the full Miras catalog and PDFs; `pilot/` retains the original access experiment separately.
 - `tatkniga/workdir/` and `paid_files.csv` retain historical data; they are not imported automatically.
 

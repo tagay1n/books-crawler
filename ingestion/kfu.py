@@ -15,8 +15,38 @@ from .paging import CatalogChanged, ListingPage, PageRequest
 
 
 ORIGIN = "https://repo.kpfu.ru"
-COLLECTIONS = {"27574": "books", "18503": "manuscripts"}
+COLLECTIONS = {"27574": "books", "18503": "manuscripts", "28060": "il"}
 DOCUMENT_FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
+TATAR_LABELS = {"tt", "tat", "tatar", "татарский", "татарча", "татар теле"}
+OTHER_LANGUAGE_LABELS = {"ru", "rus", "russian", "русский", "ar", "ara", "arabic", "арабский",
+                         "fa", "fas", "per", "persian", "персидский", "ba", "bak", "bashkir", "башкирский",
+                         "crh", "crimean tatar", "крымскотатарский", "tr", "tur", "turkish", "турецкий",
+                         "en", "eng", "english", "английский", "de", "deu", "ger", "german", "немецкий"}
+
+
+def language_selection(values):
+    labels = {" ".join(value.casefold().split()) for value in values if isinstance(value, str) and value.strip()}
+    if labels & TATAR_LABELS:
+        return "selected"
+    return "excluded" if labels and labels <= OTHER_LANGUAGE_LABELS else "review"
+
+
+def select_tatar(metadata, assets):
+    selection = language_selection(metadata.get("language_raw", []))
+    metadata.update(language_selection=selection,
+                    admission_reason="Il issue acquisition requires an explicit source Tatar language label; metadata remains an unverified source claim.")
+    if selection != "selected":
+        code = "language_excluded" if selection == "excluded" else "language_unknown"
+        reason = ("Source language metadata does not identify a Tatar-containing issue." if selection == "excluded"
+                  else "Missing or unrecognized source language metadata requires review before acquisition.")
+        for asset in assets:
+            # Keep restrictions as the primary access decision on restricted assets.
+            if asset.get("unsupported_code") in {None, "kfu_reader"}:
+                asset.update(unsupported_code=code, unsupported_reason=reason)
+        for entry in metadata["files"]:
+            if entry["selection_reason"] in {"eligible", "kfu_reader"}:
+                entry["selection_reason"] = code
+    return metadata, assets
 
 
 def handle(url):
@@ -215,12 +245,13 @@ def resolve_record(http, metadata, assets):
     return resolve(http, metadata, assets)
 
 
-def download(http, manifest, summary, log, recheck):
+def download(http, manifest, summary, log, recheck, *, unit="file_or_book"):
     from .core import download as download_documents
     from .image_issues import download as download_images
 
+    summary.update(download_unit=unit, pdf_assembled=0, pdf_reused=0)
     download_documents(http, manifest, summary, log, recheck)
-    download_images(http, manifest, summary, log, recheck, unit="file_or_book")
+    download_images(http, manifest, summary, log, recheck, unit=unit)
 
 
 def prepare_http(http, session_file):
@@ -281,13 +312,29 @@ class CollectionAdapter:
     UNIQUE_RECORDS = True
     parse_listing = staticmethod(parse_listing)
     verification_request = staticmethod(verification_request)
-    record = staticmethod(record)
     record_key = staticmethod(record_key)
     prepare_http = staticmethod(prepare_http)
     resolve_record = staticmethod(resolve_record)
-    download = staticmethod(download)
 
-    def __init__(self, collection_id):
+    def __init__(self, collection_id, *, tatar_only=False):
         if collection_id not in COLLECTIONS:
             raise ValueError("Unknown KFU collection.")
         self.ARCHIVE_URL = f"{ORIGIN}/jspui/handle/net/{collection_id}"
+        self.tatar_only = tatar_only
+        self.collection_id = collection_id
+
+    def record(self, html, page_url):
+        metadata, assets = record(html, page_url)
+        if self.collection_id == "28060":
+            metadata["publication"] = {
+                "title": "Ил", "kind": "newspaper", "issue_title_raw": metadata["title_raw"],
+                "publication_dates_raw": [row["value_raw"] for row in metadata["bibliography_raw"]
+                                          if "dc_date_issued" in row["field_classes"]],
+                "series_raw": [row["value_raw"] for row in metadata["bibliography_raw"]
+                               if "dc_relation_ispartofseries" in row["field_classes"]],
+            }
+        return select_tatar(metadata, assets) if self.tatar_only else (metadata, assets)
+
+    def download(self, http, manifest, summary, log, recheck):
+        return download(http, manifest, summary, log, recheck,
+                        unit="file_or_issue" if self.collection_id == "28060" else "file_or_book")

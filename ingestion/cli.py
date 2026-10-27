@@ -66,7 +66,7 @@ def discover(ctx: typer.Context, source: str = typer.Option(..., "--source"),
 
 @app.command()
 def download(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-             limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary, files/books for tatkniga and KFU."),
+             limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary, files/publications for tatkniga and KFU."),
              recheck: bool = typer.Option(False, "--recheck", help="Also revalidate completed downloads."),
              session_file: Optional[Path] = typer.Option(None, "--session-file", help="Miras-only browser session export.")):
     """Download committed local work; retry failed or missing originals."""
@@ -75,7 +75,7 @@ def download(ctx: typer.Context, source: str = typer.Option(..., "--source"),
 
 @app.command("run")
 def run_command(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-                limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary, files/books for tatkniga and KFU."),
+                limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary, files/publications for tatkniga and KFU."),
                 max_pages: Optional[int] = typer.Option(None, "--max-pages"),
                 recheck: bool = typer.Option(False, "--recheck"),
                 session_file: Optional[Path] = typer.Option(None, "--session-file", help="Miras-only browser session export.")):
