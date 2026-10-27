@@ -25,10 +25,9 @@ See [local ingestion](docs/local-ingestion.md) for configuration,
 commands, artifact locations, and recovery. The legacy pipeline commands below
 continue to operate independently.
 
-Wikimedia Commons also supports discovery of document-format books through its
-metadata API. Use `discover --source commons` and `status --source commons`;
-cover/title-page images are skipped entirely. This source does not support
-document downloads or the combined `run` command.
+Wikimedia Commons supports discovery and downloading of original document-format
+books from its Tatar-language category. Downloads verify the source-reported size
+and SHA-1 before publication. Cover/title-page images are skipped entirely.
 
 Miras downloads exposed original PDFs across all languages using a session
 exported from an ordinary verified browser. Pass `--session-file PATH` to its
@@ -101,6 +100,10 @@ for its session format and recovery instructions.
   - `python cli.py --config ingestion.yaml discover --source tatargalyame --max-pages 15`
   - `python cli.py --config ingestion.yaml download --source tatargalyame --limit 1`
   - `python cli.py --config ingestion.yaml status --source tatargalyame`
+- Wikimedia Commons (Tatar-language books and subcategories; original documents only):
+  - `python cli.py --config ingestion.yaml discover --source commons --max-pages 5`
+  - `python cli.py --config ingestion.yaml download --source commons --limit 1`
+  - `python cli.py --config ingestion.yaml status --source commons`
 
 ## State files
 
@@ -114,6 +117,7 @@ for its session format and recovery instructions.
 - `__artifacts/ingestion/kfu_books/` and `kfu_manuscripts/` store independent collection manifests, original files, derived colour PDFs, and restricted-file evidence.
 - `__artifacts/ingestion/kfu_il/` stores Il issue metadata, language/access decisions, original files, and an independent resumable discovery queue.
 - `__artifacts/ingestion/tatargalyame/` stores educational resource metadata, category provenance, hosted originals, and deferred external references.
+- `__artifacts/ingestion/commons/` stores original documents, source SHA-1 checks, category evidence, and licensing metadata.
 - `__artifacts/ingestion/miras/` stores the full Miras catalog and PDFs; `pilot/` retains the original access experiment separately.
 - `tatkniga/workdir/` and `paid_files.csv` retain historical data; they are not imported automatically.
 

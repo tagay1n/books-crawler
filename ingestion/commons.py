@@ -1,22 +1,24 @@
-"""Discover document-format books on Commons; never acquire document bytes."""
+"""Discover Commons books and acquire their checksum-verified original files."""
 
+import hashlib
 import json
 from pathlib import PurePosixPath
+import re
 from urllib.parse import parse_qs, parse_qsl, unquote, urlencode, urlsplit, urlunsplit
 
 from .documents import DOCUMENT_EXTENSIONS, canonical
-from .network import SourceAccessError
+from .network import BudgetStop, InvalidDocument, SourceAccessError
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
 ARCHIVE_URL = "https://commons.wikimedia.org/wiki/Category:Tatar-language_books"
 API_URL = "https://commons.wikimedia.org/w/api.php"
 ROOT_CATEGORY_ID = 70354556
-PARSER_VERSION = 2
-SUPPORTED_COMMANDS = {"discover", "status"}
+PARSER_VERSION = 3
+SUPPORTED_COMMANDS = {"discover", "download", "run", "status"}
 DOCUMENT_FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
 BATCH_SIZE = 10
-USER_AGENT = "BooksCrawlerBot/1.0 (https://github.com/tagay1n/books-crawler; Commons discovery)"
+USER_AGENT = "BooksCrawlerBot/1.0 (https://github.com/tagay1n/books-crawler; local Commons acquisition)"
 MIMES = {
     ".pdf": {"application/pdf"}, ".djvu": {"image/vnd.djvu", "image/x-djvu", "application/x-djvu"},
     ".djv": {"image/vnd.djvu", "image/x-djvu", "application/x-djvu"},
@@ -53,27 +55,111 @@ def parameters(url):
     return {key: values[0] for key, values in query.items()}
 
 
+def original_identity(url):
+    parsed = urlsplit(url)
+    match = re.fullmatch(r"/wikipedia/commons/([0-9a-f])/([0-9a-f]{2})/([^/]+)", parsed.path)
+    if (parsed.scheme != "https" or parsed.netloc != "upload.wikimedia.org"
+            or parsed.query or parsed.fragment or match is None or match[1] != match[2][0]):
+        raise InvalidDocument("Commons downloads must use an original upload.wikimedia.org file URL.")
+    name = unquote(match[3])
+    if (name in {".", ".."} or any(c in name for c in "/\\")
+            or any(ord(c) < 32 or ord(c) == 127 for c in name)
+            or extension(name) not in DOCUMENT_FORMATS):
+        raise InvalidDocument("Commons original URL has an unsafe or unsupported filename.")
+    return match[1], match[2], name
+
+
+def source_hints(asset):
+    size, sha1 = asset.get("reported_size"), asset.get("source_sha1")
+    if type(size) is not int or size <= 0 or not isinstance(sha1, str) or not re.fullmatch(r"[0-9a-f]{40}", sha1):
+        raise InvalidDocument("Commons original requires a valid reported size and hexadecimal SHA-1; refresh discovery.")
+    return {"size": size, "sha1": sha1}
+
+
+def source_version(asset):
+    hints = source_hints(asset)
+    return f"{hints['sha1']}:{hints['size']}"
+
+
 def prepare_http(http, session_file):
-    http.session.headers.update({"User-Agent": USER_AGENT, "Accept-Encoding": "gzip"})
+    http.session.headers.update({"User-Agent": USER_AGENT, "Accept-Encoding": "identity"})
+
+    def route(url):
+        if urlsplit(url).netloc == "upload.wikimedia.org":
+            return ("file", *original_identity(url))
+        return "api", tuple(sorted(parameters(url).items()))
 
     def validate_request(method, url, data):
         if method != "GET" or data:
-            raise ValueError("Commons discovery permits read-only GET requests only.")
-        parameters(url)
+            raise ValueError("Commons ingestion permits read-only GET requests only.")
+        route(url)
 
     http.validate_request = validate_request
 
     def check_response(response, *args, **kwargs):
         try:
-            parameters(response.url)
-            if response.is_redirect:
-                parameters(canonical(response.headers["Location"], response.url))
-        except ValueError:
+            current = route(response.url)
+            if response.is_redirect and route(canonical(response.headers["Location"], response.url)) != current:
+                raise ValueError("Commons redirect changed the requested resource.")
+        except (ValueError, KeyError):
             response.close()
-            raise SourceAccessError("Commons metadata API redirected outside its read-only discovery endpoint.") from None
+            raise SourceAccessError("Commons redirected outside its metadata endpoint or requested original upload.") from None
         return response
 
     http.session.hooks["response"].append(check_response)
+
+    def validate_acquisition(asset):
+        name = original_identity(asset["url"])[2]
+        if (asset.get("unsupported_reason") or asset.get("extension") != extension(name)
+                or asset.get("mime") not in MIMES.get(asset.get("extension"), set())):
+            raise InvalidDocument("Invalid or ineligible Commons original-file descriptor.")
+        hints = source_hints(asset)
+        if hints["size"] > http.settings.max_file_bytes:
+            raise InvalidDocument("Commons-reported original size exceeds max_file_bytes.")
+        if hints["size"] > http.settings.max_download_bytes - http.budget.bytes:
+            raise BudgetStop("download byte cap")
+
+    def validate_response(response, asset):
+        expected = original_identity(asset["url"])
+        if any(original_identity(hop.url) != expected for hop in [*response.history, response]):
+            raise InvalidDocument("Commons download response belongs to a different original file.")
+        if response.status_code == 200:
+            mime = response.headers.get("Content-Type", "").split(";", 1)[0].strip().lower()
+            if mime not in MIMES[asset["extension"]]:
+                raise InvalidDocument("Commons download MIME disagrees with its document format.")
+
+    def validate_acquired(asset, actual):
+        if any(actual.get(key) != expected for key, expected in source_hints(asset).items()):
+            raise InvalidDocument("Commons original size or SHA-1 mismatch; refresh discovery before retrying.")
+        return {"source_integrity_checks": ["size", "sha1"]}
+
+    http.validate_acquisition = validate_acquisition
+    http.validate_download_response = validate_response
+    http.validate_acquired_asset = validate_acquired
+
+
+def download(http, manifest, summary, log, recheck):
+    from .core import download as download_originals
+
+    # Version hints also work for manifests produced by the discovery-only adapter.
+    for asset in manifest.data["assets"].values():
+        if asset.get("current", True) and asset["status"] != "unsupported":
+            try:
+                asset["source_version"] = source_version(asset)
+            except InvalidDocument:
+                pass  # The shared per-asset acquisition path reports invalid hints.
+    manifest.save()
+
+    def inspect_file(path):
+        digest = hashlib.sha1()
+        with path.open("rb") as handle:
+            for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+                http.budget.check()
+                digest.update(chunk)
+        return {"sha1": digest.hexdigest()}
+
+    download_originals(http, manifest, summary, log, recheck,
+                       extensions=DOCUMENT_FORMATS, validate_file=inspect_file)
 
 
 def category_request(category_id, continuation=None, seen=()):
@@ -231,6 +317,8 @@ def record(text, request_url):
         if key in info:
             info[key] = clean_url(info[key])
     url = clean_url(info.get("url"))
+    if extension(original_identity(url)[2]) != suffix:
+        raise ValueError("Commons original URL does not agree with its document format.")
     asset = {"url": url, "label": metadata["title"], "source_asset_key": "original",
              "extension": suffix, "mime": info["mime"], "reported_size": info["size"],
              "unsupported_reason": None, "unsupported_code": None}
@@ -238,6 +326,7 @@ def record(text, request_url):
                           ("source_page_count", "pagecount")):
         if source in info:
             asset[field] = info[source]
+    asset["source_version"] = source_version(asset)
     metadata.update(availability="available", upstream=page,
                     attachments=[{key: value for key, value in asset.items() if key not in {"unsupported_reason"}}])
     return metadata, [asset]

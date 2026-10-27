@@ -173,7 +173,8 @@ def acquire(http, manifest, asset, temporary, summary, *, extensions=None, valid
                 source_validation = {}
                 if hasattr(http, "validate_acquired_asset"):
                     source_validation = http.validate_acquired_asset(
-                        asset, {"size": size, "sha256": digest, "md5": md5.hexdigest()})
+                        asset, {**(validation if isinstance(validation, dict) else {}),
+                                "size": size, "sha256": digest, "md5": md5.hexdigest()})
                 target = manifest.directory / "files" / (digest + extension)
                 target.parent.mkdir(parents=True, exist_ok=True)
                 reused = target.is_file() and file_digests(target)[0] == digest

@@ -1,6 +1,6 @@
 # Local document ingestion
 
-The shared `cli.py` implements twelve acquisition sources and one discovery-only source:
+The shared `cli.py` implements thirteen acquisition sources:
 
 - `magarif`: <https://magarif-uku.ru/documents>, collecting archive attachments.
 - `tatarica`: <https://tatarica.org/tat/razdely/tatarika-kitaphanse>, collecting
@@ -15,8 +15,8 @@ The shared `cli.py` implements twelve acquisition sources and one discovery-only
 - `miras`: <https://miras.info/projects/mirasxane/books/>, collecting exposed
   original book PDFs across all languages using an exported browser session.
 - `commons`: <https://commons.wikimedia.org/wiki/Category:Tatar-language_books>,
-  discovering document-format book candidates through the public metadata API.
-  Only `discover` and `status` are supported for this source.
+  discovering document-format books through the public metadata API and acquiring
+  their checksum-verified original uploads.
 - `isxaki`: <https://isxaki.com/ijat/>, collecting linked document files from
   original editions, three works periods, and books about Iskhaki.
 - `internet_archive`: <https://archive.org>, collecting public original document
@@ -654,12 +654,14 @@ download results retain their captured observation IDs.
 
 <a id="miras-cookie-based-access-pilot"></a>
 
-## Wikimedia Commons discovery only
+## Wikimedia Commons original documents
 
 Add `sources.commons` from the example to the selected operational YAML:
 
 ```bash
 python cli.py --config ingestion.yaml discover --source commons --max-pages 2
+python cli.py --config ingestion.yaml download --source commons --limit 1
+python cli.py --config ingestion.yaml run --source commons --max-pages 5 --limit 1
 python cli.py --config ingestion.yaml status --source commons
 ```
 
@@ -676,14 +678,14 @@ Only the existing document formats, excluding HTML/HTM, become candidates. Image
 filenames are filtered before file-metadata lookups, and their IDs, titles, and
 metadata are not retained as records or descriptors. Returned MIME must agree
 with the document format. Category membership is admission evidence, not verified
-language or book completeness. No original documents or previews are requested.
+language or book completeness. Discovery does not request original bytes or previews.
 
 File-page IDs supply stable record identities (`file:<id>`), and each record has
 one current-original representation. Retained metadata includes the native title,
 reported MIME, size, page count, upload timestamp, source SHA-1, description URLs,
 and multilingual extended metadata with credits and licensing claims. Unknown
-metadata fields remain intact. Source page counts and hashes are upstream claims,
-not locally verified results. Tracking parameters are removed from file locators;
+metadata fields remain intact. Source page counts are upstream claims; reported
+size and SHA-1 are verified when an original is acquired. Tracking parameters are removed from file locators;
 continuation tokens remain in checkpoints rather than metadata observations.
 
 Missing or unavailable originals remain metadata-only records. Partial scans do
@@ -692,11 +694,52 @@ observations; changed metadata or upload versions retain their history. Files
 reached through multiple categories share one record, with API-reported category
 membership and the seed scope retained as evidence.
 
-State and summaries live under `__artifacts/ingestion/commons/`. `download` and
-`run` are rejected before requests or writes. A source-specific request guard
-restricts traffic to the read-only Commons metadata endpoint, including redirects.
+`discover`, `download`, `run`, and `status` are supported. State, original files,
+and summaries live under `__artifacts/ingestion/commons/`. A source-specific request
+guard permits read-only GET requests to the Commons metadata endpoint and native
+original paths on `https://upload.wikimedia.org/wikipedia/commons/`. Thumbnail,
+preview, archive-version, foreign-origin, and changed-file redirects are rejected.
 Requests identify the crawler with its repository contact URL; no session export
 is needed. No database or storage migration is involved.
+
+Each file requires a supported extension, matching MIME, positive reported size,
+and a 40-character hexadecimal source SHA-1. The shared downloader streams to a
+temporary file, verifies response length and format signatures, computes local
+SHA-256/MD5, and then computes SHA-1. Its integrity callback receives the measured
+SHA-1 alongside the normal digests and rejects size/hash mismatches before atomic
+publication. A mismatch remains a retryable failure requiring refreshed discovery;
+the mismatched bytes do not become a successful local original. Acquisition results
+retain `sha1` and `source_integrity_checks: [size, sha1]` as verification evidence.
+
+The source SHA-1 and reported size form the source-version hint. Rediscovery of
+changed bytes makes the next download reacquire the original, even with an intact
+older local file. Unchanged completed files are verified locally and skipped;
+`--recheck` revalidates them through normal HTTP conditional requests. Completed
+originals survive interrupted runs. Existing discovery-only manifests can download
+without rebuilding their inventory: version hints are derived from their retained
+size and SHA-1 fields. Parser version 3 refreshes observations on the next discovery.
+
+`--limit` counts individual original files. Reported file sizes are checked against
+the configured per-file and remaining download-byte caps before opening a transfer.
+Oversized files remain failed/retryable without being truncated or silently
+recompressed. Raising the selected YAML cap permits retrying them. The existing
+disk reserve, deadline, retries, and atomic publication rules continue to apply.
+The 35-file inventory inspected on 2026-10-27 contained 34 PDFs and one DjVu,
+totalling about 1.44 GB in reported original bytes. Thirty-two fit the current
+100 MiB per-file cap; three require an explicit cap increase. These inventory
+sizes do not establish successful acquisition, language, or document completeness.
+
+Manual verification on 2026-10-27 completed a fresh five-batch discovery with 35
+document records and no errors. One bounded download acquired the 11-page
+`'Ильм халь.Алтынчы кысым. علم حال. آلتنجي قسم.pdf` (14,412,954 bytes) with SHA-1
+`3808410ab3db9832e28f0380f14555fbd81a07b4`, matching Commons metadata. An isolated
+download acquired `Татарча-урысча сүзлек (1927).djvu` (12,739,699 bytes), also
+matching its source SHA-1. Local SHA-256/MD5, source-version hints, and
+acquisition-observation links were verified. Repeating the isolated two-file
+download skipped both originals with zero requests. A real oversized candidate
+was rejected before any request or transferred bytes. The main queue retains
+one downloaded PDF and 34 pending originals. Verification used compilation,
+code inspection, and manual CLI runs; no automated tests were added.
 
 ## Miras books and browser-session access
 
