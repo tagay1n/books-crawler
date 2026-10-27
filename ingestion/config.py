@@ -51,7 +51,7 @@ def load_settings(path: Path | None, source: str = "magarif") -> Settings:
     if not isinstance(archive_url, str):
         raise ValueError(f"sources.{source}.archive_url must be a URL.")
     parsed = urlsplit(archive_url)
-    if (archive_url.rstrip("/") != expected_url or parsed.query or parsed.fragment):
+    if (archive_url.rstrip("/") != expected_url.rstrip("/") or parsed.query or parsed.fragment):
         raise ValueError(f"{source}.archive_url must be {expected_url}")
     root = data.get("artifacts_root")
     if not isinstance(root, str) or not root.strip():
@@ -68,7 +68,7 @@ def load_settings(path: Path | None, source: str = "magarif") -> Settings:
         return value
 
     return Settings(
-        artifacts_root=root.resolve(), archive_url=archive_url.rstrip("/"),
+        artifacts_root=root.resolve(), archive_url=expected_url,
         **{key: number(limits, key, True) for key in (
             "max_pages", "max_items", "max_download_bytes", "max_file_bytes", "disk_reserve_bytes")},
         soft_deadline_seconds=number(limits, "soft_deadline_seconds"),

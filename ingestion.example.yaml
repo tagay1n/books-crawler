@@ -10,6 +10,8 @@ sources:
     archive_url: https://darul-kutub.com/search
   kazanutlary:
     archive_url: https://kazanutlary.ru/j-archive
+  tatkniga:
+    archive_url: https://tatkniga.ru/catalog/biblioteka/
   # Cookie-based pilot only: probe --source miras --session-file PATH
   miras:
     archive_url: https://miras.info/projects/mirasxane/books/

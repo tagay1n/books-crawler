@@ -122,6 +122,13 @@ class Manifest:
                 "current_assets": counts, "historical_results": sum(len(a["results"]) for a in self.data["assets"].values())}
         if "discovery" in self.data:
             result["discovery"] = self.data["discovery"].copy()
+        reasons = {}
+        for asset in self.data["assets"].values():
+            code = asset.get("unsupported_code")
+            if asset.get("current", True) and asset["status"] == "unsupported" and code:
+                reasons[code] = reasons.get(code, 0) + 1
+        if reasons:
+            result["unsupported_reasons"] = reasons
         issues = [r for r in self.data["records"].values()
                   if r["observations"][-1]["metadata"].get("expected_pages") is not None]
         if issues:

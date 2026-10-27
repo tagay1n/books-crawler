@@ -1,6 +1,6 @@
 # Local document ingestion
 
-The shared `cli.py` implements four sources:
+The shared `cli.py` implements five sources:
 
 - `magarif`: <https://magarif-uku.ru/documents>, collecting archive attachments.
 - `tatarica`: <https://tatarica.org/tat/razdely/tatarika-kitaphanse>, collecting
@@ -9,6 +9,8 @@ The shared `cli.py` implements four sources:
   and journal issues across all languages in the public search catalog.
 - `kazanutlary`: <https://kazanutlary.ru/j-archive>, collecting scanned issue
   images and assembling complete PDFs locally with PyMuPDF.
+- `tatkniga`: <https://tatkniga.ru/catalog/biblioteka/>, collecting directly
+  linked files with explicit Tatar or Tatar-containing bilingual language labels.
 
 All sources use the same local downloader and manifest implementation. Each
 adapter follows its selected catalog. Existing legacy collectors remain independent.
@@ -33,6 +35,9 @@ python cli.py --config ingestion.yaml download --source darul_kutub --limit 1
 python cli.py --config ingestion.yaml discover --source kazanutlary --max-pages 2
 python cli.py --config ingestion.yaml download --source kazanutlary --limit 1
 python cli.py --config ingestion.yaml status --source kazanutlary
+python cli.py --config ingestion.yaml discover --source tatkniga --max-pages 2
+python cli.py --config ingestion.yaml download --source tatkniga --limit 1
+python cli.py --config ingestion.yaml status --source tatkniga
 ```
 
 `sources` and command help do not need configuration. Other commands require
@@ -94,6 +99,39 @@ download buttons of the same format; button URLs remain metadata evidence, and
 other offered formats remain eligible. Button-route IDs are not publication IDs.
 The adapter does not assume that reader and button responses contain identical
 bytes. Unsupported originals remain visible in the backlog.
+
+Tatkniga traverses only the current public library, using native `PAGEN_1`
+pagination and its advertised last page. It excludes shop menus, recommendations,
+filters, and “show all” links. A changed page count restarts the next scan while
+retaining committed records. Empty/incomplete pages, repeated batches, invalid
+pagination, and failed record inspections keep discovery incomplete. No exact
+site-wide record count is advertised; completion describes the linked listing
+traversal, not every potentially available historical file or a fixed catalog
+snapshot. The catalog's required trailing slash is preserved.
+
+Publication IDs come from the current primary product wrapper. File-path IDs are
+separate references. Metadata retains supplied titles, authors, descriptions,
+bibliographic property names/values, and language labels. An explicit recognized
+Tatar language label (including `тат`) selects an edition; bilingual labels must
+explicitly include Tatar. Titles and descriptions are not used to infer language,
+and Crimean Tatar is not treated as Tatar. Missing or unrecognized language labels
+remain visible for review. No empty language claim is synthesized.
+
+Only directly linked supported document files on the Tatkniga origin are queued.
+HTML readers, page sets, audio, archive expansion, and external-host documents are
+deferred or unsupported. Interactive-reader links are retained without following
+them. Repeated read links collapse to one descriptor. `status` and run summaries
+include optional `unsupported_reasons` counts: `reader_deferred`,
+`language_unknown`, `language_excluded`, `external_origin`, and
+`format_unsupported`. These counts describe current attachment descriptors;
+record metadata also retains each publication's `language_selection`.
+
+Tatkniga uses `__artifacts/ingestion/tatkniga/` with the shared manifest and
+downloader. The old Selenium scripts have been retired; `tatkniga/workdir/`,
+`paid_files.csv`, and the old configuration are preserved as historical data.
+They are not read or migrated by the new adapter, and old download markers are
+not evidence that verified local bytes exist. No cloud services or credentials
+are used. See [the historical-data notes](../tatkniga/README.md).
 
 Kazan Utları follows every linked year listing across Казан утлары, Яңалиф,
 Совет әдәбияты, Атака, and Безнең юл. Native year URLs are preserved even when

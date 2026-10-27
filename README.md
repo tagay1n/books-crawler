@@ -1,16 +1,16 @@
 # Books Crawler
 
-Repository with four independent pipelines for collecting Tatar books and metadata:
+The repository retains three independent legacy pipelines for collecting Tatar books and metadata:
 
 - `milli_kitaphana/`
 - `litres/`
 - `common-crawl/`
-- `tatkniga/`
 
 Each pipeline has its own CLI/scripts and its own local state in `__artifacts/` or `~/`.
 
 The new shared CLI supports local discovery and document downloads from the
-Мәгариф archive, Tatarica library, Darul-Kutub catalog, and Kazan Utları archive.
+Мәгариф archive, Tatarica library, Darul-Kutub catalog, Kazan Utları archive,
+and directly downloadable Tatar-labelled editions in Tatkniga's public library.
 Kazan Utları page images are retained and assembled into PDFs with PyMuPDF.
 See [local ingestion](docs/local-ingestion.md) for configuration,
 commands, artifact locations, and recovery. The legacy pipeline commands below
@@ -35,7 +35,8 @@ for its session format and the remembered browser-extension fallback.
 3. Fill config templates with your real credentials only in local files:
    - `milli_kitaphana/config.yaml`
    - `litres/config.yaml`
-   - `tatkniga/config.yaml` (note: current Tatkniga code reads another path; see folder README)
+   For the shared CLI, copy `ingestion.example.yaml` to `ingestion.yaml` and
+   select it with `--config`. Tatkniga does not require cloud credentials.
 
 ## Pipeline entry points
 
@@ -56,7 +57,9 @@ for its session format and the remembered browser-extension fallback.
   - `python common-crawl/cli.py download`
   - `python common-crawl/cli.py upload`
 - Tatkniga:
-  - `python tatkniga/main.py` (currently requires import-path fix; see `tatkniga/README.md`)
+  - `python cli.py --config ingestion.yaml discover --source tatkniga`
+  - `python cli.py --config ingestion.yaml download --source tatkniga --limit 1`
+  - `python cli.py --config ingestion.yaml status --source tatkniga`
 
 ## State files
 
@@ -64,5 +67,7 @@ for its session format and the remembered browser-extension fallback.
 - `__artifacts/litres/books-index.json` stores Litres state.
 - `__artifacts/common.crawl/docs-index.json` stores Common Crawl state.
 - `~/.common-crawl/` stores downloaded Common Crawl files and caches.
+- `__artifacts/ingestion/tatkniga/` stores the new Tatkniga manifest and local files.
+- `tatkniga/workdir/` and `paid_files.csv` retain historical data; they are not imported automatically.
 
 See folder READMEs for pipeline-specific behavior, options, and caveats.
