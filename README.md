@@ -51,6 +51,11 @@ Disk shares and assembles PDFs from their declared reader page images. Original
 ZIPs are retained with source checksums and derived-file provenance. See
 [textbook package usage and limits](docs/local-ingestion.md#мәгарифвакыт-textbook-packages).
 
+`turuz` collects direct PDF, DjVu and Word dictionaries from Turuz's native
+dictionary listing using explicit Tatar title claims. Bilingual dictionaries are
+included; Crimean Tatar, general multilingual titles and archive packages are
+excluded from acquisition. See [scope and usage](docs/local-ingestion.md#turuz-dictionaries).
+
 Use `kfu_repository` for automatic discovery across all historical collections on
 `repo.kpfu.ru`. It requires explicit Tatar item-language labels and reuses verified
 originals from existing KFU manifests. Run:
