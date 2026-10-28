@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "files": {
+    "https://sptatar.com/wp-content/uploads/2025/05/11.-SHAMIL-G-R-J-2.pdf": {
+      "sha256": "079f0cc30d6e8ac117d97b9b103fa2fd8d4249bb359a074e04e900f74fec0a89",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Readable Cyrillic Tatar text sampled on PDF pages 1, 4, 36, 68. Review identifies Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Шамил Гәрәй",
+      "observed_pdf_pages": 70,
+      "observed_size": 20638673,
+      "sampled_pdf_pages": [
+        1,
+        4,
+        36,
+        68
+      ]
+    },
+    "https://sptatar.com/wp-content/uploads/2025/05/10.-torek-2.pdf": {
+      "sha256": "5eebcc1217944843bc692b788aa8c547b05603a0a7cf74d428900ab321ed6be0",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Readable Cyrillic Tatar text sampled on PDF pages 1, 4, 172, 340. Review identifies Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Хәзерге заман төрек хикәясе антологиясе",
+      "observed_pdf_pages": 342,
+      "observed_size": 15880219,
+      "sampled_pdf_pages": [
+        1,
+        4,
+        172,
+        340
+      ]
+    },
+    "https://sptatar.com/wp-content/uploads/2025/05/7.-CHECHEN-SHIGRIYATE-ANTOLOGIYASE-3-1.pdf": {
+      "sha256": "b09a14fe1d21166e7c48a4bbec95494fba5869b799dbaaf6c7657a4a30f774db",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Readable Cyrillic Tatar text sampled on PDF pages 1, 4, 78, 152. Review identifies Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Хәзерге заман чечен шигърияте антологиясе",
+      "observed_pdf_pages": 154,
+      "observed_size": 2319267,
+      "sampled_pdf_pages": [
+        1,
+        4,
+        78,
+        152
+      ]
+    },
+    "https://sptatar.com/wp-content/uploads/2025/05/5.-Gibadullina.pdf": {
+      "sha256": "623d4f2014e8e34364bad773a899f22ffac59151718b5f38ffe68d1fdf996dfb",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Readable Cyrillic Tatar text sampled on PDF pages 1, 4, 126, 249. Review identifies Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Дәвамы бар: шигырьләр, поэмалар",
+      "observed_pdf_pages": 251,
+      "observed_size": 12616503,
+      "sampled_pdf_pages": [
+        1,
+        4,
+        126,
+        249
+      ]
+    },
+    "https://sptatar.com/wp-content/uploads/2025/05/4.-Nabira.pdf": {
+      "sha256": "3d1d060724d8187656f05df9eb4f10027e51be0fad31aa7b32d47c5cfe81d0b7",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Readable Cyrillic Tatar text sampled on PDF pages 1, 4, 88, 173. Review identifies Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Гыйматдинова Н.М. Гөлханым турында хикәят: повесть",
+      "observed_pdf_pages": 175,
+      "observed_size": 7627124,
+      "sampled_pdf_pages": [
+        1,
+        4,
+        88,
+        173
+      ]
+    },
+    "https://sptatar.com/wp-content/uploads/2025/05/1.-HIND-GOT-1.pdf": {
+      "sha256": "50e6abe859f166a2288aa425435c0196e6787005cc2eb57bf5c1ab0be052c52e",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Readable Cyrillic Tatar text sampled on PDF pages 1, 4, 73, 142. Review identifies Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Хәзерге һинд шигърияте",
+      "observed_pdf_pages": 144,
+      "observed_size": 11204131,
+      "sampled_pdf_pages": [
+        1,
+        4,
+        73,
+        142
+      ]
+    },
+    "https://sptatar.com/wp-content/uploads/2024/11/IDEG-J_LILIYA_GYJBADULLINA.pdf": {
+      "sha256": "d3951f1138b3f1552e487be02a71cf8070b61cda4fb7db101a1c50bb94787ec4",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Readable Cyrillic Tatar text sampled on PDF pages 1, 4, 30, 56. Review identifies Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "«Идегәй». Ханнар уены",
+      "observed_pdf_pages": 58,
+      "observed_size": 13089499,
+      "sampled_pdf_pages": [
+        1,
+        4,
+        30,
+        56
+      ]
+    },
+    "https://sptatar.com/wp-content/uploads/2024/11/Ajgiz-Bajm-h-mm-t.-Koshka-jl-nermen-min.pdf": {
+      "sha256": "54ecf0edec41e29c112df9885a36f51b0841a9a6327c658a893892d5d4919f9e",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Readable Cyrillic Tatar text sampled on PDF pages 1, 4, 86, 169. Review identifies Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Кошка әйләнермен мин…",
+      "observed_pdf_pages": 171,
+      "observed_size": 5553720,
+      "sampled_pdf_pages": [
+        1,
+        4,
+        86,
+        169
+      ]
+    },
+    "https://sptatar.com/wp-content/uploads/2024/11/H-ZERGE-ZAMAN-KAZAK-SHIGRIYATE-ANTOLOGIYASE.pdf": {
+      "sha256": "5ad95b5b44808ea7c38b364fced8eca80bad859761de5a4593308425af8f5e94",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Readable Cyrillic Tatar text sampled on PDF pages 1, 4, 134, 265. Review identifies Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Хәзерге заман казакъ шигърияте антологиясе",
+      "observed_pdf_pages": 267,
+      "observed_size": 8332317,
+      "sampled_pdf_pages": [
+        1,
+        4,
+        134,
+        265
+      ]
+    }
+  }
+}

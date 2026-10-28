@@ -28,6 +28,8 @@ The shared `cli.py` implements these acquisition sources:
   original editions, three works periods, and books about Iskhaki.
 - `turuz`: <https://turuz.com/index/pitik/category/2>, collecting direct Tatar-labelled
   dictionary PDFs, DjVu and Word originals from the native dictionary listing.
+- `yazuchy`: <https://sptatar.com/yazuchy-n-shriyaty/>, collecting publisher book
+  PDFs with explicit Tatar target-language claims or individually reviewed hashes.
 - `internet_archive`: <https://archive.org>, collecting public original document
   uploads from text items explicitly labelled as Tatar.
 - `tataroved`: <https://tataroved.ru/publication/>, collecting linked originals
@@ -53,6 +55,74 @@ The shared `cli.py` implements these acquisition sources:
 
 All sources use the same local downloader and manifest implementation. Each
 adapter follows its selected catalog. Existing legacy collectors remain independent.
+
+### Yazuchy publisher catalog
+
+Add this entry under `sources` in your operational YAML:
+
+```yaml
+yazuchy:
+  archive_url: https://sptatar.com/yazuchy-n-shriyaty/
+```
+
+```bash
+python cli.py --config ingestion.yaml discover --source yazuchy --max-pages 1
+python cli.py --config ingestion.yaml download --source yazuchy --limit 1
+python cli.py --config ingestion.yaml status --source yazuchy
+```
+
+The initial slice follows book-card links on this publisher page, not the whole
+Writers' Union website. Each native detail URL becomes a separate book record.
+Observations preserve title, full annotation/bibliography, raw PDF links, listing
+context and language evidence. Only direct same-origin HTTPS PDFs inside the
+book article are candidates; covers, sidebars, policy documents and reader
+assembly are outside the slice. Unexpected catalog pagination holds discovery
+for review. Current totals are observed catalog entries, not site-wide holdings.
+
+The catalog mixes Tatar originals, translations into Tatar and Russian editions
+of Tatar works. A Tatar interface, title or author does not admit a PDF. Explicit
+`татар теленә тәрҗемә` target-language evidence admits a file; missing claims and
+Russian target-language claims hold acquisition unless an individual file review
+identifies Tatar content. Raw translation descriptions remain in metadata.
+
+The checked-in `ingestion/yazuchy-language-reviews.json` records nine individually
+sampled Tatar PDFs with SHA-256, observed byte/page counts, sampled page numbers
+and reviewer/reason. For review-based admission, the acquired SHA-256 must match
+before publication. Changed bytes stay failed for a new review. The review
+identifies Tatar content in sampled pages; it does not certify monolinguality or
+edition completeness. Several PDF page counts differ from catalog print-page
+claims, which remain separately preserved in raw bibliography.
+
+Optional `<artifacts_root>/yazuchy/language-reviews.json` uses the same version-1
+`files` mapping as the checked-in file and overrides matching built-in reviews.
+Each entry requires a hosted PDF URL, `sha256`, `languages` including `tt`,
+`reviewer` and `reason`; do not grant a review from a filename or annotation alone.
+The adapter refreshes review decisions before downloading, without a catalog
+rescan. Removing a local override falls back to the checked-in review, rather
+than withdrawing it. A built-in review must be removed from the checked-in file
+to withdraw it. Discovery still determines which files are current candidates.
+
+Originals use the shared bounded downloader and immutable SHA-256 file paths in
+`<artifacts_root>/yazuchy/files/`, with manifest observations and acquisition
+results. No conversion, account, media API or package handling is needed.
+Byte/time/disk limits, signature checks, retry behavior and verified-local-file
+reuse are shared with other adapters. `--recheck` revalidates completed files.
+
+During implementation, nine PDFs completed bounded manual inspection under
+`/tmp/yazuchy-review/`. The likely Tatar translation of `1993` exceeded the 25 MiB
+inspection cap; its file language remains unverified and acquisition stays held.
+Four Russian editions were not downloaded for language review. Review artifacts
+are distinct from CLI acquisition evidence under `/tmp/yazuchy-verification/`.
+
+Live CLI verification on 2026-10-28 inspected all 14 detail records in 15 HTTP
+requests, without errors: nine eligible PDFs and five held files (three explicit
+Russian-language exclusions and two without an admitted language claim/review).
+The CLI saved the complete `Шамил Гәрәй` PDF: 20,638,673 bytes, 70 PDF pages,
+SHA-256 `079f0cc30d6e8ac117d97b9b103fa2fd8d4249bb359a074e04e900f74fec0a89`.
+Its result records the matching reviewed SHA-256. An isolated single-asset replay
+under `/tmp/yazuchy-replay/` skipped the verified original with zero requests.
+The other eight admitted files have manual byte/language inspections, but were
+not all reacquired through the CLI.
 
 ### Turuz dictionaries
 

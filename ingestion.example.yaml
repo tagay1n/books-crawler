@@ -2,6 +2,9 @@
 # Relative paths are resolved against this YAML file, not the current directory.
 artifacts_root: __artifacts/ingestion
 sources:
+  # Publisher book PDFs; explicit Tatar target-language claims or hash-pinned reviews.
+  yazuchy:
+    archive_url: https://sptatar.com/yazuchy-n-shriyaty/
   # Tatar-labelled dictionaries only; Crimean Tatar and general multilingual titles excluded.
   turuz:
     archive_url: https://turuz.com/index/pitik/category/2

@@ -56,6 +56,11 @@ dictionary listing using explicit Tatar title claims. Bilingual dictionaries are
 included; Crimean Tatar, general multilingual titles and archive packages are
 excluded from acquisition. See [scope and usage](docs/local-ingestion.md#turuz-dictionaries).
 
+`yazuchy` discovers the Writers' Union publisher's book records and downloads
+direct PDFs with explicit Tatar target-language claims or hash-pinned content
+reviews. Russian editions and unreviewed files remain held. See
+[publisher catalog usage](docs/local-ingestion.md#yazuchy-publisher-catalog).
+
 Use `kfu_repository` for automatic discovery across all historical collections on
 `repo.kpfu.ru`. It requires explicit Tatar item-language labels and reuses verified
 originals from existing KFU manifests. Run:
