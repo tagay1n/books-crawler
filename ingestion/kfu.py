@@ -174,6 +174,9 @@ def record(html, page_url):
     for block in main.select(".fileBlock"):
         info = block.select_one(".fileInfo, .fileInfo-full")
         if info is None:
+            if (block.get_text(" ", strip=True) == "Нет файлов, ассоциированных с этим ресурсом."
+                    and not block.select("a[href]")):
+                continue
             raise ValueError("KFU file block has no file-information area.")
         descriptions = {}
         for detail in info.select(".fileDesc"):
@@ -257,7 +260,7 @@ def download(http, manifest, summary, log, recheck, *, unit="file_or_book"):
     download_images(http, manifest, summary, log, recheck, unit=unit)
 
 
-def prepare_http(http, session_file, *, listing_route=None):
+def prepare_http(http, session_file, *, listing_route=None, all_collections=False):
     http.session.headers.update({"Accept-Language": "ru,en;q=0.5"})
 
     def route(url):
@@ -274,7 +277,9 @@ def prepare_http(http, session_file, *, listing_route=None):
         if listing_route is not None and urlsplit(url).path == urlsplit(http.settings.archive_url).path:
             return ("listing", listing_route(url))
         native = handle(url)
-        if native.rsplit("/", 1)[1] in COLLECTIONS:
+        if all_collections:
+            offset(url, f"{ORIGIN}/jspui/handle/{native}")
+        elif native.rsplit("/", 1)[1] in COLLECTIONS:
             offset(url, http.settings.archive_url)
         elif urlsplit(url).query:
             raise ValueError("KFU record requests must not include query parameters.")

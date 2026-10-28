@@ -21,7 +21,12 @@ class PageRequest:
     def key(self):
         if self.method == "GET" and not self.data and not self.context:
             return self.url
-        return json.dumps(self.dump(), sort_keys=True, ensure_ascii=False)
+        payload = self.dump()
+        # Tree adapters carry large resume snapshots that do not identify a request.
+        # Opt in explicitly; existing adapters retain their complete-context keys.
+        if "_request_identity" in self.context:
+            payload["context"] = self.context["_request_identity"]
+        return json.dumps(payload, sort_keys=True, ensure_ascii=False)
 
 
 @dataclass

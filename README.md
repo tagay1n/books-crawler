@@ -36,6 +36,18 @@ exported from an ordinary verified browser. Pass `--session-file PATH` to its
 See [local ingestion](docs/local-ingestion.md#miras-books-and-browser-session-access)
 for its session format and recovery instructions.
 
+Use `kfu_repository` for automatic discovery across all historical collections on
+`repo.kpfu.ru`. It requires explicit Tatar item-language labels and reuses verified
+originals from existing KFU manifests. Run:
+
+```bash
+python cli.py --config ingestion.yaml run --source kfu_repository --max-pages 25 --limit 1
+```
+
+Discovery resumes across invocations. Existing collection-specific sources remain
+available; Татар галәме and other KFU domains have separate adapters. See
+[repository-wide ingestion](docs/local-ingestion.md#kfu-historical-repository-all-collections).
+
 KFU «Вакыт» is available as `kfu_vakyt`: resumable exact-series discovery,
 public JPEG/JPEG2000 originals, and complete 200 DPI colour issue PDFs. Explicit
 Tatar item-language labels are required; unlabelled records remain held. See
