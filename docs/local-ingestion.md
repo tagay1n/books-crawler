@@ -281,6 +281,20 @@ acquired through this article adapter. This prevents unrelated publisher books
 from blocking later archive pages. The 2026-10-28 live continuation passed four
 such records and resumed subsequent journal issues without restarting the scan.
 
+The completed 2026-10-28 continuation exhausted all three archive pages and 61
+publication pages: 1,385 records (1,375 articles and ten non-journal books), with
+no remaining frontier or discovery errors. It exposed 1,091 article PDF assets,
+95 admitted by explicit Tatar labels and 996 held for language. This verifies
+traversal of the selected catalog, not complete publisher holdings or the content
+language of every file. Three originals are verified locally. Two additional
+samples from the completed scan are Хәмидуллина's 2009 article (1,681,874 bytes /
+five pages / SHA-256 `fc920792121f5363ebd0b84bd2be3dd736bf55b78f675815cc61d666f53b3745`)
+and Макарова on Хәсән Сарьян (1,279,194 bytes / 15 pages / SHA-256
+`a6a8ffd7c59d00ddf1db91ce247472eadaae0c2c8a4be95aec3e52590b1e7645`).
+Rendered samples contain Tatar; the older file's extracted text has legacy-font
+encoding errors. Evidence and the completed manifest are under
+`__artifacts/session-20261028/echovek/` and `echovek-samples/`.
+
 Article records retain the Drupal node identifier, title, authors, rubric,
 article type, publication-date text and explicit language field. Node identity
 deduplicates article aliases; `echovek.ru` and `www.echovek.ru` normalize to the

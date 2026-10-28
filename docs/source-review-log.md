@@ -202,3 +202,21 @@ registration requirements from that obsolete/unverified route.
   `https://dumrt.ru/netcat_files/557/751/DvM_06_2018_0.pdf`; indexed text is Tatar.
   Public root/link inspection is running; inspect its output before choosing a
   native archive URL or implementing anything.
+
+### Latest resume details
+
+Modern DUM RT archives are reachable: `https://dumrt.ru/media/din-va-magishet/`
+(six native issue cards per page; pager `curPos` advances by six with `cur_cc=751`)
+and `https://dumrt.ru/media/shura-almanah/` (ten cards per page; advances by ten
+with `cur_cc=757`). The root advertises both. These are contemporary publications,
+not the already implemented historical KFU Шура collection. Native issue-page
+inspection is running in the latest tool-returned PTY session; consult
+`dumrt-din-issue.html`, `dumrt-shura-issue.html` and their PDF-link JSON files.
+No complete original has yet been acquired for this candidate. Do not implement
+until PDF language/access verification passes.
+
+Coding-agent guidance committed as `7b27f93`: AGENTS.md points to the compact
+developer map, overview helper and repository interpreter. Existing no-tests rule
+is intact. KFU parser repair is `72044be`, FT journal is `bdd62a0`. Main KFU
+discovery PTY 76311 is still running and predates the repair; wait for its terminal
+state before resuming to retry net/26934 and the transient net/28071 timeout.
