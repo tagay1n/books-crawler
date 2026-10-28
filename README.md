@@ -86,6 +86,11 @@ items and other file types stay outside acquisition. See
 full-issue PDFs explicitly labelled Tatar. Article files, covers and unlabelled
 galleys are excluded. See [issue PDF usage](docs/local-ingestion.md#fänni-tatarstan-issue-pdfs).
 
+`dumrt` collects linked original PDFs from the contemporary «Дин вә мәгыйшәт»
+newspaper and «Шура» almanac archives. The modern almanac is separate from KFU's
+historical Шура collection. See
+[publisher archive usage](docs/local-ingestion.md#dum-rt-contemporary-tatar-publications).
+
 For a compact read-only view of several local manifests, run
 `python scripts/ingestion_overview.py __artifacts/ingestion`.
 Reusable components are summarized in [the developer guide](docs/adapter-development.md).

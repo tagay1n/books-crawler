@@ -2,6 +2,9 @@
 # Relative paths are resolved against this YAML file, not the current directory.
 artifacts_root: __artifacts/ingestion
 sources:
+  # Contemporary DUM RT Tatar newspaper and almanac; linked original PDFs only.
+  dumrt:
+    archive_url: https://dumrt.ru/media/din-va-magishet/
   # Native full-issue PDFs explicitly labelled Tatar; article files excluded.
   ftatarstan:
     archive_url: https://ftatarstan.ru/index.php/ftat/ru/issue/archive
