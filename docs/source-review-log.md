@@ -142,3 +142,63 @@ archive pagination. Use whole-issue original PDFs, excluding article galleys.
 Other candidate check: `https://islamhouse.com/tt/books/` returned 404; no verified
 Tatar collection or download route. Do not infer site-wide unreachability or
 registration requirements from that obsolete/unverified route.
+
+## 23:26 UTC checkpoint
+
+- New `ftatarstan` adapter committed as `bdd62a0`: native three-page archive /
+  51 issues / 48 eligible full-issue PDFs, one unlabelled held galley and two
+  metadata-only issues. CLI original/replay and documentation are complete; shared
+  inventory is updated. No pending implementation work for this source.
+- Echo of Centuries fully completed the same resumed scan: 64 listing requests
+  (three archive pages plus 61 publication pages), 1,385 records: 1,375 articles
+  and ten non-journal metadata records. 1,091 PDF assets: 95 Tatar-labelled eligible,
+  996 unsupported by language. Three verified downloads now live in the main
+  session manifest (two additional samples were integrated under a source lock
+  only after matching their observation IDs and local hashes). Additional samples:
+  2009 Хәмидуллина: 1,681,874 bytes / five pages / SHA-256
+  `fc920792121f5363ebd0b84bd2be3dd736bf55b78f675815cc61d666f53b3745`;
+  Макарова on Хәсән Сарьян: 1,279,194 bytes / 15 pages / SHA-256
+  `a6a8ffd7c59d00ddf1db91ce247472eadaae0c2c8a4be95aec3e52590b1e7645`.
+  Rendered sample pages 2 and 4 show Tatar; the 2009 file has legacy-font extraction
+  errors. Source scope fix committed as `e78c1aa`. PTY 55617 is terminal.
+- Tatar Galyame discovery completed: 34 listing requests, 279 records, 128 eligible
+  hosted documents under the existing all-language policy and 27 unsupported
+  assets. This is not 128 verified Tatar files. PTY 65139 is terminal.
+- KFU repository discovery is live in PTY 76311, log
+  `kfu-repository-discovery.log`. Initial 15-record checkpoint expanded past 270
+  records; the scan is incomplete. Two errors were observed: net/26934 auxiliary
+  single-file viewer and a read timeout on net/28071. The currently running process
+  predates the parser fix; let it stop normally before resuming to retry errors.
+- KFU parser fix committed as `72044be`: unsupported single-file viewers (including
+  restricted receipt images) remain metadata and do not reject public book PDFs.
+  Isolated net/26934 verification acquired only Фәлсәфи сүзлек: 85,064,699 bytes /
+  323 pages / SHA-256
+  `b1276d71dc029ac7dc176c94da9b792a7b38734c224be758d9ed3eb109881577`.
+  Rendered page 11 is Tatar. Repeat made zero requests. Restricted images/ZIPs
+  stayed unsupported. Successful result remains in `kfu-single-viewer/`; do not
+  edit the live main manifest to import it while discovery is running.
+- Verified copies of old local originals were copied into the new Echo of Centuries,
+  Tatar Galyame and KFU roots. A manifest copy alone does not relocate relative
+  file references.
+- Do not merge the isolated Magarif direct-PDF sample by overwriting a newer asset:
+  final rediscovery added provenance metadata and changed the observation ID. The
+  isolated sample remains valid evidence; main scan legitimately reports pending.
+- Lan and CulturaX inventory rows now explicitly follow the standing registration
+  deferral rule. No accounts or terms were accepted.
+- Tatar16.ru currently serves an unrelated casino site; it is not the historical
+  educational source. Do not follow its registration links. BAYĞIŞ root is reachable
+  but its advertised `/aftorlar` returned HTTP 403 on this check; no adapter selected.
+- Tatar Ile native book record is public and advertises a literal `iframeURL` PDF.
+  Both sampled original transfers returned HTTP 200 PDF then stalled: story volume
+  8,300 bytes retained, children’s book 16,356 bytes. No complete original verified;
+  no adapter selected. Its robots file advertises a native sitemap, but do not
+  continue spending time there without a distinct reason to expect file delivery.
+- Document budget checkpoint `document-budget.json`: 159,122,136 accounted bytes
+  including an 8 MiB probe allowance; about 914.6 MB remain under the 1 GiB session
+  cap. Sum new CLI summaries and top-level manual PDFs before large transfers.
+- Next new candidate: publisher DUM RT newspaper archive. Indexed native public
+  PDFs for Дин вә Мәгыйшәт include
+  `https://dumrt.ru/netcat_files/557/751/DvM_10_2023.pdf` and
+  `https://dumrt.ru/netcat_files/557/751/DvM_06_2018_0.pdf`; indexed text is Tatar.
+  Public root/link inspection is running; inspect its output before choosing a
+  native archive URL or implementing anything.
