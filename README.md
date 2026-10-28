@@ -82,6 +82,10 @@ advertised PDFs only when the book's explicit language labels agree. Image-only
 items and other file types stay outside acquisition. See
 [publisher scope and usage](docs/local-ingestion.md#sarhaan-tatar-publications).
 
+`ftatarstan` discovers Fänni Tatarstan's native journal archive and acquires
+full-issue PDFs explicitly labelled Tatar. Article files, covers and unlabelled
+galleys are excluded. See [issue PDF usage](docs/local-ingestion.md#fänni-tatarstan-issue-pdfs).
+
 For a compact read-only view of several local manifests, run
 `python scripts/ingestion_overview.py __artifacts/ingestion`.
 Reusable components are summarized in [the developer guide](docs/adapter-development.md).

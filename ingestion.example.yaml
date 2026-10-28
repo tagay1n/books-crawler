@@ -2,6 +2,9 @@
 # Relative paths are resolved against this YAML file, not the current directory.
 artifacts_root: __artifacts/ingestion
 sources:
+  # Native full-issue PDFs explicitly labelled Tatar; article files excluded.
+  ftatarstan:
+    archive_url: https://ftatarstan.ru/index.php/ftat/ru/issue/archive
   # Explicit publisher Tatar item labels; individual PDF files only.
   sarhaan:
     archive_url: https://sarhaan.com/a/tatar-%d8%aa%d8%aa%d8%a7%d8%b1%d9%8a/
