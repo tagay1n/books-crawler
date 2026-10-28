@@ -48,6 +48,12 @@ Discovery resumes across invocations. Existing collection-specific sources remai
 available; Татар галәме and other KFU domains have separate adapters. See
 [repository-wide ingestion](docs/local-ingestion.md#kfu-historical-repository-all-collections).
 
+The separate academic archive is available as `kfu_dspace`. Its native `татар`
+topic search discovers candidates; only explicit Tatar item-language metadata or
+an individual SHA-256-pinned file review admits a public PDF. Missing labels stay
+held, and restricted records are not acquired. See
+[academic archive usage and reviews](docs/local-ingestion.md#kfu-academic-electronic-archive).
+
 KFU «Вакыт» is available as `kfu_vakyt`: resumable exact-series discovery,
 public JPEG/JPEG2000 originals, and complete 200 DPI colour issue PDFs. Explicit
 Tatar item-language labels are required; unlabelled records remain held. See
@@ -114,6 +120,10 @@ Tatar item-language labels are required; unlabelled records remain held. See
   - `python cli.py --config ingestion.yaml discover --source kfu_il --max-pages 1`
   - `python cli.py --config ingestion.yaml download --source kfu_il --limit 1`
   - `python cli.py --config ingestion.yaml status --source kfu_il`
+- KFU academic archive (topic discovery, with separate language admission):
+  - `python cli.py --config ingestion.yaml discover --source kfu_dspace --max-pages 2`
+  - `python cli.py --config ingestion.yaml download --source kfu_dspace --limit 1`
+  - `python cli.py --config ingestion.yaml status --source kfu_dspace`
 - KFU «Азад халык» newspaper (explicit Tatar language labels required):
   - `python cli.py --config ingestion.yaml discover --source kfu_azad_halyk --max-pages 2`
   - `python cli.py --config ingestion.yaml download --source kfu_azad_halyk --limit 1`
