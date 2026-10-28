@@ -3,6 +3,8 @@
 The shared `cli.py` implements these acquisition sources:
 
 - `magarif`: <https://magarif-uku.ru/documents>, collecting archive attachments.
+- `magarif_vakyt`: <https://magarif-vakyt.ru/online2>, retaining publisher-linked
+  Tatar textbook ZIPs and assembling PDFs from their explicit reader page lists.
 - `beznenmiras`: <https://beznenmiras.ru/categories/widget/list/svezii-vypusk>,
   discovering issue metadata and linked original documents; cover images are skipped.
 - `tatarica`: <https://tatarica.org/tat/razdely/tatarika-kitaphanse>, collecting
@@ -49,6 +51,84 @@ The shared `cli.py` implements these acquisition sources:
 
 All sources use the same local downloader and manifest implementation. Each
 adapter follows its selected catalog. Existing legacy collectors remain independent.
+
+### Мәгариф–Вакыт textbook packages
+
+The publisher's electronic-format catalog is separate from the `magarif`
+magazine archive. Add this entry under `sources` in your operational YAML:
+
+```yaml
+magarif_vakyt:
+  archive_url: https://magarif-vakyt.ru/online2
+```
+
+```bash
+python cli.py --config ingestion.yaml discover --source magarif_vakyt --max-pages 1
+python cli.py --config ingestion.yaml download --source magarif_vakyt --limit 1
+python cli.py --config ingestion.yaml status --source magarif_vakyt
+```
+
+Discovery selects public Yandex Disk shares attached to publisher-labelled
+«Әдәби уку», «Татар Теле», and «Татар әдәбияты» textbook cards. Arabic textbooks,
+Google Drive links, and the publisher's other catalogs are outside this slice.
+The titles establish admission context, not verified language of every file.
+Each share is one source record, with its publisher title/link and Yandex name,
+size, resource ID, timestamps, and checksums retained. `yadi.sk` aliases normalize
+to `disk.yandex.ru`. No login, OAuth token, session export, or new dependency is
+required. Metadata-only discovery does not download package bytes.
+
+Downloads resolve a fresh temporary delivery URL through Yandex's public API,
+verify source size/MD5/SHA-256, and retain the unchanged ZIP under
+`<artifacts_root>/magarif_vakyt/files/`. Signed URLs are excluded from persisted
+metadata, transfer errors, and acquisition results. A changed upstream identity
+requires rediscovery. `--limit` counts started packages, including retries or
+local PDF reconstruction; already verified complete packages are skipped.
+
+The package reader parses literal `fliphtml5_pages` arrays and `totalPageCount`
+from `javascript/config.js` without executing JavaScript. It reads only explicitly
+declared large JPEGs in their supplied order; HTML page counts, thumbnails, audio,
+Flash assets, and installation manuals do not determine the page sequence. Each
+recognized reader configuration produces a separate PDF under `derived/`, with
+original JPEGs embedded without resampling. Page geometry uses an explicit assumed
+200 DPI; this is a rendering recipe, not measured scan resolution. PDFs omit
+interactive/audio features and are derived representations, not original files.
+
+Each derived result records the source ZIP acquisition and observation, archive
+and configuration SHA-256, ordered member names and page hashes, image dimensions,
+CRC values, and assembler version. Missing pages, inconsistent counts, corrupt
+required members, or unsupported reader configurations fail assembly while retaining
+an already verified ZIP. Completion means every declared page in every recognized
+reader was assembled; it does not establish completeness against printed editions.
+Missing derived PDFs rebuild from the retained ZIP without another download.
+
+Bounds apply to both network acquisition and local processing. The package reader
+allows at most 20,000 ZIP entries, 2 GiB declared uncompressed bytes, 20 reader
+configurations, and 2,000 total declared pages. Configurations are capped at 1 MiB,
+individual page images at 32 MiB and 40 megapixels. Duplicate/unsafe paths,
+symlinks, encrypted members, and compression other than stored/deflate are rejected.
+Members are read directly from the ZIP; arbitrary paths are not extracted. The
+shared deadline, disk reserve, transfer caps, and `max_derived_pdf_bytes` also apply;
+declared page bytes plus 1 MiB PDF overhead must fit the derived-PDF cap before
+assembly. Failed work remains retryable after configuration or source changes.
+
+The 2026-10-28 catalog has 14 selected packages, ranging from 50,796,553 to
+592,563,294 bytes. The example's 100 MiB per-file cap admits only the smallest;
+larger files fail before requests/transferred bytes. To acquire them, explicitly
+raise `limits.max_file_bytes` in your operational YAML (600 MiB, or `629145600`,
+covers the current largest file), with sufficient run-byte, deadline, and disk
+budgets. No saved limits are increased automatically.
+
+Manual CLI verification discovered all 14 packages in 15 requests, without errors.
+A one-package download verified the 50,796,553-byte original ZIP and generated
+a 20,863,967-byte, 114-page PDF. Hashes, archive-parent links, and all 114 image
+inputs were checked; rendered first/middle/last pages were visually inspected.
+An isolated repeat made zero requests and reused the PDF. Removing that isolated
+derived copy rebuilt it from the retained ZIP with zero requests. A real oversized
+second-grade package failed before any network request. The remaining 13 packages
+were discovered but not downloaded or layout-validated. Verification artifacts
+are under `/tmp/magarif-vakyt-verification/`; separate reuse/recovery and oversized
+checks are under `/tmp/magarif-vakyt-replay/` and `/tmp/magarif-vakyt-oversized/`.
+No automated tests were created or run.
 
 ### Безнең мирас issue archive
 

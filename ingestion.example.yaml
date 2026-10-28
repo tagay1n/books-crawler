@@ -7,6 +7,9 @@ sources:
     archive_url: https://beznenmiras.ru/categories/widget/list/svezii-vypusk
   magarif:
     archive_url: https://magarif-uku.ru/documents
+  # Tatar textbook ZIPs linked by the publisher; retained originals plus derived PDFs.
+  magarif_vakyt:
+    archive_url: https://magarif-vakyt.ru/online2
   tatarica:
     archive_url: https://tatarica.org/tat/razdely/tatarika-kitaphanse
   darul_kutub:

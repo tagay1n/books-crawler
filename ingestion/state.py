@@ -90,6 +90,8 @@ class Manifest:
                             "parser_version": parser_version, "metadata": metadata})
             if "pdf" in record:
                 record["pdf"]["status"] = "incomplete"
+            if "package_pdf" in record:
+                record["package_pdf"]["status"] = "incomplete"
         record["last_seen"] = now()
         record["attachment_count"] = len(assets)
         for asset in self.data["assets"].values():
@@ -129,6 +131,13 @@ class Manifest:
                 reasons[code] = reasons.get(code, 0) + 1
         if reasons:
             result["unsupported_reasons"] = reasons
+        packages = [r for r in self.data["records"].values() if "package_pdf" in r]
+        if packages:
+            result["package_books"] = {
+                state: sum(r["package_pdf"].get("status") == state for r in packages)
+                for state in ("complete", "incomplete", "failed")}
+            result["package_pdfs"] = sum(len(r["package_pdf"].get("current_results", []))
+                                          for r in packages if r["package_pdf"].get("status") == "complete")
         issues = [r for r in self.data["records"].values()
                   if r["observations"][-1]["metadata"].get("expected_pages") is not None]
         if issues:

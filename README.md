@@ -46,6 +46,11 @@ the same session export and PDF downloader. Live reader verification is pending
 a refreshed session; unresolved year/issue selectors are held as unsupported.
 See [periodical scope and current limits](docs/local-ingestion.md#miras-periodicals).
 
+`magarif_vakyt` collects the publisher's Tatar textbook ZIPs from public Yandex
+Disk shares and assembles PDFs from their declared reader page images. Original
+ZIPs are retained with source checksums and derived-file provenance. See
+[textbook package usage and limits](docs/local-ingestion.md#мәгарифвакыт-textbook-packages).
+
 Use `kfu_repository` for automatic discovery across all historical collections on
 `repo.kpfu.ru`. It requires explicit Tatar item-language labels and reuses verified
 originals from existing KFU manifests. Run:

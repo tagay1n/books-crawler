@@ -1,9 +1,10 @@
-from . import beznenmiras, commons, darul_kutub, internet_archive, isxaki, kazanutlary, kfu, kfu_dspace, kfu_repository, kfu_vakyt, magarif, miras, miras_periodicals, tatarica, tatargalyame, tataroved, tatkniga
+from . import beznenmiras, commons, darul_kutub, internet_archive, isxaki, kazanutlary, kfu, kfu_dspace, kfu_repository, kfu_vakyt, magarif, magarif_vakyt, miras, miras_periodicals, tatarica, tatargalyame, tataroved, tatkniga
 
 
 SOURCES = {"magarif": magarif, "tatarica": tatarica, "darul_kutub": darul_kutub,
            "beznenmiras": beznenmiras,
            "miras_periodicals": miras_periodicals,
+           "magarif_vakyt": magarif_vakyt,
            "kazanutlary": kazanutlary, "tatkniga": tatkniga, "miras": miras, "commons": commons,
            "isxaki": isxaki, "internet_archive": internet_archive,
            "kfu_repository": kfu_repository,
