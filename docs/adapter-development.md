@@ -33,6 +33,10 @@ belong to another project.
 The helper reads selected roots' immediate source manifests only, emits one JSON
 line per manifest, and never opens configurations, modifies artifacts or makes
 network requests. Explicit source directories and manifest paths also work.
+Manifests with at least 1,000 assets or 500 records use compact JSON to reduce
+checkpoint serialization and disk writes; their schema is unchanged. Smaller
+manifests and other JSON artifacts retain indentation. Use the overview or parse
+selected fields rather than printing a large manifest's single line.
 Discovery completeness is distinct from advertised-count verification and from
 download completion. Inspect individual observations only when a summary points
 to a concrete question; avoid dumping complete manifests or private configs.

@@ -12,14 +12,15 @@ def now():
     return datetime.now(timezone.utc).isoformat()
 
 
-def atomic_json(path: Path, value):
+def atomic_json(path: Path, value, *, compact=False):
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = None
     try:
         with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", dir=path.parent,
                                          prefix=".manifest-", suffix=".tmp", delete=False) as handle:
             temporary = Path(handle.name)
-            json.dump(value, handle, ensure_ascii=False, indent=2, allow_nan=False)
+            formatting = {"separators": (",", ":")} if compact else {"indent": 2}
+            json.dump(value, handle, ensure_ascii=False, allow_nan=False, **formatting)
             handle.write("\n")
             handle.flush()
             os.fsync(handle.fileno())
@@ -71,7 +72,10 @@ class Manifest:
                 raise ValueError("Invalid or unsupported local manifest; refusing to overwrite it.")
 
     def save(self):
-        atomic_json(self.path, self.data)
+        # Large page inventories otherwise spend much of each checkpoint on
+        # whitespace. Keep the schema and atomic replacement behavior unchanged.
+        compact = len(self.data["assets"]) >= 1000 or len(self.data["records"]) >= 500
+        atomic_json(self.path, self.data, compact=compact)
 
     def observe(self, metadata, assets, parser_version=1, *, record_key=None):
         record_url = metadata["url"]
