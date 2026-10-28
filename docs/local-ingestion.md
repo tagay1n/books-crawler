@@ -229,6 +229,13 @@ that issue's article contexts, without fabricated URLs. An issue with no
 resolvable articles remains a discovery error. These unresolved cards mean a
 completed traversal does not establish complete publisher holdings.
 
+The publication archive also lists books alongside journal issues. Recognized
+native book pages are retained as `non_journal_metadata`, with their title,
+publication node identifier and available language claim; no book files are
+acquired through this article adapter. This prevents unrelated publisher books
+from blocking later archive pages. The 2026-10-28 live continuation passed four
+such records and resumed subsequent journal issues without restarting the scan.
+
 Article records retain the Drupal node identifier, title, authors, rubric,
 article type, publication-date text and explicit language field. Node identity
 deduplicates article aliases; `echovek.ru` and `www.echovek.ru` normalize to the

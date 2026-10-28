@@ -114,8 +114,15 @@ def parse_listing(html, request, root):
     if not ISSUE_PATH.fullmatch(parsed.path):
         raise ValueError("Expected an issue archive or issue contents page.")
     area = soup.select_one(".izd_soderganie")
-    if area is None or not title.startswith("Гасырлар авазы"):
+    if area is None:
         raise ValueError("Issue contents structure is missing.")
+    if not title.startswith("Гасырлар авазы"):
+        classes = soup.body.get("class", []) if soup.body else []
+        if "node-type-vitrina-izdanie" not in classes:
+            raise ValueError("Unrecognized non-journal publication layout.")
+        # The archive also lists publisher books. Retain them without treating
+        # their contents as journal articles or stopping later archive pages.
+        return ListingPage([url], [])
     if area.select_one("ul.pager a[href]"):
         raise ValueError("Issue contents acquired pagination; traversal needs review.")
     entries, unresolved = {}, []
@@ -139,13 +146,25 @@ def parse_listing(html, request, root):
 
 
 def record(html, page_url):
-    url = article_url(page_url, ARCHIVE_URL)
+    url = native_url(page_url, ARCHIVE_URL)
     soup = BeautifulSoup(html, "html.parser")
     heading = soup.select_one("#main-content h1")
     fields = soup.select_one(".pane-views-statya-vitrina-har-block")
     classes = soup.body.get("class", []) if soup.body else []
     ids = [re.fullmatch(r"page-node-([1-9]\d*)", c) for c in classes]
     ids = [m[1] for m in ids if m]
+    if ISSUE_PATH.fullmatch(urlsplit(url).path):
+        if (heading is None or not heading.get_text(strip=True) or len(ids) != 1
+                or "node-type-vitrina-izdanie" not in classes
+                or heading.get_text(" ", strip=True).startswith("Гасырлар авазы")):
+            raise ValueError("Non-journal publication identity or title is missing.")
+        language = soup.select_one(".views-field-field-izdanie-language .field-content")
+        return {"url": url, "publication_id": ids[0],
+                "title": heading.get_text(" ", strip=True),
+                "language_raw": language.get_text(" ", strip=True) if language else None,
+                "representation": "non_journal_metadata",
+                "admission_reason": "Publisher book retained as metadata; acquisition is limited to journal article PDFs."}, []
+    article_url(url, ARCHIVE_URL)
     if (heading is None or not heading.get_text(strip=True) or fields is None
             or len(ids) != 1 or "node-type-vitrina" not in classes):
         raise ValueError("Article identity, title or bibliographic fields are missing.")
@@ -188,4 +207,6 @@ def record(html, page_url):
 
 
 def record_key(metadata):
+    if "publication_id" in metadata:
+        return "publication:" + metadata["publication_id"]
     return "article:" + metadata["article_id"]
