@@ -2,6 +2,9 @@
 # Relative paths are resolved against this YAML file, not the current directory.
 artifacts_root: __artifacts/ingestion
 sources:
+  # Explicit publisher Tatar item labels; individual PDF files only.
+  sarhaan:
+    archive_url: https://sarhaan.com/a/tatar-%d8%aa%d8%aa%d8%a7%d8%b1%d9%8a/
   # Mixed subject catalog; only individually reviewed Tatar textbook PDFs are acquired.
   obuchalka:
     archive_url: https://obuchalka.org/knigi-po-tatarskomu-yaziku/

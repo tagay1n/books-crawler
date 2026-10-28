@@ -76,6 +76,15 @@ individually reviewed Tatar PDFs through its public Fileskachat delivery links.
 Mixed-language and unreviewed entries remain held. See
 [textbook selection and usage](docs/local-ingestion.md#obuchalka-reviewed-tatar-textbooks).
 
+`sarhaan` traverses the publisher's Tatar category and downloads individually
+advertised PDFs only when the book's explicit language labels agree. Image-only
+items and other file types stay outside acquisition. See
+[publisher scope and usage](docs/local-ingestion.md#sarhaan-tatar-publications).
+
+For a compact read-only view of several local manifests, run
+`python scripts/ingestion_overview.py __artifacts/ingestion`.
+Reusable components are summarized in [the developer guide](docs/adapter-development.md).
+
 Use `kfu_repository` for automatic discovery across all historical collections on
 `repo.kpfu.ru`. It requires explicit Tatar item-language labels and reuses verified
 originals from existing KFU manifests. Run:

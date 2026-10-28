@@ -1,7 +1,11 @@
 from . import beznenmiras, commons, darul_kutub, echovek, internet_archive, isxaki, kazanutlary, kfu, kfu_dspace, kfu_repository, kfu_vakyt, magarif, magarif_vakyt, miras, miras_periodicals, nizgar, obuchalka, tatarica, tatargalyame, tataroved, tatkniga, turuz, yazuchy
 
 
+from . import sarhaan
+
+
 SOURCES = {"magarif": magarif, "tatarica": tatarica, "darul_kutub": darul_kutub,
+           "sarhaan": sarhaan,
            "beznenmiras": beznenmiras,
            "miras_periodicals": miras_periodicals,
            "magarif_vakyt": magarif_vakyt,
