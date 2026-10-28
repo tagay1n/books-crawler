@@ -46,9 +46,10 @@ the same session export and PDF downloader. Live reader verification is pending
 a refreshed session; unresolved year/issue selectors are held as unsupported.
 See [periodical scope and current limits](docs/local-ingestion.md#miras-periodicals).
 
-`magarif_vakyt` collects the publisher's Tatar textbook ZIPs from public Yandex
-Disk shares and assembles PDFs from their declared reader page images. Original
-ZIPs are retained with source checksums and derived-file provenance. See
+`magarif_vakyt` collects the publisher's original literature PDFs and Tatar textbook
+ZIPs from public Yandex Disk shares. It assembles PDFs from ZIPs' declared reader
+page images; original PDFs bypass assembly. Originals retain source checksums
+and derived files retain their provenance. See
 [textbook package usage and limits](docs/local-ingestion.md#мәгарифвакыт-textbook-packages).
 
 `turuz` collects direct PDF, DjVu and Word dictionaries from Turuz's native

@@ -494,20 +494,42 @@ python cli.py --config ingestion.yaml status --source magarif_vakyt
 ```
 
 Discovery selects public Yandex Disk shares attached to publisher-labelled
-«Әдәби уку», «Татар Теле», and «Татар әдәбияты» textbook cards. Arabic textbooks,
-Google Drive links, and the publisher's other catalogs are outside this slice.
+«Әдәби уку», «Татар Теле», «Татар әдәбияты», «Туган телдәге әдәбият» and
+«Әдәби ярдәмлек» cards. It follows both the electronic-format root and the
+native `/reading` catalog. Use `--max-pages 2` to traverse both listings in one
+invocation, or resume discovery afterward. Arabic textbooks, Google Drive links,
+Bonboni readers and the publisher's other catalogs remain outside acquisition.
 The titles establish admission context, not verified language of every file.
 Each share is one source record, with its publisher title/link and Yandex name,
 size, resource ID, timestamps, and checksums retained. `yadi.sk` aliases normalize
 to `disk.yandex.ru`. No login, OAuth token, session export, or new dependency is
-required. Metadata-only discovery does not download package bytes.
+required. Both `/d/` and `/i/` public shares are supported. Metadata-only discovery
+does not download original bytes. Per-record catalog context retains the actual
+listing and raw title/link, independently of the API filename.
 
 Downloads resolve a fresh temporary delivery URL through Yandex's public API,
-verify source size/MD5/SHA-256, and retain the unchanged ZIP under
+verify source size/MD5/SHA-256, and retain unchanged PDF or ZIP originals under
 `<artifacts_root>/magarif_vakyt/files/`. Signed URLs are excluded from persisted
 metadata, transfer errors, and acquisition results. A changed upstream identity
-requires rediscovery. `--limit` counts started packages, including retries or
-local PDF reconstruction; already verified complete packages are skipped.
+requires rediscovery. `--limit` counts started publications, including retries or
+local PDF reconstruction; already verified complete originals are skipped.
+Direct PDFs bypass package processing and retain their supplied original bytes.
+
+**2026-10-28 discovery expansion:** manual CLI traversal completed two catalogs
+and 33 distinct resources: the previous 14 ZIPs plus 19 original literature and
+methodology PDFs. The fifth-grade methodology PDF downloaded completely through
+the CLI: 1,190,772 bytes / 70 pages, SHA-256
+`249a2ddc3e1d8850fe36334fd81f41c6cf97c02749cef0868e43aa0a00c3934e`;
+Yandex size, MD5 and SHA-256 matched, and sampled page 5 contains readable Tatar.
+An isolated repeat skipped the PDF with zero requests. An existing verified ZIP
+and derived PDF also replayed with zero requests; forcing its local assembly
+checkpoint incomplete reused its existing derived result. Removing only the
+isolated verification copy of the derived PDF then rebuilt it from the retained
+ZIP, again without network access. A 1,000,000-byte per-file cap rejected the methodology PDF
+before any requests. Evidence is under `__artifacts/session-20261028/`; remaining
+PDF language/completeness and full acquisition remain unverified. Parser version
+2 starts a fresh discovery scan while retaining historical observations and
+the existing ZIP asset identities.
 
 The package reader parses literal `fliphtml5_pages` arrays and `totalPageCount`
 from `javascript/config.js` without executing JavaScript. It reads only explicitly
