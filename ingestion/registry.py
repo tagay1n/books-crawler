@@ -1,4 +1,4 @@
-from . import beznenmiras, commons, darul_kutub, internet_archive, isxaki, kazanutlary, kfu, kfu_dspace, kfu_repository, kfu_vakyt, magarif, magarif_vakyt, miras, miras_periodicals, nizgar, tatarica, tatargalyame, tataroved, tatkniga, turuz, yazuchy
+from . import beznenmiras, commons, darul_kutub, echovek, internet_archive, isxaki, kazanutlary, kfu, kfu_dspace, kfu_repository, kfu_vakyt, magarif, magarif_vakyt, miras, miras_periodicals, nizgar, tatarica, tatargalyame, tataroved, tatkniga, turuz, yazuchy
 
 
 SOURCES = {"magarif": magarif, "tatarica": tatarica, "darul_kutub": darul_kutub,
@@ -8,6 +8,7 @@ SOURCES = {"magarif": magarif, "tatarica": tatarica, "darul_kutub": darul_kutub,
            "turuz": turuz,
            "yazuchy": yazuchy,
            "nizgar": nizgar,
+           "echovek": echovek,
            "kazanutlary": kazanutlary, "tatkniga": tatkniga, "miras": miras, "commons": commons,
            "isxaki": isxaki, "internet_archive": internet_archive,
            "kfu_repository": kfu_repository,

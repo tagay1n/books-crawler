@@ -66,6 +66,11 @@ and downloads its linked original PDFs. These are bilingual issue candidates;
 publication dates come from archive labels, not upload paths. See
 [magazine archive usage](docs/local-ingestion.md#nizgar-magazine-archive).
 
+`echovek` follows the «Гасырлар авазы — Эхо веков» issue archive and acquires
+article PDFs explicitly labelled Tatar. Russian/unlabelled articles remain
+metadata; issue previews are excluded. See
+[journal article usage](docs/local-ingestion.md#echo-of-centuries-article-pdfs).
+
 Use `kfu_repository` for automatic discovery across all historical collections on
 `repo.kpfu.ru`. It requires explicit Tatar item-language labels and reuses verified
 originals from existing KFU manifests. Run:
