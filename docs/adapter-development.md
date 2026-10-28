@@ -14,6 +14,8 @@ belong to another project.
 - `ingestion/core.py`, `network.py`, `state.py`: reuse bounded streaming, format
   signatures, atomic publication, retry budgets, observations, hashes,
   source locks and repeat-run skipping. Do not duplicate these in adapters.
+  `network.install_native_get_guard` shares read-only native URL and redirect
+  checks; callers retain their own allowlist and optional delivery equivalence.
 - `ingestion/language_reviews.py`: reuse SHA-256-pinned manual language reviews
   when reliable item-language claims are absent. A subject or interface locale
   does not establish document language.

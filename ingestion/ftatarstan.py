@@ -6,7 +6,7 @@ from urllib.parse import urlsplit
 from bs4 import BeautifulSoup
 
 from .documents import canonical, same_origin
-from .network import InvalidDocument
+from .network import InvalidDocument, install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
@@ -34,30 +34,14 @@ def galley_identity(url):
 
 
 def prepare_http(http, session_file):
-    def validate_request(method, url, data):
-        if method != "GET" or data:
-            raise ValueError("Journal acquisition permits read-only GET requests only.")
-        native_url(url)
-
-    def check_response(response, *args, **kwargs):
-        try:
-            before = native_url(response.url)
-            if response.is_redirect:
-                after = native_url(response.headers["Location"], before)
-                if after != before and galley_identity(before) != galley_identity(after):
-                    raise ValueError("Journal redirect changed issue or galley identity.")
-        except (ValueError, KeyError):
-            response.close()
-            raise InvalidDocument("Journal redirected outside the selected native resource.") from None
-        return response
+    install_native_get_guard(http, native_url, "Fänni Tatarstan",
+                             redirect_allowed=lambda before, after: galley_identity(before) == galley_identity(after))
 
     def validate_download(response, asset):
         identity = galley_identity(asset["url"])
         if any(galley_identity(r.url) != identity for r in [*response.history, response]):
             raise InvalidDocument("Delivered PDF belongs to a different issue galley.")
 
-    http.validate_request = validate_request
-    http.session.hooks["response"].append(check_response)
     http.validate_download_response = validate_download
 
 

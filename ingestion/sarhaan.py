@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 from requests.utils import requote_uri
 
 from .documents import canonical, same_origin
-from .network import InvalidDocument
+from .network import InvalidDocument, install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
@@ -71,23 +71,9 @@ def resource_identity(url):
 
 
 def prepare_http(http, session_file):
-    def validate_request(method, url, data):
-        if method != "GET" or data:
-            raise ValueError("Sarhaan permits read-only GET retrieval only.")
-        native_url(url)
-
-    def check_response(response, *args, **kwargs):
-        try:
-            before = native_url(response.url)
-            if response.is_redirect:
-                after = native_url(response.headers["Location"], before)
-                if (resource_identity(after) != resource_identity(before)
-                        and (not download_id(before) or download_id(before) != download_id(after))):
-                    raise ValueError("Redirect changed publisher identity.")
-        except (ValueError, KeyError):
-            response.close()
-            raise InvalidDocument("Sarhaan redirected outside the selected native resource.") from None
-        return response
+    install_native_get_guard(http, native_url, "Sarhaan", redirect_allowed=lambda before, after:
+                             resource_identity(before) == resource_identity(after)
+                             or bool(download_id(before) and download_id(before) == download_id(after)))
 
     def validate_download(response, asset):
         identity = download_id(asset["url"])
@@ -99,8 +85,6 @@ def prepare_http(http, session_file):
         if filename and unquote(filename) != asset["filename_claim"]:
             raise InvalidDocument("Delivered filename differs from the individually selected PDF.")
 
-    http.validate_request = validate_request
-    http.session.hooks["response"].append(check_response)
     http.validate_download_response = validate_download
 
 

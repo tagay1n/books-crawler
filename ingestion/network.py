@@ -18,6 +18,34 @@ class SourceAccessError(Exception):
     """Source access was rejected; stop without consuming the remaining backlog."""
 
 
+def install_native_get_guard(http, normalize_url, label, *, redirect_allowed=None):
+    """Scope GETs to a caller-validated URL space and preserve redirect identity.
+
+    normalize_url(href, base) must reject unsupported origins and paths. Optional
+    redirect_allowed receives two already validated, normalized URLs; it may allow
+    a provider's equivalent delivery route. File validation remains independent.
+    """
+    def validate_request(method, url, data):
+        if method != "GET" or data:
+            raise ValueError(f"{label} permits read-only GET requests only.")
+        normalize_url(url)
+
+    def check_response(response, *args, **kwargs):
+        try:
+            before = normalize_url(response.url)
+            if response.is_redirect:
+                after = normalize_url(response.headers["Location"], response.url)
+                if before != after and not (redirect_allowed and redirect_allowed(before, after)):
+                    raise ValueError("Redirect changed the selected native resource.")
+        except (ValueError, KeyError):
+            response.close()
+            raise InvalidDocument(f"{label} redirected outside the selected native resource.") from None
+        return response
+
+    http.validate_request = validate_request
+    http.session.hooks["response"].append(check_response)
+
+
 class Budget:
     def __init__(self, settings):
         self.settings = settings

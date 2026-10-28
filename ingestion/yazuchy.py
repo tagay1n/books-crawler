@@ -9,7 +9,7 @@ from requests.utils import requote_uri
 
 from . import language_reviews
 from .documents import canonical, same_origin
-from .network import InvalidDocument
+from .network import install_native_get_guard
 from .paging import ListingPage
 
 
@@ -121,23 +121,7 @@ def prepare_http(http, session_file):
                                          document_url, "Yazuchy"))
     http.language_reviews = reviews
 
-    def validate_request(method, url, data):
-        if method != "GET" or data:
-            raise ValueError("Yazuchy permits only read-only GET requests.")
-        native_url(url)
-
-    def check_response(response, *args, **kwargs):
-        try:
-            before = native_url(response.url)
-            if response.is_redirect and native_url(canonical(response.headers["Location"], response.url)) != before:
-                raise ValueError("Redirect changed the native resource.")
-        except (ValueError, KeyError):
-            response.close()
-            raise InvalidDocument("Yazuchy returned an unexpected origin or resource redirect.") from None
-        return response
-
-    http.validate_request = validate_request
-    http.session.hooks["response"].append(check_response)
+    install_native_get_guard(http, native_url, "Yazuchy")
     http.validate_acquisition = lambda asset: language_reviews.validate_acquisition(http, asset)
     http.validate_acquired_asset = language_reviews.validate_acquired
 
