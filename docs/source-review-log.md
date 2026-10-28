@@ -84,8 +84,61 @@ existing downloaded files remain at their recorded original locations.
   registration is still unproven. Do not label the entire source registration-gated
   merely because its root has an authorization button.
 
-Next concrete work: inspect metadata output from live PTY session 77614, then extend
-`magarif_vakyt` to discover `/reading` and acquire linked original PDFs using shared
-Yandex checksums/delivery. Keep ZIP derivation intact. Source inventory notes have
-been updated for Sarhaan and Tatfolk. Echo of Centuries PTY 96859 remains running;
-last inspection showed 603 records, 26 listing requests completed and no errors.
+Next concrete work: implement Fänni Tatarstan on its new public OJS domain,
+using the verified native full-issue PDF route described below. Publisher coverage
+expansion is committed as `934d755`; do not duplicate that implementation.
+Echo of Centuries remains active in PTY 32838; poll before restarting it.
+
+## Publisher discovery expansion completed
+
+Мәгариф–Вакыт now traverses `/online2` and `/reading`: live CLI discovery
+completed 33 resources, the existing 14 ZIPs plus 19 direct PDFs. The fifth-grade
+methodology PDF acquired through CLI is 1,190,772 bytes / 70 pages, SHA-256
+`249a2ddc3e1d8850fe36334fd81f41c6cf97c02749cef0868e43aa0a00c3934e`; source
+size/MD5/SHA-256 all matched, and extracted page 5 is readable Tatar. The direct
+PDF and an existing ZIP/derived PDF each replayed with zero requests. Removing
+only the isolated verification copy of the derived PDF forced successful local
+reassembly (`pdf_assembled=1`, zero requests). A 1 MB file cap rejected the direct
+PDF with zero requests. No automated tests were added. The common delivery path
+handles both formats; repeated file-budget checks were consolidated and stream
+errors redact temporary signed delivery locators.
+
+Additional missed reader lead: `/reading` links four Bonboni readers. First-grade
+reader HTML and `javascript/config.js` are public. Its configuration advertises
+124 pages, whereas the inspected existing ZIP advertises 114. Do not dismiss it
+as duplicate coverage. Native reader: `https://books.bonboni.ru/adabi-uku/1class/`;
+no direct PDF link was found and download control is hidden. Reader acquisition
+is not implemented in this change. Evidence: `bonboni-1class.html` and
+`bonboni-1class-config.js`. `/new4` is reachable but its only Yandex links are
+footer policies; these must remain excluded. `/online` exposes Google Drive
+reader links that remain unverified.
+
+Echo of Centuries initial run ended normally at its 900-second deadline with
+889 records and a remaining frontier. It resumed using the same manifest in
+PTY session 32838, log `echovek-discovery-2.log`. PTY 96859 is terminal.
+
+## Next new-source candidate: Fänni Tatarstan
+
+The old `https://ft.antat.ru/` catalog, archive and sampled advertised PDF returned
+HTTP 502. Official indexed migration notices identify the replacement
+`https://ftatarstan.ru/`, which is reachable (HTTP 200). Native OJS archive:
+`https://ftatarstan.ru/index.php/ftat/ru/issue/archive`, 25 issue cards on its first
+page and an advertised next page `/issue/archive/2`. The homepage advertises
+`PDF (татарский)` for issue 51, № 3 (2026). Its public galley
+`/index.php/ftat/ru/issue/view/51/50` returned HTML with an explicit download link
+`/index.php/ftat/ru/issue/download/51/50`, whose anonymous response is HTTP 200
+application/pdf. Bounded full sample inspection completed: 8,714,023 bytes / 196 PDF pages,
+SHA-256 `d0db9116e265154bf764e61ed027837fb75364e8db513fed3937b97cf1a45a09`.
+Extracted page 6 contains readable Tatar scientific text; the issue also has
+Russian/English abstracts and references. PTY 80730 is terminal. Source acquisition must
+use advertised native links and distinguish complete issue galleys from article
+PDFs and author-account navigation. Registration is not required merely because
+OJS displays author registration links. This journal is a distinct native surface
+from the previously deferred IYALI electronic-library catalog. Evidence HTML and
+link inventories are under the session directory. The complete original and Tatar content are verified; proceed with adapter
+implementation after inspecting native issue-page galley labels and remaining
+archive pagination. Use whole-issue original PDFs, excluding article galleys.
+
+Other candidate check: `https://islamhouse.com/tt/books/` returned 404; no verified
+Tatar collection or download route. Do not infer site-wide unreachability or
+registration requirements from that obsolete/unverified route.
