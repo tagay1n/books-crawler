@@ -2,6 +2,9 @@
 # Relative paths are resolved against this YAML file, not the current directory.
 artifacts_root: __artifacts/ingestion
 sources:
+  # Linked original PDFs of the bilingual Nizgar magazine; one archive observation.
+  nizgar:
+    archive_url: https://nizgar.ru/zhurnal-nizhegorodskie-tatary-nizhgar-tatarlary/
   # Publisher book PDFs; explicit Tatar target-language claims or hash-pinned reviews.
   yazuchy:
     archive_url: https://sptatar.com/yazuchy-n-shriyaty/

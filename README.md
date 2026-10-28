@@ -61,6 +61,11 @@ direct PDFs with explicit Tatar target-language claims or hash-pinned content
 reviews. Russian editions and unreviewed files remain held. See
 [publisher catalog usage](docs/local-ingestion.md#yazuchy-publisher-catalog).
 
+`nizgar` discovers the «Нижегородские татары. Нижгар татарлары» magazine archive
+and downloads its linked original PDFs. These are bilingual issue candidates;
+publication dates come from archive labels, not upload paths. See
+[magazine archive usage](docs/local-ingestion.md#nizgar-magazine-archive).
+
 Use `kfu_repository` for automatic discovery across all historical collections on
 `repo.kpfu.ru`. It requires explicit Tatar item-language labels and reuses verified
 originals from existing KFU manifests. Run:
