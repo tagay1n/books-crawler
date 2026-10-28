@@ -1,4 +1,4 @@
-"""Publication-level acquisition and derived PDFs from ordered upstream JPEGs."""
+"""Publication-level acquisition and derived PDFs from ordered upstream JPEG/JPEG2000 images."""
 
 import hashlib
 from io import BytesIO
@@ -33,15 +33,17 @@ def image_policy(record):
 def colour_page(path):
     """Derive a 200 DPI colour page without changing the retained original."""
     with Image.open(path) as source:
+        if source.width * source.height > 150_000_000:
+            raise ValueError("Page exceeds the 150 megapixel decode limit.")
         dpi = source.info.get("dpi")
         if (not dpi or len(dpi) != 2
                 or any(not math.isfinite(float(d)) or float(d) < 200 for d in dpi)):
-            raise ValueError("200 DPI assembly requires source JPEG resolution metadata of at least 200 DPI.")
+            raise ValueError("200 DPI assembly requires source image resolution metadata of at least 200 DPI.")
         xdpi, ydpi = map(float, dpi)
         orientation = source.getexif().get(274, 1)
         profile = source.info.get("icc_profile") if source.mode == "RGB" else None
         if source.mode not in {"RGB", "L"}:
-            raise ValueError("Colour assembly requires RGB or grayscale source JPEGs.")
+            raise ValueError("Colour assembly requires RGB or grayscale source images.")
         image = ImageOps.exif_transpose(source)
         if orientation in {5, 6, 7, 8}:
             xdpi, ydpi = ydpi, xdpi
@@ -55,16 +57,26 @@ def colour_page(path):
         return encoded.getvalue(), width, height
 
 
-def validate_jpeg(path):
+def validate_page(path, *, extension):
     try:
         with Image.open(path) as image:
-            if image.format != "JPEG":
-                raise ValueError("Expected JPEG page image.")
+            expected = "JPEG2000" if extension == ".jp2" else "JPEG"
+            if image.format != expected:
+                raise ValueError(f"Expected {expected} page image.")
+            if image.width * image.height > 150_000_000:
+                raise ValueError("Page exceeds the 150 megapixel decode limit.")
+            if getattr(image, "n_frames", 1) != 1:
+                raise ValueError("Expected a single-frame page image.")
             image.verify()
         with Image.open(path) as image:
             image.load()
     except (OSError, ValueError, Image.DecompressionBombError) as error:
-        raise InvalidDocument(f"Invalid JPEG page: {error}") from error
+        raise InvalidDocument(f"Invalid page image: {error}") from error
+
+
+def validate_jpeg(path):
+    """Compatibility entry point for existing JPEG callers."""
+    return validate_page(path, extension=".jpg")
 
 
 def inputs_for(record, assets):
@@ -193,7 +205,8 @@ def download(http, manifest, summary, log, recheck, *, unit="issue"):
                         continue
                     try:
                         acquire(http, manifest, asset, temporary, summary,
-                                extensions={".jpg", ".jpeg"}, validate_file=validate_jpeg)
+                                extensions={".jpg", ".jpeg", ".jp2"},
+                                validate_file=lambda path: validate_page(path, extension=asset["extension"]))
                         log(f"Acquired image: {asset['label']}")
                     except READ_ERRORS as error:
                         asset.update(status="failed", last_error=str(error))

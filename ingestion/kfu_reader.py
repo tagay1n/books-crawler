@@ -1,4 +1,4 @@
-"""Resolve KFU's advertised JPEG ranges against their public IIIF readers."""
+"""Resolve KFU's advertised JPEG/JPEG2000 ranges against their public IIIF readers."""
 
 import hashlib
 import json
@@ -18,18 +18,22 @@ class UnsupportedReader(ValueError):
 
 def image_range(reader):
     reference, first, last = reader_reference(reader["url"])
-    match = re.fullmatch(r"(\d+)\.(jpe?g)\s*\.\.\.\s*(\d+)\.\2",
+    match = re.fullmatch(r"(?P<prefix>(?:[A-Za-z0-9_-]*[-_])?)(?P<first>\d+)\.(?P<extension>jpe?g|jp2)"
+                         r"\s*\.\.\.\s*(?P=prefix)(?P<last>\d+)\.(?P=extension)",
                          reader.get("filename_raw") or "", re.IGNORECASE)
     count = last - first + 1
-    if (reader.get("format_raw") != "Set of JPEG" or match is None
-            or len(match[1]) != len(match[3]) or int(match[3]) - int(match[1]) + 1 != count
+    formats = {"jpg": "Set of JPEG", "jpeg": "Set of JPEG", "jp2": "Set of JPEG2000"}
+    if (match is None or reader.get("format_raw") != formats[match["extension"].lower()]
+            or len(match["first"]) != len(match["last"])
+            or int(match["last"]) - int(match["first"]) + 1 != count
             or reader.get("displayed_count_raw") != str(count) or count > 10000):
-        raise UnsupportedReader("KFU JPEG set does not declare a consistent numbered filename range and count.")
-    return reference, first, last, int(match[1]), len(match[1]), match[2]
+        raise UnsupportedReader("KFU image set does not declare a consistent numbered filename range and count.")
+    return (reference, first, last, int(match["first"]), len(match["first"]),
+            match["extension"], match["prefix"])
 
 
 def read_pages(http, reader):
-    reference, first, last, number, width, extension = image_range(reader)
+    reference, first, last, number, width, extension, prefix = image_range(reader)
     html, final_url = http.text_response(reader["url"], origin=ORIGIN)
     soup = BeautifulSoup(html, "html.parser")
     candidates = set()
@@ -48,7 +52,7 @@ def read_pages(http, reader):
         raise ValueError("KFU IIIF manifest must contain one ordered sequence.")
     canvases = sequences[0].get("canvases")
     if not isinstance(canvases, list) or len(canvases) != last - first + 1:
-        raise ValueError("KFU IIIF page count disagrees with its advertised JPEG range.")
+        raise ValueError("KFU IIIF page count disagrees with its advertised image range.")
     pages, identities = [], set()
     for index, canvas in enumerate(canvases):
         if not isinstance(canvas, dict) or canvas.get("@type") != "sc:Canvas":
@@ -64,11 +68,11 @@ def read_pages(http, reader):
         parsed = urlsplit(image) if isinstance(image, str) else None
         if (parsed is None or parsed.scheme not in {"http", "https"}
                 or parsed.netloc != "repo.kpfu.ru" or parsed.query or parsed.fragment
-                or not re.fullmatch(r"/iiif/2/\d+\.jpg/full/full/0/default\.jpg", parsed.path)
+                or not re.fullmatch(rf"/iiif/2/\d+\.{'jp2' if extension.lower() == 'jp2' else 'jpg'}/full/full/0/default\.jpg", parsed.path)
                 or resource.get("format") != "image/jpeg" or image in identities):
             raise ValueError("KFU IIIF canvas has an unexpected or repeated full image resource.")
         identities.add(image)
-        name = f"{number + index:0{width}d}.{extension}"
+        name = f"{prefix}{number + index:0{width}d}.{extension}"
         # Expand only the record's declared filenames and bitstream sequence range.
         # IIIF validates count/order; native bitstreams retain original DPI and colour.
         url = f"{ORIGIN}/jspui/bitstream/{reference}/{first + index}/{name}"

@@ -255,7 +255,7 @@ def download(http, manifest, summary, log, recheck, *, unit="file_or_book"):
     download_images(http, manifest, summary, log, recheck, unit=unit)
 
 
-def prepare_http(http, session_file):
+def prepare_http(http, session_file, *, listing_route=None):
     http.session.headers.update({"Accept-Language": "ru,en;q=0.5"})
 
     def route(url):
@@ -269,6 +269,8 @@ def prepare_http(http, session_file):
         manifest = re.fullmatch(r"/api/manifest/(net/[1-9]\d*)/([1-9]\d*)-([1-9]\d*)/info.json", parsed.path)
         if manifest and not parsed.query and not parsed.fragment and int(manifest[3]) >= int(manifest[2]):
             return ("manifest", manifest[1], int(manifest[2]), int(manifest[3]))
+        if listing_route is not None and urlsplit(url).path == urlsplit(http.settings.archive_url).path:
+            return ("listing", listing_route(url))
         native = handle(url)
         if native.rsplit("/", 1)[1] in COLLECTIONS:
             offset(url, http.settings.archive_url)
@@ -309,7 +311,7 @@ def prepare_http(http, session_file):
 
 
 class CollectionAdapter:
-    PARSER_VERSION = 2
+    PARSER_VERSION = 3
     UNIQUE_RECORDS = True
     parse_listing = staticmethod(parse_listing)
     verification_request = staticmethod(verification_request)

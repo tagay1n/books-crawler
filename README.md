@@ -36,6 +36,12 @@ exported from an ordinary verified browser. Pass `--session-file PATH` to its
 See [local ingestion](docs/local-ingestion.md#miras-books-and-browser-session-access)
 for its session format and recovery instructions.
 
+KFU «Вакыт» is available as `kfu_vakyt`: resumable exact-series discovery,
+public JPEG/JPEG2000 originals, and complete 200 DPI colour issue PDFs. Explicit
+Tatar item-language labels are required; unlabelled records remain held. See
+[usage and limits](docs/local-ingestion.md#kfu-вакыт-newspaper) and the
+[earlier pilot](docs/kfu-vakyt-pilot.md).
+
 ## Setup
 
 1. Create and activate a virtual environment.

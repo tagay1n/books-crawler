@@ -1,4 +1,4 @@
-from . import commons, darul_kutub, internet_archive, isxaki, kazanutlary, kfu, magarif, miras, tatarica, tatargalyame, tatkniga
+from . import commons, darul_kutub, internet_archive, isxaki, kazanutlary, kfu, kfu_vakyt, magarif, miras, tatarica, tatargalyame, tatkniga
 
 
 SOURCES = {"magarif": magarif, "tatarica": tatarica, "darul_kutub": darul_kutub,
@@ -7,6 +7,7 @@ SOURCES = {"magarif": magarif, "tatarica": tatarica, "darul_kutub": darul_kutub,
            "kfu_books": kfu.CollectionAdapter("27574"),
            "kfu_manuscripts": kfu.CollectionAdapter("18503"),
            "kfu_il": kfu.CollectionAdapter("28060", tatar_only=True),
+           "kfu_vakyt": kfu_vakyt,
            "kfu_shura": kfu.CollectionAdapter("25046", tatar_only=True),
            "tatargalyame": tatargalyame}
 
