@@ -77,11 +77,11 @@ def prepare_http(http, session_file):
     http.session.hooks["response"].append(check_response)
 
 
-def page_number(url):
+def page_number(url, *, page_path=PAGE_PATH, catalog="books"):
     parsed = urlsplit(url)
-    match = PAGE_PATH.fullmatch(parsed.path.rstrip("/") + "/")
+    match = page_path.fullmatch(parsed.path.rstrip("/") + "/")
     if not same_origin(url, ARCHIVE_URL) or not match or parsed.query:
-        raise ValueError("Listing is outside the unfiltered Miras books catalog.")
+        raise ValueError(f"Listing is outside the unfiltered Miras {catalog} catalog.")
     return int(match.group(1) or 1)
 
 
@@ -130,24 +130,24 @@ def details(area):
     return values
 
 
-def book_target(href, base):
+def book_target(href, base, *, record_path=BOOK_PATH):
     url = canonical(href, base)
     parsed = urlsplit(url)
-    identity = BOOK_PATH.fullmatch(parsed.path)
+    identity = record_path.fullmatch(parsed.path)
     if identity is None:
         return None
     if not same_origin(url, ARCHIVE_URL) or parsed.query:
-        raise ValueError("Unexpected publication link in the Miras books catalog.")
+        raise ValueError("Unexpected publication link in the Miras catalog.")
     return identity.group(1), url
 
 
-def parse_listing(html, request, root):
-    current = page_number(request.url)
+def parse_listing(html, request, root, *, record_path=BOOK_PATH, page_path=PAGE_PATH, catalog="books"):
+    current = page_number(request.url, page_path=page_path, catalog=catalog)
     soup = check_page(html)
     area = content(soup)
     entries = {}
     for anchor in area.select("a[href]"):
-        target = book_target(anchor["href"], request.url)
+        target = book_target(anchor["href"], request.url, record_path=record_path)
         if target is None:
             continue
         identity, url = target
@@ -156,12 +156,13 @@ def parse_listing(html, request, root):
         if label and not item["label"]:
             item.update(label=label, anchor=anchor)
     if not entries:
-        raise ValueError("Miras returned no recognizable book cards; discovery remains incomplete.")
+        raise ValueError(f"Miras returned no recognizable {catalog} cards; discovery remains incomplete.")
     targets = {}
     for anchor in soup.select("a[href]"):
         url = canonical(anchor["href"], request.url)
-        if re.fullmatch(r"/projects/mirasxane/books/page/\d+/?", urlsplit(url).path):
-            targets[page_number(url)] = url
+        match = page_path.fullmatch(urlsplit(url).path.rstrip("/") + "/")
+        if match and match.group(1):
+            targets[page_number(url, page_path=page_path, catalog=catalog)] = url
     controls = soup.select(".navigation, .pagination")
     if not targets and not controls:
         raise ValueError("Miras catalog pagination structure is missing.")
@@ -181,7 +182,7 @@ def parse_listing(html, request, root):
         while card.parent is not None and card.parent is not area:
             parent = card.parent
             siblings = {target[0] for link in parent.select("a[href]")
-                        if (target := book_target(link["href"], request.url)) is not None}
+                        if (target := book_target(link["href"], request.url, record_path=record_path)) is not None}
             if len(siblings) != 1:
                 break
             card = parent
@@ -192,17 +193,17 @@ def parse_listing(html, request, root):
                        fingerprint=json.dumps(list(entries)), record_context=contexts)
 
 
-def record(html, page_url):
-    identity = book_target(page_url, ARCHIVE_URL)
+def record(html, page_url, *, record_path=BOOK_PATH, kind="book", admission_reason=None):
+    identity = book_target(page_url, ARCHIVE_URL, record_path=record_path)
     if identity is None:
-        raise ValueError("Unrecognized Miras book URL.")
+        raise ValueError(f"Unrecognized Miras {kind} URL.")
     area = content(check_page(html))
-    metadata = {"url": page_url, "book_id": identity[0], **details(area),
-                "admission_reason": "Book linked by the unfiltered Miras books catalog; all languages eligible."}
+    metadata = {"url": page_url, kind + "_id": identity[0], **details(area),
+                "admission_reason": admission_reason or "Book linked by the unfiltered Miras books catalog; all languages eligible."}
     heading = area.select_one("h1, h2, .fullstory-title, .full-title")
     direct_pdf = any(urlsplit(link["href"]).path.lower().endswith(".pdf") for link in area.select("a[href]"))
     if not metadata["properties_raw"] and not heading and not area.select("iframe[src]") and not direct_pdf:
-        raise ValueError("Miras book properties or reader structure is missing.")
+        raise ValueError(f"Miras {kind} properties or reader structure is missing.")
     if heading and heading.get_text(" ", strip=True):
         metadata.update(title=heading.get_text(" ", strip=True), title_raw=heading.get_text(" ", strip=True))
     assets, readers = {}, []
@@ -237,7 +238,7 @@ def resolve_record(http, metadata, assets):
     if not metadata.get("title"):
         label = next((item["label_raw"] for item in contexts if item.get("label_raw")), None)
         if not label:
-            raise ValueError("Miras book title is missing from both record and catalog.")
+            raise ValueError("Miras publication title is missing from both record and catalog.")
         metadata.update(title=label, title_raw=label)
     if metadata.get("description", "").startswith(metadata["title"]):
         metadata["description"] = metadata["description"][len(metadata["title"]):].strip()

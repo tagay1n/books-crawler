@@ -16,6 +16,9 @@ The shared `cli.py` implements these acquisition sources:
   plus supported public flipbook pages assembled into local PDFs.
 - `miras`: <https://miras.info/projects/mirasxane/books/>, collecting exposed
   original book PDFs across all languages using an exported browser session.
+- `miras_periodicals`: <https://miras.info/projects/mirasxane/periodicals/>,
+  periodical-series discovery and explicitly exposed PDFs with Tatar source claims;
+  live reader verification is pending a refreshed session.
 - `commons`: <https://commons.wikimedia.org/wiki/Category:Tatar-language_books>,
   discovering document-format books through the public metadata API and acquiring
   their checksum-verified original uploads.
@@ -951,8 +954,8 @@ python cli.py --config ingestion.yaml status --source miras
 `--config` before the command name. Relative artifact paths resolve against the
 YAML file's directory. Environment variables do not override YAML settings, and
 example files are never selected automatically. Miras network commands require
-`--session-file` from an ordinary verified browser; the other adapters require no
-credentials. `--session-file` is rejected for other sources. `status` does not read
+`--session-file` from an ordinary verified browser, shared with `miras_periodicals`;
+the other adapters require no credentials. `--session-file` is rejected for other sources. `status` does not read
 a session file or make network requests.
 
 Only the selected source needs a `sources.<source>.archive_url` configuration
@@ -1229,6 +1232,54 @@ download skipped both originals with zero requests. A real oversized candidate
 was rejected before any request or transferred bytes. The main queue retains
 one downloaded PDF and 34 pending originals. Verification used compilation,
 code inspection, and manual CLI runs; no automated tests were added.
+
+## Miras periodicals
+
+The separate `miras_periodicals` source uses the existing Miras session export and
+PDF downloader with its own manifest under `<artifacts_root>/miras_periodicals/`.
+Add this entry under `sources` in your operational YAML:
+
+```yaml
+miras_periodicals:
+  archive_url: https://miras.info/projects/mirasxane/periodicals/
+```
+
+```bash
+python cli.py --config ingestion.yaml discover --source miras_periodicals --max-pages 1 \
+  --session-file ~/Downloads/books-crawler/miras/miras-session.json
+python cli.py --config ingestion.yaml download --source miras_periodicals --limit 1 \
+  --session-file ~/Downloads/books-crawler/miras/miras-session.json
+python cli.py --config ingestion.yaml status --source miras_periodicals
+```
+
+Records represent periodical series, identified by native numeric IDs as
+`periodical:<id>`. Catalog pagination and record checkpoints are independent of
+the books source. Description, series-level language evidence, catalog context,
+reader links, and selector labels/values are retained. Source-described historical
+issue totals are not downloadable-holdings counts. No existing books or pilot
+manifest is imported or rewritten.
+
+Only explicitly exposed same-origin original PDFs are supported: direct links,
+`viewer.html?file=...` references, and selectors whose values are actual PDF or
+viewer URLs. The adapter does not construct file paths from year/issue numbers or
+execute website scripts. Unresolved selector options are retained as metadata and
+hold the series' otherwise eligible PDFs with `reader_unresolved`, avoiding a
+partial default-issue acquisition presented as complete coverage. Other formats
+and external files remain unsupported. An explicit Tatar language claim in series
+metadata or description is required; unlabelled series are held with
+`language_unknown`. This is upstream evidence, not verified document language.
+
+**Verification pending (2026-10-28):** the bounded CLI run with the saved browser
+session stopped after one access rejection, before catalog inspection. It exited
+nonzero and preserved an incomplete scan with one pending listing request and zero
+records, assets, or acquired bytes. CLI registration, configuration loading,
+read-only status, compilation, and whitespace checks passed. Diagnostics are under
+`/tmp/miras-periodicals-verification/miras_periodicals/`.
+A refreshed session is required to verify live
+pagination and issue-selector behavior and acquire a complete issue PDF. Dynamic
+selector resolution remains unfinished; no complete periodical acquisition or
+catalog coverage has been verified. Existing PDF validation, hashes, budgets,
+access rejection handling, and session format are reused from `miras`.
 
 ## Miras books and browser-session access
 

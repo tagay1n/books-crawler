@@ -41,6 +41,11 @@ exported from an ordinary verified browser. Pass `--session-file PATH` to its
 See [local ingestion](docs/local-ingestion.md#miras-books-and-browser-session-access)
 for its session format and recovery instructions.
 
+`miras_periodicals` adds a separate periodical-series catalog and manifest using
+the same session export and PDF downloader. Live reader verification is pending
+a refreshed session; unresolved year/issue selectors are held as unsupported.
+See [periodical scope and current limits](docs/local-ingestion.md#miras-periodicals).
+
 Use `kfu_repository` for automatic discovery across all historical collections on
 `repo.kpfu.ru`. It requires explicit Tatar item-language labels and reuses verified
 originals from existing KFU manifests. Run:

@@ -18,6 +18,9 @@ sources:
   # Pass --session-file PATH to discover/download/run; status needs no session.
   miras:
     archive_url: https://miras.info/projects/mirasxane/books/
+  # Separate periodical series manifest; uses the same Miras browser session export.
+  miras_periodicals:
+    archive_url: https://miras.info/projects/mirasxane/periodicals/
   # Discovery only: document files; cover/title-page images are skipped entirely.
   commons:
     archive_url: https://commons.wikimedia.org/wiki/Category:Tatar-language_books

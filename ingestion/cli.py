@@ -59,7 +59,7 @@ def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, ses
 @app.command()
 def discover(ctx: typer.Context, source: str = typer.Option(..., "--source"),
              max_pages: Optional[int] = typer.Option(None, "--max-pages"),
-             session_file: Optional[Path] = typer.Option(None, "--session-file", help="Miras-only browser session export.")):
+             session_file: Optional[Path] = typer.Option(None, "--session-file", help="Browser session export for miras or miras_periodicals.")):
     """Discover archive records and attachments without downloading originals."""
     execute(ctx, "discover", source, max_pages=max_pages, session_file=session_file)
 
@@ -68,7 +68,7 @@ def discover(ctx: typer.Context, source: str = typer.Option(..., "--source"),
 def download(ctx: typer.Context, source: str = typer.Option(..., "--source"),
              limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary, files/publications for tatkniga and KFU."),
              recheck: bool = typer.Option(False, "--recheck", help="Also revalidate completed downloads."),
-             session_file: Optional[Path] = typer.Option(None, "--session-file", help="Miras-only browser session export.")):
+             session_file: Optional[Path] = typer.Option(None, "--session-file", help="Browser session export for miras or miras_periodicals.")):
     """Download committed local work; retry failed or missing originals."""
     execute(ctx, "download", source, limit=limit, recheck=recheck, session_file=session_file)
 
@@ -78,7 +78,7 @@ def run_command(ctx: typer.Context, source: str = typer.Option(..., "--source"),
                 limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary, files/publications for tatkniga and KFU."),
                 max_pages: Optional[int] = typer.Option(None, "--max-pages"),
                 recheck: bool = typer.Option(False, "--recheck"),
-                session_file: Optional[Path] = typer.Option(None, "--session-file", help="Miras-only browser session export.")):
+                session_file: Optional[Path] = typer.Option(None, "--session-file", help="Browser session export for miras or miras_periodicals.")):
     """Discover, then download eligible files within the same run budget."""
     execute(ctx, "run", source, limit=limit, max_pages=max_pages, recheck=recheck, session_file=session_file)
 
