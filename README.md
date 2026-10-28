@@ -25,6 +25,11 @@ See [local ingestion](docs/local-ingestion.md) for configuration,
 commands, artifact locations, and recovery. The legacy pipeline commands below
 continue to operate independently.
 
+Безнең мирас is available as `beznenmiras` for resumable issue discovery and
+downloading original document links found in issue content. Inspected issue pages
+currently expose metadata and covers only; covers are not downloaded as journals.
+See [archive scope and usage](docs/local-ingestion.md#безнең-мирас-issue-archive).
+
 Wikimedia Commons supports discovery and downloading of original document-format
 books from its Tatar-language category. Downloads verify the source-reported size
 and SHA-1 before publication. Cover/title-page images are skipped entirely.

@@ -2,6 +2,9 @@
 # Relative paths are resolved against this YAML file, not the current directory.
 artifacts_root: __artifacts/ingestion
 sources:
+  # Issue metadata and linked originals only; covers are not journal documents.
+  beznenmiras:
+    archive_url: https://beznenmiras.ru/categories/widget/list/svezii-vypusk
   magarif:
     archive_url: https://magarif-uku.ru/documents
   tatarica:
