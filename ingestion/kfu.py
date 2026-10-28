@@ -15,8 +15,10 @@ from .paging import CatalogChanged, ListingPage, PageRequest
 
 
 ORIGIN = "https://repo.kpfu.ru"
-COLLECTIONS = {"27574": "books", "18503": "manuscripts", "28060": "il", "25046": "shura"}
-PERIODICALS = {"28060": ("Ил", "newspaper"), "25046": ("Шура", "journal")}
+COLLECTIONS = {"27574": "books", "18503": "manuscripts", "28060": "il", "25046": "shura",
+               "27528": "azad_halyk"}
+PERIODICALS = {"28060": ("Ил", "newspaper"), "25046": ("Шура", "journal"),
+               "27528": ("Азад халык", "newspaper")}
 DOCUMENT_FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
 TATAR_LABELS = {"tt", "tat", "tatar", "татарский", "татарча", "татар теле"}
 OTHER_LANGUAGE_LABELS = {"ru", "rus", "russian", "русский", "ar", "ara", "arabic", "арабский",
@@ -337,7 +339,8 @@ class CollectionAdapter:
                 "series_raw": [row["value_raw"] for row in metadata["bibliography_raw"]
                                if "dc_relation_ispartofseries" in row["field_classes"]],
             }
-        return (select_tatar(metadata, assets, publication="Shura" if self.collection_id == "25046" else "Il")
+        publication = {"25046": "Shura", "27528": "Azad Halyk"}.get(self.collection_id, "Il")
+        return (select_tatar(metadata, assets, publication=publication)
                 if self.tatar_only else (metadata, assets))
 
     def download(self, http, manifest, summary, log, recheck):

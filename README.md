@@ -12,8 +12,8 @@ The new shared CLI supports local discovery and document downloads from the
 Мәгариф archive, Tatarica library, Darul-Kutub catalog, Kazan Utları archive,
 Tatkniga's public library, Miras books, Isxaki's book/work collections, and
 Tatar-labelled Internet Archive text items with public original document uploads,
-and KFU's Turkic–Tatar books, manuscripts, «Ил» newspaper and «Шура» journal issues with public direct files
-and supported public JPEG readers. Tatar Galyame's educational catalog also
+and KFU's Turkic–Tatar books, manuscripts, «Ил» and «Азад халык» newspapers,
+and «Шура» journal issues with public direct files and supported public image readers. Tatar Galyame's educational catalog also
 supports downloading its explicitly listed hosted documents across all languages.
 Tatkniga downloads direct files for Tatar-labelled
 editions and assembles supported public readers, including those with no language
@@ -102,6 +102,10 @@ Tatar item-language labels are required; unlabelled records remain held. See
   - `python cli.py --config ingestion.yaml discover --source kfu_il --max-pages 1`
   - `python cli.py --config ingestion.yaml download --source kfu_il --limit 1`
   - `python cli.py --config ingestion.yaml status --source kfu_il`
+- KFU «Азад халык» newspaper (explicit Tatar language labels required):
+  - `python cli.py --config ingestion.yaml discover --source kfu_azad_halyk --max-pages 2`
+  - `python cli.py --config ingestion.yaml download --source kfu_azad_halyk --limit 1`
+  - `python cli.py --config ingestion.yaml status --source kfu_azad_halyk`
 - KFU «Шура» journal (explicit Tatar language labels required):
   - `python cli.py --config ingestion.yaml discover --source kfu_shura --max-pages 2`
   - `python cli.py --config ingestion.yaml download --source kfu_shura --limit 1`
@@ -126,6 +130,7 @@ Tatar item-language labels are required; unlabelled records remain held. See
 - `__artifacts/ingestion/internet_archive/` stores Archive metadata, original-upload files, and resumable discovery state.
 - `__artifacts/ingestion/kfu_books/` and `kfu_manuscripts/` store independent collection manifests, original files, derived colour PDFs, and restricted-file evidence.
 - `__artifacts/ingestion/kfu_il/` stores Il issue metadata, language/access decisions, original files, and an independent resumable discovery queue.
+- `__artifacts/ingestion/kfu_azad_halyk/` stores Azad Halyk issue metadata and original public PDFs.
 - `__artifacts/ingestion/kfu_shura/` stores Shura issue metadata, original PDFs, and the language-unlabelled 1910 volume's review evidence.
 - `__artifacts/ingestion/tatargalyame/` stores educational resource metadata, category provenance, hosted originals, and deferred external references.
 - `__artifacts/ingestion/commons/` stores original documents, source SHA-1 checks, category evidence, and licensing metadata.
