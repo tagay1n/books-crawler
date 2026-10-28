@@ -1,0 +1,183 @@
+{
+  "version": 1,
+  "files": {
+    "https://fileskachat.com/file/114936_89c0c89aad3a8978596bbf5158530a5b.html": {
+      "sha256": "7a6e37cb91ac21ab9a932d034352a621f1d339b93262c262c287aabd84e71abe",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Complete first-grade literary-reading teaching guide; sampled PDF page 5 contains readable Cyrillic Tatar pedagogical text. Does not certify monolinguality or completeness against the printed edition.",
+      "title_raw": "Әдәби уку, 1 сыйныф, Методик әсбап, Абдуллина Д.М., Мөхәрләмова Г.Н., 2023",
+      "observed_size": 410886,
+      "observed_pdf_pages": 66,
+      "sampled_pdf_pages": [
+        5
+      ]
+    },
+    "https://fileskachat.com/file/115616_df3acbbfb20492cb1e775cd27f6ce64b.html": {
+      "sha256": "95df80e06a88d85779029ad64098ad781fab0f455649689600c046decbadbeec",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Extracted page samples contain readable Cyrillic Tatar teaching material. Review identifies sampled Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Туган тел (татар теле), 5 сыйныф, Методик әсбап, Башлангыч гомуми белем бирү оешмаларында (татар телен туган тел буларак өйрәнүче укучылар белән) эшләүче укытучылар өчен, Шәкүрова М.М., Гыйниятуллина Л.М., Хисамов О.Р., 2022",
+      "observed_size": 872299,
+      "observed_pdf_pages": 52,
+      "sampled_pdf_pages": [
+        5,
+        27,
+        50
+      ],
+      "inspection_method": "text_samples"
+    },
+    "https://fileskachat.com/file/115615_b5cddca6136deecb31e58d134b8b707e.html": {
+      "sha256": "e4b39936eb0f72ec90cffd82530a0ca5240d3bdb7af16b35a02bcc2088b9185a",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Extracted page samples contain readable Cyrillic Tatar teaching material. Review identifies sampled Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Туган тел (татар теле), 2 сыйныф, Методик әсбап, Башлангыч гомуми белем бирү оешмаларында (татар телен туган тел буларак өйрәнүче укучылар белән) эшләүче укытучылар өчен, Шәкүрова М.М., Гыйниятуллина Л.М., Хисамов О.Р., 2020",
+      "observed_size": 1858415,
+      "observed_pdf_pages": 38,
+      "sampled_pdf_pages": [
+        5,
+        20,
+        36
+      ],
+      "inspection_method": "text_samples"
+    },
+    "https://fileskachat.com/file/115614_ca5978815e04b6c8d3d0d6821fa73c48.html": {
+      "sha256": "a3fa001adf6e2eb0476cf36afd56eba576f005c52e7431d4285424e413864df3",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Extracted page samples contain readable Cyrillic Tatar teaching material. Review identifies sampled Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Туган тел (татар теле), 3 сыйныф, Методик әсбап, Башлангыч гомуми белем бирү оешмаларында (татар телен туган тел буларак өйрәнүче укучылар белән) эшләүче укытучылар өчен, Шәкүрова М.М., Гыйниятуллина Л.М., Хисамов О.Р., 2020",
+      "observed_size": 2633447,
+      "observed_pdf_pages": 40,
+      "sampled_pdf_pages": [
+        5,
+        21,
+        38
+      ],
+      "inspection_method": "text_samples"
+    },
+    "https://fileskachat.com/file/115617_965a114dcce488647672a77487e485b4.html": {
+      "sha256": "40f9b540737beb77fa038d9caba9bc92f9557bce8ee09ffb7ed5e20309b6fd32",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Extracted page samples contain readable Cyrillic Tatar teaching material. Review identifies sampled Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Туган тел (татар теле), 4 сыйныф, Методик әсбап, Башлангыч гомуми белем бирү оешмаларында (татар телен туган тел буларак өйрәнүче укучылар белән) эшләүче укытучылар өчен, Шәкүрова М.М., Гыйниятуллина Л.М., Хисамов О.Р., 2020",
+      "observed_size": 815266,
+      "observed_pdf_pages": 36,
+      "sampled_pdf_pages": [
+        5,
+        19,
+        34
+      ],
+      "inspection_method": "text_samples"
+    },
+    "https://fileskachat.com/file/112745_86dec245a7d74b2d4f20b928e09b84a4.html": {
+      "sha256": "86bda7d156986a965f818c242bd4aa157aa4bbddeeb3f9e301442a94ac7042a5",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Rendered page inspected visually; Cyrillic Tatar text is readable. Automatic extraction is absent or sparse. Review identifies sampled Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Татар теле, Рус телендә башл. гомуми белем бирү оешмалары өчен д-лек (татар телен туган тел буларак өйрәнүче укучылар өчен), Харисов Ф.Ф., 2017",
+      "observed_size": 9372188,
+      "observed_pdf_pages": 145,
+      "sampled_pdf_pages": [
+        73
+      ],
+      "inspection_method": "visual"
+    },
+    "https://fileskachat.com/file/112777_b28ae1cdaface47e8ca1d226e1f57a8f.html": {
+      "sha256": "3a43bb1a8b5acc42a6700087fa40291122224d21dc209ad762bce280ab884a6b",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Rendered page inspected visually; Cyrillic Tatar text is readable. Automatic extraction is absent or sparse. Review identifies sampled Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Әдәби уку, Рус телендә башлангыч гомуми белем бирү оешмалары өчен дәреслек, татар телен туган тел буларак өйрәнүне укучылар өчен, 2 нче с-ф, 1 нче кисәк, Гарифуллина Ф.Ш., Мияссарова И.Х., 2017",
+      "observed_size": 19157930,
+      "observed_pdf_pages": 113,
+      "sampled_pdf_pages": [
+        57
+      ],
+      "inspection_method": "visual"
+    },
+    "https://fileskachat.com/file/126167_42238d9f2b56cef1ab76f943f714eb99.html": {
+      "sha256": "7276e4e881bf9c18d89a97cebee93bea32b2199a01087e6eb4b48547e2aab053",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Extracted page samples contain readable Cyrillic Tatar teaching material. Review identifies sampled Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Татар теле, 9 сыйныф, Зиннәтуллина К.3., Фатыйхова Ф.Ф., Мирзаһитов Р.X., 2010",
+      "observed_size": 6614486,
+      "observed_pdf_pages": 164,
+      "sampled_pdf_pages": [
+        5,
+        83,
+        162
+      ],
+      "inspection_method": "text_samples"
+    },
+    "https://fileskachat.com/file/120714_520bbd3990f042d8bba07c9be9d3c627.html": {
+      "sha256": "7b1e19af59bdf4406db845f487a05539c0dceb3e9d782991289c98c01f9b7d67",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Extracted page samples contain readable Cyrillic Tatar teaching material. Review identifies sampled Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Татар теле, 7 сыйныф, Сафиуллина Ф.С., Ибраһимов С.М., 2007",
+      "observed_size": 6438527,
+      "observed_pdf_pages": 172,
+      "sampled_pdf_pages": [
+        5,
+        87,
+        170
+      ],
+      "inspection_method": "text_samples"
+    },
+    "https://fileskachat.com/file/125080_b9214ee7ea8a32a8884e7684ec85049c.html": {
+      "sha256": "efff52a14bcc9cff8d716ef51b04cf97788d4f8050115b22cbbff89e73420645",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Rendered page inspected visually; Cyrillic Tatar text is readable. Automatic extraction is absent or sparse. Review identifies sampled Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Уку китабы, 2 сыйныф, 2 кисәктә, Беренче кисәк, Вагыйзов С.Г., 2007",
+      "observed_size": 11861711,
+      "observed_pdf_pages": 132,
+      "sampled_pdf_pages": [
+        69
+      ],
+      "inspection_method": "visual"
+    },
+    "https://fileskachat.com/file/115833_0146397c0f268603de46f73f4c942b82.html": {
+      "sha256": "08f8f258d4f345a70f3e7b838bac43fc3013d62d372773e6314422d0d506f998",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-28",
+      "reason": "Extracted page samples contain readable Cyrillic Tatar teaching material. Review identifies sampled Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "Татар теле, 6 сыйныф, Юсупов Ф.Ю., Тумашева Д.Г., Харисова Ч.М., 2006",
+      "observed_size": 11168195,
+      "observed_pdf_pages": 272,
+      "sampled_pdf_pages": [
+        5,
+        137,
+        270
+      ],
+      "inspection_method": "text_samples"
+    }
+  }
+}

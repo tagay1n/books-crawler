@@ -2,6 +2,9 @@
 # Relative paths are resolved against this YAML file, not the current directory.
 artifacts_root: __artifacts/ingestion
 sources:
+  # Mixed subject catalog; only individually reviewed Tatar textbook PDFs are acquired.
+  obuchalka:
+    archive_url: https://obuchalka.org/knigi-po-tatarskomu-yaziku/
   # Journal issue traversal; only article PDFs explicitly labelled Tatar are acquired.
   echovek:
     archive_url: https://www.echovek.ru/ru/publications

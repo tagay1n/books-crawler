@@ -71,6 +71,11 @@ article PDFs explicitly labelled Tatar. Russian/unlabelled articles remain
 metadata; issue previews are excluded. See
 [journal article usage](docs/local-ingestion.md#echo-of-centuries-article-pdfs).
 
+`obuchalka` discovers the Tatar-subject textbook section and downloads only
+individually reviewed Tatar PDFs through its public Fileskachat delivery links.
+Mixed-language and unreviewed entries remain held. See
+[textbook selection and usage](docs/local-ingestion.md#obuchalka-reviewed-tatar-textbooks).
+
 Use `kfu_repository` for automatic discovery across all historical collections on
 `repo.kpfu.ru`. It requires explicit Tatar item-language labels and reuses verified
 originals from existing KFU manifests. Run:
