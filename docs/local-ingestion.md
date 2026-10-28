@@ -1239,6 +1239,19 @@ Explicit native “no files” records are retained as metadata rather than erro
 Public direct documents and supported JPEG/JPEG2000 readers reuse the shared KFU
 downloader; complete page sets produce 200 DPI colour PDFs under existing limits.
 
+Single-file viewer links (`bitstream.jsp?net/ID/SEQUENCE/view`) can identify
+auxiliary images such as receipts. They are retained as unsupported metadata
+instead of making the entire book fail parsing; restricted images remain
+`kfu_restricted`. The downloader still rejects single-file viewers as supported
+image-reader routes, so this adds no receipt/image acquisition capability. Public
+document files in the same record are evaluated independently.
+Manual verification of `net/26934` acquired only its public `Фәлсәфи сүзлек` PDF:
+85,064,699 bytes / 323 pages, SHA-256
+`b1276d71dc029ac7dc176c94da9b792a7b38734c224be758d9ed3eb109881577`.
+Rendered page 11 contains Tatar dictionary text. The restricted receipt remained
+unsupported; an isolated repeat skipped the verified PDF with zero requests.
+Evidence: `__artifacts/session-20261028/kfu-single-viewer/` and session logs.
+
 Before acquisition, the adapter looks for matching original URLs, formats and
 source versions in other `kfu_*` manifests under the same configured artifact root.
 It verifies file size and SHA-256, then imports by hard link (or atomic copy) into

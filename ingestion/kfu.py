@@ -198,17 +198,27 @@ def record(html, page_url):
             target = link["url"]
             if urlsplit(target).path != "/jspui/bitstream.jsp":
                 continue
-            reference, first, last = reader_reference(target)
+            parsed = urlsplit(target)
+            single = re.fullmatch(r"(net/[1-9]\d*)/([1-9]\d*)/view", parsed.query)
+            if single and same_origin(target, ORIGIN) and not parsed.fragment:
+                reference, first, last = single[1], int(single[2]), int(single[2])
+                code = "kfu_restricted" if restricted else "reader_unsupported"
+                source_key = f"single-viewer:{first}"
+            else:
+                reference, first, last = reader_reference(target)
+                code = "kfu_restricted" if restricted else "kfu_reader"
+                source_key = f"reader:{first}-{last}"
             if reference != item_handle:
                 raise ValueError("KFU image reader belongs to another record.")
-            code = "kfu_restricted" if restricted else "kfu_reader"
             assets[target] = {"url": target, "label": descriptions.get("Файл:") or "Image reader",
-                              "source_asset_key": f"reader:{first}-{last}",
+                              "source_asset_key": source_key,
                               "filename_raw": descriptions.get("Файл:"),
                               "displayed_count_raw": descriptions.get("Объем:"),
                               "format_raw": descriptions.get("Формат:"),
                               "unsupported_code": code,
-                              "unsupported_reason": "Restricted KFU image reader." if restricted else "Reader awaits page enumeration."}
+                              "unsupported_reason": ("Restricted KFU image reader." if restricted else
+                                                     "Single-file viewer may be an auxiliary image; acquisition requires review."
+                                                     if single else "Reader awaits page enumeration.")}
             entry["selection_reason"] = code
         for link in documents:
             target = link["url"]
