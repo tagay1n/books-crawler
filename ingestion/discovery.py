@@ -92,6 +92,8 @@ def discover(http, manifest, adapter, summary, log):
                     page = adapter.parse_listing(html, request, root)
                     summary["pages"] += 1
                     if page.validation:
+                        if page.records and set(page.records) != set(scan["enumerated_urls"]):
+                            raise CatalogChanged("Catalog identities changed during enumeration; next discovery starts a fresh scan.")
                         if (page.advertised != scan.get("advertised")
                                 or scan["enumerated_entries"] != scan.get("advertised")
                                 or (getattr(adapter, "UNIQUE_RECORDS", False)

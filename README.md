@@ -48,6 +48,11 @@ Discovery resumes across invocations. Existing collection-specific sources remai
 available; Татар галәме and other KFU domains have separate adapters. See
 [repository-wide ingestion](docs/local-ingestion.md#kfu-historical-repository-all-collections).
 
+Tataroved's institute publication archive is available as `tataroved`. It follows
+the native catalog, retains HTML-only entries as metadata, and downloads linked
+original documents with explicit bibliographic Tatar language claims or individual
+hash-pinned file reviews. See [Tataroved ingestion](docs/local-ingestion.md#tataroved-publication-archive).
+
 The separate academic archive is available as `kfu_dspace`. Its native `татар`
 topic search discovers candidates; only explicit Tatar item-language metadata or
 an individual SHA-256-pinned file review admits a public PDF. Missing labels stay
@@ -120,6 +125,10 @@ Tatar item-language labels are required; unlabelled records remain held. See
   - `python cli.py --config ingestion.yaml discover --source kfu_il --max-pages 1`
   - `python cli.py --config ingestion.yaml download --source kfu_il --limit 1`
   - `python cli.py --config ingestion.yaml status --source kfu_il`
+- Tataroved publication archive:
+  - `python cli.py --config ingestion.yaml discover --source tataroved --max-pages 2`
+  - `python cli.py --config ingestion.yaml download --source tataroved --limit 1`
+  - `python cli.py --config ingestion.yaml status --source tataroved`
 - KFU academic archive (topic discovery, with separate language admission):
   - `python cli.py --config ingestion.yaml discover --source kfu_dspace --max-pages 2`
   - `python cli.py --config ingestion.yaml download --source kfu_dspace --limit 1`

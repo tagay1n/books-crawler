@@ -1,6 +1,5 @@
 """Public academic KFU PDFs, discovered through the native Tatar topic search."""
 
-import copy
 import json
 from email.message import Message
 from pathlib import PurePosixPath
@@ -10,6 +9,7 @@ from urllib.parse import parse_qs, quote, unquote, urlencode, urlsplit
 from bs4 import BeautifulSoup
 import pymupdf
 
+from . import language_reviews
 from .documents import canonical, same_origin
 from .kfu import language_selection
 from .network import InvalidDocument
@@ -213,34 +213,10 @@ def record_key(metadata):
 
 
 def load_reviews(path):
-    if not path.exists():
-        return {}
-    data = json.loads(path.read_text())
-    if not isinstance(data, dict) or data.get("version") != 1 or not isinstance(data.get("files"), dict):
-        raise ValueError("Academic KFU language-reviews.json must contain version=1 and a files mapping.")
-    for url, review in data["files"].items():
-        bitstream(url)
-        if (not isinstance(review, dict) or not re.fullmatch(r"[a-f0-9]{64}", str(review.get("sha256", "")))
-                or not isinstance(review.get("languages"), list)
-                or not all(isinstance(label, str) and label.strip() for label in review["languages"])
-                or language_selection(review["languages"]) != "selected"
-                or not all(isinstance(review.get(key), str) and review[key].strip() for key in ("reviewer", "reason"))):
-            raise ValueError("Each academic KFU file review requires SHA-256, Tatar language labels, reviewer and reason.")
-    return data["files"]
+    return language_reviews.load(path, bitstream, "Academic KFU")
 
 
-def resolve_record(http, metadata, assets):
-    for asset in assets:
-        asset.update(language_review=None, source_version=None,
-                     unsupported_code=asset["source_unsupported_code"],
-                     unsupported_reason=asset["source_unsupported_reason"])
-        review = http.language_reviews.get(asset["url"])
-        if review and asset.get("unsupported_code") in {"language_unknown", "language_excluded"}:
-            asset.update(language_review=review, source_version=review["sha256"],
-                         unsupported_code=None, unsupported_reason=None)
-    metadata["language_reviews"] = [{**a["language_review"], "url": a["url"]} for a in assets if a.get("language_review")]
-    metadata["attachments"] = [{k: a[k] for k in ("url", "label", "unsupported_code")} for a in assets]
-    return metadata, assets
+resolve_record = language_reviews.resolve
 
 
 def prepare_http(http, session_file):
@@ -303,24 +279,7 @@ def validate_pdf(path):
 
 def download(http, manifest, summary, log, recheck):
     from .core import download as download_originals
-    # Reapply current reviews without requiring a full catalog rescan. Observation
-    # history preserves granted/withdrawn reviews and the original source decision.
     keys = ("url", "label", "extension", "filename_raw", "viewer_url", "source_asset_key",
             "source_unsupported_code", "source_unsupported_reason")
-    grouped = {}
-    for asset in manifest.data["assets"].values():
-        if asset.get("current", True):
-            grouped.setdefault(asset.get("record_key", asset["record_url"]), []).append(asset)
-    for key, record_state in list(manifest.data["records"].items()):
-        http.budget.check()
-        metadata = copy.deepcopy(record_state["observations"][-1]["metadata"])
-        current_assets = grouped.get(key, [])
-        descriptors = [{field: asset[field] for field in keys} for asset in current_assets]
-        metadata, descriptors = resolve_record(http, metadata, descriptors)
-        changed = (metadata != record_state["observations"][-1]["metadata"]
-                   or record_state["observations"][-1]["parser_version"] != PARSER_VERSION
-                   or any(any(asset.get(field) != value for field, value in descriptor.items())
-                          for asset, descriptor in zip(current_assets, descriptors)))
-        if changed:
-            manifest.observe(metadata, descriptors, PARSER_VERSION, record_key=key)
+    language_reviews.refresh(http, manifest, PARSER_VERSION, keys)
     download_originals(http, manifest, summary, log, recheck, extensions={".pdf"}, validate_file=validate_pdf)
