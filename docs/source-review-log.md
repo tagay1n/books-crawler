@@ -6,6 +6,50 @@ coverage including verification and handoff. Registration-required downloads are
 deferred. Existing owner deferrals remain in force. No automated tests are added.
 Session evidence and manifests: `__artifacts/session-20261028/` (ignored).
 
+## Current checkpoint (2026-10-29 00:01 UTC)
+
+Planned end: **2026-10-29 03:46 UTC**. Reserve 03:26–03:46 for handoff.
+The goal is active; keep working on new public original-file sources and existing
+coverage. Registration-required sources remain deferred; do not add automated tests.
+
+- Completed new adapters: Sarhaan `42f06f4`, Fänni Tatarstan `bdd62a0`, contemporary
+  DUM RT publications `91893c1` (235 records / 227 unique PDF candidates).
+- Existing-source work: Magarif-Vakyt gained 19 direct PDFs (`934d755`); Echo of
+  Centuries completed 1,385 records / 95 Tatar-labelled PDFs (`e78c1aa` fixed books);
+  Tatar Galyame completed 279 records / 128 eligible documents under its existing
+  all-language policy. KFU auxiliary-viewer parsing repaired in `72044be`.
+- Efficiency commits: `6f86e1c` overview/map, `7b27f93` agent guidance,
+  `f331934` shared native GET/redirect guard (three live provider checks and PDF
+  revalidation passed), `6bc6ecc` compact large manifests (same JSON data/schema;
+  a roughly 29 MB snapshot reduced to about 15 MB; CLI status reads it correctly).
+- **Live process: KFU discovery PTY 27121**, log
+  `__artifacts/session-20261028/kfu-repository-discovery-3.log`. It resumed the
+  terminal PTY 70428 using compact checkpoints. Poll before restarting. Previous
+  scan reached 513 records / 35 listing requests and had no remaining record errors.
+- Verified 85 MB dictionary was imported into the main KFU manifest through the
+  existing `reuse_originals` helper under a source lock: one provenance-preserving
+  local import, zero requests. Evidence: `kfu-local-import.json`. No manual asset
+  overwrite was used. The active scan is still incomplete across 180 collections.
+- All DUM RT discovery/verification processes are terminal. Final scan: 37 archive
+  pages / 235 records, 187 newspaper + 48 modern almanac entries; 227 distinct PDF
+  URLs, eight metadata-only almanac entries, 17 dangling-quote repairs. Three CLI
+  samples acquired and replayed with zero requests. Raw links and repair provenance
+  are retained. Shared inventory and usage docs are updated.
+- Budget checkpoint: **204,568,967 bytes accounted**, including manual samples and
+  an 8 MiB probe allowance; **869,172,857 bytes remain** under 1 GiB. Update
+  `document-budget.json` before large transfers (new CLI summaries plus top-level
+  manual PDFs). Actual sample transfers remain bounded; no bulk acquisition.
+- Worktree should contain only the three preexisting unrelated config edits.
+  Selectively stage any future example-YAML edits; never commit private configs.
+- Next work: qualify another public website. Useful research directions are new
+  official domains for Ruhiyat/Tatneft or Bashkortostan library, and original-file
+  repositories. BAYĞIŞ root advertises **HTTP** `/aftorlar`; only HTTPS was rechecked
+  in this session (403). A literal advertised HTTP check may distinguish a real
+  access failure from a different virtual host. Social channels remain deferred.
+  Tatar Ile's two direct PDF transfers stalled after partial bytes; do not repeat
+  them without a distinct delivery route. No registration is inferred from generic
+  login links, HTTP 401/403 or timeouts alone.
+
 ## Initial findings
 
 - **Sarhaan Tatar category:** public category returned HTTP 200 and advertises
