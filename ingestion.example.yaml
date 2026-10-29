@@ -2,6 +2,9 @@
 # Relative paths are resolved against this YAML file, not the current directory.
 artifacts_root: __artifacts/ingestion
 sources:
+  # Original full-issue PDFs of the publisher-declared Tatar/Russian series.
+  tuganzhir:
+    archive_url: https://tuganzhir.org/archive/
   # Contemporary DUM RT Tatar newspaper and almanac; linked original PDFs only.
   dumrt:
     archive_url: https://dumrt.ru/media/din-va-magishet/

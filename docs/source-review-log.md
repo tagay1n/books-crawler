@@ -6,49 +6,44 @@ coverage including verification and handoff. Registration-required downloads are
 deferred. Existing owner deferrals remain in force. No automated tests are added.
 Session evidence and manifests: `__artifacts/session-20261028/` (ignored).
 
-## Current checkpoint (2026-10-29 00:01 UTC)
+## Current checkpoint (2026-10-29 00:33 UTC)
 
-Planned end: **2026-10-29 03:46 UTC**. Reserve 03:26–03:46 for handoff.
-The goal is active; keep working on new public original-file sources and existing
-coverage. Registration-required sources remain deferred; do not add automated tests.
+Planned end: **2026-10-29 03:46 UTC**. Reserve 03:26–03:46 for final verification.
+The goal remains active. Continue public original-file sources and existing
+coverage; registration-required originals remain deferred; no automated tests.
 
-- Completed new adapters: Sarhaan `42f06f4`, Fänni Tatarstan `bdd62a0`, contemporary
-  DUM RT publications `91893c1` (235 records / 227 unique PDF candidates).
-- Existing-source work: Magarif-Vakyt gained 19 direct PDFs (`934d755`); Echo of
-  Centuries completed 1,385 records / 95 Tatar-labelled PDFs (`e78c1aa` fixed books);
-  Tatar Galyame completed 279 records / 128 eligible documents under its existing
-  all-language policy. KFU auxiliary-viewer parsing repaired in `72044be`.
-- Efficiency commits: `6f86e1c` overview/map, `7b27f93` agent guidance,
-  `f331934` shared native GET/redirect guard (three live provider checks and PDF
-  revalidation passed), `6bc6ecc` compact large manifests (same JSON data/schema;
-  a roughly 29 MB snapshot reduced to about 15 MB; CLI status reads it correctly).
-- **Live process: KFU discovery PTY 27121**, log
-  `__artifacts/session-20261028/kfu-repository-discovery-3.log`. It resumed the
-  terminal PTY 70428 using compact checkpoints. Poll before restarting. Previous
-  scan reached 513 records / 35 listing requests and had no remaining record errors.
-- Verified 85 MB dictionary was imported into the main KFU manifest through the
-  existing `reuse_originals` helper under a source lock: one provenance-preserving
-  local import, zero requests. Evidence: `kfu-local-import.json`. No manual asset
-  overwrite was used. The active scan is still incomplete across 180 collections.
-- All DUM RT discovery/verification processes are terminal. Final scan: 37 archive
-  pages / 235 records, 187 newspaper + 48 modern almanac entries; 227 distinct PDF
-  URLs, eight metadata-only almanac entries, 17 dangling-quote repairs. Three CLI
-  samples acquired and replayed with zero requests. Raw links and repair provenance
-  are retained. Shared inventory and usage docs are updated.
-- Budget checkpoint: **204,568,967 bytes accounted**, including manual samples and
-  an 8 MiB probe allowance; **869,172,857 bytes remain** under 1 GiB. Update
-  `document-budget.json` before large transfers (new CLI summaries plus top-level
-  manual PDFs). Actual sample transfers remain bounded; no bulk acquisition.
-- Worktree should contain only the three preexisting unrelated config edits.
-  Selectively stage any future example-YAML edits; never commit private configs.
-- Next work: qualify another public website. Useful research directions are new
-  official domains for Ruhiyat/Tatneft or Bashkortostan library, and original-file
-  repositories. BAYĞIŞ root advertises **HTTP** `/aftorlar`; the literal HTTP
-  catalog and HTTPS route both returned 403 on live checks. No adapter selected.
-  Social channels remain deferred.
-  Tatar Ile's two direct PDF transfers stalled after partial bytes; do not repeat
-  them without a distinct delivery route. No registration is inferred from generic
-  login links, HTTP 401/403 or timeouts alone.
+- New adapters committed: Sarhaan `42f06f4`, Fänni Tatarstan `bdd62a0`, modern
+  DUM RT publications `91893c1`. Tugan Zhir implementation is being verified and
+  committed now: one archive / 36 bilingual-series PDFs, two small CLI samples,
+  zero-request repeat. Individual issue language proportions remain unverified.
+- Existing coverage: Magarif-Vakyt +19 direct PDFs (`934d755`); Echo of Centuries
+  completed 1,385 records / 95 Tatar-labelled PDFs (`e78c1aa`); Tatar Galyame
+  completed 279 records / 128 eligible all-language documents. KFU auxiliary-viewer
+  parsing repaired (`72044be`). Yazuchy gained the reviewed 478-page Tatar novel
+  «1993» (`bfcd806`), now ten reviewed eligible PDFs in its observed catalog slice.
+- Efficiency: `6f86e1c` overview/map; `7b27f93` agent guidance; `f331934` shared
+  native GET/redirect guard; `6bc6ecc` compact large manifests (same JSON schema).
+- **Live KFU discovery PTY 90952**, `kfu-repository-discovery-4.log`. Poll before
+  restarting. Latest overview: 1,048 total records / 63 listing requests / zero
+  discovery errors; still incomplete across 180 collections. Three local originals
+  verified, including the 85 MB dictionary imported with provenance, zero requests.
+- All other discovery/acquisition processes are terminal. Tugan Zhir samples are
+  in `tuganzhir-samples/`; the main manifest retains all 36 candidates as pending.
+  Do not overwrite newer observations with old isolated sample assets. No bulk run.
+- Budget: `document-budget.json` accounts **266,201,075 bytes**, including manual
+  samples and 8 MiB probe allowance; **807,540,749 remain** under 1 GiB. Update
+  from new CLI summaries plus top-level manual PDFs before large transfers.
+- Preserve the three unrelated config edits. Selectively stage example YAML only.
+- Bashkortostan catalog is now reachable using its verified missing intermediate
+  certificate, without disabling TLS checks. The inspected explicit Tatar author
+  collection has one advertised file; its Get link redirects to a page-image reader.
+  Original PDF delivery remains unverified; no reader adapter selected.
+- Nizgar root advertises an old news site, no separate original newspaper archive
+  found. Tyumen Yanarish root is public but only HTML articles/print subscription
+  found; Udmurt Yanarysh timed out. Ruhiyat's newer ruhiat.ru domain redirects to
+  unrelated advertising; old Tatneft HTTP catalog timed out. No new access account
+  requirement inferred. Existing owner deferrals remain unchanged.
+
 
 ## Initial findings
 
@@ -264,3 +259,37 @@ developer map, overview helper and repository interpreter. Existing no-tests rul
 is intact. KFU parser repair is `72044be`, FT journal is `bdd62a0`. Main KFU
 discovery PTY 76311 is still running and predates the repair; wait for its terminal
 state before resuming to retry net/26934 and the transient net/28071 timeout.
+
+## Additional access evidence and Tugan Zhir (00:33 UTC)
+
+Bashkortostan's official resources page still advertises ebook.bashnl.ru. Its TLS
+leaf is valid but the server omits the GlobalSign intermediate. The public CA
+certificate was retrieved over verified HTTPS and verified against default trusted
+roots, then used as a temporary chain supplement; hostname/expiry checks stayed
+on. Catalog and native search became reachable. Search for «татарском» returned
+13 mixed documents/collections, not 13 verified Tatar files. Explicit collection
+ResourceCollection-4392 names Povarisov's works in Tatar and contains one file.
+Its advertised Resource-20465 Get link redirects to a public image reader using
+SecureViewer/Page delivery. No original PDF route was verified. Findings are in
+the shared inventory; no TLS bypass or image-reader adapter was implemented.
+
+Tugan Zhir's native archive exposes 36 distinct issue PDF URLs (2017–2026),
+including publisher-linked Congress storage. Two small complete originals were
+inspected: №1/2022, 2,170,679 bytes / 264 PDF pages, SHA-256
+70c572cd1cdb747214419b9dd6711394eee8165b4f1bd4ef698700cc3af2412b;
+№1/2017, 1,506,264 bytes / 148 pages, SHA-256
+8795293f00ce54cd8a3b2c0fae52828da91f96bbc3d38c7653a0e0f0558a16c7.
+Both imprints declare Tatar/Russian, and rendered narrative pages are Tatar.
+Letter-frequency screens are exploratory, not individually verified page counts.
+The latest 58 MB issue returned PDF headers but its bounded read timed out before
+any chunk was retained; it is not counted as a verified original.
+
+Live CLI discovery completed one archive observation with 36 eligible PDF assets.
+Initial cross-host acquisition was rejected by the shared same-origin fallback;
+a source-specific validator now requires exact advertised file identity across
+all response URLs. Both selected samples then acquired with matching hashes and
+replayed with zero requests / two skips. Changed-file redirects, POST, HTTP and
+unrelated origins were manually checked against the shared guard. No automated
+tests were written. Docs distinguish bilingual-series admission from per-file
+language proportions or printed completeness; unrelated electronic-library books
+remain outside scope. Evidence/configs are in the ignored session artifact root.

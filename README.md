@@ -86,6 +86,10 @@ items and other file types stay outside acquisition. See
 full-issue PDFs explicitly labelled Tatar. Article files, covers and unlabelled
 galleys are excluded. See [issue PDF usage](docs/local-ingestion.md#fänni-tatarstan-issue-pdfs).
 
+`tuganzhir` collects original full-issue PDFs from the public «Туган җир. Родной
+край» archive. The publisher declares the series Tatar/Russian; individual issue
+proportions are unverified. See [archive usage](docs/local-ingestion.md#tugan-zhir-archive).
+
 `dumrt` collects linked original PDFs from the contemporary «Дин вә мәгыйшәт»
 newspaper and «Шура» almanac archives. The modern almanac is separate from KFU's
 historical Шура collection. See
