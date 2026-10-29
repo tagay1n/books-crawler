@@ -28,7 +28,7 @@ continue to operate independently.
 Безнең мирас is available as `beznenmiras` for resumable issue discovery and
 downloading original document links found in issue content. Inspected issue pages
 currently expose metadata and covers only; covers are not downloaded as journals.
-See [archive scope and usage](docs/local-ingestion.md#безнең-мирас-issue-archive).
+See [archive scope and usage](docs/ingestion/beznenmiras.md).
 
 Wikimedia Commons supports discovery and downloading of original document-format
 books from its Tatar-language category. Downloads verify the source-reported size
@@ -38,66 +38,70 @@ Miras downloads exposed original PDFs across all languages using a session
 exported from an ordinary verified browser. Pass `--session-file PATH` to its
 `discover`, `download`, or `run` command; `status` needs no session. The original
 `probe --source miras --session-file PATH` diagnostic remains available.
-See [local ingestion](docs/local-ingestion.md#miras-books-and-browser-session-access)
+See [local ingestion](docs/ingestion/miras.md)
 for its session format and recovery instructions.
 
 `miras_periodicals` adds a separate periodical-series catalog and manifest using
 the same session export and PDF downloader. Live reader verification is pending
 a refreshed session; unresolved year/issue selectors are held as unsupported.
-See [periodical scope and current limits](docs/local-ingestion.md#miras-periodicals).
+See [periodical scope and current limits](docs/ingestion/miras-periodicals.md).
 
 `magarif_vakyt` collects the publisher's original literature PDFs and Tatar textbook
 ZIPs from public Yandex Disk shares. It assembles PDFs from ZIPs' declared reader
 page images; original PDFs bypass assembly. Originals retain source checksums
 and derived files retain their provenance. See
-[textbook package usage and limits](docs/local-ingestion.md#мәгарифвакыт-textbook-packages).
+[textbook package usage and limits](docs/ingestion/magarif-vakyt.md).
 
 `turuz` collects direct PDF, DjVu and Word dictionaries from Turuz's native
 dictionary listing using explicit Tatar title claims. Bilingual dictionaries are
 included; Crimean Tatar, general multilingual titles and archive packages are
-excluded from acquisition. See [scope and usage](docs/local-ingestion.md#turuz-dictionaries).
+excluded from acquisition. See [scope and usage](docs/ingestion/turuz.md).
 
 `yazuchy` discovers the Writers' Union publisher's book records and downloads
 direct PDFs with explicit Tatar target-language claims or hash-pinned content
 reviews. Russian editions and unreviewed files remain held. See
-[publisher catalog usage](docs/local-ingestion.md#yazuchy-publisher-catalog).
+[publisher catalog usage](docs/ingestion/yazuchy.md).
 
 `nizgar` discovers the «Нижегородские татары. Нижгар татарлары» magazine archive
 and downloads its linked original PDFs. These are bilingual issue candidates;
 publication dates come from archive labels, not upload paths. See
-[magazine archive usage](docs/local-ingestion.md#nizgar-magazine-archive).
+[magazine archive usage](docs/ingestion/nizgar.md).
 
 `echovek` follows the «Гасырлар авазы — Эхо веков» issue archive and acquires
 article PDFs explicitly labelled Tatar. Russian/unlabelled articles remain
 metadata; issue previews are excluded. See
-[journal article usage](docs/local-ingestion.md#echo-of-centuries-article-pdfs).
+[journal article usage](docs/ingestion/echovek.md).
 
 `obuchalka` discovers the Tatar-subject textbook section and downloads only
 individually reviewed Tatar PDFs through its public Fileskachat delivery links.
 Mixed-language and unreviewed entries remain held. See
-[textbook selection and usage](docs/local-ingestion.md#obuchalka-reviewed-tatar-textbooks).
+[textbook selection and usage](docs/ingestion/obuchalka.md).
 
 `sarhaan` traverses the publisher's Tatar category and downloads individually
 advertised PDFs only when the book's explicit language labels agree. Image-only
 items and other file types stay outside acquisition. See
-[publisher scope and usage](docs/local-ingestion.md#sarhaan-tatar-publications).
+[publisher scope and usage](docs/ingestion/sarhaan.md).
 
 `ftatarstan` discovers Fänni Tatarstan's native journal archive and acquires
 full-issue PDFs explicitly labelled Tatar. Article files, covers and unlabelled
-galleys are excluded. See [issue PDF usage](docs/local-ingestion.md#fänni-tatarstan-issue-pdfs).
+galleys are excluded. See [issue PDF usage](docs/ingestion/ftatarstan.md).
 
 `tuganzhir` collects original full-issue PDFs from the public «Туган җир. Родной
 край» archive. The publisher declares the series Tatar/Russian; individual issue
-proportions are unverified. See [archive usage](docs/local-ingestion.md#tugan-zhir-archive).
+proportions are unverified. See [archive usage](docs/ingestion/tuganzhir.md).
 
 `dumrt` collects linked original PDFs from the contemporary «Дин вә мәгыйшәт»
 newspaper and «Шура» almanac archives. The modern almanac is separate from KFU's
 historical Шура collection. See
-[publisher archive usage](docs/local-ingestion.md#dum-rt-contemporary-tatar-publications).
+[publisher archive usage](docs/ingestion/dumrt.md).
 
 For a compact read-only view of several local manifests, run
 `python scripts/ingestion_overview.py __artifacts/ingestion`.
 Reusable components are summarized in [the developer guide](docs/adapter-development.md).
+
+For bounded candidate inspection without operational configuration, use
+`.venv/bin/python cli.py inspect URL --max-links 8 --probe-pdfs 1`.
+See [inspection evidence and limits](docs/source-inspection.md).
 
 Use `kfu_repository` for automatic discovery across all historical collections on
 `repo.kpfu.ru`. It requires explicit Tatar item-language labels and reuses verified
@@ -109,23 +113,23 @@ python cli.py --config ingestion.yaml run --source kfu_repository --max-pages 25
 
 Discovery resumes across invocations. Existing collection-specific sources remain
 available; Татар галәме and other KFU domains have separate adapters. See
-[repository-wide ingestion](docs/local-ingestion.md#kfu-historical-repository-all-collections).
+[repository-wide ingestion](docs/ingestion/kfu-repository.md).
 
 Tataroved's institute publication archive is available as `tataroved`. It follows
 the native catalog, retains HTML-only entries as metadata, and downloads linked
 original documents with explicit bibliographic Tatar language claims or individual
-hash-pinned file reviews. See [Tataroved ingestion](docs/local-ingestion.md#tataroved-publication-archive).
+hash-pinned file reviews. See [Tataroved ingestion](docs/ingestion/tataroved.md).
 
 The separate academic archive is available as `kfu_dspace`. Its native `татар`
 topic search discovers candidates; only explicit Tatar item-language metadata or
 an individual SHA-256-pinned file review admits a public PDF. Missing labels stay
 held, and restricted records are not acquired. See
-[academic archive usage and reviews](docs/local-ingestion.md#kfu-academic-electronic-archive).
+[academic archive usage and reviews](docs/ingestion/kfu-dspace.md).
 
 KFU «Вакыт» is available as `kfu_vakyt`: resumable exact-series discovery,
 public JPEG/JPEG2000 originals, and complete 200 DPI colour issue PDFs. Explicit
 Tatar item-language labels are required; unlabelled records remain held. See
-[usage and limits](docs/local-ingestion.md#kfu-вакыт-newspaper) and the
+[usage and limits](docs/ingestion/kfu-vakyt.md) and the
 [earlier pilot](docs/kfu-vakyt-pilot.md).
 
 ## Setup

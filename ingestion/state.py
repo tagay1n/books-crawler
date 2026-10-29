@@ -77,7 +77,12 @@ class Manifest:
         compact = len(self.data["assets"]) >= 1000 or len(self.data["records"]) >= 500
         atomic_json(self.path, self.data, compact=compact)
 
-    def observe(self, metadata, assets, parser_version=1, *, record_key=None):
+    def observe(self, metadata, assets, parser_version=1, *, record_key=None, persist=True):
+        """Observe a record; callers deferring persistence must save their checkpoint.
+
+        Discovery defers this save so the observation and its completed frontier
+        work are published together. Other callers retain immediate persistence.
+        """
         record_url = metadata["url"]
         record_key = record_key or record_url
         fingerprint = hashlib.sha256(json.dumps(metadata, sort_keys=True, ensure_ascii=False).encode()).hexdigest()
@@ -115,7 +120,8 @@ class Manifest:
             elif asset["status"] == "unsupported":
                 asset["status"] = "pending"
                 asset.pop("last_error", None)
-        self.save()
+        if persist:
+            self.save()
         return changed
 
     def status(self):

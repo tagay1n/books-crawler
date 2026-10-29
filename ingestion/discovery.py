@@ -60,7 +60,7 @@ def discover(http, manifest, adapter, summary, log):
                     if hasattr(adapter, "resolve_record"):
                         metadata, assets = adapter.resolve_record(http, metadata, assets)
                     identity = adapter.record_key(metadata) if hasattr(adapter, "record_key") else metadata["url"]
-                    changed = manifest.observe(metadata, assets, version, record_key=identity)
+                    changed = manifest.observe(metadata, assets, version, record_key=identity, persist=False)
                     scan["pending_records"].remove(url)
                     if url not in scan["checked_urls"]:
                         scan["checked_urls"].append(url)

@@ -19,6 +19,11 @@ belong to another project.
 - `ingestion/language_reviews.py`: reuse SHA-256-pinned manual language reviews
   when reliable item-language claims are absent. A subject or interface locale
   does not establish document language.
+- `ingestion/inspection.py` and `cli.py inspect`: bounded public-page evidence,
+  link extraction and optional PDF-prefix probes. Use this instead of custom
+  fetch scripts; see [inspection usage](source-inspection.md).
+- `docs/local-ingestion.md`: short index of per-source guides under
+  `docs/ingestion/`. Open the selected guide rather than reading every adapter.
 - `ingestion/yazuchy.py`: direct PDFs and manual reviews. `echovek.py`:
   archive-to-issue-to-article traversal. `sarhaan.py`: language claims and
   individual files behind native redirects.
@@ -38,6 +43,9 @@ Manifests with at least 1,000 assets or 500 records use compact JSON to reduce
 checkpoint serialization and disk writes; their schema is unchanged. Smaller
 manifests and other JSON artifacts retain indentation. Use the overview or parse
 selected fields rather than printing a large manifest's single line.
+Discovery commits each successful observation and its completed frontier work
+in one atomic checkpoint. `Manifest.observe()` still saves immediately for other
+callers; only discovery defers that save until its checkpoint is ready.
 Discovery completeness is distinct from advertised-count verification and from
 download completion. `--details` adds current-scan counts (distinct from total
 retained records), advertised-count verification, asset formats and grouped

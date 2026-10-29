@@ -23,6 +23,26 @@ def sources_command():
         typer.echo(source)
 
 
+@app.command("inspect")
+def inspect_command(url: str = typer.Argument(..., help="Public page or document URL to inspect."),
+                    output_dir: Path = typer.Option(Path("__artifacts/inspections"), "--output-dir"),
+                    max_bytes: int = typer.Option(2 * 1024 * 1024, "--max-bytes", min=1024, max=2 * 1024 * 1024),
+                    max_links: int = typer.Option(20, "--max-links", min=1, max=200),
+                    probe_pdfs: int = typer.Option(0, "--probe-pdfs", min=0, max=10),
+                    allow_external: bool = typer.Option(False, "--allow-external", help="Allow PDF probes and redirects outside the inspected page origin.")):
+    """Save bounded public-page evidence and print concise JSON; no config required."""
+    from .inspection import inspect
+    try:
+        result = inspect(url, output_dir, max_bytes=max_bytes, max_links=max_links,
+                         probe_pdfs=probe_pdfs, allow_external=allow_external)
+    except (ValueError, OSError) as error:
+        typer.echo(f"Error: {error}", err=True)
+        raise typer.Exit(1)
+    typer.echo(json.dumps(result, ensure_ascii=False, separators=(",", ":")))
+    if not result["ok"]:
+        raise typer.Exit(1)
+
+
 @app.command()
 def probe(ctx: typer.Context, source: str = typer.Option(..., "--source"),
           session_file: Path = typer.Option(..., "--session-file", help="Miras-only cookie and user-agent JSON from your verified browser.")):

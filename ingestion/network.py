@@ -86,7 +86,7 @@ class HTTP:
     def get(self, url, headers=None):
         return self.request("GET", url, headers=headers)
 
-    def request(self, method, url, *, headers=None, data=None):
+    def request(self, method, url, *, headers=None, data=None, check_status=True):
         if method not in {"GET", "POST"}:
             raise ValueError(f"Unsupported retrieval method: {method}")
         if hasattr(self, "validate_request"):
@@ -102,11 +102,12 @@ class HTTP:
         if method == "POST":
             kwargs["data"] = data or {}
         response = (self.session.get if method == "GET" else self.session.post)(url, **kwargs)
-        try:
-            response.raise_for_status()
-        except requests.RequestException:
-            response.close()
-            raise
+        if check_status:
+            try:
+                response.raise_for_status()
+            except requests.RequestException:
+                response.close()
+                raise
         return response
 
     def retry(self, operation):

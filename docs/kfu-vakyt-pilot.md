@@ -2,7 +2,7 @@
 
 Historical report. The follow-up implementation now registers `kfu_vakyt`, adds
 filtered-search traversal and validated JPEG2000 acquisition, and keeps the
-explicit item-language policy below. See [current usage](local-ingestion.md#kfu-вакыт-newspaper).
+explicit item-language policy below. See [current usage](ingestion/kfu-vakyt.md).
 Statements about deferred production support describe the pilot stage.
 
 Date: 2026-10-27. This is a bounded investigation, not a registered production
