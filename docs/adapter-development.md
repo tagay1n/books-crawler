@@ -28,6 +28,7 @@ belong to another project.
 ```bash
 .venv/bin/python scripts/ingestion_overview.py __artifacts/ingestion
 .venv/bin/python scripts/ingestion_overview.py __artifacts/session-20261028
+.venv/bin/python scripts/ingestion_overview.py --details __artifacts/session-20261028/kfu_repository
 ```
 
 The helper reads selected roots' immediate source manifests only, emits one JSON
@@ -38,7 +39,10 @@ checkpoint serialization and disk writes; their schema is unchanged. Smaller
 manifests and other JSON artifacts retain indentation. Use the overview or parse
 selected fields rather than printing a large manifest's single line.
 Discovery completeness is distinct from advertised-count verification and from
-download completion. Inspect individual observations only when a summary points
+download completion. `--details` adds current-scan counts (distinct from total
+retained records), advertised-count verification, asset formats and grouped
+discovery error messages without large continuation URLs or record contents.
+Inspect individual observations only when a summary points
 to a concrete question; avoid dumping complete manifests or private configs.
 
 ## Verify and hand off

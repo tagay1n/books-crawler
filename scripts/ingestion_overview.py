@@ -10,6 +10,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("roots", nargs="+", type=Path,
                         help="Artifact roots, source directories, or individual manifest.json files.")
+    parser.add_argument("--details", action="store_true",
+                        help="Include scan counts, asset formats and grouped discovery errors without dumping records.")
     args = parser.parse_args()
     paths = set()
     for root in args.roots:
@@ -35,6 +37,15 @@ def main():
                       "remaining_listings": coverage.get("remaining_listing_requests"),
                       "remaining_records": coverage.get("remaining_record_urls"),
                       "discovery_errors": len(data.get("discovery_errors", {}))}
+            if args.details:
+                result["scan"] = {key: coverage.get(key) for key in (
+                    "catalog_entries_enumerated", "unique_records_inspected",
+                    "advertised_catalog_entries", "count_verified", "restart_required")}
+                result["asset_formats"] = dict(sorted(Counter(
+                    a.get("extension") or "unknown" for a in assets.values()
+                    if a.get("current", True)).items()))
+                result["discovery_error_messages"] = dict(Counter(
+                    error.get("error", "unknown") for error in data.get("discovery_errors", {}).values()))
         except (OSError, ValueError, KeyError, TypeError, AttributeError) as error:
             result = {"manifest": str(path), "error": str(error)}
             failed = True
