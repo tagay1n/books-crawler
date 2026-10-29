@@ -6,43 +6,40 @@ coverage including verification and handoff. Registration-required downloads are
 deferred. Existing owner deferrals remain in force. No automated tests are added.
 Session evidence and manifests: `__artifacts/session-20261028/` (ignored).
 
-## Current checkpoint (2026-10-29 00:33 UTC)
+## Final checkpoint (2026-10-29 04:52 UTC)
 
-Planned end: **2026-10-29 03:46 UTC**. Reserve 03:26–03:46 for final verification.
-The goal remains active. Continue public original-file sources and existing
-coverage; registration-required originals remain deferred; no automated tests.
+The bounded autonomous session is complete. All discovery jobs stopped normally
+at their configured limits; no crawler process remains running. The original
+03:46 UTC end passed during an interruption; final verification followed resumption.
+The authoritative handoff is [autonomous-session-2026-10-28.md](autonomous-session-2026-10-28.md).
+Sections below are historical evidence, including superseded resume instructions.
 
-- New adapters committed: Sarhaan `42f06f4`, Fänni Tatarstan `bdd62a0`, modern
-  DUM RT publications `91893c1`. Tugan Zhir implementation is being verified and
-  committed now: one archive / 36 bilingual-series PDFs, two small CLI samples,
-  zero-request repeat. Individual issue language proportions remain unverified.
-- Existing coverage: Magarif-Vakyt +19 direct PDFs (`934d755`); Echo of Centuries
-  completed 1,385 records / 95 Tatar-labelled PDFs (`e78c1aa`); Tatar Galyame
-  completed 279 records / 128 eligible all-language documents. KFU auxiliary-viewer
-  parsing repaired (`72044be`). Yazuchy gained the reviewed 478-page Tatar novel
-  «1993» (`bfcd806`), now ten reviewed eligible PDFs in its observed catalog slice.
-- Efficiency: `6f86e1c` overview/map; `7b27f93` agent guidance; `f331934` shared
-  native GET/redirect guard; `6bc6ecc` compact large manifests (same JSON schema).
-- **Live KFU discovery PTY 90952**, `kfu-repository-discovery-4.log`. Poll before
-  restarting. Latest overview: 1,048 total records / 63 listing requests / zero
-  discovery errors; still incomplete across 180 collections. Three local originals
-  verified, including the 85 MB dictionary imported with provenance, zero requests.
-- All other discovery/acquisition processes are terminal. Tugan Zhir samples are
-  in `tuganzhir-samples/`; the main manifest retains all 36 candidates as pending.
-  Do not overwrite newer observations with old isolated sample assets. No bulk run.
-- Budget: `document-budget.json` accounts **266,201,075 bytes**, including manual
-  samples and 8 MiB probe allowance; **807,540,749 remain** under 1 GiB. Update
-  from new CLI summaries plus top-level manual PDFs before large transfers.
-- Preserve the three unrelated config edits. Selectively stage example YAML only.
-- Bashkortostan catalog is now reachable using its verified missing intermediate
-  certificate, without disabling TLS checks. The inspected explicit Tatar author
-  collection has one advertised file; its Get link redirects to a page-image reader.
-  Original PDF delivery remains unverified; no reader adapter selected.
-- Nizgar root advertises an old news site, no separate original newspaper archive
-  found. Tyumen Yanarish root is public but only HTML articles/print subscription
-  found; Udmurt Yanarysh timed out. Ruhiyat's newer ruhiat.ru domain redirects to
-  unrelated advertising; old Tatneft HTTP catalog timed out. No new access account
-  requirement inferred. Existing owner deferrals remain unchanged.
+- Four new source adapters committed: Sarhaan `42f06f4`, Fänni Tatarstan
+  `bdd62a0`, DUM RT publications `91893c1`, Tugan Zhir `f1eefad`.
+  Their completed observed catalogs expose 380 eligible PDF candidates; this is
+  not a successful-download or individually verified-language count.
+- Existing improvements: 19 Magarif-Vakyt direct PDFs (`934d755`), complete Echo
+  of Centuries discovery / 95 Tatar-labelled PDFs (`e78c1aa`), KFU auxiliary-viewer
+  repair (`72044be`), reviewed 478-page Tatar novel (`bfcd806`), full Tatar Galyame
+  tree / 128 all-language documents and a verified Tatar PPTX sample.
+- Larger bounded scans retained: KFU 1,563 records, Darul-Kutub 243, Tatarica 607,
+  Kazan Utları 379, Internet Archive 612. These remain explicitly incomplete and
+  resumable. Read the handoff before any future resumption; do not claim exhaustion.
+- Efficiency work: overview/map `6f86e1c`, agent guidance `7b27f93`, shared native
+  guard `f331934`, compact large manifests `6bc6ecc`, optional scan details `bd4ef38`.
+- Eight final isolated CLI replays: 11 skips, zero requests, no errors.
+  Local audit: 46 original references / 41 distinct hashes and two derived PDFs
+  verified; no operational downloaded-file integrity errors. The intentional cap
+  fixture's missing historical file is separately documented. No automated tests.
+- The copied Kazan Utları derived file was relocated from the original artifact
+  root after hash/size verification; provenance records were unchanged.
+- Budget: 266,351,391 bytes accounted including an 8 MiB probe allowance, below
+  1 GiB. No bulk acquisition. Evidence/configs remain in the ignored session root.
+- Registration-gated Lisan library route is deferred under the standing rule.
+  No accounts, member-content API calls, payments or social-channel acquisition.
+  Shared candidate inventory has current access findings and implementation notes.
+- Relevant changes are committed. Preserve the three preexisting unrelated config
+  edits in ingestion.example.yaml, litres/config.yaml and milli_kitaphana/config.yaml.
 
 
 ## Initial findings

@@ -1565,6 +1565,17 @@ verification passed; no automated tests were added.
 
 ### Tatar Galyame educational catalog
 
+Autonomous CLI coverage on 2026-10-29 completed all 34 category responses and
+279 visible resources with no unresolved errors: 128 eligible hosted documents
+under the existing all-language policy, plus unsupported attachments/references.
+A newly verified `Туган_тел_буларак_татар_теле.pptx` original is 150,316 bytes,
+SHA-256 `d74d592b6b872a8b63eaedb39192759ae71f6daea17460ff7d7b4ae47e9c36ed`.
+Its container has 13 slide XML parts, with readable Tatar on inspected slides
+1–3. This is a text/container inspection, not rendered-slide verification.
+An isolated repeat skipped the verified original with zero requests. Evidence:
+`__artifacts/session-20261028/galyame-pptx/`. The remaining documents' languages
+are unverified; catalog counts do not establish 128 Tatar originals.
+
 `tatargalyame` is separate from the `repo.kpfu.ru` sources. Select the operational
 YAML entry from `ingestion.example.yaml`, using exactly
 `https://tatargalyame.kpfu.ru/catalogue`. The older `/en/catalogue` inventory link
