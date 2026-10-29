@@ -153,6 +153,24 @@
         134,
         265
       ]
+    },
+    "https://sptatar.com/wp-content/uploads/2025/05/8.-SHargunov-1-1.pdf": {
+      "sha256": "1aae2559d4adb0a62b1312c0ebcad6f58f2639d0ab1b0c416643f53086925150",
+      "languages": [
+        "tt"
+      ],
+      "reviewer": "Codex manual content inspection, 2026-10-29",
+      "reason": "Readable Cyrillic Tatar narrative sampled on PDF pages 3, 11, 101, 451, 478. Review identifies Tatar content, not monolinguality or completeness against the printed edition.",
+      "title_raw": "1993: роман",
+      "observed_pdf_pages": 478,
+      "observed_size": 27139111,
+      "sampled_pdf_pages": [
+        3,
+        11,
+        101,
+        451,
+        478
+      ]
     }
   }
 }

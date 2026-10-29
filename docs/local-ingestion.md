@@ -499,7 +499,7 @@ of Tatar works. A Tatar interface, title or author does not admit a PDF. Explici
 Russian target-language claims hold acquisition unless an individual file review
 identifies Tatar content. Raw translation descriptions remain in metadata.
 
-The checked-in `ingestion/yazuchy-language-reviews.json` records nine individually
+The checked-in `ingestion/yazuchy-language-reviews.json` records ten individually
 sampled Tatar PDFs with SHA-256, observed byte/page counts, sampled page numbers
 and reviewer/reason. For review-based admission, the acquired SHA-256 must match
 before publication. Changed bytes stay failed for a new review. The review
@@ -524,7 +524,7 @@ reuse are shared with other adapters. `--recheck` revalidates completed files.
 
 During implementation, nine PDFs completed bounded manual inspection under
 `/tmp/yazuchy-review/`. The likely Tatar translation of `1993` exceeded the 25 MiB
-inspection cap; its file language remains unverified and acquisition stays held.
+inspection cap and initially stayed held pending the follow-up below.
 Four Russian editions were not downloaded for language review. Review artifacts
 are distinct from CLI acquisition evidence under `/tmp/yazuchy-verification/`.
 
@@ -537,6 +537,18 @@ Its result records the matching reviewed SHA-256. An isolated single-asset repla
 under `/tmp/yazuchy-replay/` skipped the verified original with zero requests.
 The other eight admitted files have manual byte/language inspections, but were
 not all reacquired through the CLI.
+
+On 2026-10-29, the previously held `1993: роман` completed a larger bounded
+inspection: 27,139,111 bytes / 478 PDF pages, SHA-256
+`1aae2559d4adb0a62b1312c0ebcad6f58f2639d0ab1b0c416643f53086925150`.
+PDF pages 3, 11, 101, 451 and 478 contain readable Tatar narrative; rendered page
+11 was also inspected. Its checked-in review admits the existing asset without
+rediscovery, bringing the known catalog slice to ten eligible files and four
+held. An isolated CLI run changed this asset from unsupported to downloaded,
+verified the reviewed SHA-256, and a repeat skipped it with zero requests.
+Evidence: `__artifacts/session-20261028/yazuchy-1993/` and session logs. Actual
+PDF-page counts remain distinct from printed numbering; edition completeness
+is unverified. The other unknown-language file remains held.
 
 ### Turuz dictionaries
 
