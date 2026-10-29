@@ -43,9 +43,9 @@ coverage. Registration-required sources remain deferred; do not add automated te
   Selectively stage any future example-YAML edits; never commit private configs.
 - Next work: qualify another public website. Useful research directions are new
   official domains for Ruhiyat/Tatneft or Bashkortostan library, and original-file
-  repositories. BAYĞIŞ root advertises **HTTP** `/aftorlar`; only HTTPS was rechecked
-  in this session (403). A literal advertised HTTP check may distinguish a real
-  access failure from a different virtual host. Social channels remain deferred.
+  repositories. BAYĞIŞ root advertises **HTTP** `/aftorlar`; the literal HTTP
+  catalog and HTTPS route both returned 403 on live checks. No adapter selected.
+  Social channels remain deferred.
   Tatar Ile's two direct PDF transfers stalled after partial bytes; do not repeat
   them without a distinct delivery route. No registration is inferred from generic
   login links, HTTP 401/403 or timeouts alone.
