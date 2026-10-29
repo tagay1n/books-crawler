@@ -98,6 +98,8 @@ historical Шура collection. See
 For a compact read-only view of several local manifests, run
 `python scripts/ingestion_overview.py __artifacts/ingestion`.
 Reusable components are summarized in [the developer guide](docs/adapter-development.md).
+Add global `--summary-only` before a CLI command for compact JSON counters and
+artifact paths with progress output suppressed; detailed reports remain local.
 
 For bounded candidate inspection without operational configuration, use
 `.venv/bin/python cli.py inspect URL --max-links 8 --probe-pdfs 1`.

@@ -265,14 +265,14 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
                 adapter.prepare_http(http, session_file)
             if command in {"discover", "run"}:
                 try:
-                    discover(http, manifest, SOURCES[source], summary, log)
+                    discover(http, manifest, adapter, summary, log)
                 except BudgetStop as error:
                     summary["stops"].append(str(error))
                     summary["discovery_complete"] = False
             if command in {"download", "run"}:
-                if hasattr(SOURCES[source], "download"):
-                    SOURCES[source].download(http, manifest, summary, log, recheck)
-                elif getattr(SOURCES[source], "DOWNLOAD_UNIT", None) == "issue":
+                if hasattr(adapter, "download"):
+                    adapter.download(http, manifest, summary, log, recheck)
+                elif getattr(adapter, "DOWNLOAD_UNIT", None) == "issue":
                     from .image_issues import download as download_issues
                     download_issues(http, manifest, summary, log, recheck)
                 else:

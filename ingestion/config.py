@@ -27,9 +27,9 @@ class Settings:
 def load_settings(path: Path | None, source: str = "magarif") -> Settings:
     if source not in SOURCES and source not in PILOT_SOURCES:
         raise ValueError(f"Unknown source: {source}")
-    expected_url = SOURCES[source].ARCHIVE_URL if source in SOURCES else PILOT_SOURCES[source]
     if path is None:
         raise ValueError("Select an operational YAML file with --config; examples are never loaded automatically.")
+    expected_url = SOURCES[source].ARCHIVE_URL if source in SOURCES else PILOT_SOURCES[source]
     path = path.expanduser().resolve()
     try:
         data = yaml.safe_load(path.read_text(encoding="utf-8"))

@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 from . import language_reviews
 from .documents import DOCUMENT_EXTENSIONS
-from .kfu import language_selection
+from .languages import language_selection
 from .network import InvalidDocument
 from .paging import ListingPage, PageRequest
 

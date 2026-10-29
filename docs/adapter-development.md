@@ -8,6 +8,8 @@ belong to another project.
 
 - `ingestion/registry.py`: registered sources; check before proposing a new
   adapter. `ingestion/config.py` validates explicitly selected operational YAML.
+  The registry is a lazy mapping: listing/checking names imports no providers;
+  lookup loads and caches only the selected module or KFU collection instance.
 - `ingestion/discovery.py` and `paging.py`: durable listing frontier, per-record
   context, pagination fingerprints and resume checkpoints. Incomplete scans
   resume; calling discovery after completion starts a new scan.
@@ -22,6 +24,11 @@ belong to another project.
 - `ingestion/language_reviews.py`: reuse SHA-256-pinned manual language reviews
   when reliable item-language claims are absent. A subject or interface locale
   does not establish document language.
+- `ingestion/languages.py`: exact-label classification shared by KFU, KFU DSpace,
+  Tataroved and file reviews. Publisher-specific tokenization/admission in
+  Tatkniga and Internet Archive remains separate.
+- `ingestion/output.py` and global `--summary-only`: compact JSON counts and
+  artifact paths without progress logs. Use this for agent-driven CLI runs.
 - `ingestion/inspection.py` and `cli.py inspect`: bounded public-page evidence,
   link extraction and optional PDF-prefix probes. Use this instead of custom
   fetch scripts; see [inspection usage](source-inspection.md).
@@ -37,6 +44,7 @@ belong to another project.
 .venv/bin/python scripts/ingestion_overview.py __artifacts/ingestion
 .venv/bin/python scripts/ingestion_overview.py __artifacts/session-20261028
 .venv/bin/python scripts/ingestion_overview.py --details __artifacts/session-20261028/kfu_repository
+.venv/bin/python cli.py --summary-only --config ingestion.yaml status --source kfu_repository
 ```
 
 The helper reads selected roots' immediate source manifests only, emits one JSON

@@ -11,7 +11,7 @@ import pymupdf
 
 from . import language_reviews
 from .documents import canonical, same_origin
-from .kfu import language_selection
+from .languages import language_selection
 from .network import InvalidDocument
 from .paging import CatalogChanged, ListingPage, PageRequest
 

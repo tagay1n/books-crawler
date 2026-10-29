@@ -1,34 +1,66 @@
-from . import beznenmiras, commons, darul_kutub, echovek, internet_archive, isxaki, kazanutlary, kfu, kfu_dspace, kfu_repository, kfu_vakyt, magarif, magarif_vakyt, miras, miras_periodicals, nizgar, obuchalka, tatarica, tatargalyame, tataroved, tatkniga, turuz, yazuchy
+"""Ordered adapter registry; listing names never imports provider modules."""
+
+from collections.abc import Mapping
+from importlib import import_module
 
 
-from . import sarhaan, ftatarstan, dumrt, tuganzhir
+_MODULES = {name: name for name in (
+    "magarif", "tatarica", "darul_kutub", "sarhaan", "ftatarstan", "dumrt", "tuganzhir",
+    "beznenmiras", "miras_periodicals", "magarif_vakyt", "turuz", "yazuchy", "nizgar",
+    "echovek", "obuchalka", "kazanutlary", "tatkniga", "miras", "commons", "isxaki",
+    "internet_archive", "kfu_repository", "kfu_dspace", "tataroved", "kfu_books",
+    "kfu_manuscripts", "kfu_il", "kfu_azad_halyk", "kfu_vakyt", "kfu_shura", "tatargalyame",
+)}
+_COLLECTIONS = {"kfu_books": ("27574", False), "kfu_manuscripts": ("18503", False),
+                "kfu_il": ("28060", True), "kfu_azad_halyk": ("27528", True),
+                "kfu_shura": ("25046", True)}
+_MODULES.update({name: "kfu" for name in _COLLECTIONS})
 
 
-SOURCES = {"magarif": magarif, "tatarica": tatarica, "darul_kutub": darul_kutub,
-           "sarhaan": sarhaan,
-           "ftatarstan": ftatarstan,
-           "dumrt": dumrt,
-           "tuganzhir": tuganzhir,
-           "beznenmiras": beznenmiras,
-           "miras_periodicals": miras_periodicals,
-           "magarif_vakyt": magarif_vakyt,
-           "turuz": turuz,
-           "yazuchy": yazuchy,
-           "nizgar": nizgar,
-           "echovek": echovek,
-           "obuchalka": obuchalka,
-           "kazanutlary": kazanutlary, "tatkniga": tatkniga, "miras": miras, "commons": commons,
-           "isxaki": isxaki, "internet_archive": internet_archive,
-           "kfu_repository": kfu_repository,
-           "kfu_dspace": kfu_dspace,
-           "tataroved": tataroved,
-           "kfu_books": kfu.CollectionAdapter("27574"),
-           "kfu_manuscripts": kfu.CollectionAdapter("18503"),
-           "kfu_il": kfu.CollectionAdapter("28060", tatar_only=True),
-           "kfu_azad_halyk": kfu.CollectionAdapter("27528", tatar_only=True),
-           "kfu_vakyt": kfu_vakyt,
-           "kfu_shura": kfu.CollectionAdapter("25046", tatar_only=True),
-           "tatargalyame": tatargalyame}
+class _Sources(Mapping):
+    def __init__(self):
+        self._loaded = {}
 
-# Keep the original diagnostic command available after promoting its adapter.
-PILOT_SOURCES = {"miras": miras.ARCHIVE_URL}
+    def __iter__(self):
+        return iter(_MODULES)
+
+    def __len__(self):
+        return len(_MODULES)
+
+    def __contains__(self, name):
+        return name in _MODULES
+
+    def __getitem__(self, name):
+        module_name = _MODULES[name]
+        if name not in self._loaded:
+            module = import_module("." + module_name, __package__)
+            if name in _COLLECTIONS:
+                collection_id, tatar_only = _COLLECTIONS[name]
+                adapter = module.CollectionAdapter(collection_id, tatar_only=tatar_only)
+            else:
+                adapter = module
+            self._loaded[name] = adapter
+        return self._loaded[name]
+
+
+SOURCES = _Sources()
+
+
+class _Pilots(Mapping):
+    def __iter__(self):
+        return iter(("miras",))
+
+    def __len__(self):
+        return 1
+
+    def __contains__(self, name):
+        return name == "miras"
+
+    def __getitem__(self, name):
+        if name not in self:
+            raise KeyError(name)
+        return SOURCES[name].ARCHIVE_URL
+
+
+# Retain the diagnostic command without importing Miras during CLI startup.
+PILOT_SOURCES = _Pilots()

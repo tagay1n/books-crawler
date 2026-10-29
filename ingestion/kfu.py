@@ -10,6 +10,8 @@ from bs4 import BeautifulSoup
 from requests.utils import requote_uri
 
 from .documents import DOCUMENT_EXTENSIONS, canonical, same_origin
+# Re-export the existing names for callers of the KFU module.
+from .languages import OTHER_LANGUAGE_LABELS, TATAR_LABELS, language_selection
 from .network import InvalidDocument
 from .paging import CatalogChanged, ListingPage, PageRequest
 
@@ -20,18 +22,6 @@ COLLECTIONS = {"27574": "books", "18503": "manuscripts", "28060": "il", "25046":
 PERIODICALS = {"28060": ("Ил", "newspaper"), "25046": ("Шура", "journal"),
                "27528": ("Азад халык", "newspaper")}
 DOCUMENT_FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
-TATAR_LABELS = {"tt", "tat", "tatar", "татарский", "татарча", "татар теле"}
-OTHER_LANGUAGE_LABELS = {"ru", "rus", "russian", "русский", "ar", "ara", "arabic", "арабский",
-                         "fa", "fas", "per", "persian", "персидский", "ba", "bak", "bashkir", "башкирский",
-                         "crh", "crimean tatar", "крымскотатарский", "tr", "tur", "turkish", "турецкий",
-                         "en", "eng", "english", "английский", "de", "deu", "ger", "german", "немецкий"}
-
-
-def language_selection(values):
-    labels = {" ".join(value.casefold().split()) for value in values if isinstance(value, str) and value.strip()}
-    if labels & TATAR_LABELS:
-        return "selected"
-    return "excluded" if labels and labels <= OTHER_LANGUAGE_LABELS else "review"
 
 
 def select_tatar(metadata, assets, *, publication="Il"):

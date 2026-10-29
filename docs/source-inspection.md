@@ -10,6 +10,8 @@ Use this before writing an adapter or repeating a custom website probe:
 No operational YAML or session export is needed. Inspection makes public GET
 requests with the shared HTTP pacing, timeouts and soft-deadline machinery.
 It does not modify acquisition manifests or select documents for ingestion.
+Use global `--summary-only` before `inspect` to print just counts, response facts
+and the report path; the saved inspection report and link inventory stay detailed.
 
 Each run creates a separate directory under `__artifacts/inspections/` containing:
 

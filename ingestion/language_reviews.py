@@ -4,7 +4,7 @@ import copy
 import json
 import re
 
-from .kfu import language_selection
+from .languages import language_selection
 from .network import InvalidDocument
 
 

@@ -42,6 +42,32 @@ existing file, add the `sources.tatarica` entry from the example; keep your chos
 paths, budgets, and network settings. Enable Darul-Kutub the same way with the
 `sources.darul_kutub` entry.
 
+For compact machine-readable output, put the global `--summary-only` option
+before the command name:
+
+```bash
+.venv/bin/python cli.py --summary-only --config ingestion.yaml discover --source magarif
+.venv/bin/python cli.py --summary-only --config ingestion.yaml status --source magarif
+.venv/bin/python cli.py --summary-only inspect https://tuganzhir.org/archive/ --max-links 8
+```
+
+This suppresses per-record progress and prints one compact JSON object with
+common counters, stop reasons, error counts, current queue counts and available
+report paths. Full structured run summaries and manifests are unchanged. Read the
+referenced summary/report only when a count or failure needs investigation.
+Status remains read-only, and has no new report file to reference. `records`
+counts processed records for a run and retained records for status; run summaries
+also include `backlog_records` to make that distinction explicit.
+`error_count` concerns this invocation; `discovery_errors` separately counts
+unresolved work in the saved scan.
+
+The same option works for inspection, source listing and the retained Miras probe.
+Command execution/configuration errors produce a compact error object in this
+mode; CLI syntax errors retain Typer's normal error output. Exit status and
+default output remain unchanged. Source listing, help and inspection do not load
+unrelated adapters or PDF-rendering dependencies. Selecting an adapter loads and
+caches it; `sources` still lists the same ordered names.
+
 `discover` follows source-specific catalog pagination and stores record metadata
 plus file descriptors without downloading originals. It checkpoints listing
 requests and outstanding record URLs. Each invocation resumes an incomplete scan;
