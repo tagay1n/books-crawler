@@ -136,6 +136,17 @@ consume the page cap; record-detail requests are bounded by the shared deadline
 and network controls. A page cap or deadline keeps discovery incomplete and
 preserves the pending frontier for the next invocation.
 
+Discovery errors include their scan ID. A successful retry moves the diagnostic
+to `discovery_error_history`; replacing a scan archives its unresolved diagnostics
+as `scan_replaced`, which does not imply that the remote problem was fixed.
+`status` and the overview report active `discovery_errors` separately from
+`historical_discovery_errors`. Legacy untagged errors are historical when they
+predate the current scan or their request is no longer pending. Unknown dates
+keep a still-pending diagnostic active. These read-only commands do not migrate
+or rewrite manifests; discovery preserves prior entries when it next writes.
+Run summaries retain errors encountered during that invocation and are not
+rewritten when a later run resolves them.
+
 Tatarica and Darul-Kutub advertise substantially more catalog entries than the default
 page cap can enumerate in one run. Repeat `discover` to continue. The count is
 catalog entries, not available PDFs or confirmed Tatar documents. Empty or short

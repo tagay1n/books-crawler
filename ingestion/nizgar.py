@@ -2,13 +2,13 @@
 
 from pathlib import PurePosixPath
 import re
-from urllib.parse import unquote, urlsplit
+from urllib.parse import unquote, urljoin, urlsplit
 
 from bs4 import BeautifulSoup
 from requests.utils import requote_uri
 
 from .documents import canonical, same_origin
-from .network import InvalidDocument
+from .network import install_native_get_guard
 from .paging import ListingPage
 
 
@@ -33,20 +33,16 @@ def allowed_url(url):
                  or (path.startswith("/wp-content/uploads/") and path.lower().endswith(".pdf"))))
 
 
+def native_url(href, base=ARCHIVE_URL):
+    url = urljoin(base, href)
+    if not allowed_url(url):
+        raise ValueError("Nizgar requires its native HTTPS archive or upload PDF paths.")
+    return normalized_url(url)
+
+
 def prepare_http(http, session_file):
-    def validate_request(method, url, data):
-        if method != "GET" or data or not allowed_url(url):
-            raise ValueError("Nizgar permits only native read-only HTTPS archive and PDF requests.")
-
-    def check_response(response, *args, **kwargs):
-        target = normalized_url(response.headers.get("Location", ""), response.url) if response.is_redirect else response.url
-        if not allowed_url(response.url) or not allowed_url(target):
-            response.close()
-            raise InvalidDocument("Nizgar redirected outside the selected HTTPS source paths.")
-        return response
-
-    http.validate_request = validate_request
-    http.session.hooks["response"].append(check_response)
+    # Retain redirects within validated source paths, including file aliases.
+    install_native_get_guard(http, native_url, "Nizgar", redirect_allowed=same_origin)
 
 
 def catalog(html, page_url):

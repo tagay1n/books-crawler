@@ -25,6 +25,9 @@ HTTP links on the source host are normalized to HTTPS and the observed `/tt/`
 collection aliases are normalized to their canonical paths. Original link URLs
 remain in card metadata. Navigation, cover images, news, letters, and diaries
 are outside this adapter's scope. External document links remain unsupported.
+Transport uses the shared GET-only guard with the existing native HTTPS-origin
+rule, including same-origin redirects. External redirects and HTTP downgrades
+remain rejected; link normalization does not relax the transport origin check.
 
 Both historical editions and supplied modern text PDFs are eligible. Files are
 saved unchanged under `__artifacts/ingestion/isxaki/files/` with the shared local

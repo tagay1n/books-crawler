@@ -11,6 +11,9 @@ belong to another project.
 - `ingestion/discovery.py` and `paging.py`: durable listing frontier, per-record
   context, pagination fingerprints and resume checkpoints. Incomplete scans
   resume; calling discovery after completion starts a new scan.
+- `ingestion/diagnostics.py`: shared current-scan versus historical error scoping
+  for discovery, CLI status and the read-only overview. Legacy diagnostics are
+  classified without rewriting a manifest during a status command.
 - `ingestion/core.py`, `network.py`, `state.py`: reuse bounded streaming, format
   signatures, atomic publication, retry budgets, observations, hashes,
   source locks and repeat-run skipping. Do not duplicate these in adapters.
@@ -46,10 +49,17 @@ selected fields rather than printing a large manifest's single line.
 Discovery commits each successful observation and its completed frontier work
 in one atomic checkpoint. `Manifest.observe()` still saves immediately for other
 callers; only discovery defers that save until its checkpoint is ready.
+Discovery uses invocation-local membership sets and a pending-work deque while
+retaining ordered JSON lists for resume compatibility. `Manifest.observe()` lazily
+indexes assets by owning record instead of scanning every asset per observation.
+Create assets and change their owning record through that method so the index
+stays coherent; download status/result updates do not affect ownership.
 Discovery completeness is distinct from advertised-count verification and from
 download completion. `--details` adds current-scan counts (distinct from total
 retained records), advertised-count verification, asset formats and grouped
 discovery error messages without large continuation URLs or record contents.
+`discovery_errors` counts active diagnostics; `historical_discovery_errors`
+counts prior-scan and resolved diagnostics. `--details` groups both separately.
 Inspect individual observations only when a summary points
 to a concrete question; avoid dumping complete manifests or private configs.
 

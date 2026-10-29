@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+from collections import deque
 from uuid import uuid4
 
 import requests
@@ -9,6 +10,7 @@ from urllib3.exceptions import HTTPError as TransportError
 
 from .paging import CatalogChanged, PageRequest
 from .state import now
+from .diagnostics import archive_discovery_error, partition_discovery_errors
 
 
 READ_ERRORS = (requests.RequestException, TransportError, ValueError)
@@ -18,17 +20,43 @@ def discover(http, manifest, adapter, summary, log):
     root = http.settings.archive_url
     version = getattr(adapter, "PARSER_VERSION", 1)
     scan = manifest.data.get("discovery_scan")
+    errors = manifest.data.setdefault("discovery_errors", {})
     if (not scan or scan.get("complete") or scan.get("restart_required")
             or scan.get("root") != root or scan.get("adapter_version") != version):
         initial = adapter.initial_request(root) if hasattr(adapter, "initial_request") else PageRequest(root)
+        for key, error in list(errors.items()):
+            archive_discovery_error(manifest.data, key, error, "scan_replaced", at=now())
+            del errors[key]
         scan = {"version": 1, "id": uuid4().hex, "root": root, "adapter_version": version,
                 "started_at": now(), "complete": False, "frontier": [initial.dump()],
                 "visited": [], "pending_records": [], "enumerated_urls": [], "checked_urls": [],
                 "record_keys": [], "enumerated_entries": 0, "listing_pages": 0, "batch_signatures": {}}
         manifest.data["discovery_scan"] = scan
     scan["verified"] = False
-    errors = manifest.data.setdefault("discovery_errors", {})
+    _, prior_errors = partition_discovery_errors(manifest.data)
+    for key, error in prior_errors.items():
+        archive_discovery_error(manifest.data, key, error, "inactive", at=now())
+        del errors[key]
+    # Ordered lists remain the persisted format; indexes are invocation-local.
+    visited = set(scan["visited"])
+    enumerated = set(scan["enumerated_urls"])
+    checked = set(scan["checked_urls"])
+    record_keys = set(scan["record_keys"])
+    pending = set(scan["pending_records"])
+    pending_queue = deque(scan["pending_records"])
+    frontier_keys = {PageRequest(**request).key() for request in scan["frontier"]}
     attempted = set()
+
+    def queue_record(url):
+        if url not in pending:
+            scan["pending_records"].append(url)
+            pending.add(url)
+            pending_queue.append(url)
+
+    def resolve_error(key):
+        error = errors.pop(key, None)
+        if error is not None:
+            archive_discovery_error(manifest.data, key, error, "resolved", at=now())
 
     def coverage():
         return {
@@ -49,7 +77,9 @@ def discover(http, manifest, adapter, summary, log):
     try:
         while True:
             http.budget.check()
-            url = next((url for url in scan["pending_records"] if url not in attempted), None)
+            while pending_queue and pending_queue[0] in attempted:
+                pending_queue.popleft()
+            url = pending_queue.popleft() if pending_queue else None
             if url is not None:
                 attempted.add(url)
                 try:
@@ -62,16 +92,19 @@ def discover(http, manifest, adapter, summary, log):
                     identity = adapter.record_key(metadata) if hasattr(adapter, "record_key") else metadata["url"]
                     changed = manifest.observe(metadata, assets, version, record_key=identity, persist=False)
                     scan["pending_records"].remove(url)
-                    if url not in scan["checked_urls"]:
+                    pending.discard(url)
+                    if url not in checked:
                         scan["checked_urls"].append(url)
-                    if identity not in scan["record_keys"]:
+                        checked.add(url)
+                    if identity not in record_keys:
                         scan["record_keys"].append(identity)
+                        record_keys.add(identity)
                     summary["records"] += 1
                     summary["observations"] += int(changed)
-                    errors.pop(url, None)
+                    resolve_error(url)
                     log(f"Discovered: {metadata['title']} ({len(assets)} attachments)")
                 except READ_ERRORS as error:
-                    errors[url] = {"at": now(), "error": str(error)}
+                    errors[url] = {"at": now(), "error": str(error), "scan_id": scan["id"], "stage": "record"}
                     summary["errors"].append({"url": url, "stage": "discover", "error": str(error)})
                     log(f"Discovery failed: {url}: {error}")
                 checkpoint()
@@ -83,8 +116,9 @@ def discover(http, manifest, adapter, summary, log):
                     break
                 request = PageRequest(**scan["frontier"][0])
                 key = request.key()
-                if key in scan["visited"]:
+                if key in visited:
                     scan["frontier"].pop(0)
+                    frontier_keys.discard(key)
                     checkpoint()
                     continue
                 try:
@@ -92,7 +126,7 @@ def discover(http, manifest, adapter, summary, log):
                     page = adapter.parse_listing(html, request, root)
                     summary["pages"] += 1
                     if page.validation:
-                        if page.records and set(page.records) != set(scan["enumerated_urls"]):
+                        if page.records and set(page.records) != enumerated:
                             raise CatalogChanged("Catalog identities changed during enumeration; next discovery starts a fresh scan.")
                         if (page.advertised != scan.get("advertised")
                                 or scan["enumerated_entries"] != scan.get("advertised")
@@ -104,7 +138,7 @@ def discover(http, manifest, adapter, summary, log):
                     else:
                         if getattr(adapter, "UNIQUE_RECORDS", False):
                             if (len(set(page.records)) != len(page.records)
-                                    or set(page.records).intersection(scan["enumerated_urls"])):
+                                    or enumerated.intersection(page.records)):
                                 raise CatalogChanged("Catalog repeated item identities; next discovery starts a fresh scan.")
                         payload = page.fingerprint if page.fingerprint is not None else json.dumps(page.records)
                         signature = hashlib.sha256(payload.encode()).hexdigest()
@@ -124,26 +158,29 @@ def discover(http, manifest, adapter, summary, log):
                                 if context not in contexts:
                                     contexts.append(context)
                                     # A newly found listing relationship is upstream evidence too.
-                                    if record_url in scan["checked_urls"]:
+                                    if record_url in checked:
                                         scan["checked_urls"].remove(record_url)
+                                        checked.remove(record_url)
                                         attempted.discard(record_url)
-                                        if record_url not in scan["pending_records"]:
-                                            scan["pending_records"].append(record_url)
-                            if record_url not in scan["enumerated_urls"]:
+                                        queue_record(record_url)
+                            if record_url not in enumerated:
                                 scan["enumerated_urls"].append(record_url)
-                                scan["pending_records"].append(record_url)
+                                enumerated.add(record_url)
+                                queue_record(record_url)
                     scan["frontier"].pop(0)
+                    frontier_keys.discard(key)
                     scan["visited"].append(key)
-                    existing = {PageRequest(**r).key() for r in scan["frontier"]}
+                    visited.add(key)
                     for following in page.following:
-                        if following.key() not in scan["visited"] and following.key() not in existing:
+                        following_key = following.key()
+                        if following_key not in visited and following_key not in frontier_keys:
                             scan["frontier"].append(following.dump())
-                            existing.add(following.key())
-                    errors.pop(key, None)
+                            frontier_keys.add(following_key)
+                    resolve_error(key)
                 except READ_ERRORS as error:
                     if isinstance(error, CatalogChanged):
                         scan["restart_required"] = True
-                    errors[key] = {"at": now(), "error": str(error)}
+                    errors[key] = {"at": now(), "error": str(error), "scan_id": scan["id"], "stage": "listing"}
                     summary["errors"].append({"url": request.url, "stage": "discover", "error": str(error)})
                     log(f"Catalog discovery failed: {request.url}: {error}")
                     break
@@ -154,9 +191,11 @@ def discover(http, manifest, adapter, summary, log):
                 request = adapter.verification_request(root, scan.get("advertised"))
                 # A failed record can be retried in a later invocation; verify counts again then.
                 key = request.key()
-                if key in scan["visited"]:
+                if key in visited:
                     scan["visited"].remove(key)
+                    visited.remove(key)
                 scan["frontier"].append(request.dump())
+                frontier_keys.add(key)
                 checkpoint()
                 continue
             scan["complete"] = not scan["pending_records"] and not scan.get("restart_required", False)

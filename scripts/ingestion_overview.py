@@ -4,6 +4,11 @@ import argparse
 from collections import Counter
 import json
 from pathlib import Path
+import sys
+
+# Keep the standalone repository command while sharing CLI error scoping.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from ingestion.diagnostics import discovery_error_counts, partition_discovery_errors
 
 
 def main():
@@ -36,7 +41,7 @@ def main():
                       "pages": coverage.get("pages"),
                       "remaining_listings": coverage.get("remaining_listing_requests"),
                       "remaining_records": coverage.get("remaining_record_urls"),
-                      "discovery_errors": len(data.get("discovery_errors", {}))}
+                      **discovery_error_counts(data)}
             if args.details:
                 result["scan"] = {key: coverage.get(key) for key in (
                     "catalog_entries_enumerated", "unique_records_inspected",
@@ -44,8 +49,12 @@ def main():
                 result["asset_formats"] = dict(sorted(Counter(
                     a.get("extension") or "unknown" for a in assets.values()
                     if a.get("current", True)).items()))
+                current, prior = partition_discovery_errors(data)
                 result["discovery_error_messages"] = dict(Counter(
-                    error.get("error", "unknown") for error in data.get("discovery_errors", {}).values()))
+                    error.get("error", "unknown") for error in current.values()))
+                result["historical_discovery_error_messages"] = dict(Counter(
+                    error.get("error", "unknown") for error in
+                    [*data.get("discovery_error_history", []), *prior.values()]))
         except (OSError, ValueError, KeyError, TypeError, AttributeError) as error:
             result = {"manifest": str(path), "error": str(error)}
             failed = True

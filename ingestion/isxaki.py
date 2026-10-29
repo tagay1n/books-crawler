@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 from requests.utils import requote_uri
 
 from .documents import DOCUMENT_EXTENSIONS, canonical, same_origin
-from .network import InvalidDocument
+from .network import install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
@@ -31,19 +31,15 @@ def normalize_url(href, base):
     return requote_uri(url)
 
 
-def prepare_http(http, session_file):
-    def validate_request(method, url, data):
-        if method != "GET" or data or not same_origin(url, ARCHIVE_URL):
-            raise ValueError("Isxaki permits only same-origin, read-only HTTPS requests.")
-    http.validate_request = validate_request
+def native_url(href, base=ARCHIVE_URL):
+    url = canonical(href, base)
+    if not same_origin(url, ARCHIVE_URL):
+        raise ValueError("Isxaki requires native HTTPS resources.")
+    return requote_uri(url)
 
-    def check_response(response, *args, **kwargs):
-        target = canonical(response.headers.get("Location", ""), response.url) if response.is_redirect else response.url
-        if not same_origin(response.url, ARCHIVE_URL) or not same_origin(target, ARCHIVE_URL):
-            response.close()
-            raise InvalidDocument("Isxaki redirected outside its HTTPS source origin.")
-        return response
-    http.session.hooks["response"].append(check_response)
+
+def prepare_http(http, session_file):
+    install_native_get_guard(http, native_url, "Isxaki", redirect_allowed=same_origin)
 
 
 def collection_content(html, page_url):

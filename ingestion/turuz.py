@@ -3,13 +3,13 @@
 import re
 import unicodedata
 from pathlib import PurePosixPath
-from urllib.parse import unquote, urlsplit, urlunsplit
+from urllib.parse import unquote, urljoin, urlsplit, urlunsplit
 
 from bs4 import BeautifulSoup
 from requests.utils import requote_uri
 
 from .documents import canonical, same_origin
-from .network import InvalidDocument
+from .network import install_native_get_guard
 from .paging import ListingPage
 
 
@@ -49,19 +49,15 @@ def allowed_url(url):
                      and not {".", ".."}.intersection(path.split("/")))))
 
 
-def prepare_http(http, session_file):
-    def validate_request(method, url, data):
-        if method != "GET" or data or not allowed_url(url):
-            raise ValueError("Turuz permits only read-only HTTPS dictionary-listing and hosted-file requests.")
-    http.validate_request = validate_request
+def native_url(href, base=ARCHIVE_URL):
+    url = urljoin(base, href)
+    if not allowed_url(url):
+        raise ValueError("Turuz requires its native HTTPS dictionary or storage paths.")
+    return file_url(url, base)
 
-    def check_response(response, *args, **kwargs):
-        target = canonical(response.headers.get("Location", ""), response.url) if response.is_redirect else response.url
-        if not allowed_url(response.url) or not allowed_url(target):
-            response.close()
-            raise InvalidDocument("Turuz redirected outside the selected HTTPS source paths.")
-        return response
-    http.session.hooks["response"].append(check_response)
+
+def prepare_http(http, session_file):
+    install_native_get_guard(http, native_url, "Turuz", redirect_allowed=same_origin)
 
 
 def catalog(html, page_url):

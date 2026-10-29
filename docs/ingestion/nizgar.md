@@ -47,6 +47,10 @@ completeness against a printed issue. Downloads skip hash-verified local origina
 missing/corrupt files remain eligible, and `--recheck` requests revalidation.
 Run discovery again to refresh metadata and mark removed links inactive.
 
+Requests use the shared GET-only guard with this adapter's archive/upload path
+allowlist. Redirects remain allowed within those validated native paths, retaining
+the existing file-alias behavior; other origins and HTTP downgrades are rejected.
+
 Pre-implementation inspection downloaded issue 7 anonymously: 7,271,105 bytes,
 100 PDF pages, SHA-256
 `816a09bf15b2969fbf0e130004955a9be637a8613a8f14e365ba28c56a08bf72`.

@@ -7,6 +7,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
+from .diagnostics import discovery_error_counts
+
 
 def now():
     return datetime.now(timezone.utc).isoformat()
@@ -70,6 +72,15 @@ class Manifest:
                     or not isinstance(self.data.get("records"), dict)
                     or not isinstance(self.data.get("assets"), dict)):
                 raise ValueError("Invalid or unsupported local manifest; refusing to overwrite it.")
+        self._assets_by_record = None
+
+    def _record_asset_index(self):
+        if self._assets_by_record is None:
+            self._assets_by_record = {}
+            for key, asset in self.data["assets"].items():
+                owner = asset.get("record_key", asset["record_url"])
+                self._assets_by_record.setdefault(owner, set()).add(key)
+        return self._assets_by_record
 
     def save(self):
         # Large page inventories otherwise spend much of each checkpoint on
@@ -103,17 +114,22 @@ class Manifest:
                 record["package_pdf"]["status"] = "incomplete"
         record["last_seen"] = now()
         record["attachment_count"] = len(assets)
-        for asset in self.data["assets"].values():
-            if asset.get("record_key", asset["record_url"]) == record_key:
-                asset["current"] = False
+        indexed = self._record_asset_index()
+        for key in indexed.get(record_key, ()):
+            self.data["assets"][key]["current"] = False
         for descriptor in assets:
             key = hashlib.sha256((record_key + "\n" + descriptor.get("source_asset_key", descriptor["url"])).encode()).hexdigest()
             asset = self.data["assets"].setdefault(key, {
                 "id": key, "record_url": record_url, "status": "pending", "results": [],
             })
+            previous_owner = asset.get("record_key", asset["record_url"])
             asset.update(descriptor, current=True, observation_id=history[-1]["id"])
             if record_key != record_url:
                 asset.update(record_key=record_key, record_url=record_url)
+            owner = asset.get("record_key", asset["record_url"])
+            if previous_owner != owner:
+                indexed.get(previous_owner, set()).discard(key)
+            indexed.setdefault(owner, set()).add(key)
             if descriptor.get("unsupported_reason"):
                 asset["status"] = "unsupported"
                 asset["last_error"] = descriptor["unsupported_reason"]
@@ -134,6 +150,7 @@ class Manifest:
                 "current_assets": counts, "historical_results": sum(len(a["results"]) for a in self.data["assets"].values())}
         if "discovery" in self.data:
             result["discovery"] = self.data["discovery"].copy()
+        result.update(discovery_error_counts(self.data))
         reasons = {}
         for asset in self.data["assets"].values():
             code = asset.get("unsupported_code")

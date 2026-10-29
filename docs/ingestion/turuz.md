@@ -30,6 +30,8 @@ including exclusions, remains in collection metadata for review. Unlabelled
 works and Tatar titles elsewhere on the site are outside this slice.
 
 Only same-origin HTTPS `/storage/` PDF, DjVu and Word files are acquired.
+The shared GET-only guard retains the dictionary/storage path allowlist and
+redirects within those native paths; other origins and HTTP downgrades are rejected.
 RAR/archive links remain unsupported in the manifest; no package expansion,
 executable content, reader conversion, account or external delivery is used.
 Source checksums are not supplied by this listing: the shared downloader checks
