@@ -4,7 +4,7 @@ import csv
 import json
 import os
 
-from utils import dump_json_atomic, get_hash, get_in_workdir
+from .utils import dump_json_atomic, get_hash, get_in_workdir
 
 
 CANDIDATES_INDEX = "../__artifacts/litres/candidates-index.json"

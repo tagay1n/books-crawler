@@ -7,10 +7,30 @@ import os.path
 from pathlib import Path
 
 import yaml
+import requests as native_requests
+from contextvars import ContextVar
+
+RUNTIME = ContextVar("litres_runtime", default=None)
+
+
+class RequestsProxy:
+    def __getattr__(self, name):
+        runtime = RUNTIME.get()
+        if runtime and name == "get":
+            return runtime.get
+        if runtime and name == "Session":
+            return runtime.session
+        return getattr(native_requests, name)
+
+
+requests = RequestsProxy()
 
 
 def get_in_workdir(file):
     """Return file in the current directory where script file is located"""
+    runtime = RUNTIME.get()
+    if runtime is not None and file.startswith("../__artifacts/litres"):
+        return str(runtime.directory / file.removeprefix("../__artifacts/litres").lstrip("/"))
     return os.path.join(os.path.dirname(__file__), file)
 
 
@@ -30,6 +50,8 @@ def dump_json_atomic(data, path):
 
 
 def read_config():
+    if RUNTIME.get() is not None:
+        return RUNTIME.get().config
     # read config file from the same directory
     with open(get_in_workdir("config.yaml"), "r") as f:
         return yaml.safe_load(f)
@@ -37,12 +59,17 @@ def read_config():
 
 def get_sid():
     config = read_config()
-    if sid := config.get('sid'):
+    if (sid := config.get('sid')) and sid != "<SET ME>":
         return sid
     raise ValueError("sid is not set in litres/config.yaml")
 
 
 def create_driver(headless=True):
+    runtime = RUNTIME.get()
+    if runtime is not None:
+        runtime.budget.check()
+        if runtime.offline:
+            raise ValueError("Browser access is unavailable during offline finalization")
     """
     Create a Selenium driver and preload Litres SID as a browser cookie.
     """
@@ -50,7 +77,7 @@ def create_driver(headless=True):
     from selenium import webdriver
     from webdriver_manager.chrome import ChromeDriverManager
 
-    from consts import domain
+    from .consts import domain
 
     options = webdriver.ChromeOptions()
     if headless:
@@ -65,6 +92,9 @@ def create_driver(headless=True):
         "Page.addScriptToEvaluateOnNewDocument",
         {"source": "Object.defineProperty(navigator, 'webdriver', {get: () => undefined});"},
     )
+    if runtime is not None:
+        driver.set_page_load_timeout(min(runtime.settings.read_timeout_seconds, max(1, runtime.budget.deadline - __import__("time").monotonic())))
+        runtime.drivers.append(driver)
     driver.get(domain)
     driver.add_cookie({"name": "SID", "value": get_sid(), "domain": ".litres.ru", "path": "/"})
     return driver

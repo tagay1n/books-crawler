@@ -8,13 +8,13 @@ import shutil
 import unicodedata
 from urllib.parse import urlparse, parse_qs
 
-import requests
+from .utils import requests
 import typer
 from rich.progress import track
 
-from consts import domain
-from index import _open_reader_url
-from utils import create_driver, dump_json_atomic, get_in_workdir, get_hash, get_sid
+from .consts import domain
+from .index import _open_reader_url
+from .utils import create_driver, dump_json_atomic, get_in_workdir, get_hash, get_sid
 
 PREVIEW_MARKERS = (
     "The end of the free preview",
@@ -244,7 +244,6 @@ def textify(item, ctxt, prefix="", suffix=""):
                 image_location = os.path.join(image_store_dir, item['s'])
                 image_url = f"{ctxt['book']['resource_url']}{item['s']}"
                 headers = {
-                    "Cookie": f"SID={get_sid()};",
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
                 }
                 if not os.path.exists(image_location):

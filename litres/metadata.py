@@ -4,10 +4,10 @@ import json
 import re
 
 import bs4 as bs
-import requests
+from .utils import requests
 from rich.progress import track
 
-from utils import dump_json_atomic, get_in_workdir, get_sid
+from .utils import RUNTIME, dump_json_atomic, get_in_workdir, get_sid
 
 
 def scrap_metadata():
@@ -22,12 +22,16 @@ def scrap_metadata():
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
     }
     for b in track(_all_books.values(), description="Scraping metadata"):
+        if RUNTIME.get():
+            RUNTIME.get().budget.start_item()
         with requests.get(b['url'], headers=headers) as resp:
             print(f"Visiting book page: {b['url']}")
             metadata = {}
             resp.raise_for_status()
             soup = bs.BeautifulSoup(resp.text, "html.parser")
             characteristics_block = soup.select_one('div[class^="CharacteristicsBlock_characteristics__"]')
+            if characteristics_block is None:
+                raise ValueError('Litres metadata structure is missing')
             for characteristic in characteristics_block.findAll('div', {
                 'class': re.compile(r'CharacteristicsBlock_characteristic__(?!title).+')}):
                 title = characteristic.select_one('div[class^="CharacteristicsBlock_characteristic__title__"]')
@@ -53,5 +57,6 @@ def scrap_metadata():
             ): metadata['summary'] = summary.get_text(strip=True)
 
         b['metadata'] = metadata
+        dump_json_atomic(_all_books, path_to_idx)
 
     dump_json_atomic(_all_books, path_to_idx)

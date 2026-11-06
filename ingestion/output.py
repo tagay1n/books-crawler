@@ -6,9 +6,9 @@ def compact_result(result, command, source=None):
     if source or result.get("source"):
         brief["source"] = source or result["source"]
     for key in ("success", "ok", "pages", "records", "observations", "requests", "network_retries",
-                "downloaded", "skipped", "reused_blobs", "imported_originals", "not_modified",
+                "downloaded", "skipped", "finalized", "acquired", "reused_blobs", "imported_originals", "not_modified",
                 "unchanged_downloads", "attempted_download_bytes", "started_items", "pdf_assembled",
-                "pdf_reused", "stops", "stop", "summary_path", "report_path", "sources"):
+                "pdf_reused", "review_counts", "catalog", "publications", "stops", "stop", "summary_path", "report_path", "sources"):
         if key in result:
             brief[key] = result[key]
     brief["error_count"] = len(result.get("errors", []))

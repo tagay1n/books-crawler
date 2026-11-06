@@ -10,13 +10,13 @@ import re
 from urllib.parse import parse_qs, urlparse
 
 import pymupdf
-import requests
+from .utils import requests
 from PIL import Image, UnidentifiedImageError
 from rich.progress import track
 
-from consts import domain
-from index import BLOCKED_MARKERS, _content_type_from_book_page_html, _content_type_from_reader_url, _open_reader_url
-from utils import create_driver, dump_json_atomic, get_sid, get_in_workdir, read_config
+from .consts import domain
+from .index import BLOCKED_MARKERS, _content_type_from_book_page_html, _content_type_from_reader_url, _open_reader_url
+from .utils import RUNTIME, create_driver, dump_json_atomic, get_sid, get_in_workdir, read_config
 
 PDF_REQUEST_TIMEOUT_SECONDS = 30
 PDF_RESPONSE_SNIPPET_BYTES = 300
@@ -581,6 +581,8 @@ def _create_pdf(book):
             # sort pages by number
             images = sorted([f for f in os.listdir(artifacts_dir)], key=lambda x: int(x.split(".")[0]))
             for page_number, page in enumerate(track(images, description=f"Creating pdf for file: {file_id}")):
+                if RUNTIME.get():
+                    RUNTIME.get().budget.check()
                 image_bytes, image_filetype = _page_image_bytes_for_pdf(
                     os.path.join(artifacts_dir, page),
                     page_number,

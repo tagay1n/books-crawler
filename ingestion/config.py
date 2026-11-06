@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 from urllib.parse import urlsplit
 
@@ -21,6 +21,7 @@ class Settings:
     read_timeout_seconds: float
     pacing_seconds: float
     retry_attempts: int
+    source_options: dict = field(default_factory=dict, repr=False)
     max_derived_pdf_bytes: int = 512 * 1024 * 1024
 
 
@@ -52,7 +53,7 @@ def load_settings(path: Path | None, source: str = "magarif") -> Settings:
     if not isinstance(archive_url, str):
         raise ValueError(f"sources.{source}.archive_url must be a URL.")
     parsed = urlsplit(archive_url)
-    if (archive_url.rstrip("/") != expected_url.rstrip("/") or parsed.query or parsed.fragment):
+    if (archive_url.rstrip("/") != expected_url.rstrip("/") or parsed.query != urlsplit(expected_url).query or parsed.fragment):
         raise ValueError(f"{source}.archive_url must be {expected_url}")
     root = data.get("artifacts_root")
     if not isinstance(root, str) or not root.strip():
@@ -70,6 +71,7 @@ def load_settings(path: Path | None, source: str = "magarif") -> Settings:
 
     return Settings(
         artifacts_root=root.resolve(), archive_url=expected_url,
+        source_options=dict(selected) if source == "litres" else {},
         **{key: number(limits, key, True) for key in (
             "max_pages", "max_items", "max_download_bytes", "max_file_bytes", "disk_reserve_bytes")},
         soft_deadline_seconds=number(limits, "soft_deadline_seconds"),

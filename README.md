@@ -1,9 +1,8 @@
 # Books Crawler
 
-The repository retains three independent legacy pipelines for collecting Tatar books and metadata:
+The repository retains two independent legacy pipelines for collecting Tatar books and metadata:
 
 - `milli_kitaphana/`
-- `litres/`
 - `common-crawl/`
 
 Each pipeline has its own CLI/scripts and its own local state in `__artifacts/` or `~/`.
@@ -159,12 +158,8 @@ Tatar item-language labels are required; unlabelled records remain held. See
   - `python milli_kitaphana/cli.py download`
   - `python milli_kitaphana/cli.py decrypt`
 - Litres:
-  - `python litres/cli.py index`
-  - `python litres/cli.py pdf`
-  - `python litres/cli.py text`
-  - `python litres/cli.py metadata`
-  - `python litres/cli.py upload`
-  - `python litres/cli.py hf`
+  - Litres now uses the [unified CLI](docs/ingestion/litres.md).
+
 - Common Crawl:
   - `python common-crawl/cli.py index`
   - `python common-crawl/cli.py download`
@@ -222,7 +217,7 @@ Tatar item-language labels are required; unlabelled records remain held. See
 ## State files
 
 - `__artifacts/milli.kitaphana/_index/books-index.json` stores Milli Kitaphana crawl/download state.
-- `__artifacts/litres/books-index.json` stores Litres state.
+- Litres state uses `<artifacts_root>/litres/manifest.json`; see its migration guide.
 - `__artifacts/common.crawl/docs-index.json` stores Common Crawl state.
 - `~/.common-crawl/` stores downloaded Common Crawl files and caches.
 - `__artifacts/ingestion/tatkniga/` stores the new Tatkniga manifest and local files.

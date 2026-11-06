@@ -7,16 +7,16 @@ import time
 from urllib.parse import urlencode
 
 import bs4 as bs
-import requests
+from .utils import requests
 
-from consts import domain
-from index import (
+from .consts import domain
+from .index import (
     _content_type_from_book_page_html,
     _parse_books,
     _raise_if_blocked,
     _set_full_name,
 )
-from utils import create_driver, dump_json_atomic, get_hash, get_in_workdir, get_sid, read_config
+from .utils import RUNTIME, create_driver, dump_json_atomic, get_hash, get_in_workdir, get_sid, read_config
 
 CANDIDATES_INDEX = "../__artifacts/litres/candidates-index.json"
 BOOKS_INDEX = "../__artifacts/litres/books-index.json"
@@ -62,6 +62,11 @@ def discover_candidates():
     known_authors = _known_authors(books)
     existing_urls = {book.get("url") for book in books.values() if book.get("url")}
     driver = None
+    runtime = RUNTIME.get()
+    scan = runtime.manifest.data.setdefault("litres_candidates", {"visited": []}) if runtime else {"visited": []}
+    if scan.get("complete"):
+        scan.update(visited=[], complete=False)
+    pages_started = 0
 
     def _get_driver():
         nonlocal driver
@@ -78,6 +83,14 @@ def discover_candidates():
         for query in config["search_queries"]:
             for page in range(1, config["max_pages_per_query"] + 1):
                 url = _search_url(query, page)
+                if url in scan["visited"]:
+                    continue
+                if runtime:
+                    from ingestion.network import BudgetStop
+                    if pages_started >= runtime.settings.max_pages:
+                        raise BudgetStop("discovery page cap")
+                    runtime.budget.check()
+                pages_started += 1
                 print(f"Processing search page: {url}")
                 html = _fetch_search_page_html(
                     url,
@@ -119,11 +132,18 @@ def discover_candidates():
                         added += 1
                     candidates[key] = details
                     page_kept += 1
+                dump_json_atomic(candidates, candidates_path)
+                if runtime:
+                    scan["visited"].append(url)
+                    runtime.manifest.save()
                 print(f"Page {page}: found {len(parsed_books)} book card(s), kept {page_kept}")
     finally:
         if driver:
             driver.quit()
 
+    if runtime:
+        scan["complete"] = True
+        runtime.manifest.save()
     os.makedirs(os.path.dirname(candidates_path), exist_ok=True)
     dump_json_atomic(candidates, candidates_path)
     print(f"Discovered {discovered} book card(s), added {added}, updated {updated}")
@@ -140,7 +160,7 @@ def _discover_config():
     max_pages_per_query = int(_required_config_value(discover, "discover.max_pages_per_query"))
     return {
         "search_queries": search_queries,
-        "max_pages_per_query": min(max_pages_per_query, MAX_PAGES_PER_QUERY_CAP),
+        "max_pages_per_query": min(max_pages_per_query, MAX_PAGES_PER_QUERY_CAP, RUNTIME.get().settings.max_pages if RUNTIME.get() else MAX_PAGES_PER_QUERY_CAP),
         "min_score": int(_required_config_value(discover, "discover.min_score")),
         "browser_headless": _config_bool(
             _required_config_value(discover, "discover.browser_headless")

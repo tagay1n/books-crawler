@@ -5,7 +5,7 @@ from importlib import import_module
 
 
 _MODULES = {name: name for name in (
-    "magarif", "tatarica", "darul_kutub", "sarhaan", "ftatarstan", "dumrt", "tuganzhir",
+    "litres", "magarif", "tatarica", "darul_kutub", "sarhaan", "ftatarstan", "dumrt", "tuganzhir",
     "beznenmiras", "miras_periodicals", "magarif_vakyt", "turuz", "yazuchy", "nizgar",
     "echovek", "obuchalka", "kazanutlary", "tatkniga", "miras", "commons", "isxaki",
     "internet_archive", "kfu_repository", "kfu_dspace", "tataroved", "kfu_books",

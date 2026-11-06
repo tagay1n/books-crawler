@@ -9,7 +9,7 @@ from rich.progress import track
 from sqlalchemy import text
 from yadisk_client import YaDisk, ConflictResolution
 
-from utils import get_in_workdir, read_config
+from .utils import get_in_workdir, read_config
 
 REMOTE_DIR = "/НейроТатарлар/kitaplar/_все книги/litres"
 

@@ -6,10 +6,10 @@ import re
 from urllib.parse import parse_qs, urljoin, urlparse
 
 import bs4 as bs
-import requests
+from .utils import requests
 
-from consts import TOTAL_PAGES, entry_point, domain
-from utils import create_driver, dump_json_atomic, get_sid, get_in_workdir, get_hash
+from .consts import TOTAL_PAGES, entry_point, domain
+from .utils import RUNTIME, create_driver, dump_json_atomic, get_sid, get_in_workdir, get_hash
 
 
 BOOK_PATH_MARKERS = ("/book/", "/audiobook/")
@@ -46,7 +46,7 @@ def index():
     reader_resolver = _ReaderContentTypeResolver()
     try:
         try:
-            for i in range(1, TOTAL_PAGES + 1):
+            for i in range(1, (RUNTIME.get().settings.max_pages if RUNTIME.get() else TOTAL_PAGES) + 1):
                 paginated_url = f"{entry_point}&page={i}"
                 print(f"Processing page: {paginated_url}")
                 with requests.get(paginated_url, headers=headers) as r:
@@ -68,7 +68,8 @@ def index():
                             page_added += 1
                             added += 1
                         books[h] = details
-                    print(f"Page {i}: found {len(cards)} book card(s), added {page_added}, updated {page_updated}")
+                    dump_json_atomic(books, index_file)
+                print(f"Page {i}: found {len(cards)} book card(s), added {page_added}, updated {page_updated}")
         except KeyboardInterrupt:
             dump_json_atomic(books, index_file)
             print(f"Interrupted; saved current index state to {index_file}")

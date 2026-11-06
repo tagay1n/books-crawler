@@ -2,6 +2,25 @@
 # Relative paths are resolved against this YAML file, not the current directory.
 artifacts_root: __artifacts/ingestion
 sources:
+  litres:
+    archive_url: https://www.litres.ru/new/?art_types=text_book&languages=tt&only_litres_subscription_arts=true
+    sid: <SET ME>
+    pdf:
+      jpeg_quality: 85
+      max_width: null
+      dpi: 200
+      lossless_first_pages: 1
+      browser_headless: true
+      browser_challenge_wait_seconds: 30
+    discover:
+      search_queries: ["татарская литература", "татарча"]
+      max_pages_per_query: 20
+      min_score: 3
+      search_request_retries: 3
+      browser_headless: true
+    # Publishing only: retain existing destination credentials here.
+    # yandex.oauth_token: <SET ME>
+    # s3: {endpoint_url: ..., aws_access_key_id: ..., aws_secret_access_key: ..., bucket: ...}
   # Original full-issue PDFs of the publisher-declared Tatar/Russian series.
   tuganzhir:
     archive_url: https://tuganzhir.org/archive/

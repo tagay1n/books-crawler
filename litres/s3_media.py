@@ -10,7 +10,7 @@ from urllib.parse import quote, unquote, urlparse
 from boto3 import Session
 from rich.progress import track
 
-from utils import get_in_workdir, read_config
+from .utils import get_in_workdir, read_config
 
 MARKDOWN_DIR = "../__artifacts/litres/markdown"
 OUTPUT_DIR = "../__artifacts/litres/markdown-s3"

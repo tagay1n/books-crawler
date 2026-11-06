@@ -33,7 +33,7 @@ then select that operational file explicitly:
 YAML file's directory. Environment variables do not override YAML settings, and
 example files are never selected automatically. Miras network commands require
 `--session-file` from an ordinary verified browser, shared with `miras_periodicals`;
-the other adapters require no credentials. `--session-file` is rejected for other sources. `status` does not read
+Litres instead reads SID from sources.litres.sid in operational YAML; see [its guide](litres.md). Other adapters require no credentials. `--session-file` is rejected for other sources. `status` does not read
 a session file or make network requests.
 
 Only the selected source needs a `sources.<source>.archive_url` configuration

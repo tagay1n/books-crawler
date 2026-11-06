@@ -80,3 +80,25 @@ behavior when changing those paths. Serialize commands writing the same source;
 different sources have independent locks. Compile changed modules and run
 `git diff --check`. Record scope, evidence, remaining frontier and commands in a
 short work log; commit only relevant paths or hunks. Keep originals out of Git.
+
+## Unified stage contract (Litres reference)
+
+New adapters and future migrations should expose source-neutral root commands:
+`discover`, `download`, `finalize`, `run`, `status`, with optional `metadata`,
+`review`, `publish`, and `import-state` capabilities. Litres is the first full
+pipeline reference; see [its guide](ingestion/litres.md) and `ingestion/litres.py`.
+The registry stays lazy. Source-specific operational options belong under
+`sources.<source>`; command routing must reject unsupported capabilities.
+
+Discovery stores resumable source evidence and admission decisions. Download
+acquires original inputs and required media within shared budgets. Finalization
+uses verified local inputs without credentials/network, records recipe/input
+provenance, and atomically publishes derived outputs. Run composes the local
+stages; review and remote publication remain explicit. Status is read-only.
+The manifest owns record state; any compatibility index is a projection.
+
+Other providers currently combining acquisition and assembly retain their
+behavior. Migrate them toward these separate stages incrementally; do not change
+their run semantics incidentally while implementing a new adapter. Source
+writers must share a lock, checkpoint progress, and produce structured summaries.
+Keep verification manual/CLI-based; do not add automated tests.

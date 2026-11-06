@@ -86,13 +86,19 @@ def probe(ctx: typer.Context, source: str = typer.Option(..., "--source"),
         raise typer.Exit(1)
 
 
-def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, session_file=None):
+def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, session_file=None, mode="catalog", format="all", action=None, target=None, from_path=None):
     try:
         if source not in SOURCES:
             raise ValueError(f"Unknown source: {source}. Available: {', '.join(SOURCES)}")
         from .config import load_settings
         from .core import restricted_settings, run
         settings = restricted_settings(load_settings(ctx.obj, source), limit, max_pages)
+        if source == "litres":
+            if session_file is not None:
+                raise ValueError("Litres uses sources.litres.sid, not --session-file")
+            settings.source_options.update(_mode=mode, _format=format, _action=action, _target=target, _from=str(from_path) if from_path else None)
+        elif mode != "catalog" or format != "all" or command not in getattr(SOURCES[source], "SUPPORTED_COMMANDS", {"discover", "download", "run", "status"}):
+            raise ValueError(f"{source} does not implement the selected stage or option")
         result = run(settings, source, command, recheck=recheck, session_file=session_file, log=progress(ctx))
         emit_result(ctx, result, command, source)
     except (ValueError, OSError, RuntimeError, ImportError) as error:
@@ -104,18 +110,24 @@ def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, ses
 @app.command()
 def discover(ctx: typer.Context, source: str = typer.Option(..., "--source"),
              max_pages: Optional[int] = typer.Option(None, "--max-pages"),
+             mode: str = typer.Option("catalog", "--mode", help="catalog, candidates, or all"),
              session_file: Optional[Path] = typer.Option(None, "--session-file", help="Browser session export for miras or miras_periodicals.")):
     """Discover archive records and attachments without downloading originals."""
-    execute(ctx, "discover", source, max_pages=max_pages, session_file=session_file)
+    if mode not in {"catalog", "candidates", "all"}:
+        fail(ctx, ValueError("Invalid discovery mode"), "discover", source)
+    execute(ctx, "discover", source, max_pages=max_pages, session_file=session_file, mode=mode)
 
 
 @app.command()
 def download(ctx: typer.Context, source: str = typer.Option(..., "--source"),
              limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary, files/publications for tatkniga and KFU."),
+             format: str = typer.Option("all", "--format", help="all, pdf, or text"),
              recheck: bool = typer.Option(False, "--recheck", help="Also revalidate completed downloads."),
              session_file: Optional[Path] = typer.Option(None, "--session-file", help="Browser session export for miras or miras_periodicals.")):
     """Download committed local work; retry failed or missing originals."""
-    execute(ctx, "download", source, limit=limit, recheck=recheck, session_file=session_file)
+    if format not in {"all", "pdf", "text"}:
+        fail(ctx, ValueError("Invalid download format"), "download", source)
+    execute(ctx, "download", source, limit=limit, recheck=recheck, session_file=session_file, format=format)
 
 
 @app.command("run")
@@ -132,3 +144,41 @@ def run_command(ctx: typer.Context, source: str = typer.Option(..., "--source"),
 def status(ctx: typer.Context, source: str = typer.Option(..., "--source")):
     """Read manifest counts without network requests or artifact writes."""
     execute(ctx, "status", source)
+
+
+@app.command()
+def finalize(ctx: typer.Context, source: str = typer.Option(..., "--source"),
+             limit: Optional[int] = typer.Option(None, "--limit")):
+    """Build local outputs from verified downloaded inputs, without network access."""
+    execute(ctx, "finalize", source, limit=limit)
+
+
+@app.command()
+def metadata(ctx: typer.Context, source: str = typer.Option(..., "--source")):
+    """Refresh bibliographic metadata."""
+    execute(ctx, "metadata", source)
+
+
+@app.command()
+def review(ctx: typer.Context, source: str = typer.Option(..., "--source"),
+           action: str = typer.Option(..., "--action")):
+    """Export or sync TSV review decisions, or import accepted candidates."""
+    if action not in {"export", "sync", "import"}:
+        fail(ctx, ValueError("Review action must be export, sync, or import"), "review", source)
+    execute(ctx, "review", source, action=action)
+
+
+@app.command()
+def publish(ctx: typer.Context, source: str = typer.Option(..., "--source"),
+            target: str = typer.Option(..., "--target")):
+    """Publish finalized outputs to an explicitly selected destination."""
+    if target not in {"yandex", "hf", "s3-media"}:
+        fail(ctx, ValueError("Publish target must be yandex, hf, or s3-media"), "publish", source)
+    execute(ctx, "publish", source, target=target)
+
+
+@app.command("import-state")
+def import_state(ctx: typer.Context, source: str = typer.Option(..., "--source"),
+                 from_path: Path = typer.Option(..., "--from", exists=True, file_okay=False)):
+    """Import legacy state without modifying its source directory."""
+    execute(ctx, "import-state", source, from_path=from_path)

@@ -242,6 +242,8 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
     if source not in SOURCES:
         raise ValueError(f"Unknown source: {source}. Available: {', '.join(SOURCES)}")
     adapter = SOURCES[source]
+    if hasattr(adapter, "execute"):
+        return adapter.execute(settings, command, recheck=recheck, log=log)
     supported = getattr(adapter, "SUPPORTED_COMMANDS", {"discover", "download", "run", "status"})
     if command not in supported:
         raise ValueError(f"{source} supports only: {', '.join(sorted(supported))}.")
