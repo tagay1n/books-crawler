@@ -174,6 +174,7 @@ def _parse_book_card(book_card):
         if _author and not _author.isspace():
             meta['author'] = _author
 
+    meta["properties_raw"] = _list_items
     return card_link, meta
 
 

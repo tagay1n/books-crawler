@@ -93,3 +93,11 @@ class Repository:
         else:
             write(connection)
         self.baseline = copy.deepcopy(data)
+        from .publication import on_checkpoint
+        callback = on_checkpoint.get()
+        if callback is not None and connection is None:
+            token = on_checkpoint.set(None)
+            try:
+                callback(self, data)
+            finally:
+                on_checkpoint.reset(token)

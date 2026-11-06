@@ -243,7 +243,7 @@ def download(http, manifest, summary, log, recheck, *, extensions=None, validate
                 log(f"Download failed: {asset['url']}: {error}")
 
 
-def run(settings, source, command, *, recheck=False, session_file=None, log=print):
+def _run_local(settings, source, command, *, recheck=False, session_file=None, log=print):
     if source not in SOURCES:
         raise ValueError(f"Unknown source: {source}. Available: {', '.join(SOURCES)}")
     adapter = SOURCES[source]
@@ -312,4 +312,75 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
             summary['state_key'] = 'last_run'
             manifest.data["last_run"] = summary
             manifest.save()
+    return summary
+
+
+def run(settings, source, command, *, recheck=False, session_file=None, log=print):
+    """Common lifecycle around native acquisition implementations."""
+    from . import publication
+    from .postgres_state import Repository
+    target = settings.source_options.get('_target', 's3')
+    remote = command == 'run' or (command == 'publish' and target == 's3')
+    if command == 'status':
+        result = _run_local(settings, source, command, recheck=recheck, session_file=session_file, log=log)
+        data = Repository(source).load()
+        result['s3'] = {'published_artifacts': len(data.get('s3_publications', {}))}
+        if settings.s3:
+            directory = settings.artifacts_root / source
+            if source == 'milli_kitaphana':
+                directory = SOURCES[source].directory_for(settings)
+            inventory = list(publication.artifacts(data, directory))
+            result['s3']['current_artifacts'] = len(inventory)
+            result['s3']['pending_artifacts'] = sum(not publication.completed(data, a, settings) for a in inventory)
+        return result
+    if not remote:
+        return _run_local(settings, source, command, recheck=recheck, session_file=session_file, log=log)
+    publication.configuration(settings)
+    adapter = SOURCES[source]
+    directory = settings.artifacts_root / source
+    if source == 'milli_kitaphana':
+        directory = adapter.directory_for(settings)
+    elif source == 'common_crawl':
+        value = Path(settings.source_options.get('artifact_dir', directory)).expanduser()
+        directory = value if value.is_absolute() else Path(settings.source_options['_config_dir']) / value
+    if command == 'run':
+        with source_lock(directory, source):
+            repository = Repository(source)
+            data = repository.load()
+            if publication.restore_missing(settings, data, directory):
+                repository.save(data)
+        uploads = dict(errors=[], stops=[])
+        upload_budget = None
+        def checkpoint(repository, data):
+            nonlocal upload_budget
+            if data['source'] != source:
+                return
+            if upload_budget is None:
+                upload_budget = Budget(settings)
+            try:
+                publication.publish(settings, data, directory, lambda: repository.save(data), uploads,
+                                    upload_budget, available_only=True)
+            except BudgetStop as error:
+                if str(error) not in uploads['stops']:
+                    uploads['stops'].append(str(error))
+        token = publication.on_checkpoint.set(checkpoint)
+        try:
+            summary = _run_local(settings, source, command, recheck=recheck, session_file=session_file, log=log)
+        finally:
+            publication.on_checkpoint.reset(token)
+        summary['errors'].extend(uploads.pop('errors'))
+        summary['stops'].extend(uploads.pop('stops'))
+        summary.update(uploads)
+    else:
+        summary = dict(source=source, command=command, errors=[], stops=[], started_at=now())
+    with source_lock(directory, source):
+        repository = Repository(source)
+        data = repository.load()
+        try:
+            publication.publish(settings, data, directory, lambda: repository.save(data), summary, Budget(settings))
+        except BudgetStop as error:
+            summary['stops'].append(str(error))
+        summary.update(finished_at=now(), state_key='last_run')
+        data['last_run'] = summary
+        repository.save(data)
     return summary

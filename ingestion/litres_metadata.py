@@ -29,10 +29,13 @@ def scrap_metadata():
             characteristics_block = soup.select_one('div[class^="CharacteristicsBlock_characteristics__"]')
             if characteristics_block is None:
                 raise ValueError('Litres metadata structure is missing')
+            metadata["properties_raw"] = {}
             for characteristic in characteristics_block.findAll('div', {
                 'class': re.compile(r'CharacteristicsBlock_characteristic__(?!title).+')}):
                 title = characteristic.select_one('div[class^="CharacteristicsBlock_characteristic__title__"]')
                 title = title.get_text(strip=True).rstrip(':')
+                raw_value = characteristic.get_text(" ", strip=True)
+                metadata["properties_raw"][title] = raw_value
                 match title:
                     case "Возрастное ограничение":
                         key = "age_limit"

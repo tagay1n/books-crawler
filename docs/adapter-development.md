@@ -116,3 +116,50 @@ behavior. Migrate them toward these separate stages incrementally; do not change
 their run semantics incidentally while implementing a new adapter. Source
 writers must share a lock, checkpoint progress, and produce structured summaries.
 Keep verification manual/CLI-based; do not add automated tests.
+
+## Shared S3 publication
+
+All sources support `publish --source NAME --target s3` (S3 is the default target).
+`run` checkpoints finished local documents and publishes them automatically.
+`download` and `finalize` remain local stages. Existing explicitly selected legacy
+publication targets remain available. Local files are retained.
+
+Configure a single destination in the selected operational YAML:
+
+```yaml
+storage:
+  s3:
+    bucket: your-bucket
+    endpoint_url: https://your-s3-compatible-endpoint
+    region: us-east-1
+    prefix: books
+```
+
+Endpoint and region are optional for AWS. Credentials use boto3's standard
+credential chain, including `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and
+optional `AWS_SESSION_TOKEN`; do not put credentials in YAML. `DATABASE_URL`
+continues to select authoritative progress and upstream metadata storage.
+
+`ingestion/publication.py` projects native source state into
+`PublishableArtifact` values. Extend that projection for new output layouts;
+reuse the transfer implementation. Completed direct documents, assembled PDFs,
+and Markdown with relative media are published; scan inputs, encrypted parts,
+ZIP packages, and temporary files are excluded. Objects have deterministic
+source/content keys and SHA-256 object metadata. PostgreSQL `s3_publications`
+receipts retain destination, provenance and object hashes. Legacy Yandex flags
+never count as S3 receipts. Run restores missing unpublished inputs; standalone
+publish reports missing files without visiting upstream sites.
+
+Publication runs after committed checkpoints under the source lock; receipts
+are committed after uploads. An interrupted upload/checkpoint pair is reconciled
+with S3 HEAD on retry. Upload work is capped by the configured item count and
+uses bounded SDK retries/timeouts. A scan/download budget stop leaves publication
+backlog eligible for the next command. Status reports recorded publication counts
+without contacting S3. No public bucket access or metadata sidecar is required.
+
+Implementation verification (2026-11-06): compiled ingestion modules, checked
+CLI publication help and source listing, loaded the example configuration for
+all 34 sources, verified placeholder S3 configuration fails before source work,
+and ran `git diff --check`. No automated tests were added. Live database/S3,
+interruption/recovery, and provider reacquisition verification remain pending:
+this implementation environment has no DATABASE_URL and cannot access Docker.

@@ -23,6 +23,7 @@ def index():
             for doc in ParquetReader(source)():
                 runtime.budget.check()
                 existing.setdefault(doc.id, {}).update(
+                    upstream_metadata=dict(doc.metadata),
                     url=doc.metadata['url'], file_path=doc.metadata['file_path'],
                     offset=doc.metadata['offset'], script=script,
                 )

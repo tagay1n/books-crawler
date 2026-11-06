@@ -95,6 +95,7 @@ def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, ses
         from .config import load_settings
         from .core import restricted_settings, run
         settings = restricted_settings(load_settings(ctx.obj, source), limit, max_pages)
+        settings.source_options["_target"] = target or "s3"
         if source in {"litres", "milli_kitaphana", "common_crawl"}:
             if session_file is not None:
                 raise ValueError(f"{source} uses its operational source settings, not --session-file")
@@ -108,7 +109,7 @@ def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, ses
                     raise ValueError("Common Crawl supports only original PDFs (--format all or pdf)")
                 if recheck:
                     raise ValueError("Common Crawl does not support --recheck")
-        elif mode != "catalog" or format != "all" or command not in getattr(SOURCES[source], "SUPPORTED_COMMANDS", {"discover", "download", "run", "status"}):
+        elif mode != "catalog" or format != "all" or (command != "publish" or target != "s3") and command not in getattr(SOURCES[source], "SUPPORTED_COMMANDS", {"discover", "download", "run", "status"}):
             raise ValueError(f"{source} does not implement the selected stage or option")
         if source == "milli_kitaphana" and (mode != "catalog" or format != "all"):
             raise ValueError("Milli supports catalog discovery and its native document format only")
@@ -187,10 +188,10 @@ def review(ctx: typer.Context, source: str = typer.Option(..., "--source"),
 
 @app.command()
 def publish(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-            target: str = typer.Option(..., "--target")):
+            target: str = typer.Option("s3", "--target")):
     """Publish finalized outputs to an explicitly selected destination."""
-    if target not in {"yandex", "hf", "s3-media"}:
-        fail(ctx, ValueError("Publish target must be yandex, hf, or s3-media"), "publish", source)
+    if target not in {"s3", "yandex", "hf", "s3-media"}:
+        fail(ctx, ValueError("Publish target must be s3, yandex, hf, or s3-media"), "publish", source)
     execute(ctx, "publish", source, target=target)
 
 

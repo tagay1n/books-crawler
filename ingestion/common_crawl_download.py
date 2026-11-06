@@ -21,7 +21,7 @@ def download():
     temporary = _get_in_workdir('tmp.pdf')
     try:
         for key, doc in index.items():
-            if doc.get('uploaded') or doc.get('path_to_file'):
+            if (doc.get('uploaded') or doc.get('path_to_file')) and not doc.get('s3_restore_required'):
                 runtime.summary['skipped'] += 1
                 continue
             if len(selected) >= runtime.settings.max_items:
@@ -45,6 +45,7 @@ def download():
 
 
 def _commit_download(doc, temporary, index):
+    doc.pop('s3_restore_required', None)
     doc['md5'] = _calculate_md5(temporary)
     doc['path_to_file'] = _move_file(temporary, doc['md5'], doc['url'], doc['script'])
     _runtime().summary['downloaded'] += 1

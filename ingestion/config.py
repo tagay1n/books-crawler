@@ -22,6 +22,7 @@ class Settings:
     pacing_seconds: float
     retry_attempts: int
     source_options: dict = field(default_factory=dict, repr=False)
+    s3: dict = field(default_factory=dict, repr=False)
     max_derived_pdf_bytes: int = 512 * 1024 * 1024
 
 
@@ -71,6 +72,7 @@ def load_settings(path: Path | None, source: str = "magarif") -> Settings:
 
     return Settings(
         artifacts_root=root.resolve(), archive_url=expected_url,
+        s3=(data.get("storage") or {}).get("s3", {}),
         source_options={**selected, "_config_dir": str(path.parent)} if source in {"litres", "milli_kitaphana", "common_crawl"} else {},
         **{key: number(limits, key, True) for key in (
             "max_pages", "max_items", "max_download_bytes", "max_file_bytes", "disk_reserve_bytes")},

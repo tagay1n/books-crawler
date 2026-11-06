@@ -1,6 +1,14 @@
 # Local pilot defaults. Copy to ingestion.yaml and select it with --config.
 # Relative paths are resolved against this YAML file, not the current directory.
 artifacts_root: __artifacts/ingestion
+# Required for automatic S3 publication by run. Credentials come from the
+# standard AWS environment/profile/role chain, never this file.
+storage:
+  s3:
+    bucket: <SET ME>
+    prefix: books
+    # endpoint_url: https://your-s3-compatible-endpoint
+    # region: us-east-1
 sources:
   litres:
     archive_url: https://www.litres.ru/new/?art_types=text_book&languages=tt&only_litres_subscription_arts=true
