@@ -21,19 +21,21 @@ while a documented blocker prevents a substantive review; record its prerequisit
 in the table and reconsider it when that prerequisite becomes available. If all
 remaining sources are blocked, report the blockers rather than advancing dates.
 Known gaps stay visible in the findings column but do not override the rotation.
+Explicit owner deferrals are excluded until their stated reactivation condition
+is met; preserve their review dates and record the decision in history.
 
 ## Register
 
 Dates use `YYYY-MM-DD`. Outcomes are `Baseline`, `Reviewed`, `Partial`, or
-`Blocked`; a completed review may still have documented limitations or follow-ups.
+`Blocked`, or `Deferred`; a completed review may still have documented limitations or follow-ups.
 For partial or blocked attempts, preserve the last completed review date (or
 initial baseline date) and record the attempt date in the history below.
 
 | Source ID | Source guide | Last reviewed | Outcome | Outstanding findings / blockers |
 | --- | --- | --- | --- | --- |
 | `beznenmiras` | [Безнең мирас](ingestion/beznenmiras.md) | 2026-11-06 | Partial | 2026-11-07: metadata preservation extended; sampled issues expose no originals. PostgreSQL/S3 verification requires credentials and a downloadable sample. |
-| `common_crawl` | [Common Crawl / FinePDFs](ingestion/common-crawl.md) | 2026-11-06 | Baseline | — |
-| `commons` | [Wikimedia Commons](ingestion/commons.md) | 2026-11-06 | Baseline | — |
+| `common_crawl` | [Common Crawl / FinePDFs](ingestion/common-crawl.md) | 2026-11-06 | Deferred | 2026-11-07: owner deferred this valuable special source. Resume only on explicit owner request; exclude from ordinary source rotation. |
+| `commons` | [Wikimedia Commons](ingestion/commons.md) | 2026-11-06 | Partial | 2026-11-07: 35 originals discovered; one PDF checksum verified; canonical record URLs fixed. Live PostgreSQL/S3 and repeat-run checks require credentials. |
 | `darul_kutub` | [Darul-Kutub](ingestion/darul-kutub.md) | 2026-11-06 | Baseline | — |
 | `dumrt` | [DUM RT publications](ingestion/dumrt.md) | 2026-11-06 | Baseline | — |
 | `echovek` | [Echo of Centuries](ingestion/echovek.md) | 2026-11-06 | Baseline | — |
@@ -98,6 +100,14 @@ limitations and access requirements before beginning a review.
 
 ## Review history
 
+### 2026-11-07 — common_crawl — Deferred by owner
+
+Owner requested deferral because Common Crawl is a valuable special source needing
+separate attention. Preserve the baseline review date; this is a prioritization
+decision, not a completed audit or an access failure. Reactivation requires an
+explicit owner request. Next eligible candidate after the recorded Безнең мирас
+attempt is `commons` (Wikimedia Commons), under the same ingestion requirements.
+
 Append one short entry per completed or attempted review
 with the following information; keep earlier entries as historical evidence:
 
@@ -126,3 +136,24 @@ publication or workflow dispatch occurred. Missing database/S3 credentials and
 the absence of a verified original prevent live persistence/resume and transfer/
 receipt verification. Preserve the baseline date until those checks are possible;
 the bounded route review does not establish exhaustive site coverage.
+
+### 2026-11-07 — commons — Partial
+
+Inspected the native Tatar-language books category and its API category tree:
+five listing batches, 40 requests, 35 original document records (34 PDF, one
+DjVu), no remaining frontier. Two root images and one subcategory image stayed
+excluded. All returned extended file metadata was retained. Category membership
+remains admission evidence rather than verified per-file language/completeness.
+Fixed literal configuration text in canonical record URLs; parser version 4
+refreshes observations without changing `file:<id>` identities.
+
+A bounded 247,549-byte PDF sample matched publisher size/SHA-1 and rendered as
+Tatar on its imprint page. Evidence and hashes are in the
+[source guide](ingestion/commons.md) and ignored
+`__artifacts/commons-review-20261107/`. Live metadata parsing, compilation,
+capability/configuration and workflow generator checks passed; no automated tests
+were added. Existing PostgreSQL, S3 and manual Actions integration is retained.
+No production database writes, S3 publication or workflow dispatch occurred.
+Full persistence/resume, database-backed acquisition and repeat-run/upload receipt
+verification still require configured database/storage credentials; preserve the
+last-reviewed baseline date until that verification is available.

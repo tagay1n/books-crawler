@@ -12,7 +12,7 @@ from .network import BudgetStop, InvalidDocument, SourceAccessError
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
-PARSER_VERSION = 3
+PARSER_VERSION = 4
 DOCUMENT_FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
 
 
@@ -286,7 +286,7 @@ def record(text, request_url):
         raise ValueError("Commons file request has no valid native ID.") from None
     data = payload(text)
     page = single_page(data, page_id)
-    metadata = {"url": f"operational_option('commons', 'url_https_commons_wikimedia_org_w_index_php_curid'){page_id}",
+    metadata = {"url": operational_option('commons', 'url_https_commons_wikimedia_org_w_index_php_curid') + str(page_id),
                 "page_id": page_id, "seed_category_id": operational_option('commons', 'root_category_id'),
                 "admission_reason": "Document-format file enumerated in Tatar-language books or a subcategory; language and completeness unverified."}
     if isinstance(page.get("title"), str) and page["title"]:
