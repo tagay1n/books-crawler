@@ -33,7 +33,7 @@ def load_settings(path: Path | None, source: str = "magarif") -> Settings:
     expected_url = SOURCES[source].ARCHIVE_URL if source in SOURCES else PILOT_SOURCES[source]
     path = path.expanduser().resolve()
     try:
-        data = yaml.safe_load(path.read_text(encoding="utf-8"))
+        data = yaml.safe_load(path.read_text(encoding="utf-8-sig"))
     except yaml.YAMLError as error:
         raise ValueError(f"Invalid YAML configuration: {error}") from error
     if not isinstance(data, dict):
@@ -71,7 +71,7 @@ def load_settings(path: Path | None, source: str = "magarif") -> Settings:
 
     return Settings(
         artifacts_root=root.resolve(), archive_url=expected_url,
-        source_options=dict(selected) if source == "litres" else {},
+        source_options={**selected, "_config_dir": str(path.parent)} if source in {"litres", "milli_kitaphana"} else {},
         **{key: number(limits, key, True) for key in (
             "max_pages", "max_items", "max_download_bytes", "max_file_bytes", "disk_reserve_bytes")},
         soft_deadline_seconds=number(limits, "soft_deadline_seconds"),

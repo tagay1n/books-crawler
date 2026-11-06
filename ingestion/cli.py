@@ -86,19 +86,23 @@ def probe(ctx: typer.Context, source: str = typer.Option(..., "--source"),
         raise typer.Exit(1)
 
 
-def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, session_file=None, mode="catalog", format="all", action=None, target=None, from_path=None):
+def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, session_file=None, mode="catalog", format="all", action=None, target=None, from_path=None, limited=False, index_name=None, maintenance=None):
     try:
         if source not in SOURCES:
             raise ValueError(f"Unknown source: {source}. Available: {', '.join(SOURCES)}")
         from .config import load_settings
         from .core import restricted_settings, run
         settings = restricted_settings(load_settings(ctx.obj, source), limit, max_pages)
-        if source == "litres":
+        if source in {"litres", "milli_kitaphana"}:
             if session_file is not None:
-                raise ValueError("Litres uses sources.litres.sid, not --session-file")
-            settings.source_options.update(_mode=mode, _format=format, _action=action, _target=target, _from=str(from_path) if from_path else None)
+                raise ValueError(f"{source} uses its operational source settings, not --session-file")
+            settings.source_options.update(_limited=limited, _index_name=index_name, _maintenance=maintenance or {}, _mode=mode, _format=format, _action=action, _target=target, _from=str(from_path) if from_path else None)
         elif mode != "catalog" or format != "all" or command not in getattr(SOURCES[source], "SUPPORTED_COMMANDS", {"discover", "download", "run", "status"}):
             raise ValueError(f"{source} does not implement the selected stage or option")
+        if source == "milli_kitaphana" and (mode != "catalog" or format != "all"):
+            raise ValueError("Milli supports catalog discovery and its native document format only")
+        if source != "milli_kitaphana" and (limited or index_name or maintenance):
+            raise ValueError("Selected options require --source milli_kitaphana")
         result = run(settings, source, command, recheck=recheck, session_file=session_file, log=progress(ctx))
         emit_result(ctx, result, command, source)
     except (ValueError, OSError, RuntimeError, ImportError) as error:
@@ -122,12 +126,14 @@ def discover(ctx: typer.Context, source: str = typer.Option(..., "--source"),
 def download(ctx: typer.Context, source: str = typer.Option(..., "--source"),
              limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary, files/publications for tatkniga and KFU."),
              format: str = typer.Option("all", "--format", help="all, pdf, or text"),
+             limited: bool = typer.Option(False, "--limited"),
+             index_name: Optional[str] = typer.Option(None, "--index-name"),
              recheck: bool = typer.Option(False, "--recheck", help="Also revalidate completed downloads."),
              session_file: Optional[Path] = typer.Option(None, "--session-file", help="Browser session export for miras or miras_periodicals.")):
     """Download committed originals; Tatkniga reader PDFs require finalize."""
     if format not in {"all", "pdf", "text"}:
         fail(ctx, ValueError("Invalid download format"), "download", source)
-    execute(ctx, "download", source, limit=limit, recheck=recheck, session_file=session_file, format=format)
+    execute(ctx, "download", source, limit=limit, recheck=recheck, session_file=session_file, format=format, limited=limited, index_name=index_name)
 
 
 @app.command("run")
@@ -182,3 +188,30 @@ def import_state(ctx: typer.Context, source: str = typer.Option(..., "--source")
                  from_path: Path = typer.Option(..., "--from", exists=True, file_okay=False)):
     """Import legacy state without modifying its source directory."""
     execute(ctx, "import-state", source, from_path=from_path)
+
+
+@app.command()
+def split(ctx: typer.Context, source: str = typer.Option(..., "--source"), parts: int = typer.Option(..., "--parts", "-p", min=1), dest: Optional[str] = None, prefix: str = "index-part"):
+    """Split Milli pending records into worker indexes."""
+    execute(ctx, "split", source, maintenance=dict(parts=parts, dest=dest, prefix=prefix))
+
+
+@app.command("merge-index")
+def merge_index(ctx: typer.Context, path: Path, source: str = typer.Option(..., "--source")):
+    execute(ctx, "merge-index", source, maintenance=dict(path=str(path)))
+
+
+@app.command()
+def recover(ctx: typer.Context, source: str = typer.Option(..., "--source"), report: Optional[Path] = None, workers: int = typer.Option(4, min=1), download: bool = False, retry_failed: bool = False, download_workers: int = typer.Option(4, min=1)):
+    from .config import load_settings
+    from .milli_kitaphana import directory_for
+    try:
+        directory = directory_for(load_settings(ctx.obj, source))
+    except (ValueError, OSError) as error:
+        fail(ctx, error, "recover", source)
+    execute(ctx, "recover", source, maintenance=dict(report_path=str(report or directory / "_recovery/report.json"), workers=workers, download=download, retry_failed=retry_failed, download_workers=download_workers))
+
+
+@app.command("mark-existing-limited")
+def mark_existing_limited(ctx: typer.Context, source: str = typer.Option(..., "--source")):
+    execute(ctx, "mark-existing-limited", source)

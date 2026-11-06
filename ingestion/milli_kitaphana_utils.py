@@ -27,8 +27,15 @@ HOST = "https://kitap.tatar.ru"
 index_file_name = "books-index.json"
 index_dir_name = "_index"
 backups_dir_name = "_backups"
-base_dir = get_in_workdir(os.path.join("../__artifacts/milli.kitaphana"))
-index_root_dir = get_in_workdir("../__artifacts/milli.kitaphana")
+RUNTIME = None
+
+
+def require_runtime():
+    if RUNTIME is None:
+        raise RuntimeError("Milli helpers require the unified runtime")
+    return RUNTIME
+
+
 _http_session = ContextVar("milli_kitaphana_http_session", default=None)
 
 
@@ -44,11 +51,9 @@ def request_session():
 
 
 def read_config():
-    # read config file from the same directory
-    with open(get_in_workdir("config.yaml"), "r", encoding="utf-8-sig") as f:
-        return yaml.safe_load(f)
-    
-    
+    return require_runtime().config
+
+
 def load_index_file(index_file=None):
     if not index_file:
         index_file = get_index_file_loc()
@@ -58,20 +63,20 @@ def load_index_file(index_file=None):
     else:
         books = {}
     return books
-        
-        
+
+
 def get_index_dir():
     """Return dedicated storage directory for index files."""
-    return os.path.normpath(os.path.join(index_root_dir, index_dir_name))
+    return os.path.normpath(os.path.join(str(require_runtime().directory), index_dir_name))
 
 
 def get_backups_dir():
     """Return dedicated storage directory for index backups."""
-    return os.path.normpath(os.path.join(index_root_dir, backups_dir_name))
+    return os.path.normpath(os.path.join(str(require_runtime().directory), backups_dir_name))
 
 
 def get_index_file_loc():
-    os.makedirs(index_root_dir, exist_ok=True)
+    os.makedirs(str(require_runtime().directory), exist_ok=True)
     index_dir = get_index_dir()
     os.makedirs(index_dir, exist_ok=True)
     return os.path.join(index_dir, index_file_name)
@@ -103,14 +108,13 @@ def backup_index_snapshot():
 def dump_index(idx, index_file=None):
     if not index_file:
         index_file = get_index_file_loc()
-    tmp_file = f"{index_file}.{os.getpid()}_part"
-    with open(tmp_file, "w", encoding="utf-8") as f:
-        json.dump(idx, f, ensure_ascii=False, indent=4)
-    shutil.move(tmp_file, index_file)
+    from .state import atomic_json
+    from pathlib import Path
+    atomic_json(Path(index_file), idx)
 
 
 def get_lists_dir():
-    lists_dir = os.path.normpath(get_in_workdir("../__artifacts/milli.kitaphana/subindexes"))
+    lists_dir = os.path.normpath(os.path.join(str(require_runtime().directory), "subindexes"))
     os.makedirs(lists_dir, exist_ok=True)
     return lists_dir
 
@@ -172,6 +176,11 @@ def download_part(context, part):
     enc_zip_path, enc_zip_part_path, enc_unzip_dir, enc_file_path = get_part_paths(work_dir, part)
 
     url = HOST + context['meta']["format_url"].format(url=part)
+    # Offline finalization uses the verified local encrypted payload.
+    if require_runtime().offline:
+        if not is_valid_encrypted_part(enc_file_path):
+            raise ValueError("Missing local encrypted metadata; run download first")
+        return enc_unzip_dir
     # download the encrypted zip file
     with request(method="GET", url=url, stream=True, proxies=context.get('proxies')) as response:
         os.makedirs(work_dir, exist_ok=True)
@@ -224,20 +233,4 @@ def is_valid_encrypted_part(enc_file_path):
 
 
 def request(method, url, params=None, data=None, stream=False, headers={}, proxies=None):
-    headers.update({
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3",
-    })
-    requester = _http_session.get() or requests
-    resp = requester.request(
-        method=method,
-        url=url,
-        params=params,
-        verify=False,
-        data=data,
-        stream=stream,
-        timeout=30,
-        headers=headers,
-        proxies=proxies
-    )
-    resp.raise_for_status()
-    return resp
+    return require_runtime().request(method, url, params=params, data=data, stream=stream, headers=headers, proxies=proxies)

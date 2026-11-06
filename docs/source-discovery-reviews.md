@@ -52,7 +52,7 @@ initial baseline date) and record the attempt date in the history below.
 | `litres` | [Litres](ingestion/litres.md) | 2026-11-06 | Baseline | — |
 | `magarif` | [Мәгариф](ingestion/magarif.md) | 2026-11-06 | Baseline | — |
 | `magarif_vakyt` | [Мәгариф–Вакыт](ingestion/magarif-vakyt.md) | 2026-11-06 | Baseline | — |
-| `milli_kitaphana` | [Milli Kitaphana (legacy)](../milli_kitaphana/README.md) | 2026-11-06 | Baseline | — |
+| `milli_kitaphana` | [Milli Kitaphana](../ingestion/milli-kitaphana.md) | 2026-11-06 | Baseline | — |
 | `miras` | [Miras books](ingestion/miras.md) | 2026-11-06 | Baseline | — |
 | `miras_periodicals` | [Miras periodicals](ingestion/miras-periodicals.md) | 2026-11-06 | Baseline | — |
 | `nizgar` | [Nizgar](ingestion/nizgar.md) | 2026-11-06 | Baseline | — |

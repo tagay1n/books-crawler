@@ -21,9 +21,9 @@ from urllib.parse import unquote, urlparse
 import bs4
 import requests
 
-import download as downloader
-from decrypt import _decrypt_file, decrypt_doc_parts
-from utils import (HOST, base_dir, backup_index_snapshot, download_part,
+from . import milli_kitaphana_download as downloader
+from .milli_kitaphana_decrypt import _decrypt_file, decrypt_doc_parts
+from .milli_kitaphana_utils import (HOST, backup_index_snapshot, download_part,
                    dump_index, load_index_file, open_lock, get_index_file_loc,
                    read_config, request, request_session)
 
@@ -373,7 +373,8 @@ def recover(report_path, workers=4, download=False, retry_failed=False, download
         "started_at": datetime.now(timezone.utc).isoformat(), "records": {}}
     index = load_index_file()
     config = read_config()
-    targets = {k: v for k, v in index.items() if unfinished(v)}
+    from .milli_kitaphana_utils import require_runtime
+    targets = dict(list((k, v) for k, v in index.items() if unfinished(v))[:require_runtime().settings.max_items])
     report["target_count"] = len(set(targets) | set(report["records"]))
     if retry_failed:
         for key, result in list(report["records"].items()):
@@ -472,14 +473,3 @@ def recover(report_path, workers=4, download=False, retry_failed=False, download
     save()
     write_summary(report, report_path.with_suffix(".md"))
     return report
-
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--report", default=os.path.join(base_dir, "_recovery", "report.json"))
-    parser.add_argument("--workers", type=int, default=4)
-    parser.add_argument("--download", action="store_true")
-    parser.add_argument("--retry-failed", action="store_true")
-    parser.add_argument("--download-workers", type=int, default=4)
-    args = parser.parse_args()
-    recover(args.report, args.workers, args.download, args.retry_failed, args.download_workers)

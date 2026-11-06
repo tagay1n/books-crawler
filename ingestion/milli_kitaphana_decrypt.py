@@ -8,83 +8,28 @@ import re
 from Crypto.Util.Padding import unpad
 import zipfile
 import pymupdf
-from utils import read_config, load_index_file, dump_index, download_part, base_dir, backup_index_snapshot
-from progress_wrapper import ProgressWrapper
+from .milli_kitaphana_utils import read_config, load_index_file, dump_index, download_part, backup_index_snapshot
+from .milli_kitaphana_progress_wrapper import ProgressWrapper
 import json
 import base64
 import copy
-from upload_docs import upload_doc, persist_upstream_metadata
+from .milli_kitaphana_upload_docs import upload_doc, persist_upstream_metadata
 import hashlib
 from unidecode import unidecode
 
-def decrypt():
-    backup_path = backup_index_snapshot()
-    print(f"Created index backup: {backup_path}")
-    index = load_index_file()
-    if not (not_decrypted_docs := _get_not_decrypted_docs(index)):
-        print("No docs for decrypting, exiting...")
-        return
-    print(f"About to decrypt {len(not_decrypted_docs)} document(s)")
-    config = read_config()
-    database_url = str(config.get("database_url") or "").strip()
-    if not database_url or database_url == "<SET ME>":
-        raise ValueError("database_url is not set in milli_kitaphana/config.yaml")
-    
-    for card_path, meta in not_decrypted_docs:
-        try:
-            context = {
-                "meta": meta,
-                "config": config
-            }
-            with ProgressWrapper(context, card_path) as pw:
-                code = context["meta"]["download_code"]
-                # path to the directory where the artifacts of the key exchange will be stored
-                
-                work_dir = os.path.join(base_dir, code)
-                context["work_dir"] = work_dir
-                path_to_pdf = decrypt_doc_parts(context)
-                upstream_metadata = _upstream_metadata(context["meta"])
-
-                pw.main(f"Uploading artifacts to yandex disk --> {context['meta']['title']}")
-                context['md5'] = _calculate_md5(path_to_pdf)
-                upload_doc(
-                    path_to_pdf=path_to_pdf,
-                    config=config,
-                    is_limited=meta["downloaded"] == "limited"
-                )
-                
-                pw.main(f"Persisting upstream metadata --> {context['md5']}")
-                persist_upstream_metadata(
-                    md5=context["md5"],
-                    payload_json=upstream_metadata,
-                    database_url=database_url,
-                )
-                
-                pw.main(f"[bold green]Decryption complete '{context['md5']}' '{context['meta']['title']}'[/bold green]")
-                # shutil.rmtree(context['work_dir'])
-                _remove_decryption_recovery_fields(context["meta"])
-                context['meta']['decrypted'] = True
-        except KeyboardInterrupt:
-            return
-        except BaseException as e:
-            import traceback
-            print(f"Error: {e} {traceback.format_exc()}")
-        finally:
-            dump_index(idx=index)
-            
-            
 def _get_not_decrypted_docs(index):
     not_decrypted_docs = []
     for card_path, meta in index.items():
         if not meta.get('decrypted', False) and meta.get('enc_part_paths'):
             not_decrypted_docs.append((card_path, meta))
-        
+
     return not_decrypted_docs
 
 
 def _upstream_metadata(meta):
     upstream_metadata = copy.deepcopy(meta)
     for field in (
+        "finalized",
         "downloaded",
         "decrypted",
         "enc_part_paths",
@@ -99,7 +44,7 @@ def _upstream_metadata(meta):
 def _remove_decryption_recovery_fields(meta):
     for field in ("enc_part_paths", "format_url", "decryption_key", "decryption_key_iv"):
         meta.pop(field, None)
-            
+
 
 def decrypt_doc_parts(context):
     enc_part_paths = context['meta']['enc_part_paths']
@@ -111,7 +56,7 @@ def decrypt_doc_parts(context):
         dec_part_paths = pool.map(lambda en: _decrypt_file_task(
             context, en[0], en[1], en[2], counter, parts_count), [(i['num'], i['part_url'], i['enc_unzip_dir']) for i in enc_part_paths if i]
         )
-        
+
      # accumulate all parts into one pdf doc
     context["progress"].main("Merging document parts...")
     # decrypt the metadata
@@ -138,7 +83,8 @@ def decrypt_doc_parts(context):
         acc.set_toc(toc)
         scribed_metadata = context["meta"]
         if classification := scribed_metadata.get("classification"):
-            scribed_metadata["integrated_description"].append(classification)
+            if classification not in scribed_metadata["integrated_description"]:
+                scribed_metadata["integrated_description"].append(classification)
         _metadata = {
             "title": scribed_metadata["title"],
             "subject": "; ".join(scribed_metadata["integrated_description"])
@@ -152,11 +98,12 @@ def decrypt_doc_parts(context):
         # save the final pdf
         file_name = _build_output_filename(scribed_metadata)
         output_path = os.path.normpath(os.path.join(context["work_dir"], file_name))
-        with open(output_path, "wb") as file:
+        with open(output_path + ".part", "wb") as file:
             file.write(acc.write())
+        os.replace(output_path + ".part", output_path)
 
         return output_path
-        
+
 
 def _decrypt_file_task(context, num, part_url, enc_unzip_dir, counter, total):
     res = num, _decrypt_file(context, part_url, enc_unzip_dir)
@@ -206,8 +153,8 @@ def _decrypt_file(context, part, enc_unzip_dir):
     else:
         # if the decrypted file is not a zip file, just return the path to the file
         return dec_path
-    
-    
+
+
 def _get_toc(context, meta_dir, parts):
     # process the outline
     toc = []

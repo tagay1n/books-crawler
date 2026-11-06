@@ -1,18 +1,19 @@
 """Scrapes Milli Kitaphana search pages, builds a metadata index, and merges it with existing records."""
 
-from utils import load_index_file, dump_index, backup_index_snapshot
-import requests
+from .milli_kitaphana_utils import load_index_file, dump_index, backup_index_snapshot
+from .milli_kitaphana_utils import require_runtime
+
+class Requests:
+    def get(self, url, **kwargs):
+        return require_runtime().request("GET", url, **kwargs)
+
+requests = Requests()
 import bs4 as bs
 from urllib.parse import urlparse
 import re
 from rich import print
 from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn, TimeRemainingColumn, MofNCompleteColumn, TimeElapsedColumn
-from merge_index import _merge_indexes
-
-# Disable SSL warnings
-requests.packages.urllib3.disable_warnings(
-    requests.packages.urllib3.exceptions.InsecureRequestWarning)
-
+from .milli_kitaphana_merge_index import _merge_indexes
 
 ENTRY_POINT = "https://kitap.tatar.ru/tt/ssearch/ecollection/"
 LANGUAGE_QUERIES = ["tat", "ara"]
@@ -32,6 +33,10 @@ def index():
     print("Creating index of books")
     backup_path = backup_index_snapshot()
     print(f"Created index backup: {backup_path}")
+    runtime = require_runtime()
+    scans = runtime.manifest.data.setdefault('milli_catalog', {})
+    if len(scans) == len(LANGUAGE_QUERIES) + len(COLLECTION_QUERIES) and all(scan.get('complete') for scan in scans.values()):
+        scans.clear()
     new_index = {}
     for lang_code in LANGUAGE_QUERIES:
         lang_index = _create_newest_index(lang_code)
@@ -62,7 +67,12 @@ def _create_collection_index(collection):
 
 
 def _create_index(base_params, description):
-    next_page = 1
+    runtime = require_runtime()
+    scans = runtime.manifest.data.setdefault("milli_catalog", {})
+    scan = scans.setdefault(description, {"next_page": 1, "complete": False})
+    if scan["complete"]:
+        return {}
+    next_page = scan["next_page"]
     total_docs = None
     new_metas = {}
     with Progress(
@@ -77,6 +87,9 @@ def _create_index(base_params, description):
         total_pages = None
 
         while next_page:
+            if runtime.summary['pages'] >= runtime.settings.max_pages:
+                from .network import BudgetStop
+                raise BudgetStop('discovery page cap')
             params = base_params + [("page", next_page)]
             with requests.get(
                 url=ENTRY_POINT,
@@ -110,11 +123,20 @@ def _create_index(base_params, description):
                 else:
                     next_page = current_page + 1
 
+                latest = load_index_file()
+                merged = _merge_indexes(new_metas, latest)
+                dump_index(merged)
+                for key, value in merged.items():
+                    runtime.manifest.observe({**value, 'url': value.get('url') or 'https://kitap.tatar.ru' + key}, [], record_key=key, persist=False)
+                scan.update(next_page=next_page or 1, complete=next_page is None)
+                scan['seen'] = list(set(scan.get('seen', [])) | set(new_metas))
+                runtime.summary['pages'] += 1
+                runtime.manifest.save()
                 progress.update(task, completed=current_page,
                                 total=total_pages)
 
         assert len(
-            new_metas) == total_docs, f"Expected {total_docs} documents, but indexed {len(new_metas)} documents."
+            scan.get('seen', new_metas)) == total_docs, f"Expected {total_docs} documents, but indexed {len(new_metas)} documents."
 
     return new_metas
 

@@ -2,7 +2,7 @@
 
 The repository retains two independent legacy pipelines for collecting Tatar books and metadata:
 
-- `milli_kitaphana/`
+- `ingestion/milli_kitaphana*.py`
 - `common-crawl/`
 
 Each pipeline has its own CLI/scripts and its own local state in `__artifacts/` or `~/`.
@@ -145,7 +145,7 @@ Tatar item-language labels are required; unlabelled records remain held. See
 2. Install dependencies:
    `python -m pip install -r requirements.txt`
 3. Fill config templates with your real credentials only in local files:
-   - `milli_kitaphana/config.yaml`
+   - `sources.milli_kitaphana` in the selected operational YAML
    - `ingestion.yaml` (`sources.litres`; see the Litres guide)
    For the shared CLI, copy `ingestion.example.yaml` to `ingestion.yaml` and
    select it with `--config`. Tatkniga does not require cloud credentials.
@@ -153,10 +153,10 @@ Tatar item-language labels are required; unlabelled records remain held. See
 ## Pipeline entry points
 
 - Milli Kitaphana:
-  - `python milli_kitaphana/cli.py index`
-  - `python milli_kitaphana/cli.py split --parts 4`
-  - `python milli_kitaphana/cli.py download`
-  - `python milli_kitaphana/cli.py decrypt`
+  - `python cli.py --config ingestion.yaml discover --source milli_kitaphana`
+  - `python cli.py --config ingestion.yaml split --source milli_kitaphana --parts 4`
+  - `python cli.py --config ingestion.yaml download --source milli_kitaphana`
+  - `python cli.py --config ingestion.yaml finalize --source milli_kitaphana`
 - Litres:
   - Litres now uses the [unified CLI](docs/ingestion/litres.md).
 

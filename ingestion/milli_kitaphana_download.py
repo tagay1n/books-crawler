@@ -23,13 +23,12 @@ from Crypto.Util.Padding import unpad
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import padding
-from progress_wrapper import ProgressWrapper
+from .milli_kitaphana_progress_wrapper import ProgressWrapper
 from rich import print
 
-from decrypt import _decrypt_file
-from utils import (
+from .milli_kitaphana_decrypt import _decrypt_file
+from .milli_kitaphana_utils import (
     HOST,
-    base_dir,
     download_part,
     dump_index,
     get_index_file_loc,
@@ -59,10 +58,10 @@ def download(limited, index_name):
     worker_index_file = get_list_file_loc(index_name) if index_name else global_index_file
     worker_is_global = worker_index_file == global_index_file
 
-    global_index = load_index_file(global_index_file) 
-    index_part = global_index if worker_is_global else load_index_file(worker_index_file) 
+    global_index = load_index_file(global_index_file)
+    index_part = global_index if worker_is_global else load_index_file(worker_index_file)
     # a dictionary with download code as key and book's card path as a value
-    # the card path is a key in the index 
+    # the card path is a key in the index
     code_to_card_path = {v['download_code']: k for k, v in global_index.items() if 'download_code' in v}
     print(f"Loaded {len(index_part)} items from the index for downloading")
     not_downloaded_docs = get_not_downloaded_docs(index_part, limited)
@@ -70,11 +69,13 @@ def download(limited, index_name):
     if not not_downloaded_docs:
         print("No docs for downloading, exiting...")
         return
-    
+
     print(f"About to download {len(not_downloaded_docs)} document(s)")
     config = read_config()
-    
+
     for card_path, meta in not_downloaded_docs:
+        from .milli_kitaphana_utils import require_runtime
+        require_runtime().budget.start_item()
         original_meta = copy.deepcopy(meta)
         try:
             _scrap_doc_card(card_path, meta, proxies=None)
@@ -85,7 +86,7 @@ def download(limited, index_name):
                 # update item iterating right now, but remain 'doc_card_url'
                 del existing_meta['doc_card_url']
                 meta.update(existing_meta)
-                
+
                 # delete old meta item because it contains obsolete links
                 del index_part[existing_card_path]
                 code_to_card_path[download_code] = card_path
@@ -93,7 +94,7 @@ def download(limited, index_name):
                 if not meta.get("broken", False) or meta.get("downloaded", None):
                     # if merged meta shows document downloading was not broken or downloaded then just proceed next,
                     continue
-            
+
             context = {
                 "meta": meta,
                 "config": config
@@ -110,25 +111,31 @@ def download(limited, index_name):
                 print(f"Ignoring limited document '{meta['title']}'")
                 continue
 
+            require_runtime().selected.add(card_path)
+            require_runtime().summary["downloaded"] += 1
             meta["downloaded"] = "full"
             meta["decrypted"] = False
-            
+
         except KeyboardInterrupt:
             print("Interrupting....")
             return
-        except BaseException as e:
+        except Exception as e:
+            from .network import BudgetStop
+            if isinstance(e, BudgetStop):
+                raise
+            require_runtime().summary["errors"].append({"stage": "download", "error": type(e).__name__})
             import traceback
             print(f"Error: {e} {traceback.format_exc()}")
         finally:
             if not worker_is_global:
                 dump_index(idx=index_part, index_file=worker_index_file)
-            
+
             with open_lock(global_index_file):
                 current_global_index = load_index_file(index_file=global_index_file)
                 current_global_index[card_path] = meta
                 dump_index(current_global_index, index_file=global_index_file)
-    
-    
+
+
 def _scrap_doc_card(card_path, meta, proxies):
     with request(method="GET", url=HOST + card_path, proxies=proxies) as r:
         soup = bs.BeautifulSoup(r.text, "html.parser")
@@ -188,7 +195,7 @@ def _get_details(context):
 
     code = context["meta"]["download_code"]
     # path to the directory where the artifacts of the key exchange will be stored
-    
+
     work_dir = os.path.join(base_dir, code)
     context["work_dir"] = work_dir
     # path to the zip file obtained from the server

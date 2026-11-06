@@ -18,7 +18,7 @@ def upload_doc(path_to_pdf, config, is_limited):
     client = YaDisk(config['yandex']['disk']['oauth_token'])
 
     _, _ = client.upload_or_replace(
-        path_to_pdf, 
+        path_to_pdf,
         remote_dir=remote_dir,
         conflict_resolution=ConflictResolution.REPLACE_IF_DIFFERENT
     )

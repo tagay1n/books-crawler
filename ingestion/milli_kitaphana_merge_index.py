@@ -1,6 +1,6 @@
 """Merges a secondary index file into the main Milli Kitaphana index."""
 
-from utils import load_index_file, dump_index
+from .milli_kitaphana_utils import load_index_file, dump_index
 from rich import print
 
 
@@ -9,7 +9,7 @@ def merge_indexes(new_index_path):
     new_index = load_index_file(new_index_path)
     merged_index = _merge_indexes(new_index, old_index)
     dump_index(merged_index)
-    
+
 
 def _merge_indexes(new_index, old_index):
     _merged_index = {}
@@ -21,7 +21,7 @@ def _merge_indexes(new_index, old_index):
         else:
             _merged_index[k] = old_index[k]
             _merged_index[k].update(v)
-            
+
     for k, v in old_index.items():
         if k not in _merged_index:
             _merged_index[k] = v

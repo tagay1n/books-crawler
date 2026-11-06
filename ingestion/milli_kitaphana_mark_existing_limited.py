@@ -16,7 +16,7 @@ How matching works:
 6) If no match is found, raise an error (or log for the title fallback).
 
 How to run:
-python milli_kitaphana/mark_existing_limited.py
+python cli.py --config ingestion.yaml mark-existing-limited --source milli_kitaphana
 """
 
 import json
@@ -26,12 +26,12 @@ from pathlib import Path
 
 import requests
 from sqlalchemy import create_engine, text
-from utils import dump_index, load_index_file
+from .milli_kitaphana_utils import dump_index, load_index_file, read_config
 
 
 DEFAULT_METADATA_ROOT = Path(os.path.expanduser("~/.monocorpus/misc/upstream_metadata"))
 DEFAULT_FLAG_NAME = "needs_full_download"
-DB_URL = "postgresql+psycopg://tans1q:tans1q@localhost:5432/monocorpus"
+
 MIN_TITLE_PREFIX = 8
 
 
@@ -173,7 +173,7 @@ def mark_existing_limited(
     index = load_index_file()
     lookups = _build_lookups(index)
 
-    engine = create_engine(DB_URL)
+    engine = create_engine(read_config()["limited_database_url"])
     with engine.connect() as conn:
         rows = conn.execute(
             text('SELECT md5, "full", upstream_meta_url, title FROM document WHERE "full" = false')
@@ -203,7 +203,3 @@ def mark_existing_limited(
 
     dump_index(index)
     print(f"Marked {updated} index entries with '{flag_name}'.")
-
-
-if __name__ == "__main__":
-    mark_existing_limited()

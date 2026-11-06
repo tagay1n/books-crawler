@@ -6,7 +6,7 @@ import os
 
 from rich import print
 
-from utils import dump_index, get_list_file_loc, get_lists_dir, get_not_downloaded_docs, load_index_file
+from .milli_kitaphana_utils import dump_index, get_list_file_loc, get_lists_dir, get_not_downloaded_docs, load_index_file
 
 
 def split_lists(parts: int, dest: str = None, prefix: str = None):

@@ -74,3 +74,5 @@ Metadata claims, candidate counts, downloaded originals and derived PDFs are
 separate evidence levels. Follow each adapter's admission and access policy.
 
 [Litres: unified stages, SID configuration and legacy migration](ingestion/litres.md).
+
+[Milli Kitaphana: unified stages and existing-state migration](ingestion/milli-kitaphana.md).
