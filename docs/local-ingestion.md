@@ -6,6 +6,10 @@ explicit operational YAML; examples are never loaded automatically. Start with
 [implemented source scopes](ingestion/sources.md), or the
 [adapter development map](adapter-development.md).
 
+For periodic checks of discovery coverage and filtering, use the
+[source discovery review register](source-discovery-reviews.md) to pick and record
+one source at a time.
+
 ```bash
 .venv/bin/python cli.py sources
 .venv/bin/python cli.py --config ingestion.yaml status --source magarif

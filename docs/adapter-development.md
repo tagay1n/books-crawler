@@ -4,6 +4,10 @@ Read `AGENTS.md` first: do not add automated tests. Use code inspection and boun
 manual CLI verification. Use `.venv/bin/python`; the shell's default Python may
 belong to another project.
 
+For periodic discovery audits, use the
+[source discovery review register](source-discovery-reviews.md) for source
+selection, the review checklist, and recording findings and review dates.
+
 ## Find the relevant code without a full repository tour
 
 - `ingestion/registry.py`: registered sources; check before proposing a new
