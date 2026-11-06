@@ -148,7 +148,7 @@ def download(http, manifest, summary, log, recheck):
                 asset["source_version"] = source_version(asset)
             except InvalidDocument:
                 pass  # The shared per-asset acquisition path reports invalid hints.
-    manifest.save()
+    manifest.checkpoint()
 
     def inspect_file(path):
         digest = hashlib.sha1()

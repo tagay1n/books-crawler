@@ -390,7 +390,7 @@ def recover(report_path, workers=4, download=False, retry_failed=False, download
     def save():
         report["counts"] = dict(Counter(r["status"] for r in report["records"].values()))
         runtime.manifest.data.setdefault('recovery_reports', {})[report_name] = copy.deepcopy(report)
-        runtime.manifest.save()
+        runtime.manifest.checkpoint()
 
     pending = [(k, v) for k, v in targets.items() if k not in report["records"]]
     with ThreadPoolExecutor(max_workers=workers) as pool:

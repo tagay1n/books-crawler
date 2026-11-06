@@ -23,7 +23,8 @@ def directory_for(settings):
 
 
 class Runtime:
-    def __init__(self, settings, manifest, summary):
+    def __init__(self, settings, manifest, summary, options):
+        self.options = options
         self.settings, self.manifest, self.summary = settings, manifest, summary
         self.directory = manifest.directory
         self.config = settings.source_options
@@ -74,11 +75,12 @@ def records(manifest):
     return {key: dict(r['observations'][-1]['metadata']) for key, r in manifest.data['records'].items() if r.get('observations')}
 
 
-def execute(settings, command, *, recheck=False, log=print):
-    if command not in SUPPORTED_COMMANDS:
-        raise ValueError('Unsupported Milli stage')
+def execute(settings, command, *, recheck=False, log=print, options=None, checkpoint=None):
+    from .commands import CommandOptions, validate
+    options = options or CommandOptions(recheck=recheck)
+    validate("milli_kitaphana", command, options)
     directory = directory_for(settings)
-    manifest = Manifest(directory, 'milli_kitaphana')
+    manifest = Manifest(directory, 'milli_kitaphana', checkpoint=checkpoint)
     if command == 'status':
         items = records(manifest)
         return {**manifest.status(), 'acquired': sum(v.get('downloaded') == 'full' for v in items.values()),
@@ -86,15 +88,15 @@ def execute(settings, command, *, recheck=False, log=print):
                 'publications': manifest.data.get('publications', {}), 'catalog': manifest.data.get('milli_catalog', {})}
     summary = dict(source='milli_kitaphana', command=command, id=uuid4().hex, started_at=now(), pages=0, downloaded=0, finalized=0, skipped=0, requests=0, network_retries=0, errors=[], stops=[])
     with source_lock(directory, 'milli_kitaphana'):
-        manifest = Manifest(directory, 'milli_kitaphana')
-        runtime = Runtime(settings, manifest, summary)
+        manifest = Manifest(directory, 'milli_kitaphana', checkpoint=checkpoint)
+        runtime = Runtime(settings, manifest, summary, options)
         from . import milli_kitaphana_utils as utils
         utils.RUNTIME = runtime
         items = records(manifest)
         def commit():
             for key, item in items.items():
                 manifest.observe({**item, 'url': item.get('url') or 'https://kitap.tatar.ru' + key}, [], record_key=key, persist=False)
-            manifest.save()
+            manifest.checkpoint()
         started = False
         try:
             from . import milli_kitaphana_download as downloader, milli_kitaphana_decrypt as decrypt
@@ -102,7 +104,7 @@ def execute(settings, command, *, recheck=False, log=print):
             with open(os.devnull, 'w') as sink, contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
                 if command == 'import-state':
                     started = True
-                    origin = Path(settings.source_options['_from'])
+                    origin = Path(options.from_path)
                     from .database_cli import read_import
                     imported, _, conflicts = read_import('milli_kitaphana', [origin / '_index/books-index.json'], processing_dir=origin)
                     if conflicts:
@@ -142,7 +144,7 @@ def execute(settings, command, *, recheck=False, log=print):
                         commit()
                     if command in {'download', 'run'}:
                         try:
-                            downloader.download(settings.source_options.get('_limited', False), settings.source_options.get('_index_name'), recheck=recheck)
+                            downloader.download(options.limited, options.index_name, recheck=recheck)
                         except BudgetStop as error:
                             if command != 'run':
                                 raise
@@ -188,7 +190,7 @@ def execute(settings, command, *, recheck=False, log=print):
                             commit()
                         runtime.offline = False
                     if command == 'publish':
-                        if runtime.config.get('_target') != 'yandex':
+                        if runtime.options.target != 'yandex':
                             raise ValueError('Milli supports only --target yandex')
                         from .milli_kitaphana_upload_docs import upload_doc, persist_upstream_metadata
                         if runtime.config.get('database_url') in (None, '', '<SET ME>') or runtime.config.get('yandex', {}).get('disk', {}).get('oauth_token') in (None, '', '<SET ME>'):
@@ -204,13 +206,13 @@ def execute(settings, command, *, recheck=False, log=print):
                                 steps.clear(); steps['sha256'] = output['sha256']
                             if not steps.get('yandex'):
                                 upload_doc(output['path'], runtime.config, item.get('downloaded') == 'limited')
-                                steps['yandex'] = now(); manifest.save()
+                                steps['yandex'] = now(); manifest.checkpoint()
                             if not steps.get('metadata'):
                                 persist_upstream_metadata(decrypt._calculate_md5(output['path']), decrypt._upstream_metadata(item), runtime.config['database_url'])
-                                steps['metadata'] = now(); manifest.save()
+                                steps['metadata'] = now(); manifest.checkpoint()
                             item['decrypted'] = True
                             commit()
-                    options = runtime.config.get('_maintenance', {})
+                    options = runtime.options.maintenance
                     if command == 'split':
                         from .milli_kitaphana_split_index import split_lists
                         split_lists(**options)
@@ -241,5 +243,5 @@ def execute(settings, command, *, recheck=False, log=print):
             summary['state_key'] = 'last_run'
             if started:
                 manifest.data['last_run'] = summary
-                manifest.save()
+                manifest.checkpoint()
     return summary

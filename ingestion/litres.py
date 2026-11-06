@@ -32,7 +32,8 @@ class Session:
 
 
 class Runtime:
-    def __init__(self, settings, manifest, summary):
+    def __init__(self, settings, manifest, summary, options):
+        self.options = options
         self.settings, self.manifest, self.summary = settings, manifest, summary
         self.directory = manifest.directory
         self.config = settings.source_options
@@ -92,12 +93,12 @@ def books(manifest):
 def commit(runtime, items):
     for key, book in items.items():
         runtime.manifest.observe(book, [], record_key=key, persist=False)
-    runtime.manifest.save()
+    runtime.manifest.checkpoint()
 
 
 def discover(runtime, items):
     from . import litres_index as index
-    mode = runtime.config.get('_mode', 'catalog')
+    mode = runtime.options.mode
     if mode in {'catalog', 'all'}:
         scan = runtime.manifest.data.setdefault('litres_catalog', {'next_page': 1, 'complete': False})
         if scan['complete']:
@@ -127,7 +128,7 @@ def discover(runtime, items):
                 next_page = any(f'page={page + 1}' in a.get('href', '') for a in soup.select('a[href]'))
                 scan['complete'] = not next_page
                 runtime.summary['pages'] += 1
-                runtime.manifest.save()
+                runtime.manifest.checkpoint()
                 if scan['complete']:
                     break
             if not scan['complete']:
@@ -159,7 +160,7 @@ def acquire(runtime, items, recheck):
             if book.get('acquired') and not (book.get('pdf_file') or book.get('markdown_file') or book.get('finalized')) and len(selected) < runtime.settings.max_items:
                 selected.append(key)
             continue
-        if runtime.config.get('_format', 'all') not in {'all', book.get('content_type')}:
+        if runtime.options.format not in {'all', book.get('content_type')}:
             continue
         if book.get('acquired') and not recheck:
             runtime.summary['skipped'] += 1
@@ -281,7 +282,7 @@ def finalize(runtime, items, selected=None):
 
 
 def import_state(runtime, items):
-    origin = Path(runtime.config['_from']).resolve()
+    origin = Path(runtime.options.from_path).resolve()
     if origin == runtime.directory.resolve():
         raise ValueError('Import source and destination must differ')
     review = origin / 'candidates-review.tsv'
@@ -298,7 +299,7 @@ def import_state(runtime, items):
                     items[key] = book
         else:
             runtime.manifest.data['candidates'] = {**data, **runtime.manifest.data.get('candidates', {})}
-            runtime.manifest.save()
+            runtime.manifest.checkpoint()
     for book in items.values():
         for field in ('pdf_file', 'markdown_file'):
             if book.get(field):
@@ -331,12 +332,13 @@ def import_state(runtime, items):
     commit(runtime, items)
 
 
-def execute(settings, command, *, recheck=False, log=print):
-    if command not in SUPPORTED_COMMANDS:
-        raise ValueError('Unsupported Litres stage')
+def execute(settings, command, *, recheck=False, log=print, options=None, checkpoint=None):
+    from .commands import CommandOptions, validate
+    options = options or CommandOptions(recheck=recheck)
+    validate("litres", command, options)
     directory = settings.artifacts_root / 'litres'
     if command == 'status':
-        manifest = Manifest(directory, 'litres')
+        manifest = Manifest(directory, 'litres', checkpoint=checkpoint)
         result = manifest.status()
         records = books(manifest)
         result['acquired'] = sum(bool(b.get('acquired') or b.get('imported_acquisition_complete')) for b in records.values())
@@ -352,8 +354,8 @@ def execute(settings, command, *, recheck=False, log=print):
             raise ValueError('Set sources.litres.sid in the selected operational YAML')
     summary = {'source': 'litres', 'command': command, 'id': uuid4().hex, 'started_at': now(), 'pages': 0, 'downloaded': 0, 'skipped': 0, 'requests': 0, 'network_retries': 0, 'errors': [], 'stops': []}
     with source_lock(directory, 'litres'):
-        manifest = Manifest(directory, 'litres')
-        runtime = Runtime(settings, manifest, summary)
+        manifest = Manifest(directory, 'litres', checkpoint=checkpoint)
+        runtime = Runtime(settings, manifest, summary, options)
         from .litres_utils import RUNTIME
         token = RUNTIME.set(runtime)
         items = books(manifest)
@@ -370,7 +372,7 @@ def execute(settings, command, *, recheck=False, log=print):
                     finalize(runtime, items, selected if command == 'run' else None)
                 if command == 'review':
                     from . import litres_candidates as candidates
-                    action = runtime.config['_action']
+                    action = runtime.options.action
                     {'export': candidates.export_review, 'sync': candidates.sync_review, 'import': candidates.import_accepted}[action]()
                     if action == 'import':
                         items = books(manifest)
@@ -386,7 +388,7 @@ def execute(settings, command, *, recheck=False, log=print):
                             eligible[key] = book
                     if not eligible:
                         raise ValueError('No verified finalized outputs to publish')
-                    target = runtime.config['_target']
+                    target = runtime.options.target
                     if target == 'yandex':
                         from .litres_upload_books import upload_pdfs
                         upload_pdfs(eligible)
@@ -410,5 +412,5 @@ def execute(settings, command, *, recheck=False, log=print):
             summary.update(records=len(items), attempted_download_bytes=runtime.budget.bytes, started_items=runtime.budget.items, finished_at=now())
             summary['state_key'] = 'last_run'
             manifest.data['last_run'] = summary
-            manifest.save()
+            manifest.checkpoint()
     return summary

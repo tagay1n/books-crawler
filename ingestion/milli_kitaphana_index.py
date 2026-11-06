@@ -128,7 +128,7 @@ def _create_index(base_params, description):
                 scan.update(next_page=next_page or 1, complete=next_page is None)
                 scan['seen'] = list(set(scan.get('seen', [])) | set(new_metas))
                 runtime.summary['pages'] += 1
-                runtime.manifest.save()
+                runtime.manifest.checkpoint()
                 progress.update(task, completed=current_page,
                                 total=total_pages)
 

@@ -44,7 +44,9 @@ def source_lock(directory: Path, source=None):
 
 
 class Manifest:
-    def __init__(self, directory: Path, source="magarif"):
+    def __init__(self, directory: Path, source="magarif", *, checkpoint=None):
+        from .checkpoints import Checkpoint
+        self.coordinator = checkpoint or Checkpoint()
         self.directory = directory
         self.path = directory / "manifest.json"
         from .postgres_state import Repository
@@ -63,6 +65,9 @@ class Manifest:
 
     def save(self):
         self.repository.save(self.data)
+
+    def checkpoint(self):
+        self.coordinator(self.repository, self.data)
 
     def observe(self, metadata, assets, parser_version=1, *, record_key=None, persist=True):
         """Observe a record; callers deferring persistence must save their checkpoint.
@@ -116,7 +121,7 @@ class Manifest:
                 asset["status"] = "pending"
                 asset.pop("last_error", None)
         if persist:
-            self.save()
+            self.checkpoint()
         return changed
 
     def status(self):

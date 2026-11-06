@@ -150,7 +150,7 @@ def assemble(http, manifest, record, asset, temporary, summary):
     state = record.setdefault("package_pdf", {"status": "incomplete", "results": []})
     state.setdefault("results", [])
     state.update(status="incomplete", current_results=[])
-    manifest.save()
+    manifest.checkpoint()
     try:
         with zipfile.ZipFile(manifest.directory / source["path"]) as archive:
             names, _ = inventory(archive, http.budget)
@@ -214,12 +214,12 @@ def assemble(http, manifest, record, asset, temporary, summary):
                     state["results"].append(result)
                     state["current_results"].append(result)
                     summary["pdf_assembled"] += 1
-                    manifest.save()
+                    manifest.checkpoint()
                 finally:
                     partial.unlink(missing_ok=True)
         state.update(status="complete", archive_sha256=source["sha256"],
                      source_observation_id=observation["id"], last_checked=now())
         state.pop("last_error", None)
-        manifest.save()
+        manifest.checkpoint()
     except (zipfile.BadZipFile, UnicodeError, EOFError, zlib.error) as error:
         raise InvalidDocument(f"Unsupported or corrupt textbook package: {error}") from None

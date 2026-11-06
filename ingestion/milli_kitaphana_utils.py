@@ -83,7 +83,7 @@ def dump_index(idx, index_file=None):
                 manifest.observe({**item, 'url': item.get('url') or HOST + key}, [], record_key=key, persist=False)
             for key in manifest.data['records'].keys() - idx.keys():
                 del manifest.data['records'][key]
-        manifest.save()
+        manifest.checkpoint()
 
 
 def get_not_downloaded_docs(index, limited):

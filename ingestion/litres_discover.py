@@ -138,7 +138,7 @@ def discover_candidates():
 
     if runtime:
         scan["complete"] = True
-        runtime.manifest.save()
+        runtime.manifest.checkpoint()
     save_index('candidates', candidates)
     print(f"Discovered {discovered} book card(s), added {added}, updated {updated}")
     print(f"Skipped {skipped_low_score} low-score candidate(s)")

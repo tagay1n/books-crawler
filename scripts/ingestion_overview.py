@@ -28,19 +28,16 @@ def main():
             paths.add(root / "manifest.json")
         else:
             paths.update(root.glob("*/manifest.json"))
-    database_data = {}
     if args.database:
         from ingestion.postgres_state import Repository
         from ingestion.registry import SOURCES
-        for source in args.source or SOURCES:
-            database_data[Path("postgres") / source] = Repository(source).load()
-        paths = set(database_data)
+        paths = {Path("postgres") / source for source in args.source or SOURCES}
     if not paths:
         parser.error("No manifests found at the selected paths.")
     failed = False
     for path in sorted(paths):
         try:
-            data = database_data[path] if args.database else json.loads(path.read_text(encoding="utf-8"))
+            data = Repository(path.name).load() if args.database else json.loads(path.read_text(encoding="utf-8"))
             records, assets = data["records"], data["assets"]
             coverage = data.get("discovery", {})
             states = Counter(a.get("status", "unknown") for a in assets.values() if a.get("current", True))
@@ -64,9 +61,10 @@ def main():
                 result["historical_discovery_error_messages"] = dict(Counter(
                     error.get("error", "unknown") for error in
                     [*data.get("discovery_error_history", []), *prior.values()]))
-        except (OSError, ValueError, KeyError, TypeError, AttributeError) as error:
+        except (RuntimeError, OSError, ValueError, KeyError, TypeError, AttributeError) as error:
             result = {"manifest": str(path), "error": str(error)}
             failed = True
+        data = records = assets = None
         print(json.dumps(result, ensure_ascii=False, separators=(",", ":")))
     return int(failed)
 

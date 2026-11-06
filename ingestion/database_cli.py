@@ -170,3 +170,33 @@ def import_command(source: str = typer.Option(...,'--source'), paths: list[Path]
                 report['database_bytes'] = conn.scalar(text('SELECT pg_database_size(current_database())'))
                 report['source_bytes'] = sum(conn.scalar(text('SELECT pg_total_relation_size(to_regclass(:name))'), {'name':'ingestion.'+source+'_'+suffix}) or 0 for suffix in ('records','assets','state'))
     typer.echo(json.dumps(report,ensure_ascii=False))
+
+
+def inspection_result(operation):
+    try:
+        typer.echo(json.dumps(operation(), ensure_ascii=False, separators=(',', ':')))
+    except (ValueError, RuntimeError) as error:
+        typer.echo(json.dumps({'error': str(error)[:500]}))
+        raise typer.Exit(1)
+
+
+@app.command('record')
+def record_command(source: str = typer.Option(..., '--source'), key: str = typer.Option(..., '--key'),
+                   assets: int = typer.Option(0, '--assets', min=0, max=100)):
+    """Inspect one record without observation/result histories; optional asset preview."""
+    from .state_inspection import record
+    inspection_result(lambda: record(source, key, assets))
+
+
+@app.command('errors')
+def errors_command(source: str = typer.Option(..., '--source'), limit: int = typer.Option(10, '--limit', min=1, max=100)):
+    """Inspect bounded active, historical and last-run diagnostics."""
+    from .state_inspection import errors
+    inspection_result(lambda: errors(source, limit))
+
+
+@app.command('last-run')
+def last_run_command(source: str = typer.Option(..., '--source')):
+    """Read the compact last-run summary."""
+    from .state_inspection import last_run
+    inspection_result(lambda: last_run(source))

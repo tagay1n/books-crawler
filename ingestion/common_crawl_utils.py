@@ -23,7 +23,7 @@ def _load_index():
 def _dump_index(index):
     runtime = _runtime()
     runtime.data['records'] = index
-    runtime.repository.save(runtime.data)
+    runtime.checkpoint(runtime.repository, runtime.data)
 
 
 def configured_path(name, default):

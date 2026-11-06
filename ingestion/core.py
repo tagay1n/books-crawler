@@ -209,7 +209,7 @@ def acquire(http, manifest, asset, temporary, summary, *, extensions=None, valid
     if "source_version" in asset:
         asset["verified_source_version"] = asset["source_version"]
     asset.pop("last_error", None)
-    manifest.save()
+    manifest.checkpoint()
 
 
 def download(http, manifest, summary, log, recheck, *, extensions=None, validate_file=None):
@@ -238,33 +238,28 @@ def download(http, manifest, summary, log, recheck, *, extensions=None, validate
                 log(f"Acquired: {asset['label'] or asset['url']}")
             except (requests.RequestException, TransportError, ValueError) as error:
                 asset["status"], asset["last_error"] = "failed", str(error)
-                manifest.save()
+                manifest.checkpoint()
                 summary["errors"].append({"url": asset["url"], "stage": "download", "error": str(error)})
                 log(f"Download failed: {asset['url']}: {error}")
 
 
-def _run_local(settings, source, command, *, recheck=False, session_file=None, log=print):
+def _run_local(settings, source, command, *, recheck=False, session_file=None, log=print, options=None, checkpoint=None):
     if source not in SOURCES:
         raise ValueError(f"Unknown source: {source}. Available: {', '.join(SOURCES)}")
+    from .checkpoints import Checkpoint
+    checkpoint = checkpoint or Checkpoint()
     adapter = SOURCES[source]
     if hasattr(adapter, "execute"):
-        return adapter.execute(settings, command, recheck=recheck, log=log)
-    supported = getattr(adapter, "SUPPORTED_COMMANDS", {"discover", "download", "run", "status"})
-    if command not in supported:
-        raise ValueError(f"{source} supports only: {', '.join(sorted(supported))}.")
+        return adapter.execute(settings, command, recheck=recheck, log=log, options=options, checkpoint=checkpoint)
     directory = settings.artifacts_root / source
     if command == "status":
-        return Manifest(directory, source).status()
-    if getattr(adapter, "REQUIRES_SESSION", False) and session_file is None:
-        raise ValueError(f"{source} requires --session-file from your verified browser.")
-    if session_file is not None and not getattr(adapter, "REQUIRES_SESSION", False):
-        raise ValueError("--session-file is supported only for Miras.")
+        return Manifest(directory, source, checkpoint=checkpoint).status()
     summary = {"id": uuid4().hex, "source": source, "command": command, "started_at": now(),
                "pages": 0, "records": 0, "observations": 0, "downloaded": 0, "reused_blobs": 0,
                "not_modified": 0, "unchanged_downloads": 0, "skipped": 0,
                "requests": 0, "network_retries": 0, "stops": [], "errors": []}
     with source_lock(directory, source):
-        manifest = Manifest(directory, source)
+        manifest = Manifest(directory, source, checkpoint=checkpoint)
         budget = Budget(settings)
         http = HTTP(settings, budget, summary) if command != "finalize" else None
         selected_records = set()
@@ -311,18 +306,22 @@ def _run_local(settings, source, command, *, recheck=False, session_file=None, l
             summary["stops"] = list(dict.fromkeys(summary["stops"]))
             summary['state_key'] = 'last_run'
             manifest.data["last_run"] = summary
-            manifest.save()
+            manifest.checkpoint()
     return summary
 
 
-def run(settings, source, command, *, recheck=False, session_file=None, log=print):
+def run(settings, source, command, *, recheck=False, session_file=None, log=print, options=None):
     """Common lifecycle around native acquisition implementations."""
     from . import publication
     from .postgres_state import Repository
-    target = settings.source_options.get('_target', 's3')
+    from .commands import CommandOptions, validate
+    options = options or CommandOptions(recheck=recheck, session_file=session_file)
+    validate(source, command, options)
+    recheck, session_file = options.recheck, options.session_file
+    target = options.target
     remote = command == 'run' or (command == 'publish' and target == 's3')
     if command == 'status':
-        result = _run_local(settings, source, command, recheck=recheck, session_file=session_file, log=log)
+        result = _run_local(settings, source, command, recheck=recheck, session_file=session_file, log=log, options=options)
         data = Repository(source).load()
         result['s3'] = {'published_artifacts': len(data.get('s3_publications', {}))}
         if settings.s3:
@@ -334,7 +333,7 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
             result['s3']['pending_artifacts'] = sum(not publication.completed(data, a, settings) for a in inventory)
         return result
     if not remote:
-        return _run_local(settings, source, command, recheck=recheck, session_file=session_file, log=log)
+        return _run_local(settings, source, command, recheck=recheck, session_file=session_file, log=log, options=options)
     publication.configuration(settings)
     adapter = SOURCES[source]
     directory = settings.artifacts_root / source
@@ -343,6 +342,7 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
     elif source == 'common_crawl':
         value = Path(settings.source_options.get('artifact_dir', directory)).expanduser()
         directory = value if value.is_absolute() else Path(settings.source_options['_config_dir']) / value
+    upload_budget = None
     if command == 'run':
         with source_lock(directory, source):
             repository = Repository(source)
@@ -350,7 +350,6 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
             if publication.restore_missing(settings, data, directory):
                 repository.save(data)
         uploads = dict(errors=[], stops=[])
-        upload_budget = None
         def checkpoint(repository, data):
             nonlocal upload_budget
             if data['source'] != source:
@@ -363,11 +362,9 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
             except BudgetStop as error:
                 if str(error) not in uploads['stops']:
                     uploads['stops'].append(str(error))
-        token = publication.on_checkpoint.set(checkpoint)
-        try:
-            summary = _run_local(settings, source, command, recheck=recheck, session_file=session_file, log=log)
-        finally:
-            publication.on_checkpoint.reset(token)
+        from .checkpoints import Checkpoint
+        summary = _run_local(settings, source, command, recheck=recheck, session_file=session_file,
+                             log=log, options=options, checkpoint=Checkpoint(checkpoint))
         summary['errors'].extend(uploads.pop('errors'))
         summary['stops'].extend(uploads.pop('stops'))
         summary.update(uploads)
@@ -377,7 +374,7 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
         repository = Repository(source)
         data = repository.load()
         try:
-            publication.publish(settings, data, directory, lambda: repository.save(data), summary, Budget(settings))
+            publication.publish(settings, data, directory, lambda: repository.save(data), summary, upload_budget or Budget(settings))
         except BudgetStop as error:
             summary['stops'].append(str(error))
         summary.update(finished_at=now(), state_key='last_run')

@@ -116,7 +116,7 @@ def assemble(http, manifest, record, assets, temporary, summary):
         state.update(status="complete", last_checked=now())
         state.pop("last_error", None)
         summary["pdf_reused"] += 1
-        manifest.save()
+        manifest.checkpoint()
         return
     settings, budget = http.settings, http.budget
     partial = temporary / "issue.pdf.part"
@@ -166,7 +166,7 @@ def assemble(http, manifest, record, assets, temporary, summary):
         state.update(status="complete", last_checked=now())
         state.pop("last_error", None)
         summary["pdf_assembled"] += 1
-        manifest.save()
+        manifest.checkpoint()
     finally:
         partial.unlink(missing_ok=True)
 
@@ -214,7 +214,7 @@ def download(http, manifest, summary, log, recheck, *, unit="issue",
                     summary["pdf_reused"] += 1
                     continue
                 state["status"] = "incomplete"
-                manifest.save()
+                manifest.checkpoint()
                 http.budget.start_item()
                 if selected_records is not None:
                     selected_records.add(key)
@@ -232,7 +232,7 @@ def download(http, manifest, summary, log, recheck, *, unit="issue",
                     except READ_ERRORS as error:
                         asset.update(status="failed", last_error=str(error))
                         summary["errors"].append({"url": asset["url"], "stage": "download", "error": str(error)})
-                        manifest.save()
+                        manifest.checkpoint()
                         log(f"Image download failed: {asset['url']}: {error}")
                 if not assets or any(a["status"] != "downloaded" for a in assets):
                     state["last_error"] = "Expected page images remain unresolved; no complete PDF published."
@@ -248,7 +248,7 @@ def download(http, manifest, summary, log, recheck, *, unit="issue",
                 summary["errors"].append({"url": metadata["url"], "stage": "assemble", "error": str(error)})
                 log(f"PDF assembly failed: {metadata['title']}: {error}")
             finally:
-                manifest.save()
+                manifest.checkpoint()
 
 
 def finalize(settings, budget, manifest, summary, log, *, selected_records=None):
@@ -310,4 +310,4 @@ def finalize(settings, budget, manifest, summary, log, *, selected_records=None)
                 summary["errors"].append({"url": metadata["url"], "stage": "finalize", "error": str(error)})
                 log(f"PDF finalization failed: {metadata['title']}: {error}")
             finally:
-                manifest.save()
+                manifest.checkpoint()

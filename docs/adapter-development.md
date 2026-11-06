@@ -62,18 +62,8 @@ The file-based examples below inspect archived snapshots only.
 The helper reads selected roots' immediate source manifests only, emits one JSON
 line per manifest, and never opens configurations, modifies artifacts or makes
 network requests. Explicit source directories and manifest paths also work.
-Manifests with at least 1,000 assets or 500 records use compact JSON to reduce
-checkpoint serialization and disk writes; their schema is unchanged. Smaller
-manifests and other JSON artifacts retain indentation. Use the overview or parse
-selected fields rather than printing a large manifest's single line.
-Discovery commits each successful observation and its completed frontier work
-in one atomic checkpoint. `Manifest.observe()` still saves immediately for other
-callers; only discovery defers that save until its checkpoint is ready.
-Discovery uses invocation-local membership sets and a pending-work deque while
-retaining ordered JSON lists for resume compatibility. `Manifest.observe()` lazily
-indexes assets by owning record instead of scanning every asset per observation.
-Create assets and change their owning record through that method so the index
-stays coherent; download status/result updates do not affect ownership.
+Operational checkpoints commit observations and frontier progress together in PostgreSQL.
+Use the shared manifest APIs to maintain asset ownership indexes.
 Discovery completeness is distinct from advertised-count verification and from
 download completion. `--details` adds current-scan counts (distinct from total
 retained records), advertised-count verification, asset formats and grouped
@@ -157,9 +147,31 @@ uses bounded SDK retries/timeouts. A scan/download budget stop leaves publicatio
 backlog eligible for the next command. Status reports recorded publication counts
 without contacting S3. No public bucket access or metadata sidecar is required.
 
-Implementation verification (2026-11-06): compiled ingestion modules, checked
-CLI publication help and source listing, loaded the example configuration for
-all 34 sources, verified placeholder S3 configuration fails before source work,
-and ran `git diff --check`. No automated tests were added. Live database/S3,
-interruption/recovery, and provider reacquisition verification remain pending:
-this implementation environment has no DATABASE_URL and cannot access Docker.
+## Bounded agent inspection and command routing
+
+```bash
+.venv/bin/python cli.py sources --details
+.venv/bin/python cli.py database record --source magarif --key RECORD_KEY --assets 3
+.venv/bin/python cli.py database errors --source magarif --limit 10
+.venv/bin/python cli.py database last-run --source magarif
+.venv/bin/python scripts/ingestion_overview.py --database --source magarif
+```
+
+These database commands are read-only and do not need operational YAML. Record views
+omit histories and bound metadata; `--assets` selects up to 100 asset previews.
+Error views distinguish active discovery, historical discovery and last-run errors,
+with a total preview limit of 1–100. Full evidence stays in PostgreSQL.
+The overview processes sources individually; snapshot paths inspect archived state only.
+Compact CLI results include S3 counts and up to three 500-character error previews.
+
+`ingestion/commands.py` defines typed invocation options and shared capability validation.
+Operational `Settings.source_options` contains source configuration, not invocation flags.
+Plain source listing remains lazy; detailed listing imports adapters to resolve capabilities.
+
+`ingestion/checkpoints.py` coordinates explicit progress commits and post-commit work.
+Pass the coordinator through runtimes/manifests; use `Manifest.checkpoint()` for progress
+boundaries. `Manifest.save()` and `Repository.save()` only persist state. Receipt and
+explicit import writes must use persistence-only saves. The core injects S3 publication
+only for `run`, retaining one upload budget across its checkpoints; standalone publication
+still reconciles receipts and pending outputs. Never call publication from repository saves.
+See [historical publication verification](publication-verification.md).

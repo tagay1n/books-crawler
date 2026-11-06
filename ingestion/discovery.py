@@ -71,7 +71,7 @@ def discover(http, manifest, adapter, summary, log):
 
     def checkpoint():
         manifest.data["discovery"] = coverage()
-        manifest.save()
+        manifest.checkpoint()
 
     checkpoint()
     try:

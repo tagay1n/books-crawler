@@ -200,7 +200,7 @@ def reuse_originals(http, manifest, summary):
                 asset["verified_source_version"] = asset["source_version"]
             asset.pop("last_error", None)
             summary["imported_originals"] += 1
-            manifest.save()
+            manifest.checkpoint()
             wanted.pop(asset["url"], None)
 
 

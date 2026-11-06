@@ -57,7 +57,7 @@ def save_index(name, data):
         commit(runtime, data)
     elif name == 'candidates':
         runtime.manifest.data['candidates'] = copy.deepcopy(data)
-        runtime.manifest.save()
+        runtime.manifest.checkpoint()
     else:
         raise ValueError('Unknown Litres index')
 

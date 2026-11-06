@@ -41,8 +41,12 @@ def fail(ctx, error, command, source=None):
 
 
 @app.command("sources")
-def sources_command(ctx: typer.Context):
+def sources_command(ctx: typer.Context, details: bool = typer.Option(False, "--details")):
     """List adapters implemented in the shared CLI."""
+    if details:
+        from .commands import capabilities
+        typer.echo(json.dumps({source: capabilities(source) for source in SOURCES}, ensure_ascii=False, separators=(",", ":")))
+        return
     if ctx.meta.get("summary_only"):
         emit_result(ctx, {"sources": list(SOURCES)}, "sources")
         return
@@ -95,27 +99,11 @@ def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, ses
         from .config import load_settings
         from .core import restricted_settings, run
         settings = restricted_settings(load_settings(ctx.obj, source), limit, max_pages)
-        settings.source_options["_target"] = target or "s3"
-        if source in {"litres", "milli_kitaphana", "common_crawl"}:
-            if session_file is not None:
-                raise ValueError(f"{source} uses its operational source settings, not --session-file")
-            settings.source_options.update(_limited=limited, _index_name=index_name, _maintenance=maintenance or {}, _mode=mode, _format=format, _action=action, _target=target, _from=str(from_path) if from_path else None)
-            if source == "common_crawl":
-                if command not in SOURCES[source].SUPPORTED_COMMANDS:
-                    raise ValueError(f"{source} does not implement the selected stage")
-                if mode != "catalog":
-                    raise ValueError("Common Crawl supports only --mode catalog")
-                if format not in {"all", "pdf"}:
-                    raise ValueError("Common Crawl supports only original PDFs (--format all or pdf)")
-                if recheck:
-                    raise ValueError("Common Crawl does not support --recheck")
-        elif mode != "catalog" or format != "all" or (command != "publish" or target != "s3") and command not in getattr(SOURCES[source], "SUPPORTED_COMMANDS", {"discover", "download", "run", "status"}):
-            raise ValueError(f"{source} does not implement the selected stage or option")
-        if source == "milli_kitaphana" and (mode != "catalog" or format != "all"):
-            raise ValueError("Milli supports catalog discovery and its native document format only")
-        if source != "milli_kitaphana" and (limited or index_name or maintenance):
-            raise ValueError("Selected options require --source milli_kitaphana")
-        result = run(settings, source, command, recheck=recheck, session_file=session_file, log=progress(ctx))
+        from .commands import CommandOptions
+        options = CommandOptions(mode=mode, format=format, target=target or "s3", action=action,
+                                 from_path=from_path, limited=limited, index_name=index_name,
+                                 maintenance=maintenance or {}, recheck=recheck, session_file=session_file)
+        result = run(settings, source, command, options=options, log=progress(ctx))
         emit_result(ctx, result, command, source)
     except (ValueError, OSError, RuntimeError, ImportError) as error:
         fail(ctx, error, command, source)

@@ -298,4 +298,4 @@ def download(http, manifest, summary, log, recheck):
                 summary["errors"].append({"url": asset["url"], "stage": "package" if package else "download", "error": str(error)})
                 log(f"Textbook package failed: {asset['label']}: {error}")
             finally:
-                manifest.save()
+                manifest.checkpoint()

@@ -6,12 +6,17 @@ def compact_result(result, command, source=None):
     if source or result.get("source"):
         brief["source"] = source or result["source"]
     for key in ("success", "ok", "pages", "records", "observations", "requests", "network_retries",
-                "downloaded", "published", "skipped", "finalized", "acquired", "reused_blobs", "imported_originals", "not_modified",
+                "s3_attempted", "s3_published", "s3_skipped", "s3", "downloaded", "published", "skipped", "finalized", "acquired", "reused_blobs", "imported_originals", "not_modified",
                 "unchanged_downloads", "attempted_download_bytes", "started_items", "pdf_assembled",
                 "pdf_reused", "review_counts", "catalog", "publications", "stops", "stop", "summary_path", "report_path", "state_key", "awaiting_inputs", "sources"):
         if key in result:
             brief[key] = result[key]
     brief["error_count"] = len(result.get("errors", []))
+    if result.get("errors"):
+        brief["error_preview"] = [
+            {key: str(error[key])[:500] for key in ("stage", "record", "error") if key in error}
+            if isinstance(error, dict) else {"error": str(error)[:500]}
+            for error in result["errors"][:3]]
     if "sources" in result:
         brief["source_count"] = len(result["sources"])
     if result.get("error"):
@@ -19,7 +24,7 @@ def compact_result(result, command, source=None):
     backlog = result.get("backlog", result)
     if "backlog" in result and "records" in backlog:
         brief["backlog_records"] = backlog["records"]
-    for key in ("current_assets", "discovery_errors", "historical_discovery_errors", "pdf_books", "image_pages"):
+    for key in ("current_assets", "discovery_errors", "historical_discovery_errors", "pdf_books", "pdf_issues", "package_books", "package_pdfs", "image_pages"):
         if key in backlog:
             brief[key] = backlog[key]
     if "discovery" in backlog:

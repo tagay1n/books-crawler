@@ -3,9 +3,7 @@ from dataclasses import dataclass
 from pathlib import Path
 import hashlib
 import mimetypes
-from contextvars import ContextVar
 
-on_checkpoint = ContextVar("publication_checkpoint", default=None)
 
 from .state import now
 

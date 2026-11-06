@@ -74,7 +74,7 @@ def finish(summary, manifest, http):
                    started_items=http.budget.items,
                    state_key="last_probe")
     manifest.data["last_probe"] = summary
-    manifest.save()
+    manifest.checkpoint()
 
 
 def observe_sample(manifest, metadata):

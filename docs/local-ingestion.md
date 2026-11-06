@@ -13,7 +13,7 @@ one source at a time.
 ```bash
 .venv/bin/python cli.py sources
 .venv/bin/python cli.py --config ingestion.yaml status --source magarif
-.venv/bin/python scripts/ingestion_overview.py __artifacts/ingestion
+.venv/bin/python scripts/ingestion_overview.py --database --source magarif
 ```
 
 For candidate qualification before writing an adapter, use
