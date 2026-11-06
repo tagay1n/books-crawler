@@ -139,7 +139,7 @@ records); rollback; competing writers; lock-session loss; completion skipping
 with empty workspaces; and two bounded live Magarif discovery invocations with
 persisted progress and no discovery errors. Imported tables/indexes occupied
 approximately 53 MiB before subsequent discovery. Compilation and
-`git diff --check` passed. No changes were applied to Aiven.
+`git diff --check` passed. These initial checks did not modify Aiven.
 
 ### Removal of local progress dependencies
 
@@ -160,5 +160,21 @@ Before changes, local indexes were archived under
 `processing-state-complete.zip`: 249 files, 248,633,931 uncompressed bytes,
 31,536,375 archive bytes, with a SHA-256 inventory. Archive contents were verified
 and all original progress files were confirmed unchanged. The archive is ignored
-by Git and readable only by its owner. Aiven remains unchanged; apply the documented
-imports there separately after setting the desired database environment.
+by Git and readable only by its owner. Aiven was subsequently initialized and
+imported as recorded below.
+
+### Aiven migration applied (2026-11-06)
+
+Initialized the ingestion schema for all 34 registered sources over an SSL
+connection and applied all four established-source imports. Read-back verification
+confirmed 527 Litres records, 16,579 Milli Kitaphana records, 90 Tatkniga records
+with 278 assets, and 36,607 Common Crawl records. Completion evidence was preserved,
+including 478 acquired Litres records, 14,759 fully downloaded Milli records,
+189 acquired Tatkniga assets and 35,113 uploaded Common Crawl records.
+
+Milli's recovery journals retained 1,969 records in `default` and two records in
+`two-pending-20261030`. All other source record tables were empty. Four import
+receipts were verified. Final database size was 65,631,935 bytes (about 63 MiB),
+including 56,516,608 bytes of ingestion tables and indexes. Local indexes and
+backups were left unchanged. Future CLI and workflow processes must supply
+`DATABASE_URL`; connection credentials are not stored in this repository.

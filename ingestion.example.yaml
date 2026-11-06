@@ -51,6 +51,38 @@ sources:
   # Issue metadata and linked originals only; covers are not journal documents.
   beznenmiras:
     archive_url: https://beznenmiras.ru/categories/widget/list/svezii-vypusk
+  # Native publication catalog; explicit language claims or reviewed file hashes.
+  tataroved:
+    archive_url: https://tataroved.ru/publication/
+  # Academic archive: topic search plus item-language or hash-pinned file review.
+  kfu_dspace:
+    archive_url: https://dspace.kpfu.ru/xmlui/discover
+  # All historical repository collections; explicit Tatar item labels required.
+  kfu_repository:
+    archive_url: https://repo.kpfu.ru/jspui/community-list
+  # Azad Halyk newspaper: explicit Tatar item-language labels required.
+  kfu_azad_halyk:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/27528
+  # Vakyt newspaper: exact series search; explicit Tatar item labels required.
+  kfu_vakyt:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/86/simple-search
+  # Shura journal: explicit Tatar language labels required.
+  kfu_shura:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/25046
+  # All hosted documents; document language is not inferred from the catalog locale.
+  tatargalyame:
+    archive_url: https://tatargalyame.kpfu.ru/catalogue
+  # Il newspaper issues: explicit Tatar language labels required.
+  kfu_il:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/28060
+  kfu_books:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/27574
+  kfu_manuscripts:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/18503
+  internet_archive:
+    archive_url: https://archive.org
+  isxaki:
+    archive_url: https://isxaki.com/ijat/
   magarif:
     archive_url: https://magarif-uku.ru/documents
   # Tatar textbook ZIPs linked by the publisher; retained originals plus derived PDFs.
@@ -70,7 +102,7 @@ sources:
   # Separate periodical series manifest; uses the same Miras browser session export.
   miras_periodicals:
     archive_url: https://miras.info/projects/mirasxane/periodicals/
-  # Discovery only: document files; cover/title-page images are skipped entirely.
+  # Original documents with source size/SHA-1 validation; cover images are skipped.
   commons:
     archive_url: https://commons.wikimedia.org/wiki/Category:Tatar-language_books
   common_crawl:
