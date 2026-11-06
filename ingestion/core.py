@@ -261,9 +261,10 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
     with source_lock(directory):
         manifest = Manifest(directory, source)
         budget = Budget(settings)
-        http = HTTP(settings, budget, summary)
+        http = HTTP(settings, budget, summary) if command != "finalize" else None
+        selected_records = set()
         try:
-            if hasattr(adapter, "prepare_http"):
+            if http is not None and hasattr(adapter, "prepare_http"):
                 adapter.prepare_http(http, session_file)
             if command in {"discover", "run"}:
                 try:
@@ -273,12 +274,21 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
                     summary["discovery_complete"] = False
             if command in {"download", "run"}:
                 if hasattr(adapter, "download"):
-                    adapter.download(http, manifest, summary, log, recheck)
+                    if hasattr(adapter, "finalize"):
+                        try:
+                            adapter.download(http, manifest, summary, log, recheck, selected_records=selected_records)
+                        except BudgetStop as error:
+                            summary["stops"].append(str(error))
+                    else:
+                        adapter.download(http, manifest, summary, log, recheck)
                 elif getattr(adapter, "DOWNLOAD_UNIT", None) == "issue":
                     from .image_issues import download as download_issues
                     download_issues(http, manifest, summary, log, recheck)
                 else:
                     download(http, manifest, summary, log, recheck)
+            if command in {"finalize", "run"} and hasattr(adapter, "finalize"):
+                adapter.finalize(settings, budget, manifest, summary, log,
+                                 selected_records=selected_records if command == "run" else None)
         except BudgetStop as error:
             summary["stops"].append(str(error))
         except SourceAccessError as error:
@@ -289,7 +299,8 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
         except (OSError, KeyboardInterrupt) as error:
             summary["errors"].append({"stage": "operation", "error": str(error) or "Interrupted"})
         finally:
-            http.close()
+            if http is not None:
+                http.close()
             summary.update(finished_at=now(), attempted_download_bytes=budget.bytes, started_items=budget.items,
                            backlog=manifest.status())
             summary["stops"] = list(dict.fromkeys(summary["stops"]))

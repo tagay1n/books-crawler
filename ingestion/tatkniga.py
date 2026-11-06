@@ -12,6 +12,7 @@ from .paging import CatalogChanged, ListingPage, PageRequest
 
 
 ARCHIVE_URL = "https://tatkniga.ru/catalog/biblioteka/"
+SUPPORTED_COMMANDS = {"discover", "download", "finalize", "run", "status"}
 PARSER_VERSION = 2
 BOOK_PATH = re.compile(r"/catalog/biblioteka/[^/]+\.html")
 PRODUCT_ID = re.compile(r"bx_\d+_(\d+)")
@@ -201,10 +202,17 @@ def resolve_record(http, metadata, assets):
     return resolve(http, metadata, assets)
 
 
-def download(http, manifest, summary, log, recheck):
+def download(http, manifest, summary, log, recheck, *, selected_records=None):
     from .core import download as download_documents
     from .image_issues import download as download_books
 
     summary.update(download_unit="file_or_book", pdf_assembled=0, pdf_reused=0)
     download_documents(http, manifest, summary, log, recheck)
-    download_books(http, manifest, summary, log, recheck, unit="file_or_book")
+    download_books(http, manifest, summary, log, recheck, unit="file_or_book",
+                   assemble_outputs=False, selected_records=selected_records)
+
+
+def finalize(settings, budget, manifest, summary, log, *, selected_records=None):
+    from .image_issues import finalize as finalize_books
+
+    finalize_books(settings, budget, manifest, summary, log, selected_records=selected_records)

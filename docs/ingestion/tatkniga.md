@@ -41,28 +41,66 @@ deferred or unsupported. `status` and run summaries include optional
 `external_origin`, and `format_unsupported`. Failed reader/configuration requests
 or inconsistent declared page lists leave discovery incomplete and retryable.
 
-For Tatkniga, `--limit` and `max_items` count either a direct file or a whole reader
-book. Direct files are processed first, with the remaining item budget shared by
-reader books. Verified JPEGs are retained in `files/` and assembled in reader
-order, including covers and blank pages. Assembled PDFs are published atomically
-to `__artifacts/ingestion/tatkniga/derived/<sha256>.pdf` only after all expected
-pages are available and the PDF page count is verified. These are image PDFs
-without OCR; interactive media and exercises are not included. Image quality,
-proportions, and orientation are preserved.
+## Unified CLI stages
 
-Interrupted books resume from verified images. Missing, damaged, or outdated PDFs
-are rebuilt; unchanged complete books require no network requests. `--recheck`
-revalidates images and retains old PDF versions when inputs change. A failed
-recheck leaves the book incomplete while preserving historical files. PDF results
-record ordered input IDs and hashes, assembler version, source observation, size,
-and page count. Status adds `pdf_books` completion counts and `image_pages`
-progress; it reads the manifest rather than auditing local file integrity.
-Parser version 2 restarts discovery to refresh old reader descriptors while
-preserving observations and downloads; run `discover` after upgrading.
+```bash
+.venv/bin/python cli.py --config ingestion.yaml discover --source tatkniga --max-pages 2
+.venv/bin/python cli.py --config ingestion.yaml download --source tatkniga --limit 1
+.venv/bin/python cli.py --config ingestion.yaml finalize --source tatkniga --limit 1
+.venv/bin/python cli.py --config ingestion.yaml run --source tatkniga --limit 1
+.venv/bin/python cli.py --config ingestion.yaml status --source tatkniga
+```
 
-Tatkniga uses `__artifacts/ingestion/tatkniga/` with the shared manifest and
-downloader. The old Selenium scripts have been retired; `tatkniga/workdir/`,
-`paid_files.csv`, and the old configuration are preserved as historical data.
-They are not read or migrated by the new adapter, and old download markers are
-not evidence that verified local bytes exist. No cloud services or credentials
-are used. See [the historical-data notes](../../tatkniga/README.md).
+Use `sources.tatkniga` from `ingestion.example.yaml` in your selected operational
+YAML. Add global `--summary-only` for compact JSON.
+
+`download` acquires direct documents and ordered reader JPEGs without assembling
+PDFs. Its `--limit` and `max_items` count a direct file or a whole reader book;
+direct files are processed first. Interrupted books resume from verified images.
+`--recheck` revalidates images; a failed recheck leaves the book incomplete while
+preserving historical files.
+
+`finalize` operates entirely offline. It requires all current ordered pages with
+verified hashes and valid image content. Missing or damaged images require
+`download` first. PDFs are published atomically under
+`__artifacts/ingestion/tatkniga/derived/<sha256>.pdf`, after page-count validation.
+Unchanged verified PDFs are reused; missing or damaged PDFs are rebuilt.
+Standalone `finalize --limit N` processes up to N books needing assembly or repair;
+unchanged verified outputs do not consume that limit.
+
+`run` composes discovery, acquisition, and finalization for its selected reader
+batch. Completed selected books can finalize after an acquisition item or byte
+cap, subject to the shared deadline. Older downloaded backlog is processed with
+standalone `finalize`. Other stage capabilities are unsupported.
+
+Original JPEGs remain in `files/`. PDFs include covers and blank pages in reader
+order, preserving image quality, proportions, and orientation. They contain no
+OCR, interactive media, or exercises. Results retain input IDs and hashes,
+assembler version, source observation, size, and page count. `status` reads the
+manifest without auditing files, making requests, or writing artifacts; it reports
+`pdf_books` and `image_pages` counts.
+
+Existing shared manifests and PDFs remain compatible. Parser version 2 restarts
+discovery to refresh older reader descriptors while retaining observations and
+downloads; run `discover` after upgrading from an older parser.
+
+The obsolete Selenium implementation and its unused top-level configuration and
+historical crawler lists have been removed. They are not imported by this adapter.
+All active source code lives under `ingestion/`, and current state stays under
+`__artifacts/ingestion/tatkniga/`. No cloud services or credentials are used.
+
+## Stage migration verification
+
+Manual checks used `/tmp/tatkniga-stage-verification/operational.yaml` and an
+isolated two-book manifest with synthetic JPEG inputs. Local-only download
+started one book at the item cap and created no PDFs. Finalization created one
+PDF at the cap, then completed the backlog; a third invocation reused both.
+Every finalization reported zero requests. A damaged PDF was rebuilt, and a
+missing image produced a structured error requesting another download.
+Explicit selected-record finalization completed only the selected book.
+The shared helper's default combined mode still assembled the remaining book
+and reused the complete book without network requests. Root CLI status reported
+book/page counts and review was rejected as unsupported. Compilation and
+`git diff --check` passed. No automated tests were added. Live catalog traversal,
+network acquisition, and a complete end-to-end `run` were not exercised in this
+verification; existing active artifacts were left untouched.

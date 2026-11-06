@@ -167,6 +167,8 @@ Tatar item-language labels are required; unlabelled records remain held. See
 - Tatkniga:
   - `python cli.py --config ingestion.yaml discover --source tatkniga`
   - `python cli.py --config ingestion.yaml download --source tatkniga --limit 1`
+  - `python cli.py --config ingestion.yaml finalize --source tatkniga --limit 1`
+  - `python cli.py --config ingestion.yaml run --source tatkniga --limit 1`
   - `python cli.py --config ingestion.yaml status --source tatkniga`
 - Miras (books, all languages):
   - `python cli.py --config ingestion.yaml discover --source miras --session-file PATH --max-pages 2`
@@ -230,6 +232,5 @@ Tatar item-language labels are required; unlabelled records remain held. See
 - `__artifacts/ingestion/tatargalyame/` stores educational resource metadata, category provenance, hosted originals, and deferred external references.
 - `__artifacts/ingestion/commons/` stores original documents, source SHA-1 checks, category evidence, and licensing metadata.
 - `__artifacts/ingestion/miras/` stores the full Miras catalog and PDFs; `pilot/` retains the original access experiment separately.
-- `tatkniga/workdir/` and `paid_files.csv` retain historical data; they are not imported automatically.
 
 See folder READMEs for pipeline-specific behavior, options, and caveats.

@@ -124,7 +124,7 @@ def download(ctx: typer.Context, source: str = typer.Option(..., "--source"),
              format: str = typer.Option("all", "--format", help="all, pdf, or text"),
              recheck: bool = typer.Option(False, "--recheck", help="Also revalidate completed downloads."),
              session_file: Optional[Path] = typer.Option(None, "--session-file", help="Browser session export for miras or miras_periodicals.")):
-    """Download committed local work; retry failed or missing originals."""
+    """Download committed originals; Tatkniga reader PDFs require finalize."""
     if format not in {"all", "pdf", "text"}:
         fail(ctx, ValueError("Invalid download format"), "download", source)
     execute(ctx, "download", source, limit=limit, recheck=recheck, session_file=session_file, format=format)
@@ -148,7 +148,7 @@ def status(ctx: typer.Context, source: str = typer.Option(..., "--source")):
 
 @app.command()
 def finalize(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-             limit: Optional[int] = typer.Option(None, "--limit")):
+             limit: Optional[int] = typer.Option(None, "--limit", help="Maximum outputs needing finalization; verified Tatkniga PDFs are skipped.")):
     """Build local outputs from verified downloaded inputs, without network access."""
     execute(ctx, "finalize", source, limit=limit)
 

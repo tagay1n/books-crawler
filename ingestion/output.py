@@ -19,7 +19,7 @@ def compact_result(result, command, source=None):
     backlog = result.get("backlog", result)
     if "backlog" in result and "records" in backlog:
         brief["backlog_records"] = backlog["records"]
-    for key in ("current_assets", "discovery_errors", "historical_discovery_errors"):
+    for key in ("current_assets", "discovery_errors", "historical_discovery_errors", "pdf_books", "image_pages"):
         if key in backlog:
             brief[key] = backlog[key]
     if "discovery" in backlog:

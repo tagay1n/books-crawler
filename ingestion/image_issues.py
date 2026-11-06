@@ -14,7 +14,7 @@ from PIL import Image, ImageOps, __version__ as PILLOW_VERSION
 
 from .core import acquire, check_space, file_digests, valid_local
 from .discovery import READ_ERRORS
-from .network import InvalidDocument
+from .network import BudgetStop, InvalidDocument
 from .state import now
 
 
@@ -162,7 +162,8 @@ def assemble(http, manifest, record, assets, temporary, summary):
         partial.unlink(missing_ok=True)
 
 
-def download(http, manifest, summary, log, recheck, *, unit="issue"):
+def download(http, manifest, summary, log, recheck, *, unit="issue",
+             assemble_outputs=True, selected_records=None):
     summary.update(download_unit=unit, pdf_assembled=0, pdf_reused=0)
     workspace = manifest.directory / ".tmp"
     workspace.mkdir(parents=True, exist_ok=True)
@@ -197,6 +198,8 @@ def download(http, manifest, summary, log, recheck, *, unit="issue"):
                 state["status"] = "incomplete"
                 manifest.save()
                 http.budget.start_item()
+                if selected_records is not None:
+                    selected_records.add(key)
                 for asset in assets:
                     http.budget.check()
                     previous = asset["results"][-1] if asset["results"] else None
@@ -216,12 +219,66 @@ def download(http, manifest, summary, log, recheck, *, unit="issue"):
                 if not assets or any(a["status"] != "downloaded" for a in assets):
                     state["last_error"] = "Expected page images remain unresolved; no complete PDF published."
                     log(f"Publication incomplete: {metadata['title']}")
-                else:
+                elif assemble_outputs:
                     assemble(http, manifest, record, assets, temporary, summary)
                     log(f"PDF ready: {metadata['title']} ({len(assets)} pages)")
             except (ValueError, RuntimeError) as error:
                 state.update(status="failed", last_error=str(error))
                 summary["errors"].append({"url": metadata["url"], "stage": "assemble", "error": str(error)})
                 log(f"PDF assembly failed: {metadata['title']}: {error}")
+            finally:
+                manifest.save()
+
+
+def finalize(settings, budget, manifest, summary, log, *, selected_records=None):
+    """Publish PDFs using local inputs only; no HTTP client is constructed."""
+    from types import SimpleNamespace
+
+    runtime = SimpleNamespace(settings=settings, budget=budget)
+    summary.setdefault("pdf_assembled", 0)
+    summary.setdefault("pdf_reused", 0)
+    grouped = {}
+    for asset in manifest.data["assets"].values():
+        if (asset.get("current", True) and asset.get("kind") == "page_image"
+                and asset["status"] != "unsupported"):
+            grouped.setdefault(asset.get("record_key", asset["record_url"]), []).append(asset)
+    workspace = manifest.directory / ".tmp"
+    workspace.mkdir(parents=True, exist_ok=True)
+    attempted = 0
+    with tempfile.TemporaryDirectory(prefix="finalize-", dir=workspace) as temporary:
+        for key, record in manifest.data["records"].items():
+            budget.check()
+            if selected_records is not None and key not in selected_records:
+                continue
+            metadata = record["observations"][-1]["metadata"]
+            if metadata.get("expected_pages") is None:
+                continue
+            assets = sorted(grouped.get(key, []), key=lambda a: a.get("page_index", -1))
+            state = record.setdefault("pdf", {"status": "incomplete", "results": []})
+            try:
+                ready = bool(assets) and all(a["status"] == "downloaded" and a["results"]
+                    and valid_local(manifest.directory, a["results"][-1]) for a in assets)
+                fingerprint = inputs_for(record, assets)[0] if ready else None
+                previous = state["results"][-1] if state["results"] else None
+                if (ready and previous and previous["input_fingerprint"] == fingerprint
+                        and valid_local(manifest.directory, previous, folder="derived")):
+                    assemble(runtime, manifest, record, assets, Path(temporary), summary)
+                    continue
+                if selected_records is None and attempted >= settings.max_items:
+                    raise BudgetStop("finalization item cap")
+                attempted += 1
+                state["status"] = "incomplete"
+                if not ready:
+                    raise ValueError("Missing or damaged page images; run download first.")
+                for asset in assets:
+                    budget.check()
+                    validate_page(manifest.directory / asset["results"][-1]["path"],
+                                  extension=asset["extension"])
+                assemble(runtime, manifest, record, assets, Path(temporary), summary)
+                log(f"PDF ready: {metadata['title']} ({len(assets)} pages)")
+            except (ValueError, RuntimeError, OSError) as error:
+                state.update(status="failed", last_error=str(error))
+                summary["errors"].append({"url": metadata["url"], "stage": "finalize", "error": str(error)})
+                log(f"PDF finalization failed: {metadata['title']}: {error}")
             finally:
                 manifest.save()
