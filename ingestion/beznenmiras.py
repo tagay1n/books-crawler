@@ -12,7 +12,7 @@ from .network import install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
-PARSER_VERSION = 1
+PARSER_VERSION = 2
 LISTING_PATH = re.compile(r"/categories/widget/list/svezii-vypusk(?:/page/([1-9]\d*))?/?")
 ISSUE_PATH = re.compile(r"/categories/([\w-]+)/?")
 DOCUMENT_FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
@@ -101,6 +101,37 @@ def record(html, page_url):
         "cover_url": canonical(cover["src"], url) if cover else None,
         "admission_reason": "Issue in the configured Безнең мирас archive; document language and completeness unverified.",
     }
+    # Keep publisher evidence separate from normalized claims. In particular,
+    # subscription indexes and the interface locale are not language evidence.
+    metadata["content_html"] = content.decode_contents()
+    lead = area.select_one(".single__lead")
+    if lead is not None:
+        metadata["lead_raw"] = lead.get_text(" ", strip=True)
+    metadata["subscription_indexes_raw"] = [
+        paragraph.get_text(" ", strip=True)
+        for paragraph in content.select("p")
+        if re.search(r"[ПP]\s*\d{4,}", paragraph.get_text(" ", strip=True))
+    ]
+    metadata["page_metadata"] = [
+        {"name": tag.get("property") or tag.get("name"), "content": tag["content"]}
+        for tag in soup.select("meta[content]")
+        if (tag.get("property") or tag.get("name") or "").startswith((
+            "og:", "article:", "description", "author", "keywords"))
+    ]
+    metadata["content_links"] = []
+    for anchor in content.select("a[href]"):
+        target = canonical(anchor["href"], url)
+        if urlsplit(target).scheme in {"http", "https"} and not urlsplit(target).username:
+            metadata["content_links"].append({
+                "url": target, "label": anchor.get_text(" ", strip=True)})
+    metadata["reader_links"] = []
+    for embed in content.select("iframe[src], embed[src], object[data]"):
+        target = canonical(embed.get("src") or embed["data"], url)
+        if urlsplit(target).scheme in {"http", "https"} and not urlsplit(target).username:
+            metadata["reader_links"].append({
+                "url": target, "kind": embed.name,
+                "unsupported_reason": "Embedded reader delivery has not been verified; not acquired.",
+            })
     assets = {}
     for anchor in content.select("a[href]"):
         target = canonical(anchor["href"], url)

@@ -31,7 +31,7 @@ initial baseline date) and record the attempt date in the history below.
 
 | Source ID | Source guide | Last reviewed | Outcome | Outstanding findings / blockers |
 | --- | --- | --- | --- | --- |
-| `beznenmiras` | [Безнең мирас](ingestion/beznenmiras.md) | 2026-11-06 | Baseline | — |
+| `beznenmiras` | [Безнең мирас](ingestion/beznenmiras.md) | 2026-11-06 | Partial | 2026-11-07: metadata preservation extended; sampled issues expose no originals. PostgreSQL/S3 verification requires credentials and a downloadable sample. |
 | `common_crawl` | [Common Crawl / FinePDFs](ingestion/common-crawl.md) | 2026-11-06 | Baseline | — |
 | `commons` | [Wikimedia Commons](ingestion/commons.md) | 2026-11-06 | Baseline | — |
 | `darul_kutub` | [Darul-Kutub](ingestion/darul-kutub.md) | 2026-11-06 | Baseline | — |
@@ -98,7 +98,7 @@ limitations and access requirements before beginning a review.
 
 ## Review history
 
-No audits recorded yet. Append one short entry per completed or attempted review
+Append one short entry per completed or attempted review
 with the following information; keep earlier entries as historical evidence:
 
 - Date, source ID, and outcome.
@@ -107,3 +107,22 @@ with the following information; keep earlier entries as historical evidence:
 - Verification commands, compact results, and evidence artifact paths. Keep
   credentials, private configurations, and downloaded originals out of Git.
 - Remaining limitations, follow-ups, or blockers and their prerequisites.
+
+### 2026-11-07 — beznenmiras — Partial
+
+Inspected native homepage navigation, all three archive listing pages (41 cards),
+October 2026 and April 2023/2024 issue pages, robots, sitemap index and custom-page
+sitemap. No issue originals or embedded readers were found in the sampled issue
+content; policy PDFs and covers remain excluded. Parser version 2 preserves
+publisher HTML, lead, subscription-index paragraphs, page metadata and content/
+reader links without changing record identities. Existing shared local download,
+S3 publication, PostgreSQL state and manual Actions wiring are retained.
+
+Bounded `cli.py inspect` requests and configured parser invocations verified listing
+pagination and metadata extraction; module compilation and workflow/configuration
+inspection passed. See the [source guide](ingestion/beznenmiras.md) for evidence
+paths and run commands. No automated tests were added. No production writes,
+publication or workflow dispatch occurred. Missing database/S3 credentials and
+the absence of a verified original prevent live persistence/resume and transfer/
+receipt verification. Preserve the baseline date until those checks are possible;
+the bounded route review does not establish exhaustive site coverage.
