@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "files": {
+    "https://dspace.kpfu.ru/xmlui/bitstream/handle/net/176943/kils2022_480_484.pdf?sequence=-1&isAllowed=y": {
+      "sha256": "2bc8ca4f2a5cc1f249ef6e39810058dca15d50813ccde100cb04a568c6333341",
+      "languages": ["tt"],
+      "reviewer": "Codex manual PDF text inspection",
+      "reason": "Manual inspection of PDF pages 1, 3 and 5 confirmed substantive Tatar prose; Russian references do not replace the Tatar body.",
+      "reviewed_at": "2026-10-28T05:50:40.185722+00:00",
+      "record_url": "https://dspace.kpfu.ru/xmlui/handle/net/176943",
+      "pages_inspected": [1, 3, 5]
+    },
+    "https://dspace.kpfu.ru/xmlui/bitstream/handle/net/22102/10_179_000944.pdf?sequence=1&isAllowed=y": {
+      "sha256": "ebc76333771db7ce4969665ffc4d2a300bd658e8823aef0eab89e18369975f50",
+      "languages": ["tt", "ru"],
+      "reviewer": "Codex manual PDF text inspection",
+      "reason": "Manual inspection of the title page and body pages 5, 18, 45, 90 and 141 confirmed substantive Tatar and Russian textbook content.",
+      "reviewed_at": "2026-10-28T05:50:40.200673+00:00",
+      "record_url": "https://dspace.kpfu.ru/xmlui/handle/net/22102",
+      "pages_inspected": [1, 5, 18, 45, 90, 141]
+    }
+  }
+}

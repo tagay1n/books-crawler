@@ -2,6 +2,7 @@ extends: ../defaults.yaml
 sources:
   kfu_dspace:
     archive_url: https://dspace.kpfu.ru/xmlui/discover
+    language_reviews_file: ../reviews/kfu_dspace.json
     operational:
       image_issues:
         colour_policy:

@@ -45,7 +45,7 @@ initial baseline date) and record the attempt date in the history below.
 | `kazanutlary` | [Kazan Utları](ingestion/kazanutlary.md) | 2026-11-06 | Baseline | — |
 | `kfu_azad_halyk` | [KFU «Азад халык»](ingestion/kfu-azad-halyk.md) | 2026-11-06 | Partial | 2026-11-07: all 15 public PDFs inventoried; direct-file policy enforced and one original verified. Remaining downloads and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `kfu_books` | [KFU books](ingestion/kfu-books.md) | 2026-11-06 | Partial | 2026-11-07: 136 records verified; 111 eligible direct files (110 PDF, one DOCX); direct-only setting enabled and one original verified. Other transfers and live PostgreSQL/S3/repeat-run checks remain outstanding. |
-| `kfu_dspace` | [KFU academic archive](ingestion/kfu-dspace.md) | 2026-11-06 | Baseline | — |
+| `kfu_dspace` | [KFU academic archive](ingestion/kfu-dspace.md) | 2026-11-06 | Blocked | 2026-11-07: item pages omit metadata tables/file inventories; fresh discovery cannot proceed. Restore authoritative item metadata or verify an alternative native route. Two reviewed originals still download; versioned review inputs prepared for GitHub. |
 | `kfu_il` | [KFU «Ил»](ingestion/kfu-il.md) | 2026-11-06 | Baseline | — |
 | `kfu_manuscripts` | [KFU manuscripts](ingestion/kfu-books.md) | 2026-11-06 | Baseline | — |
 | `kfu_repository` | [KFU historical repository](ingestion/kfu-repository.md) | 2026-11-06 | Baseline | — |
@@ -336,3 +336,28 @@ freshly acquired. Live persistence/resume, full database-backed acquisition,
 repeat-run and S3 receipt verification require configured credentials. No
 production writes, uploads or workflow dispatch occurred. Preserve the baseline
 review date pending remaining verification.
+
+### 2026-11-07 — kfu_dspace — Blocked
+
+Search is reachable and advertises 248 records. Five search pages were retained;
+40 item parses failed before the scan was stopped. Sampled full metadata pages
+and known records' short views omit item content and file inventories. No
+successful item observations or complete traversal were claimed. Parser version
+3 reports the omission explicitly rather than accepting empty item shells.
+Reactivation requires restored authoritative item/file metadata or independent
+verification of another native route; preserve the baseline review date.
+
+Both exact reviewed original URLs still deliver PDFs: 284,735-byte/five-page
+article and 4,891,338-byte/147-page textbook, matching prior pinned SHA-256 values.
+Promoted those existing reviewed inputs to explicitly configured versioned JSON
+so fresh GitHub runners retain the same admission evidence; local additions keep
+their override behavior. Reviews do not seed records, guess URLs or lift access
+restrictions. Existing PostgreSQL, S3 and manual workflow integration is retained.
+See the [source guide](ingestion/kfu-dspace.md) and ignored
+`__artifacts/kfu-dspace-review-20261107/` for hashes, exact URLs and evidence.
+
+Fresh-runner input loading, file delivery/hash/structure, compilation and workflow
+checks passed; no automated tests were added. Live PostgreSQL resume, full
+acquisition, repeat-run and S3 receipts additionally require credentials. No
+production writes, uploads or workflow dispatch occurred. This is operational
+preparation with a current upstream discovery blocker, not a ready fresh run.

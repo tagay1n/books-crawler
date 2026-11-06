@@ -3,7 +3,7 @@ from .runtime_config import option as operational_option
 
 import json
 from email.message import Message
-from pathlib import PurePosixPath
+from pathlib import Path, PurePosixPath
 import re
 from urllib.parse import parse_qs, quote, unquote, urlencode, urlsplit
 
@@ -17,7 +17,7 @@ from .network import InvalidDocument
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
-PARSER_VERSION = 2
+PARSER_VERSION = 3
 UNIQUE_RECORDS = True
 
 
@@ -142,7 +142,9 @@ def record(html, page_url):
                         if isinstance(value, str) and re.match(r"https?://dspace\.kpfu\.ru/xmlui/handle/", value)}
     # Older thesis records omit dc.identifier.uri. Their native full/short-view
     # toggle still identifies the item; unrelated identifier fields are not URIs.
-    if table is None or self_links != {expected} or (item_identifiers and item_identifiers != {expected}):
+    if table is None:
+        raise ValueError("Academic KFU full metadata table is unavailable; item and file eligibility remain unresolved.")
+    if self_links != {expected} or (item_identifiers and item_identifiers != {expected}):
         raise ValueError("Academic KFU full item metadata is missing or belongs to another record.")
     fields = []
     for row in table.select("tr"):
@@ -217,7 +219,20 @@ resolve_record = language_reviews.resolve
 
 
 def prepare_http(http, session_file):
-    http.language_reviews = load_reviews(http.settings.artifacts_root / "kfu_dspace" / "language-reviews.json")
+    http.language_reviews = {}
+    configured = http.settings.source_options.get('language_reviews_file')
+    if configured is not None:
+        if not isinstance(configured, str) or not configured.strip():
+            raise ValueError('sources.kfu_dspace.language_reviews_file must be a nonempty path')
+        path = Path(configured).expanduser()
+        if not path.is_absolute():
+            path = Path(http.settings.source_options['_config_dir']) / path
+        if not path.is_file():
+            raise ValueError('Configured academic KFU language review file is missing')
+        http.language_reviews.update(load_reviews(path))
+    # Local operator additions retain their existing override semantics. The
+    # configured, versioned input makes reviewed files available on fresh runners.
+    http.language_reviews.update(load_reviews(http.settings.artifacts_root / "kfu_dspace" / "language-reviews.json"))
     http.session.headers.update({"Accept-Language": "ru,en;q=0.5", "Cache-Control": "no-cache"})
     def route(url):
         if urlsplit(url).path == "/xmlui/discover":
