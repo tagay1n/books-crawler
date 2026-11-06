@@ -37,7 +37,7 @@ initial baseline date) and record the attempt date in the history below.
 | `common_crawl` | [Common Crawl / FinePDFs](ingestion/common-crawl.md) | 2026-11-06 | Deferred | 2026-11-07: owner deferred this valuable special source. Resume only on explicit owner request; exclude from ordinary source rotation. |
 | `commons` | [Wikimedia Commons](ingestion/commons.md) | 2026-11-06 | Partial | 2026-11-07: 35 originals discovered; one PDF checksum verified; canonical record URLs fixed. Live PostgreSQL/S3 and repeat-run checks require credentials. |
 | `darul_kutub` | [Darul-Kutub](ingestion/darul-kutub.md) | 2026-11-06 | Partial | 2026-11-07: catalog/article context and chapter metadata retention fixed; one original PDF verified. Full scan and live PostgreSQL/S3/repeat-run checks remain outstanding. |
-| `dumrt` | [DUM RT publications](ingestion/dumrt.md) | 2026-11-06 | Baseline | — |
+| `dumrt` | [DUM RT publications](ingestion/dumrt.md) | 2026-11-06 | Partial | 2026-11-07: 37 archive pages/235 issue URLs; metadata retention extended and one original verified. Full issue/attachment refresh and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `echovek` | [Echo of Centuries](ingestion/echovek.md) | 2026-11-06 | Baseline | — |
 | `ftatarstan` | [Fänni Tatarstan](ingestion/ftatarstan.md) | 2026-11-06 | Baseline | — |
 | `internet_archive` | [Internet Archive](ingestion/internet-archive.md) | 2026-11-06 | Baseline | — |
@@ -177,3 +177,25 @@ passed; no automated tests were added. Existing PostgreSQL/S3/manual workflow
 integration is retained. Database/storage credentials are required for durable
 resume, full acquisition, repeat-run and receipt verification; preserve the
 baseline review date pending that work and broader catalog coverage.
+
+### 2026-11-07 — dumrt — Partial
+
+Native homepage navigation confirms both archives. Bounded listing traversal
+completed 37 pages and 235 issue URLs (187 newspaper, 48 almanac) with no remaining
+frontier. Four issue samples cover contemporary publications, a 2011 newspaper
+and a metadata-only launch announcement. Three expose original PDFs; the launch
+announcement correctly remains metadata-only. Parser version 3 preserves raw
+titles, description HTML, page metadata, size labels, listing cover URLs and
+attachment evidence without changing identities or file selection.
+
+One complete newspaper original was verified locally (4,533,125 bytes, 16 pages,
+SHA-256 matching the prior review); rendered text is Tatar. See the
+[source guide](ingestion/dumrt.md) and ignored
+`__artifacts/dumrt-review-20261107/` for evidence, hashes and commands. Compilation,
+metadata/pagination inspection, capability/configuration and manual workflow
+generation checks passed. No automated tests were added. Existing PostgreSQL,
+S3 and manual Actions integration is retained. No production database writes,
+uploads or workflow dispatch occurred. Individual remaining issues/attachments,
+durable resume, repeat-run skipping and S3 receipts remain unverified; the latter
+checks need configured credentials. Preserve the baseline review date pending
+that verification.

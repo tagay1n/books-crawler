@@ -13,7 +13,7 @@ from .network import install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
-PARSER_VERSION = 2
+PARSER_VERSION = 3
 SERIES = {
     "/media/din-va-magishet/": {"id": "din_va_magishet", "title": "Дин вә мәгыйшәт", "heading": "Дин вә мәгыйшәт", "component": "751", "step": 6},
     "/media/shura-almanah/": {"id": "shura_modern", "title": "Шура", "heading": '"Шура" альманахы', "component": "757", "step": 10},
@@ -101,8 +101,10 @@ def parse_listing(html, request, root):
         if series_for(target)[0] != path or not urlsplit(target).path.endswith(".html"):
             raise ValueError("Issue card changed its selected publication series.")
         date = card.select_one(".date")
+        cover = card.select_one("img[src]")
         entries[target] = {"catalog_url": url, "series": series["id"],
                            "title_raw": anchor.get_text(" ", strip=True), "href_raw": anchor["href"],
+                           "cover_url": canonical(cover["src"], url) if cover else None,
                            "posted_date_raw": date.get_text(" ", strip=True) if date else None}
     if not entries:
         raise ValueError("Publisher series page has no recognizable issue cards.")
@@ -149,6 +151,7 @@ def record(html, page_url):
     description = area.select_one("article")
     assets = {}
     for container in area.select(".file"):
+        size = container.select_one(".size")
         links = [(a["href"], a.get_text(" ", strip=True)) for a in container.select("a[href]")]
         links += [(o["data"], "Embedded original PDF") for o in container.select('object[type="application/pdf"][data]')]
         for raw, label in links:
@@ -160,16 +163,30 @@ def record(html, page_url):
             assets.setdefault(target, {"url": target, "label": title, "extension": ".pdf",
                                        "source_asset_key": "original:" + target, "href_raw": raw,
                                        "link_label_raw": label, "source_url_repair": repair,
+                                       "size_raw": size.get_text(" ", strip=True) if size else None,
                                        "language_admission": "publisher_tatar_series"})
-    return {"url": url, "native_url_claim": canonical_claim["content"] if canonical_claim else None,
+    metadata = {"url": url, "native_url_claim": canonical_claim["content"] if canonical_claim else None,
             "publication_id": match[1], "series": series["id"],
-            "series_title": series["title"], "title": title,
+            "series_title": series["title"], "title": title, "title_raw": title,
             "posted_date_raw": date.get_text(" ", strip=True) if date else None,
             "description_raw": description.get_text(" ", strip=True) if description else None,
+            "description_html": description.decode_contents() if description else None,
+            "page_metadata": [
+                {"name": tag.get("property") or tag.get("name"), "content": tag["content"]}
+                for tag in soup.select("meta[content]")
+                if (tag.get("property") or tag.get("name") or "").startswith((
+                    "og:", "article:", "description", "author", "keywords"))
+            ],
             "language_evidence": {"language": "tt", "scope": "publication_series",
                                   "source_url": (operational_option('dumrt', 'origin') + "/netcat_files/multifile/2627/otchet_DUM_2018.pdf"),
                                   "claim": "Publisher activity report identifies these two series as Tatar-language publications."},
-            "admission_reason": "Selected contemporary Tatar publication series; individual language composition and edition completeness remain unverified."}, list(assets.values())
+            "admission_reason": "Selected contemporary Tatar publication series; individual language composition and edition completeness remain unverified."}
+    metadata["attachments"] = list(assets.values())
+    metadata["acquisition_note"] = (
+        "Publisher-linked original PDF candidates; individual language composition and completeness unverified."
+        if assets else "Metadata only: no original PDF exposed in the issue attachment area."
+    )
+    return metadata, list(assets.values())
 
 
 def record_key(metadata):

@@ -59,3 +59,80 @@ The full discovery manifest's files remain pending; sample acquisitions use an
 isolated manifest. Full-file availability, language composition of remaining
 files and printed-edition completeness are unverified. No bulk acquisition,
 archive expansion, PDF assembly or original-file modification is introduced.
+
+## Metadata and execution
+
+Parser version 3 additionally preserves the issue description HTML, relevant
+HTML meta tags, raw title, attachment size labels and listing cover URLs. The
+original links, link labels, quote-repair evidence and series-language claim are
+retained in observations. Size labels such as `6 МБ` remain source text rather
+than exact byte counts. Missing-PDF issues have an explicit `acquisition_note`;
+they are not treated as downloaded editions. Raw HTML is evidence, not trusted
+renderable content. Cover images remain metadata and are never downloaded as PDFs.
+Native series/issue identities and file-selection rules remain unchanged.
+
+PostgreSQL stores upstream metadata observations, discovery frontier/checkpoints,
+processing results, errors and S3 receipts. Set `DATABASE_URL` and initialize the
+schema once with `.venv/bin/python cli.py database init`; processing does not
+initialize it or fall back to JSON. Originals remain under the configured local
+artifact root (`__artifacts/ingestion/dumrt/` by default). See
+[database operations](../postgres-migration.md).
+
+`download` keeps originals locally. `run` uses shared committed checkpoints to
+download and upload finished originals to S3, retaining local files. Standalone
+`publish` retries from local files and reports missing originals:
+
+```bash
+.venv/bin/python cli.py --summary-only --config config/sources/dumrt.yaml run --source dumrt --max-pages 2 --limit 1
+.venv/bin/python cli.py --summary-only --config config/sources/dumrt.yaml publish --source dumrt --target s3 --limit 1
+```
+
+Set `S3_BUCKET` and standard AWS credentials for publication. Deterministic object
+keys, SHA-256 metadata and PostgreSQL receipts support retrying publication;
+fresh runners reacquire missing unpublished files while completed receipts allow
+published originals to be skipped. No metadata-only issue or cover is published
+as a document.
+
+The existing **Ingest dumrt** GitHub workflow supports manual dispatch using the
+shared runner and `config/scheduled.yaml` limits. No scheduled trigger is added.
+Initialize the database before dispatch. Required repository secrets:
+`DATABASE_URL`, `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`. Optional:
+`AWS_SESSION_TOKEN`; repository variables `S3_ENDPOINT_URL` and
+`AWS_DEFAULT_REGION`. Runner-local files are temporary; PostgreSQL and S3 retain
+durable progress and published originals. See
+[runner operations](../scheduled-ingestion.md) for budgets and recovery.
+
+## Bounded review, 2026-11-07 (Europe/Moscow)
+
+Native homepage navigation independently advertises both selected archives. A
+bounded live listing traversal completed 37 pages/37 requests, no retries and no
+remaining frontier, discovering 235 unique issue URLs: 187 newspaper records and
+48 almanac records. This was listing enumeration, not a fresh verification of
+every issue or attachment; the historical 227-asset count above was not refreshed.
+Four sampled records covered current newspaper/almanac pages, the 2011 newspaper
+and a metadata-only almanac launch announcement. Three exposed PDFs; the launch
+announcement correctly exposed none. Current almanac metadata preserves its
+publisher `6 МБ` size claim and seven Open Graph properties. Native pagination
+and cross-series traversal remain unchanged.
+
+A bounded original transfer of newspaper №12 (353), December 2024, acquired
+4,533,125 bytes with complete declared length and a valid PDF signature. SHA-256
+`2b4f0dcec0bc1391c9797513bbc9cfd46813496e9f2d255a6cd16aba6fde253c`
+matches the earlier sample; `pdfinfo` reports 16 pages and rendered page 2 contains
+Tatar text. Other files' composition and printed-edition completeness remain
+unverified. No bulk original acquisition was performed.
+
+Evidence is ignored under `__artifacts/dumrt-review-20261107/`: 37 listing bodies,
+`catalog.json`, `summary.json`, four parsed `records.json` entries, and the sample
+PDF/render/hash report. Individual HTTP inspection responses are under
+`__artifacts/inspections/2026-11-06T21-36-*`, `2026-11-06T21-39-*` and
+`2026-11-06T21-40-*` (UTC). Review exports are not operational state.
+
+Manual metadata/file selection and listing traversal checks passed, along with
+compilation, capability listing, scheduled profile loading, manual workflow
+generator equality and `git diff --check`. No automated tests were added. The
+sample download used shared HTTP transport, native guards and format validation,
+not the full database-backed acquisition stage. Live PostgreSQL resume,
+repeat-run skipping and S3 upload/receipt verification remain unavailable because
+database/storage credentials are unset. No production state writes, S3 uploads
+or GitHub workflow dispatch occurred.
