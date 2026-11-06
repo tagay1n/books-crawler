@@ -175,31 +175,9 @@ were checked against the official references on 2026-11-06:
 [native workflow controls](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows),
 [Actions limits](https://docs.github.com/en/actions/reference/limits).
 
-## Verification record and remaining checks
+## Verification limits
 
-No automated tests were added or run. Manual/CLI inspection verified:
-
-- 33 callers exactly match the registry excluding Common Crawl; shared wiring and
-  source-specific secret mappings were inspected. All source configurations load
-  with the profile without resolving unrelated source credentials.
-- 66 distinct twice-monthly UTC cron slots, days 1–28, including Februaries in
-  2024, 2025, 2026 and 2028. All workflow YAML parses; every embedded shell script
-  passes `bash -n`; source files currently contain manual triggers only.
-- Budget probes show one shared ingestion deadline, a discovery stop that leaves
-  acquisition eligible, and a 1,800-second publication reserve. An exhausted
-  overall budget reports `soft deadline`.
-- In an empty temporary workspace, missing image inputs become pending while
-  result history remains intact; a second recovery call is unchanged. Missing
-  Litres/Milli inputs retain recovery evidence and become eligible again.
-- A real bounded CLI invocation with missing `LITRES_SID` fails before database
-  access and writes a failed Actions summary. Missing `DATABASE_URL` fails the
-  read-only overview promptly. Changed modules compile; `git diff --check` passes.
-
-No configured Postgres service, S3 service, source sessions or GitHub CLI were
-available for integration verification. Still required against isolated state:
-real checkpoint/resume and repeat-run receipt skipping, upload/HEAD reconciliation
-and injected upload failure, source lock contention across processes, expired
-source access, and an end-to-end image assembly on a fresh workspace. Actions
-schema validation was by YAML/shell parsing and inspection; `actionlint` and
-GitHub-hosted execution were unavailable. Do not enable production sources merely
-to perform these checks.
+Implementation checks and outstanding integration checks are recorded in the
+[verification archive](archive/implementation-verification.md#scheduled-ingestion-verification-2026-11-06).
+Remote rollout and disabled-state verification remain pending; follow the rollout
+procedure above before adding scheduled triggers.

@@ -40,7 +40,7 @@ separate derived-PDF limits apply. One issue consumes one image-download item;
 interrupted issues resume from verified originals. Repeat runs verify local hashes
 and reuse complete PDFs without network requests; `--recheck` revalidates originals.
 Public direct PDFs are preferred when available. Artifacts are stored under
-`__artifacts/ingestion/kfu_vakyt/`. See the [earlier pilot](../kfu-vakyt-pilot.md)
+`__artifacts/ingestion/kfu_vakyt/`. See the [earlier pilot](../archive/source-investigations.md#kfu-вакыт-acquisition-pilot)
 for the original investigation; the source is now registered for production use.
 
 Implementation verification inspected 30 native results across three listing pages,

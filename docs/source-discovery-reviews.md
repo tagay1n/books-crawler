@@ -10,7 +10,7 @@ their existing inventory.
 All initial last-reviewed dates are **2026-11-06**, at the owner's request.
 These are rotation baseline dates, not evidence of fresh audits on that day.
 `Baseline` means no audit has yet been recorded in this register. Existing source
-guides and the historical [source review log](source-review-log.md) provide
+guides and the historical [source review log](archive/source-investigations.md#autonomous-source-review-2026-10-28) provide
 background; their checks do not establish current discovery completeness.
 
 ## Choose the next source

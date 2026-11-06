@@ -38,7 +38,7 @@ Source checksums are not supplied by this listing: the shared downloader checks
 transport length when available, file signatures, local SHA-256/MD5, configured
 byte/time/disk limits and atomic publication. These checks do not establish
 completeness against a printed edition. Originals are retained unchanged under
-`<artifacts_root>/turuz/files/`, alongside `manifest.json` and metadata observations.
+`<artifacts_root>/turuz/files/`, with progress and metadata observations in PostgreSQL.
 Ordinary repeated downloads skip verified local files; missing/corrupt files are
 eligible again. `--recheck` requests source revalidation. Run discovery again to
 refresh the collection observation and mark removed links inactive.

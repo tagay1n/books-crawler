@@ -47,8 +47,8 @@ atomic publication; PyMuPDF verifies a nonempty readable PDF and records the act
 PDF page count. A bibliographic page count is a source claim and need not equal
 the PDF page count. Original files are preserved without conversion or OCR.
 
-Full ingestion uses `__artifacts/ingestion/miras/manifest.json`, `files/`, and
-`summaries/`. The existing `pilot/` directory is preserved separately and is not
+Full ingestion stores progress and run summaries in PostgreSQL, with originals
+under `__artifacts/ingestion/miras/files/`. The existing `pilot/` directory is preserved separately and is not
 automatically imported. `--limit` counts individual PDFs, including separate parts
 of a book. Incomplete scans and transfers resume using the same shared checkpoints
 and verified-local-file behavior as the other adapters.

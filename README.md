@@ -23,8 +23,8 @@ Original and derived documents remain in local artifact directories.
 consult the [source guides](docs/local-ingestion.md) before running ingestion.
 Local JSON manifests are archived snapshots or explicit exports, not active progress state.
 
+- [Documentation map](docs/README.md)
 - [Adapter development and agent workflows](docs/adapter-development.md)
 - [Configuration, budgets and recovery](docs/ingestion/operations.md)
-- [Source scopes](docs/ingestion/sources.md)
 - [Bounded public-page inspection](docs/source-inspection.md)
 - [Discovery review register](docs/source-discovery-reviews.md)

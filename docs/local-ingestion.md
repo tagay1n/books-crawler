@@ -1,81 +1,64 @@
-# Local document ingestion
+# Source guide index
 
-Read only the guide for the source you are working on. The shared CLI uses
-explicit operational YAML; examples are never loaded automatically. Start with
-[configuration, budgets and recovery](ingestion/operations.md),
-[implemented source scopes](ingestion/sources.md), or the
-[adapter development map](adapter-development.md).
+Open only the selected source guide. It owns source URLs, admission/access rules,
+commands and sample evidence. PostgreSQL holds current progress; historical sample
+counts and file manifests in guides are dated evidence, not live queue status.
 
-For periodic checks of discovery coverage and filtering, use the
-[source discovery review register](source-discovery-reviews.md) to pick and record
-one source at a time.
+Use `cli.py sources --details --source NAME` for current capabilities;
+`ingestion/registry.py` is the source inventory authority. Shared behavior lives in
+[operations](ingestion/operations.md); code navigation starts at the
+[adapter map](adapter-development.md). For coverage audits, use the
+[review register](source-discovery-reviews.md).
 
-```bash
-.venv/bin/python cli.py sources
-.venv/bin/python cli.py --config config/sources/magarif.yaml status --source magarif
-.venv/bin/python scripts/ingestion_overview.py --database --source magarif
-```
+| Source ID | Guide | Scope / access |
+| --- | --- | --- |
+| `common_crawl` | [Common Crawl / FinePDFs](ingestion/common-crawl.md) | Tatar Cyrillic/Latin PDF dataset records and WARC offsets |
+| <a id="tugan-zhir-archive"></a>`tuganzhir` | [Tugan Zhir](ingestion/tuganzhir.md) | Publisher-declared Tatar/Russian issue PDFs |
+| <a id="dum-rt-contemporary-tatar-publications"></a>`dumrt` | [DUM RT](ingestion/dumrt.md) | Contemporary Tatar newspaper and modern Шура PDFs |
+| <a id="fänni-tatarstan-issue-pdfs"></a>`ftatarstan` | [Fänni Tatarstan](ingestion/ftatarstan.md) | Explicitly Tatar-labelled full-issue PDF galleys |
+| <a id="sarhaan-tatar-publications"></a>`sarhaan` | [Sarhaan](ingestion/sarhaan.md) | Explicit Tatar-labelled PDFs; alphabet lessons held |
+| <a id="obuchalka-reviewed-tatar-textbooks"></a>`obuchalka` | [Obuchalka](ingestion/obuchalka.md) | Individually reviewed Tatar textbooks |
+| <a id="echo-of-centuries-article-pdfs"></a>`echovek` | [Echo of Centuries](ingestion/echovek.md) | Explicitly Tatar-labelled article PDFs |
+| <a id="nizgar-magazine-archive"></a>`nizgar` | [Nizgar](ingestion/nizgar.md) | Linked bilingual magazine PDFs |
+| <a id="yazuchy-publisher-catalog"></a>`yazuchy` | [Yazuchy](ingestion/yazuchy.md) | Tatar-labelled or hash-reviewed publisher PDFs |
+| <a id="turuz-dictionaries"></a>`turuz` | [Turuz](ingestion/turuz.md) | Tatar-labelled dictionary originals |
+| <a id="мәгарифвакыт-textbook-packages"></a>`magarif_vakyt` | [Мәгариф–Вакыт](ingestion/magarif-vakyt.md) | Linked PDFs and textbook ZIP/reader assemblies |
+| <a id="безнең-мирас-issue-archive"></a>`beznenmiras` | [Безнең мирас](ingestion/beznenmiras.md) | Issue metadata and linked original documents |
+| <a id="isxaki-books-and-works"></a>`isxaki` | [Isxaki](ingestion/isxaki.md) | Original editions, works and books about Iskhaki |
+| <a id="internet-archive-originals"></a>`internet_archive` | [Internet Archive](ingestion/internet-archive.md) | Public original documents explicitly labelled Tatar |
+| <a id="kfu-historical-books-and-manuscripts"></a>`kfu_books` | [KFU books](ingestion/kfu-books.md) | Turkic–Tatar books: direct files and supported readers |
+| `kfu_manuscripts` | [KFU manuscripts](ingestion/kfu-books.md) | Turkic–Tatar manuscripts: direct files and supported readers |
+| <a id="kfu-ил-newspaper"></a>`kfu_il` | [KFU «Ил»](ingestion/kfu-il.md) | Explicitly Tatar-labelled newspaper issues |
+| <a id="tataroved-publication-archive"></a>`tataroved` | [Tataroved](ingestion/tataroved.md) | Bibliographic Tatar-language claims or hash-reviewed originals |
+| <a id="kfu-academic-electronic-archive"></a>`kfu_dspace` | [KFU academic archive](ingestion/kfu-dspace.md) | Tatar-topic search; language claims or reviewed files |
+| <a id="kfu-historical-repository-all-collections"></a>`kfu_repository` | [KFU historical repository](ingestion/kfu-repository.md) | All collections; explicit Tatar item-language admission |
+| <a id="kfu-азад-халык-newspaper"></a>`kfu_azad_halyk` | [KFU «Азад халык»](ingestion/kfu-azad-halyk.md) | Explicitly Tatar-labelled newspaper issues |
+| <a id="kfu-шура-journal"></a>`kfu_shura` | [KFU «Шура»](ingestion/kfu-shura.md) | Explicitly Tatar-labelled historical journal issues |
+| <a id="kfu-вакыт-newspaper"></a>`kfu_vakyt` | [KFU «Вакыт»](ingestion/kfu-vakyt.md) | Exact-series search; explicit Tatar item-language admission |
+| <a id="tatar-galyame-educational-catalog"></a>`tatargalyame` | [Tatar Galyame](ingestion/tatargalyame.md) | Hosted educational documents across all languages |
+| <a id="wikimedia-commons-original-documents"></a>`commons` | [Wikimedia Commons](ingestion/commons.md) | Checksum-verified original document uploads |
+| <a id="miras-periodicals"></a>`miras_periodicals` | [Miras periodicals](ingestion/miras-periodicals.md) | Tatar source claims; browser session required |
+| <a id="miras-books-and-browser-session-access"></a>`miras` | [Miras books](ingestion/miras.md) | Exposed book PDFs across all languages; browser session required |
+| `magarif` | [Мәгариф](ingestion/magarif.md) | Archive attachments |
+| `tatarica` | [Tatarica](ingestion/tatarica.md) | Documents linked from library books and journal articles |
+| `darul_kutub` | [Darul-Kutub](ingestion/darul-kutub.md) | Public book/journal originals across all languages |
+| `tatkniga` | [Tatkniga](ingestion/tatkniga.md) | Tatar/bilingual originals and supported public flipbooks |
+| `kazanutlary` | [Kazan Utları](ingestion/kazanutlary.md) | Scanned issue images assembled into PDFs |
+| `litres` | [Litres](ingestion/litres.md) | Unified stages, SID access and legacy migration |
+| `milli_kitaphana` | [Milli Kitaphana](ingestion/milli-kitaphana.md) | Unified stages, configured access and legacy migration |
 
-For candidate qualification before writing an adapter, use
-[bounded source inspection](source-inspection.md).
+## Deferred candidates
 
-## Source guides
+[Belem.ru](ingestion/belem-deferred.md) remains deferred by the owner.
 
-Old section anchors are retained below for existing links and bookmarks.
+## Compatibility bookmarks
 
-| Source | Focused guide |
-| --- | --- |
-| Common Crawl / FinePDFs | [Usage and migration](ingestion/common-crawl.md) |
-| <a id="tugan-zhir-archive"></a>Tugan Zhir archive | [Usage and evidence](ingestion/tuganzhir.md) |
-| <a id="dum-rt-contemporary-tatar-publications"></a>DUM RT contemporary Tatar publications | [Usage and evidence](ingestion/dumrt.md) |
-| <a id="fänni-tatarstan-issue-pdfs"></a>Fänni Tatarstan issue PDFs | [Usage and evidence](ingestion/ftatarstan.md) |
-| <a id="sarhaan-tatar-publications"></a>Sarhaan Tatar publications | [Usage and evidence](ingestion/sarhaan.md) |
-| <a id="obuchalka-reviewed-tatar-textbooks"></a>Obuchalka reviewed Tatar textbooks | [Usage and evidence](ingestion/obuchalka.md) |
-| <a id="echo-of-centuries-article-pdfs"></a>Echo of Centuries article PDFs | [Usage and evidence](ingestion/echovek.md) |
-| <a id="nizgar-magazine-archive"></a>Nizgar magazine archive | [Usage and evidence](ingestion/nizgar.md) |
-| <a id="yazuchy-publisher-catalog"></a>Yazuchy publisher catalog | [Usage and evidence](ingestion/yazuchy.md) |
-| <a id="turuz-dictionaries"></a>Turuz dictionaries | [Usage and evidence](ingestion/turuz.md) |
-| <a id="мәгарифвакыт-textbook-packages"></a>Мәгариф–Вакыт textbook packages | [Usage and evidence](ingestion/magarif-vakyt.md) |
-| <a id="безнең-мирас-issue-archive"></a>Безнең мирас issue archive | [Usage and evidence](ingestion/beznenmiras.md) |
-| <a id="isxaki-books-and-works"></a>Isxaki books and works | [Usage and evidence](ingestion/isxaki.md) |
-| <a id="internet-archive-originals"></a>Internet Archive originals | [Usage and evidence](ingestion/internet-archive.md) |
-| <a id="kfu-historical-books-and-manuscripts"></a>KFU historical books and manuscripts | [Usage and evidence](ingestion/kfu-books.md) |
-| <a id="kfu-ил-newspaper"></a>KFU «Ил» newspaper | [Usage and evidence](ingestion/kfu-il.md) |
-| <a id="tataroved-publication-archive"></a>Tataroved publication archive | [Usage and evidence](ingestion/tataroved.md) |
-| <a id="kfu-academic-electronic-archive"></a>KFU academic electronic archive | [Usage and evidence](ingestion/kfu-dspace.md) |
-| <a id="kfu-historical-repository-all-collections"></a>KFU historical repository: all collections | [Usage and evidence](ingestion/kfu-repository.md) |
-| <a id="kfu-азад-халык-newspaper"></a>KFU «Азад халык» newspaper | [Usage and evidence](ingestion/kfu-azad-halyk.md) |
-| <a id="kfu-шура-journal"></a>KFU «Шура» journal | [Usage and evidence](ingestion/kfu-shura.md) |
-| <a id="kfu-вакыт-newspaper"></a>KFU «Вакыт» newspaper | [Usage and evidence](ingestion/kfu-vakyt.md) |
-| <a id="tatar-galyame-educational-catalog"></a>Tatar Galyame educational catalog | [Usage and evidence](ingestion/tatargalyame.md) |
-| <a id="wikimedia-commons-original-documents"></a>Wikimedia Commons original documents | [Usage and evidence](ingestion/commons.md) |
-| <a id="miras-periodicals"></a>Miras periodicals | [Usage and evidence](ingestion/miras-periodicals.md) |
-| <a id="miras-books-and-browser-session-access"></a>Miras books and browser-session access | [Usage and evidence](ingestion/miras.md) |
-| <a id="deferred-source-belemru"></a>Deferred source: Belem.ru | [Usage and evidence](ingestion/belem-deferred.md) |
-| Magarif archive attachments | [Usage and evidence](ingestion/magarif.md) |
-| Tatarica library | [Usage and evidence](ingestion/tatarica.md) |
-| Darul-Kutub originals | [Usage and evidence](ingestion/darul-kutub.md) |
-| Tatkniga public library | [Usage and evidence](ingestion/tatkniga.md) |
-| Kazan Utları archive | [Usage and evidence](ingestion/kazanutlary.md) |
-
+<a id="deferred-source-belemru"></a>
 <a id="shared-configuration-and-operation"></a>
 <a id="file-level-language-reviews"></a>
 <a id="miras-cookie-based-access-pilot"></a>
 <a id="remembered-fallback-ordinary-browser-extension"></a>
 
-## Shared operation and compatibility links
-
-- [Configuration, artifacts, budgets and recovery](ingestion/operations.md).
+- [Shared configuration and recovery](ingestion/operations.md).
 - [File-level language reviews](ingestion/kfu-dspace.md#file-level-language-reviews).
-- [Miras session export and retained access pilot](ingestion/miras.md).
-- [Remembered browser fallback](ingestion/miras.md#remembered-fallback-ordinary-browser-extension).
-- [Latest autonomous session handoff](autonomous-session-2026-10-28.md).
-
-Metadata claims, candidate counts, downloaded originals and derived PDFs are
-separate evidence levels. Follow each adapter's admission and access policy.
-
-[Litres: unified stages, SID configuration and legacy migration](ingestion/litres.md).
-
-[Milli Kitaphana: unified stages and existing-state migration](ingestion/milli-kitaphana.md).
-
-Scheduled Actions execution uses the same CLI; see [scheduled ingestion operations](scheduled-ingestion.md) for profiles, credentials and the initially disabled rollout.
+- [Miras session access and browser fallback](ingestion/miras.md).

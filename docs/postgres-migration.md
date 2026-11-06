@@ -58,7 +58,7 @@ rechecks may acquire files again.
 ```bash
 .venv/bin/python scripts/ingestion_overview.py --database
 .venv/bin/python scripts/ingestion_overview.py --database --source litres
-.venv/bin/python cli.py --config ingestion.yaml status --source tatkniga
+.venv/bin/python cli.py --config config/sources/tatkniga.yaml status --source tatkniga
 ```
 
 Local overview arguments still inspect archived JSON snapshots, explicitly.
@@ -100,7 +100,8 @@ local files are absent. An unfinished assembly stage lacking its inputs reports
 `awaiting_inputs`, without erasing acquisition progress. Restore inputs or use an
 explicit `download --recheck` to reacquire them. Document bodies, images and decoded
 source content are still files; ensure new outputs reach durable storage before
-discarding runner disk. This change does not implement S3 transfer or workflows.
+discarding runner disk. See [S3 publication](ingestion/operations.md#s3-publication) and
+[scheduled operations](scheduled-ingestion.md) for durable output handling.
 
 ## Storage and connection ownership
 
@@ -126,55 +127,11 @@ storage separately because its 1 GB disk also serves WAL and other overhead.
 There is no automatic history deletion. Grow the plan or explicitly archive data
 if storage becomes insufficient.
 
-GitHub workflows, S3 object reconciliation and uploader changes are outside this
-migration. Fresh workers can recover progress from Postgres, but files needed for
-new assembly stages still require their inputs in the artifact workspace.
+Fresh workers recover progress from Postgres. `run` restores missing unpublished
+inputs; assemblies still need their input files in the artifact workspace. See
+[scheduled recovery](scheduled-ingestion.md#runtime-and-storage).
 
-## Manual verification performed
+## Migration history
 
-Verified against an isolated PostgreSQL 16 container, without automated tests:
-all four imports and repeat imports; persisted counts (527 Litres records,
-16,579 Milli records, 90 Tatkniga records with 278 assets, 36,607 Common Crawl
-records); rollback; competing writers; lock-session loss; completion skipping
-with empty workspaces; and two bounded live Magarif discovery invocations with
-persisted progress and no discovery errors. Imported tables/indexes occupied
-approximately 53 MiB before subsequent discovery. Compilation and
-`git diff --check` passed. These initial checks did not modify Aiven.
-
-### Removal of local progress dependencies
-
-Manual follow-up verification covered all 33 registered source status operations,
-Litres candidate admission/review persistence, Milli split/selection recovery and
-named recovery journals across empty workspaces. These operations produced no
-local files. Two bounded live Magarif discovery invocations resumed from Postgres
-with no discovery errors and no local progress output. Completed direct downloads
-and image publications skipped missing local files; unfinished finalization
-reported `awaiting_inputs`, and an unchanged recorded recipe skipped finalization.
-A worker rejected a terminated Postgres lock session. Real Milli recovery journals
-(1,969 records in `default`, two in the other journal) imported successfully;
-repeat import was a no-op. Source website credentials and publication destinations
-were not exercised. No automated tests were added.
-
-Before changes, local indexes were archived under
-`__artifacts/state-backups/20261106T133402Z/`. The complete archive is
-`processing-state-complete.zip`: 249 files, 248,633,931 uncompressed bytes,
-31,536,375 archive bytes, with a SHA-256 inventory. Archive contents were verified
-and all original progress files were confirmed unchanged. The archive is ignored
-by Git and readable only by its owner. Aiven was subsequently initialized and
-imported as recorded below.
-
-### Aiven migration applied (2026-11-06)
-
-Initialized the ingestion schema for all 34 registered sources over an SSL
-connection and applied all four established-source imports. Read-back verification
-confirmed 527 Litres records, 16,579 Milli Kitaphana records, 90 Tatkniga records
-with 278 assets, and 36,607 Common Crawl records. Completion evidence was preserved,
-including 478 acquired Litres records, 14,759 fully downloaded Milli records,
-189 acquired Tatkniga assets and 35,113 uploaded Common Crawl records.
-
-Milli's recovery journals retained 1,969 records in `default` and two records in
-`two-pending-20261030`. All other source record tables were empty. Four import
-receipts were verified. Final database size was 65,631,935 bytes (about 63 MiB),
-including 56,516,608 bytes of ingestion tables and indexes. Local indexes and
-backups were left unchanged. Future CLI and workflow processes must supply
-`DATABASE_URL`; connection credentials are not stored in this repository.
+The Aiven migration was applied on 2026-11-06. Import counts, backup locations and
+manual verification are in the [verification archive](archive/implementation-verification.md#postgres-migration-verification).

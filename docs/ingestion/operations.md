@@ -12,26 +12,10 @@ then select that operational file explicitly:
 
 ```bash
 .venv/bin/python cli.py sources
-.venv/bin/python cli.py --config config/sources/magarif.yaml discover --source magarif
-.venv/bin/python cli.py --config config/sources/magarif.yaml status --source magarif
-.venv/bin/python cli.py --config config/sources/magarif.yaml download --source magarif --limit 1
-.venv/bin/python cli.py --config config/sources/magarif.yaml run --source magarif
-.venv/bin/python cli.py --config config/sources/magarif.yaml download --source magarif --recheck
-.venv/bin/python cli.py --config config/sources/tatarica.yaml discover --source tatarica --max-pages 2
-.venv/bin/python cli.py --config config/sources/tatarica.yaml status --source tatarica
-.venv/bin/python cli.py --config config/sources/tatarica.yaml download --source tatarica --limit 1
-.venv/bin/python cli.py --config config/sources/darul_kutub.yaml discover --source darul_kutub --max-pages 2
-.venv/bin/python cli.py --config config/sources/darul_kutub.yaml status --source darul_kutub
-.venv/bin/python cli.py --config config/sources/darul_kutub.yaml download --source darul_kutub --limit 1
-.venv/bin/python cli.py --config config/sources/kazanutlary.yaml discover --source kazanutlary --max-pages 2
-.venv/bin/python cli.py --config config/sources/kazanutlary.yaml download --source kazanutlary --limit 1
-.venv/bin/python cli.py --config config/sources/kazanutlary.yaml status --source kazanutlary
-.venv/bin/python cli.py --config config/sources/tatkniga.yaml discover --source tatkniga --max-pages 2
-.venv/bin/python cli.py --config config/sources/tatkniga.yaml download --source tatkniga --limit 1
-.venv/bin/python cli.py --config config/sources/tatkniga.yaml status --source tatkniga
-.venv/bin/python cli.py --config config/sources/miras.yaml discover --source miras --max-pages 2 --session-file PATH
-.venv/bin/python cli.py --config config/sources/miras.yaml download --source miras --limit 2 --session-file PATH
-.venv/bin/python cli.py --config config/sources/miras.yaml status --source miras
+.venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml status --source magarif
+.venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml discover --source magarif --max-pages 2
+.venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml download --source magarif --limit 1
+.venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml run --source magarif --max-pages 2 --limit 1
 ```
 
 `sources`, `inspect` and command help do not need configuration. Acquisition and status commands require
@@ -39,7 +23,7 @@ then select that operational file explicitly:
 YAML file's directory. `DATABASE_URL` supplies the shared state connection; source settings remain in YAML, and
 example files are never selected automatically. Miras network commands require
 `--session-file` from an ordinary verified browser, shared with `miras_periodicals`;
-Litres instead reads SID from sources.litres.sid in operational YAML; see [its guide](litres.md). Other adapters require no credentials. `--session-file` is rejected for other sources. `status` does not read
+Litres instead reads SID from sources.litres.sid in operational YAML; see [its guide](litres.md). Milli Kitaphana needs its configured cryptographic access values; see [its guide](milli-kitaphana.md). `--session-file` is rejected for other sources. `status` does not read
 a session file or make network requests.
 
 Only the selected source needs a `sources.<source>.archive_url` configuration
@@ -118,9 +102,6 @@ after individual records and completed downloads. Metadata changes append
 observations; unchanged consecutive observations are not duplicated. Original
 download results retain their captured observation IDs.
 
-
-
-
 `download` processes pending/failed current assets and skips recorded successful
 acquisition even if runner-local copies are missing. Restore missing assembly
 inputs or explicitly reacquire them; unfinished assembly reports `awaiting_inputs`.
@@ -196,9 +177,8 @@ its own `.tmp/run-*` directory; a later run does not need or automatically delet
 it. A published file whose manifest commit was interrupted may be downloaded
 again and deduplicated. Postgres is the progress authority.
 
-This delivery stores originals and supported reader-derived PDFs locally. It does not
-upload, import catalog data, classify language, expand archives, or run scheduled jobs.
-
+`download` and `finalize` store outputs locally. `run` also publishes completed
+documents to S3; [scheduled workflows](../scheduled-ingestion.md) use the same CLI.
 
 ## Per-source configuration
 
@@ -237,4 +217,44 @@ only the relevant values. Relative paths still resolve against that private file
 Never commit credentials. The obsolete local `ingestion.yaml` has been removed; use per-source files instead.
 
 CLI page/item limits still restrict configured caps. Source listing and database
-inspection remain configuration-free. GitHub workflow creation is a separate step.
+inspection remain configuration-free. See [scheduled operations](../scheduled-ingestion.md) for the Actions rollout.
+
+## S3 publication
+
+All sources support `publish --source NAME --target s3` (S3 is the default target).
+`run` checkpoints finished local documents and publishes them automatically.
+`download` and `finalize` remain local stages. Existing explicitly selected legacy
+publication targets remain available. Local files are retained.
+
+Configure a single destination in the selected operational YAML:
+
+```yaml
+storage:
+  s3:
+    bucket: your-bucket
+    endpoint_url: https://your-s3-compatible-endpoint
+    region: us-east-1
+    prefix: books
+```
+
+Endpoint and region are optional for AWS. Credentials use boto3's standard
+credential chain, including `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and
+optional `AWS_SESSION_TOKEN`; do not put credentials in YAML. `DATABASE_URL`
+continues to select authoritative progress and upstream metadata storage.
+
+`ingestion/publication.py` projects native source state into
+`PublishableArtifact` values. Extend that projection for new output layouts;
+reuse the transfer implementation. Completed direct documents, assembled PDFs,
+and Markdown with relative media are published; scan inputs, encrypted parts,
+ZIP packages, and temporary files are excluded. Objects have deterministic
+source/content keys and SHA-256 object metadata. PostgreSQL `s3_publications`
+receipts retain destination, provenance and object hashes. Legacy Yandex flags
+never count as S3 receipts. Run restores missing unpublished inputs; standalone
+publish reports missing files without visiting upstream sites.
+
+Publication runs after committed checkpoints under the source lock; receipts
+are committed after uploads. An interrupted upload/checkpoint pair is reconciled
+with S3 HEAD on retry. Upload work is capped by the configured item count and
+uses bounded SDK retries/timeouts. A scan/download budget stop leaves publication
+backlog eligible for the next command. Status reports recorded publication counts
+without contacting S3. No public bucket access or metadata sidecar is required.
