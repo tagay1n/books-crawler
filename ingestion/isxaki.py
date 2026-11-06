@@ -12,7 +12,7 @@ from .network import install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
-PARSER_VERSION = 1
+PARSER_VERSION = 2
 COLLECTION_PATHS = (
     "/ijat/kitaplar/", "/ijat/asarlar/", "/asarlar-1908-1918-ellar/",
     "/1919-1947/", "/ijat/about/kitaplar/",
@@ -76,14 +76,24 @@ def record(html, page_url):
             raise ValueError("Isxaki book card has no containing column.")
         card_title = heading.get_text(" ", strip=True)
         description = column.select_one(".elementor-image-box-description")
+        cover = column.select_one(".elementor-image-box-img img[src]")
         card = {"title_raw": card_title,
                 "description_raw": description.get_text(" ", strip=True) if description else None,
-                "links": []}
+                "description_html": description.decode_contents() if description else None,
+                "cover_url": normalize_url(cover["src"], page_url) if cover else None,
+                "links": [], "non_document_links": []}
         for anchor in column.select("a[href]"):
             original = urljoin(page_url, anchor["href"])
             url = normalize_url(anchor["href"], page_url)
             extension = PurePosixPath(unquote(urlsplit(url).path)).suffix.lower()
             if extension not in DOCUMENT_FORMATS:
+                parsed = urlsplit(url)
+                if parsed.scheme in {"http", "https"} and not parsed.username:
+                    card["non_document_links"].append({
+                        "href_raw": anchor["href"], "url": url,
+                        "label": anchor.get_text(" ", strip=True),
+                        "reason": "Not a supported document-file link; metadata only.",
+                    })
                 continue
             label = anchor.get_text(" ", strip=True)
             card["links"].append({"href_raw": anchor["href"], "original_url": original,
@@ -93,9 +103,18 @@ def record(html, page_url):
                 "card_titles": []})
             if card_title not in asset["card_titles"]:
                 asset["card_titles"].append(card_title)
+        card["acquisition_note"] = (
+            "Document links exposed; eligibility is recorded on each asset."
+            if card["links"] else "Metadata only: no supported document file linked from this card."
+        )
         cards.append(card)
     metadata = {"url": page_url, "title": title, "title_raw": title, "cards": cards,
                 "description": content.get_text(" ", strip=True),
                 "admission_reason": "Document linked from a configured Isxaki book/work collection; language and completeness unverified.",
                 "attachments": [{"url": a["url"], "label": a["label"]} for a in assets.values()]}
+    metadata["file_counts"] = {
+        "eligible_documents": sum(a["unsupported_reason"] is None for a in assets.values()),
+        "held_documents": sum(a["unsupported_reason"] is not None for a in assets.values()),
+        "cards_without_document_links": sum(not card["links"] for card in cards),
+    }
     return metadata, list(assets.values())

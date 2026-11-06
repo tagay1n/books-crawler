@@ -41,7 +41,7 @@ initial baseline date) and record the attempt date in the history below.
 | `echovek` | [Echo of Centuries](ingestion/echovek.md) | 2026-11-06 | Partial | 2026-11-07: 64 listing pages/1,385 records; abstract/raw-field retention extended; one original verified. One unresolved card; full detail/admission and live PostgreSQL/S3 checks remain outstanding. |
 | `ftatarstan` | [Fänni Tatarstan](ingestion/ftatarstan.md) | 2026-11-06 | Partial | 2026-11-07: 51 issue pages/48 admitted galleys; contents metadata preserved and one original verified. One unlabelled galley and two missing issue files; live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `internet_archive` | [Internet Archive](ingestion/internet-archive.md) | 2026-11-06 | Partial | 2026-11-07: 20 item inventories expose 47 eligible original PDFs; one verified. File-only scope/counts documented. Full scan, held-record sampling and live PostgreSQL/S3/repeat-run checks remain outstanding. |
-| `isxaki` | [Isxaki](ingestion/isxaki.md) | 2026-11-06 | Baseline | — |
+| `isxaki` | [Isxaki](ingestion/isxaki.md) | 2026-11-06 | Partial | 2026-11-07: five collections/63 unique file URLs; card metadata extended and one original verified. Sixteen cards lack file links; remaining file availability and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `kazanutlary` | [Kazan Utları](ingestion/kazanutlary.md) | 2026-11-06 | Baseline | — |
 | `kfu_azad_halyk` | [KFU «Азад халык»](ingestion/kfu-azad-halyk.md) | 2026-11-06 | Baseline | — |
 | `kfu_books` | [KFU books](ingestion/kfu-books.md) | 2026-11-06 | Baseline | — |
@@ -267,3 +267,24 @@ resume/acquisition, repeat-run and S3 receipt verification remain outstanding;
 live database/storage checks need configured credentials. No production state,
 uploads or workflow dispatch occurred. Preserve the baseline review date pending
 remaining verification.
+
+### 2026-11-07 — isxaki — Partial
+
+Live entry-point navigation and all five configured collections were inspected
+in six requests without retries: 83 cards, 64 eligible document relationships,
+63 unique URLs. Sixteen cards have no supported file link; two expose a malformed
+`http://3hatinile` target that is retained as evidence and never requested.
+Parser version 2 preserves description HTML, cover URLs, non-document link
+evidence, card acquisition notes and per-collection file counts. Existing file
+selection/identities and the file-only output scope remain unchanged.
+
+A complete 437,423-byte, five-page publisher-linked «Мансур» PDF passed transfer
+length/format checks and rendered Tatar body text. See the
+[source guide](ingestion/isxaki.md) and ignored
+`__artifacts/isxaki-review-20261107/` for hashes and evidence. Compilation,
+metadata/file-count and workflow/configuration checks passed; no automated tests
+were added. Existing PostgreSQL/S3/manual workflow integration is retained.
+Other originals were not freshly acquired; database/storage credentials remain
+prerequisites for live persistence/resume, full acquisition, repeat-run and S3
+receipt verification. No production writes, uploads or workflow dispatch occurred.
+Preserve the baseline review date pending remaining verification.
