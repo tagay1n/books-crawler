@@ -17,11 +17,15 @@ class PublishableArtifact:
     provenance: dict
 
 
-def artifacts(data, directory):
+def artifacts(data, directory, *, direct_files_only=False):
     """Project native state without modifying provider payloads."""
     for key, record in data['records'].items():
         observation = record.get('observations', [])
         meta = observation[-1]['metadata'] if observation else record
+        # Direct-only collection policies also exclude previously assembled
+        # outputs; original document assets are projected separately below.
+        if direct_files_only or meta.get('acquisition_policy') == 'direct_files_only':
+            continue
         provenance = {'observation_id': observation[-1]['id']} if observation else {}
         outputs = []
         for name in ('pdf', 'package_pdf'):
@@ -89,7 +93,7 @@ def publish(settings, data, directory, save, summary, budget, *, available_only=
     from boto3.exceptions import S3UploadFailedError
     from .core import file_digests
     config = configuration(settings)
-    inventory = list(artifacts(data, directory))
+    inventory = list(artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True))
     if available_only and not any(a.path.is_file() and not completed(data, a, settings) for a in inventory):
         return
     client = Session().client('s3', endpoint_url=config.get('endpoint_url') or None,
@@ -157,7 +161,7 @@ def publish(settings, data, directory, save, summary, budget, *, available_only=
 
 def restore_missing(settings, data, directory):
     """Invalidate only missing, unpublished inputs; retain acquisition history."""
-    inventory = list(artifacts(data, directory))
+    inventory = list(artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True))
     settled = {a.record for a in inventory if completed(data, a, settings)}
     missing = {a.record for a in inventory
                if not completed(data, a, settings) and not a.path.is_file()}

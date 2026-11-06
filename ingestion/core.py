@@ -334,7 +334,7 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
         result['s3'] = {'published_artifacts': len(data.get('s3_publications', {}))}
         if settings.s3:
             directory = source_directory(settings, source)
-            inventory = list(publication.artifacts(data, directory))
+            inventory = list(publication.artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True))
             result['s3']['current_artifacts'] = len(inventory)
             result['s3']['pending_artifacts'] = sum(not publication.completed(data, a, settings) for a in inventory)
         return result
@@ -378,7 +378,7 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
                                 upload_budget or Budget(settings, publication=True), available_only=command == 'run')
         except BudgetStop as error:
             summary['stops'].append(str(error))
-        inventory = list(publication.artifacts(data, directory))
+        inventory = list(publication.artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True))
         summary['s3'] = dict(current_artifacts=len(inventory),
                              pending_artifacts=sum(not publication.completed(data, a, settings) for a in inventory),
                              published_artifacts=len(data.get('s3_publications', {})))

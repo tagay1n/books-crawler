@@ -43,7 +43,7 @@ initial baseline date) and record the attempt date in the history below.
 | `internet_archive` | [Internet Archive](ingestion/internet-archive.md) | 2026-11-06 | Partial | 2026-11-07: 20 item inventories expose 47 eligible original PDFs; one verified. File-only scope/counts documented. Full scan, held-record sampling and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `isxaki` | [Isxaki](ingestion/isxaki.md) | 2026-11-06 | Partial | 2026-11-07: five collections/63 unique file URLs; card metadata extended and one original verified. Sixteen cards lack file links; remaining file availability and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `kazanutlary` | [Kazan Utları](ingestion/kazanutlary.md) | 2026-11-06 | Baseline | — |
-| `kfu_azad_halyk` | [KFU «Азад халык»](ingestion/kfu-azad-halyk.md) | 2026-11-06 | Baseline | — |
+| `kfu_azad_halyk` | [KFU «Азад халык»](ingestion/kfu-azad-halyk.md) | 2026-11-06 | Partial | 2026-11-07: all 15 public PDFs inventoried; direct-file policy enforced and one original verified. Remaining downloads and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `kfu_books` | [KFU books](ingestion/kfu-books.md) | 2026-11-06 | Baseline | — |
 | `kfu_dspace` | [KFU academic archive](ingestion/kfu-dspace.md) | 2026-11-06 | Baseline | — |
 | `kfu_il` | [KFU «Ил»](ingestion/kfu-il.md) | 2026-11-06 | Baseline | — |
@@ -288,3 +288,28 @@ Other originals were not freshly acquired; database/storage credentials remain
 prerequisites for live persistence/resume, full acquisition, repeat-run and S3
 receipt verification. No production writes, uploads or workflow dispatch occurred.
 Preserve the baseline review date pending remaining verification.
+
+### 2026-11-07 — kfu_azad_halyk — Partial
+
+Selected for existing-document downloads; Kazan Utları remains a separate pending
+candidate because its current adapter assembles page images. Live collection
+inspection and count verification completed in 17 requests: 15 `tt`-labelled
+records, 15 eligible public direct PDFs, no remaining frontier. Restricted ZIPs
+remain inventoried and unrequested. Source metadata preservation is retained.
+
+Added typed opt-in `direct_files_only` for KFU collection configuration and enabled
+it in this source's YAML. Parser version 4 preserves policy and file counts;
+readers remain metadata, image assembly is bypassed, and publication inventory
+excludes prior assembled outputs while retaining direct document assets. Other
+KFU configurations keep their previous reader behavior. One 8,466,638-byte,
+eight-page PDF matched prior hashes. A read-only helper reader check and manual
+publication-projection scenario verified policy boundaries without production
+state writes. See the [source guide](ingestion/kfu-azad-halyk.md) and ignored
+`__artifacts/kfu-azad-halyk-review-20261107/` for details and evidence.
+
+Compilation, configuration/capability and workflow-generator checks passed;
+no automated tests were added. Other originals were not freshly acquired.
+Database/storage credentials remain prerequisites for live resume, full
+acquisition, repeat-run and S3 receipt verification. No production writes,
+uploads or workflow dispatch occurred. Preserve the baseline date pending
+remaining verification.

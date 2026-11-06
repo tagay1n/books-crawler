@@ -14,3 +14,4 @@ sources:
         url_repo_kpfu_ru: repo.kpfu.ru
     collection_id: '27528'
     tatar_only: true
+    direct_files_only: true

@@ -107,7 +107,12 @@ def configured_adapter(source, settings):
         options = settings.source_options
         if not isinstance(options.get('collection_id'), str) or type(options.get('tatar_only')) is not bool:
             raise ValueError(f'Missing or invalid sources.{source}.collection_id / tatar_only')
-        return type(adapter)(options['collection_id'], tatar_only=options['tatar_only'])
+        acquisition = {}
+        if 'direct_files_only' in options:
+            if type(options['direct_files_only']) is not bool:
+                raise ValueError(f'sources.{source}.direct_files_only must be a boolean')
+            acquisition['direct_files_only'] = options['direct_files_only']
+        return type(adapter)(options['collection_id'], tatar_only=options['tatar_only'], **acquisition)
     return adapter
 
 

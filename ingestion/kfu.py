@@ -324,13 +324,15 @@ class CollectionAdapter:
     verification_request = staticmethod(verification_request)
     record_key = staticmethod(record_key)
     prepare_http = staticmethod(prepare_http)
-    resolve_record = staticmethod(resolve_record)
 
-    def __init__(self, collection_id=None, *, tatar_only=False):
+    def __init__(self, collection_id=None, *, tatar_only=False, direct_files_only=False):
         if collection_id is not None and collection_id not in COLLECTIONS:
             raise ValueError("Unknown KFU collection.")
         self.tatar_only = tatar_only
         self.collection_id = collection_id
+        self.direct_files_only = direct_files_only
+        if direct_files_only:
+            self.PARSER_VERSION = 4
 
     def record(self, html, page_url):
         metadata, assets = record(html, page_url)
@@ -344,9 +346,35 @@ class CollectionAdapter:
                                if "dc_relation_ispartofseries" in row["field_classes"]],
             }
         publication = {"25046": "Shura", "27528": "Azad Halyk"}.get(self.collection_id, "Il")
-        return (select_tatar(metadata, assets, publication=publication)
-                if self.tatar_only else (metadata, assets))
+        if self.tatar_only:
+            metadata, assets = select_tatar(metadata, assets, publication=publication)
+        if self.direct_files_only:
+            metadata['acquisition_policy'] = 'direct_files_only'
+            for asset in assets:
+                if asset.get('unsupported_code') == 'kfu_reader':
+                    asset.update(unsupported_code='reader_policy_excluded',
+                                 unsupported_reason='Image-reader acquisition and PDF assembly are disabled; direct documents only.')
+            for entry in metadata['files']:
+                if entry['selection_reason'] == 'kfu_reader':
+                    entry['selection_reason'] = 'reader_policy_excluded'
+            metadata['file_counts'] = {
+                'eligible_documents': sum(not a.get('unsupported_reason') for a in assets),
+                'held_entries': sum(bool(a.get('unsupported_reason')) for a in assets),
+            }
+        return metadata, assets
+
+    def resolve_record(self, http, metadata, assets):
+        if self.direct_files_only:
+            metadata['attachments'] = [{k: a[k] for k in ('url', 'label', 'unsupported_code', 'unsupported_reason') if k in a}
+                                       for a in assets]
+            return metadata, assets
+        return resolve_record(http, metadata, assets)
 
     def download(self, http, manifest, summary, log, recheck, *, selected_records=None):
+        if self.direct_files_only:
+            from .core import download as originals
+            summary.update(download_unit='file', pdf_assembled=0, pdf_reused=0)
+            return originals(http, manifest, summary, log, recheck, extensions=DOCUMENT_FORMATS,
+                             selected_records=selected_records)
         return download(http, manifest, summary, log, recheck,
                         unit="file_or_issue" if self.collection_id in PERIODICALS else "file_or_book")

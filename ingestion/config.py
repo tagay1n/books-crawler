@@ -58,6 +58,8 @@ def load_settings(path: Path | None, source: str = "magarif", *, profile: Path |
         raise ValueError("limits and network must be configuration mappings")
     if not isinstance(selected, dict):
         raise ValueError(f"Missing sources.{source} configuration.")
+    if 'direct_files_only' in selected and type(selected['direct_files_only']) is not bool:
+        raise ValueError(f'sources.{source}.direct_files_only must be a boolean')
     archive_url = selected.get("archive_url")
     if not isinstance(archive_url, str):
         raise ValueError(f"sources.{source}.archive_url must be a URL.")
