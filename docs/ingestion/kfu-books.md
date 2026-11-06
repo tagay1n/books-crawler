@@ -1,9 +1,14 @@
 # KFU historical books and manuscripts
 
-Configure the two source entries from `ingestion.example.yaml`. Both collections
-use the same adapter but maintain independent local manifests and discovery
-checkpoints. All records in the selected collections are admitted; supplied
+Use the selected `config/sources/kfu_books.yaml` or `kfu_manuscripts.yaml`.
+Both collections use the same adapter but maintain independent PostgreSQL state
+and discovery checkpoints. All records in the selected collections are admitted; supplied
 language labels are retained without filtering or content-language inference.
+
+The current books YAML sets `direct_files_only: true`: only eligible existing
+document files are acquired, image readers remain metadata, and PDF assembly is
+disabled. The reader/assembly behavior described below applies to manuscripts and
+legacy configurations without direct-only mode. The manuscripts YAML is unchanged.
 
 ```bash
 .venv/bin/python cli.py --config config/sources/kfu_books.yaml discover --source kfu_books --max-pages 1
@@ -20,8 +25,9 @@ per page), with validated displayed ranges, counts, record identities, and next
 offsets. A final root-page count check also consumes the discovery page budget.
 Repeat `discover` to resume pending records and the listing frontier. Count changes
 or repeated identities require a fresh scan without deleting historical evidence.
-The current advertised totals, 135 books and 256 manuscripts, are catalog records,
-not counts of public PDFs. Traversal is not a transactional snapshot of the site.
+An earlier inspection advertised 135 books and 256 manuscripts; these were catalog
+records, not public-PDF counts. The current books audit below found 136 records.
+Traversal is not a transactional snapshot of the site.
 
 Each record retains its native handle, Dublin Core metadata, bibliographic rows,
 original-script titles, collection provenance, and per-file descriptions. Record
@@ -59,7 +65,8 @@ JPEG without valid DPI metadata, below 200 DPI, or outside RGB/grayscale colour 
 prevents publication and remains available for review; images are not upscaled to
 claim missing detail. The original JPEG bytes remain unchanged in `files/`.
 
-`--limit` counts each direct file or entire image book as one item. Completed image
+In reader-enabled configurations, `--limit` counts each direct file or entire
+image book as one item; current books mode counts direct files only. Completed image
 downloads survive byte caps, deadlines, and interruptions. A later `download` resumes
 from verified originals, and publishes `derived/<sha256>.pdf` atomically only after
 every expected page is present and the PDF page count is verified. No incomplete
@@ -74,9 +81,9 @@ existing `max_file_bytes` still bounds each original image/document. Both limits
 are enforced, and assembly also respects the shared disk reserve and deadline.
 Keeping originals requires additional disk space beyond the compressed PDF.
 
-Discovery parser version 2 starts a fresh collection scan so previously observed
-image-only records can acquire page descriptors. Existing original files and
-historical observations remain retained. Repeat discovery to complete that scan.
+Discovery parser version 2 originally introduced page descriptors for image-only
+records. Current direct-only books use parser version 4. Existing originals and
+historical observations remain retained when a new policy refreshes discovery.
 
 Restricted document URLs, names, displayed sizes, formats, and copy-request links
 remain available in the manifest. Restrictions are not download failures, and
@@ -128,3 +135,91 @@ small derived-PDF cap rejected publication, and restoring the cap rebuilt from
 the originals without network requests. Bounded CLI discovery also resolved all
 558 page descriptors for `net/28071` and 111 pages across two ordered readers for
 `net/27974`, then preserved the remaining catalog work at its soft deadline.
+
+## Books: direct files, PostgreSQL and S3
+
+The books source reuses the direct-file policy implemented for Азад халык. Custom
+YAML should include `sources.kfu_books.direct_files_only: true`; this optional
+boolean selects parser version 4 and records policy plus eligible/held file
+counts. Native handles, bitstream identities, DC metadata, raw bibliography,
+language labels, file descriptions and restriction evidence remain preserved.
+The setting does not add a language filter; `tatar_only: false` retains the
+collection's existing all-language admission policy.
+
+Direct-only resolution never enumerates page readers. Download bypasses image
+assembly; S3 inventory also excludes previously assembled outputs when this
+setting is enabled, including before observations refresh. Public direct files
+remain eligible when the same record also has restricted packages. No ZIPs are
+expanded and no webpage text or HTML is converted to documents. Metadata-only
+and held records remain in PostgreSQL without being published as books.
+
+Set `DATABASE_URL` and initialize the schema once with
+`.venv/bin/python cli.py database init`. Processing stores observations, frontier
+checkpoints, results, errors and S3 receipts in PostgreSQL, without JSON-state
+fallback. Local originals remain under the configured artifact root. See
+[database operations](../postgres-migration.md).
+
+`download` is local. `run` acquires original documents and publishes finished
+files to S3 after committed checkpoints, retaining local files. Standalone
+`publish` retries from local files and reports missing originals:
+
+```bash
+.venv/bin/python cli.py --summary-only --config config/sources/kfu_books.yaml run --source kfu_books --max-pages 1 --limit 1
+.venv/bin/python cli.py --summary-only --config config/sources/kfu_books.yaml publish --source kfu_books --target s3 --limit 1
+```
+
+Configure `S3_BUCKET` and standard AWS credentials. Shared publication uses
+deterministic object keys, SHA-256 metadata and PostgreSQL receipts. Fresh runners
+reacquire missing unpublished originals; receipts allow published files to be
+skipped. The **Ingest kfu_books** workflow already supports manual dispatch using
+the shared runner and `config/scheduled.yaml` limits. No schedule is added.
+Initialize PostgreSQL before dispatch. Required repository secrets:
+`DATABASE_URL`, `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`. Optional:
+`AWS_SESSION_TOKEN`; repository variables `S3_ENDPOINT_URL` and
+`AWS_DEFAULT_REGION`. Runner-local files are temporary; PostgreSQL and S3 retain
+durable state and published originals. See
+[runner operations](../scheduled-ingestion.md).
+
+## Books audit, 2026-11-07 (Europe/Moscow)
+
+Live traversal inspected seven native listing pages and all 136 book records,
+then rechecked the advertised total: 144 requests, no retries/errors, verified
+count 136 and no remaining frontier. It found 111 eligible direct document files
+(110 PDFs, one DOCX) across 110 records. Twenty-six records have no eligible direct
+file. Twenty-five supported document assets remain restricted and two public
+reader entries are held as `reader_policy_excluded`. The complete inventory also
+retains 51 restricted file blocks, including unsupported packages; none was
+requested. File and record counts describe exposed candidates, not successful
+downloads or verified standalone-book completeness.
+
+All 136 observations retain `direct_files_only` policy, DC tags, bibliography,
+file descriptions and collection provenance. Actual reader records `net/28290`
+and `net/27345` stayed metadata without reader/manifest requests or image
+enumeration. `net/28236` retained its public PDF despite its restricted ZIP;
+`net/28280` retained its restricted PDF as held evidence. No access requests,
+registration or restricted-file probes were performed.
+
+One bounded original transfer reverified `net/28236`, `t88064.pdf`: 17,947,124
+bytes, 52 PDF pages, SHA-256
+`12d23afb7a2cfb1ee948c2c112d9e0b3bce899834cfded4b68e5b9e3df3097bd`,
+MD5 `c3f8ebbe01bf316fa0c256360aa5c77e`, matching the earlier sample. Native file
+identity, declared response length and PDF signature passed. Rendered page 5
+shows the historical illustrated alphabet book. These are computed local hashes,
+not source-checksum matches; no language-composition or printed-completeness
+claim was inferred. The remaining 110 eligible files were not freshly acquired.
+
+Evidence is ignored under `__artifacts/kfu-books-review-20261107/`: seven listing
+responses, 136 item responses, final count verification, metadata/catalog/summary
+exports and sample PDF/render/hash report. Review exports are not operational
+state. The adapter/pipeline implementation is reused unchanged; this source's
+YAML now enables the existing direct-file setting. Configuration checks confirmed
+books and Азад халык use parser version 4 while manuscripts, Ил and Шура retain
+their prior configuration and parser version 3.
+
+Compilation, configured parsing, count/file-policy checks, capability listing,
+scheduled profile loading, manual workflow generator equality and
+`git diff --check` passed. No automated tests were added. The sample used shared
+HTTP/native guards and format validation, not the full database-backed acquisition
+stage. Database/storage credentials were unset, so live PostgreSQL checkpoint/
+resume, repeat-run skipping and S3 upload receipts remain unverified. No production
+state writes, S3 uploads or GitHub workflow dispatch occurred.

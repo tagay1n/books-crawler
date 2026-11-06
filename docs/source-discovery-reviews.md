@@ -44,7 +44,7 @@ initial baseline date) and record the attempt date in the history below.
 | `isxaki` | [Isxaki](ingestion/isxaki.md) | 2026-11-06 | Partial | 2026-11-07: five collections/63 unique file URLs; card metadata extended and one original verified. Sixteen cards lack file links; remaining file availability and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `kazanutlary` | [Kazan Utları](ingestion/kazanutlary.md) | 2026-11-06 | Baseline | — |
 | `kfu_azad_halyk` | [KFU «Азад халык»](ingestion/kfu-azad-halyk.md) | 2026-11-06 | Partial | 2026-11-07: all 15 public PDFs inventoried; direct-file policy enforced and one original verified. Remaining downloads and live PostgreSQL/S3/repeat-run checks remain outstanding. |
-| `kfu_books` | [KFU books](ingestion/kfu-books.md) | 2026-11-06 | Baseline | — |
+| `kfu_books` | [KFU books](ingestion/kfu-books.md) | 2026-11-06 | Partial | 2026-11-07: 136 records verified; 111 eligible direct files (110 PDF, one DOCX); direct-only setting enabled and one original verified. Other transfers and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `kfu_dspace` | [KFU academic archive](ingestion/kfu-dspace.md) | 2026-11-06 | Baseline | — |
 | `kfu_il` | [KFU «Ил»](ingestion/kfu-il.md) | 2026-11-06 | Baseline | — |
 | `kfu_manuscripts` | [KFU manuscripts](ingestion/kfu-books.md) | 2026-11-06 | Baseline | — |
@@ -313,3 +313,26 @@ Database/storage credentials remain prerequisites for live resume, full
 acquisition, repeat-run and S3 receipt verification. No production writes,
 uploads or workflow dispatch occurred. Preserve the baseline date pending
 remaining verification.
+
+### 2026-11-07 — kfu_books — Partial
+
+Seven native listing pages and all 136 records were inspected, followed by a
+count check (144 requests, no errors/retries, no remaining frontier). There are
+111 eligible direct files (110 PDF, one DOCX) across 110 records; 26 records lack
+an eligible direct file. Twenty-five restricted document assets and two reader
+entries remain held. All supplied DC/bibliographic/file metadata is retained;
+no restricted files, packages, readers or manifests were requested.
+
+Enabled the existing typed `direct_files_only` setting in the books YAML; parser
+version 4 records the policy, bypasses assembly and excludes assembled outputs
+from publication. Shared adapter code and other KFU settings are unchanged.
+An unchanged 17,947,124-byte, 52-page public PDF matched prior local hashes and
+passed identity/length/format checks. See the [source guide](ingestion/kfu-books.md)
+and ignored `__artifacts/kfu-books-review-20261107/` for evidence and hashes.
+
+Metadata/file-policy, configuration/capability, compilation and workflow-generator
+checks passed; no automated tests were added. Other eligible files were not
+freshly acquired. Live persistence/resume, full database-backed acquisition,
+repeat-run and S3 receipt verification require configured credentials. No
+production writes, uploads or workflow dispatch occurred. Preserve the baseline
+review date pending remaining verification.
