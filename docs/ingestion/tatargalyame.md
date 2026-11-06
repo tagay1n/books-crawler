@@ -18,10 +18,10 @@ returned HTTP 404 during inspection; `/catalogue` and the public JSON API return
 HTTP 200 through direct HTTP, even when the browsing tool could not open the site.
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source tatargalyame --max-pages 15
-.venv/bin/python cli.py --config ingestion.yaml download --source tatargalyame --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source tatargalyame --max-pages 15 --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source tatargalyame
+.venv/bin/python cli.py --config config/sources/tatargalyame.yaml discover --source tatargalyame --max-pages 15
+.venv/bin/python cli.py --config config/sources/tatargalyame.yaml download --source tatargalyame --limit 1
+.venv/bin/python cli.py --config config/sources/tatargalyame.yaml run --source tatargalyame --max-pages 15 --limit 1
+.venv/bin/python cli.py --config config/sources/tatargalyame.yaml status --source tatargalyame
 ```
 
 The owner selected **all hosted documents**. The API does not supply a per-document

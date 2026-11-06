@@ -1,0 +1,7 @@
+extends: ../defaults.yaml
+sources:
+  tatargalyame:
+    archive_url: https://tatargalyame.kpfu.ru/catalogue
+    operational:
+      tatargalyame:
+        origin: https://tatargalyame.kpfu.ru

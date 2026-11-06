@@ -1,4 +1,5 @@
 """All historical KFU repository collections, with item-level Tatar admission."""
+from .runtime_config import option as operational_option
 
 import copy
 import json
@@ -16,7 +17,6 @@ from .paging import CatalogChanged, ListingPage, PageRequest
 from .state import now
 
 
-ARCHIVE_URL = kfu.ORIGIN + "/jspui/community-list"
 PARSER_VERSION = 2
 record_key = kfu.record_key
 
@@ -33,7 +33,7 @@ def collections(html):
         count = re.fullmatch(r"\s*\((\d+)\)\s*", counter.get_text() if counter else "")
         if anchor is None or not anchor.get("href") or count is None:
             raise ValueError("KFU collection entry lacks its native link or count.")
-        url = canonical(anchor["href"], ARCHIVE_URL)
+        url = canonical(anchor["href"], operational_option('kfu_repository', 'archive_url'))
         identity = kfu.handle(url)
         if urlsplit(url).query:
             raise ValueError("Unexpected query in KFU collection tree.")
@@ -42,7 +42,7 @@ def collections(html):
             heading = block.find_previous_sibling("div", class_="community-block")
             link = heading.select_one("a.community-heading[href]") if heading else None
             if link is not None:
-                parent = canonical(link["href"], ARCHIVE_URL)
+                parent = canonical(link["href"], operational_option('kfu_repository', 'archive_url'))
                 parents.append({"handle": kfu.handle(parent), "title": link.get_text(" ", strip=True)})
         entry = {"collection_url": url, "collection_handle": identity,
                  "collection_title": anchor.get_text(" ", strip=True),
@@ -64,12 +64,12 @@ def next_collection(context):
     remaining = context["remaining"]
     if remaining:
         return [collection_request(remaining[0], remaining[1:], context["tree"])]
-    return [PageRequest(ARCHIVE_URL, context={"verify_tree": True, "tree": context["tree"],
+    return [PageRequest(operational_option('kfu_repository', 'archive_url'), context={"verify_tree": True, "tree": context["tree"],
                                              "_request_identity": {"verify_tree": True}})]
 
 
 def parse_listing(html, request, root):
-    if request.url == ARCHIVE_URL:
+    if request.url == operational_option('kfu_repository', 'archive_url'):
         tree = collections(html)
         if request.context.get("verify_tree"):
             if tree != request.context["tree"]:
@@ -128,7 +128,7 @@ def record(html, page_url):
 
 def prepare_http(http, session_file):
     def tree_route(url):
-        if url != ARCHIVE_URL:
+        if url != operational_option('kfu_repository', 'archive_url'):
             raise ValueError("Unexpected KFU collection-tree URL.")
         return "tree"
     kfu.prepare_http(http, session_file, listing_route=tree_route, all_collections=True)

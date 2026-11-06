@@ -1,29 +1,100 @@
-"""Downloads Litres PDF books by fetching page metadata and images, reconstructs PDFs from image pages, and records file IDs and extensions in the index."""
+"""Litres PDF acquisition orchestration; transport and assembly live in focused modules.
 
-import io
-import os.path
-import base64
-import glob
-import hashlib
+Imported helper names remain available here for existing native pipeline callers.
+"""
+from .runtime_config import option as operational_option
+import os
 import re
 from urllib.parse import parse_qs, urlparse
-
-import pymupdf
-from .litres_utils import requests
-from PIL import Image, UnidentifiedImageError
 from rich.progress import track
+from .litres_utils import requests, create_driver, load_index, save_index, get_in_workdir
 
-from .litres_consts import domain
-from .litres_index import BLOCKED_MARKERS, _content_type_from_book_page_html, _content_type_from_reader_url, _open_reader_url
-from .litres_utils import RUNTIME, create_driver, load_index, save_index, get_sid, get_in_workdir, read_config
+from .litres_index import _content_type_from_book_page_html, _content_type_from_reader_url, _open_reader_url
+from .litres_browser import (
+    LitresAuthenticationError as LitresAuthenticationError,
+    _binary_response_details as _binary_response_details,
+    _create_litres_session as _create_litres_session,
+    _fetch_binary_with_browser as _fetch_binary_with_browser,
+    _fetch_binary_with_browser_cookies as _fetch_binary_with_browser_cookies,
+    _fetch_pdf_page_with_browser as _fetch_pdf_page_with_browser,
+    _fetch_text_with_browser as _fetch_text_with_browser,
+    _format_pdf_page_response_error as _format_pdf_page_response_error,
+    _get_litres_cookie_header as _get_litres_cookie_header,
+    _get_litres_headers as _get_litres_headers,
+    _get_litres_page_image_headers as _get_litres_page_image_headers,
+    _is_image_response as _is_image_response,
+    _is_invalid_selenium_session_error as _is_invalid_selenium_session_error,
+    _raise_for_auth_response as _raise_for_auth_response,
+    _raise_for_non_image_pdf_page_response as _raise_for_non_image_pdf_page_response,
+    _raise_for_non_javascript_pdf_metadata_response as _raise_for_non_javascript_pdf_metadata_response,
+    _response_details as _response_details,
+    _should_retry_response_with_browser as _should_retry_response_with_browser,
+    _should_retry_with_browser as _should_retry_with_browser,
+    _wait_for_browser_challenge as _wait_for_browser_challenge,
+    _warm_up_browser_for_protected_url as _warm_up_browser_for_protected_url,
+)
+from .litres_pdf_assembly import (
+    _compressed_page_jpeg_bytes as _compressed_page_jpeg_bytes,
+    _create_pdf as _create_pdf,
+    _is_valid_image_file as _is_valid_image_file,
+    _is_valid_pdf_file as _is_valid_pdf_file,
+    _lossless_page_png_bytes as _lossless_page_png_bytes,
+    _page_image_bytes_for_pdf as _page_image_bytes_for_pdf,
+    _remove_if_exists as _remove_if_exists,
+    _remove_stale_temporary_files as _remove_stale_temporary_files,
+    _resample_lanczos as _resample_lanczos,
+    _save_pdf_page_image as _save_pdf_page_image,
+    _temporary_path as _temporary_path,
+    _to_rgb_image as _to_rgb_image,
+)
+from .litres_pdf_config import _config_bool as _config_bool, _get_pdf_browser_challenge_wait_seconds as _get_pdf_browser_challenge_wait_seconds, _get_pdf_browser_headless as _get_pdf_browser_headless, _get_pdf_compression_options as _get_pdf_compression_options, _get_pdf_config as _get_pdf_config, _required_config_value as _required_config_value
 
-PDF_REQUEST_TIMEOUT_SECONDS = 30
-PDF_RESPONSE_SNIPPET_BYTES = 300
-RAW_PAGE_DPI = 300
 
-
-class LitresAuthenticationError(ValueError):
-    """Raised when Litres redirects protected PDF resources to the login page."""
+# Compatibility exports for the unified native pipeline.
+__all__ = [
+    'LitresAuthenticationError',
+    '_binary_response_details',
+    '_create_litres_session',
+    '_fetch_binary_with_browser',
+    '_fetch_binary_with_browser_cookies',
+    '_fetch_pdf_page_with_browser',
+    '_fetch_text_with_browser',
+    '_format_pdf_page_response_error',
+    '_get_litres_cookie_header',
+    '_get_litres_headers',
+    '_get_litres_page_image_headers',
+    '_is_image_response',
+    '_is_invalid_selenium_session_error',
+    '_raise_for_auth_response',
+    '_raise_for_non_image_pdf_page_response',
+    '_raise_for_non_javascript_pdf_metadata_response',
+    '_response_details',
+    '_should_retry_response_with_browser',
+    '_should_retry_with_browser',
+    '_wait_for_browser_challenge',
+    '_warm_up_browser_for_protected_url',
+    '_compressed_page_jpeg_bytes',
+    '_create_pdf',
+    '_is_valid_image_file',
+    '_is_valid_pdf_file',
+    '_lossless_page_png_bytes',
+    '_page_image_bytes_for_pdf',
+    '_remove_if_exists',
+    '_remove_stale_temporary_files',
+    '_resample_lanczos',
+    '_save_pdf_page_image',
+    '_temporary_path',
+    '_to_rgb_image',
+    'PDF_REQUEST_TIMEOUT_SECONDS',
+    'PDF_RESPONSE_SNIPPET_BYTES',
+    'RAW_PAGE_DPI',
+    '_config_bool',
+    '_get_pdf_browser_challenge_wait_seconds',
+    '_get_pdf_browser_headless',
+    '_get_pdf_compression_options',
+    '_get_pdf_config',
+    '_required_config_value',
+]
 
 
 def visit_pdf_books_pages():
@@ -60,7 +131,7 @@ def visit_pdf_books_pages():
         try:
             for book in pdf_books[:]:
                 url = book['url']
-                for attempt in range(2):
+                for attempt in range(operational_option('litres_pdf', 'book_attempts')):
                     try:
                         if _has_pdf_runtime_details(book):
                             actual_type = "pdf"
@@ -162,7 +233,7 @@ def _get_file_id(book_page_url, driver=None, session=None, driver_provider=None)
 
 
 def _get_file_id_from_book_page_html(book_page_url, session):
-    response = session.get(book_page_url, timeout=PDF_REQUEST_TIMEOUT_SECONDS)
+    response = session.get(book_page_url, timeout=operational_option('litres_pdf_config', 'pdf_request_timeout_seconds'))
     response.raise_for_status()
     details = _response_details(response)
     _raise_for_auth_response(details, "Litres rejected current SID while opening book page")
@@ -172,7 +243,7 @@ def _get_file_id_from_book_page_html(book_page_url, session):
 
 def _get_content_type_from_book_page(book_page_url, session, driver_provider=None):
     try:
-        response = session.get(book_page_url, timeout=PDF_REQUEST_TIMEOUT_SECONDS)
+        response = session.get(book_page_url, timeout=operational_option('litres_pdf_config', 'pdf_request_timeout_seconds'))
         response.raise_for_status()
     except requests.HTTPError as exc:
         if not driver_provider or not _should_retry_with_browser(exc):
@@ -206,10 +277,10 @@ def _get_page_extensions(file_id, session=None, driver=None, driver_provider=Non
     :return: dict with extensions for each page
     """
     print(f"Getting page extensions for file: {file_id}")
-    url = f"{domain}/pages/get_pdf_js/?file={file_id}"
+    url = f"{operational_option('litres_consts', 'domain')}/pages/get_pdf_js/?file={file_id}"
     if session:
         try:
-            with session.get(url, timeout=PDF_REQUEST_TIMEOUT_SECONDS) as r:
+            with session.get(url, timeout=operational_option('litres_pdf_config', 'pdf_request_timeout_seconds')) as r:
                 r.raise_for_status()
                 response = _response_details(r)
                 if driver_provider and _should_retry_response_with_browser(response):
@@ -235,7 +306,7 @@ def _get_page_extensions(file_id, session=None, driver=None, driver_provider=Non
         return _get_page_extensions(file_id, driver=driver_provider())
 
     headers = _get_litres_headers()
-    with requests.get(url, headers=headers, timeout=PDF_REQUEST_TIMEOUT_SECONDS) as r:
+    with requests.get(url, headers=headers, timeout=operational_option('litres_pdf_config', 'pdf_request_timeout_seconds')) as r:
         r.raise_for_status()
         response = _response_details(r)
         _raise_for_non_javascript_pdf_metadata_response(response, url)
@@ -267,10 +338,10 @@ def download_page_images(file_id, page_extensions, session=None, driver=None, dr
         if os.path.exists(result_file):
             os.remove(result_file)
 
-        url = f"{domain}/pages/get_pdf_page/?file={file_id}&page={page_no}&rt=w{p[page_no]['w']}&ft={p[page_no]['ext']}"
+        url = f"{operational_option('litres_consts', 'domain')}/pages/get_pdf_page/?file={file_id}&page={page_no}&rt=w{p[page_no]['w']}&ft={p[page_no]['ext']}"
 
         request = session.get if session else requests.get
-        request_kwargs = {"timeout": PDF_REQUEST_TIMEOUT_SECONDS}
+        request_kwargs = {"timeout": operational_option('litres_pdf_config', 'pdf_request_timeout_seconds')}
         if not session:
             request_kwargs["headers"] = headers
         with request(url, **request_kwargs) as r:
@@ -298,443 +369,3 @@ def download_page_images(file_id, page_extensions, session=None, driver=None, dr
 
             _raise_for_non_image_pdf_page_response(response, url)
             _save_pdf_page_image(image_content, response, result_file, url)
-
-
-def _save_pdf_page_image(image_content, response, result_file, url):
-    tmp_file = _temporary_path(result_file)
-    try:
-        img = Image.open(io.BytesIO(image_content))
-    except UnidentifiedImageError as exc:
-        raise ValueError(_format_pdf_page_response_error(response, url)) from exc
-    try:
-        with img:
-            img.save(tmp_file, format="PNG", dpi=(RAW_PAGE_DPI, RAW_PAGE_DPI), optimize=True)
-        if not _is_valid_image_file(tmp_file):
-            raise ValueError(_format_pdf_page_response_error(response, url))
-        os.replace(tmp_file, result_file)
-    finally:
-        _remove_if_exists(tmp_file)
-
-
-def _is_valid_image_file(path):
-    if not os.path.exists(path) or os.path.getsize(path) == 0:
-        return False
-    try:
-        with Image.open(path) as img:
-            img.verify()
-        return True
-    except (OSError, UnidentifiedImageError):
-        return False
-
-
-def _raise_for_non_image_pdf_page_response(response, url):
-    _raise_for_auth_response(response, "Litres rejected current SID while loading PDF page image")
-    content_type = response["content_type"] or ""
-    if content_type and not content_type.lower().startswith("image/"):
-        raise ValueError(_format_pdf_page_response_error(response, url))
-
-
-def _format_pdf_page_response_error(response, url):
-    snippet = response["content"][:PDF_RESPONSE_SNIPPET_BYTES].decode("utf-8", errors="replace")
-    snippet = " ".join(snippet.split())
-    return (
-        "Litres returned a non-image PDF page response; "
-        f"url={url}; status={response['status']}; "
-        f"content-type={response['content_type']}; body-start={snippet!r}"
-    )
-
-
-def _raise_for_non_javascript_pdf_metadata_response(response, url):
-    _raise_for_auth_response(response, "Litres rejected current SID while loading PDF metadata")
-    content_type = response["content_type"] or ""
-    text_start = response["text"].lstrip()[:1]
-    if response["status"] >= 400 or content_type.lower().startswith("text/html") or text_start == "<":
-        snippet = " ".join(response["text"][:PDF_RESPONSE_SNIPPET_BYTES].split())
-        raise ValueError(
-            "Litres returned a non-JavaScript PDF metadata response; "
-            f"url={url}; status={response['status']}; "
-            f"content-type={response['content_type']}; body-start={snippet!r}"
-        )
-
-
-def _raise_for_auth_response(response, message):
-    if "/auth/login/" in (response.get("url") or ""):
-        raise LitresAuthenticationError(
-            f"{message}. Update 'sid' in sources.litres in the selected operational YAML, then rerun the command."
-        )
-
-
-def _should_retry_with_browser(exc):
-    response = getattr(exc, "response", None)
-    return getattr(response, "status_code", None) in {401, 403}
-
-
-def _should_retry_response_with_browser(response):
-    content_type = (response.get("content_type") or "").lower()
-    text = (response.get("text") or "").lower()
-    return content_type.startswith("text/html") and any(marker.lower() in text for marker in BLOCKED_MARKERS)
-
-
-def _is_invalid_selenium_session_error(exc):
-    try:
-        from selenium.common.exceptions import InvalidSessionIdException, WebDriverException
-    except ImportError:
-        return "invalid session id" in str(exc).lower()
-    return isinstance(exc, InvalidSessionIdException) or (
-        isinstance(exc, WebDriverException) and "invalid session id" in str(exc).lower()
-    )
-
-
-def _create_litres_session():
-    session = requests.Session()
-    session.headers.update(_get_litres_headers())
-    return session
-
-
-def _fetch_text_with_browser(driver, url):
-    return driver.execute_async_script(
-        """
-        const [url, callback] = arguments;
-        fetch(url, {credentials: 'include'})
-          .then(async response => callback({
-            status: response.status,
-            content_type: response.headers.get('content-type'),
-            text: await response.text()
-          }))
-          .catch(error => callback({error: String(error)}));
-        """,
-        url,
-    )
-
-
-def _fetch_binary_with_browser(driver, url):
-    response = driver.execute_async_script(
-        """
-        const [url, callback] = arguments;
-        fetch(url, {credentials: 'include'})
-          .then(async response => {
-            const blob = await response.blob();
-            const reader = new FileReader();
-            reader.onloadend = () => callback({
-              status: response.status,
-              content_type: response.headers.get('content-type'),
-              dataUrl: reader.result
-            });
-            reader.onerror = () => callback({error: 'Could not read response blob'});
-            reader.readAsDataURL(blob);
-          })
-          .catch(error => callback({error: String(error)}));
-        """,
-        url,
-    )
-    if response.get("error"):
-        raise ValueError(f"Could not fetch Litres PDF page in browser: {response['error']}")
-    _, encoded = response["dataUrl"].split(",", 1)
-    return base64.b64decode(encoded), response.get("content_type")
-
-
-def _fetch_pdf_page_with_browser(driver, page_url, book_page_url=None):
-    try:
-        image_content, content_type = _fetch_binary_with_browser(driver, page_url)
-    except ValueError:
-        print(f"Litres browser fetch failed; warming browser session: {page_url}")
-        _warm_up_browser_for_protected_url(driver, page_url, book_page_url)
-        return _fetch_binary_with_browser_cookies(driver, page_url, referer=book_page_url)
-
-    response = _binary_response_details(image_content, content_type)
-    if not _should_retry_response_with_browser(response):
-        return image_content, content_type
-
-    print(f"Litres browser fetch returned anti-bot page; warming browser session: {page_url}")
-    _warm_up_browser_for_protected_url(driver, page_url, book_page_url)
-    return _fetch_binary_with_browser_cookies(driver, page_url, referer=book_page_url)
-
-
-def _fetch_binary_with_browser_cookies(driver, url, referer=None):
-    headers = _get_litres_page_image_headers(driver, referer=referer)
-    with requests.get(url, headers=headers, timeout=PDF_REQUEST_TIMEOUT_SECONDS) as response:
-        response.raise_for_status()
-        return response.content, response.headers.get("content-type")
-
-
-def _warm_up_browser_for_protected_url(driver, protected_url, context_url=None):
-    if context_url:
-        driver.get(context_url)
-        _wait_for_browser_challenge(driver)
-    driver.get(protected_url)
-    _wait_for_browser_challenge(driver)
-
-
-def _wait_for_browser_challenge(driver):
-    from selenium.common.exceptions import TimeoutException
-    from selenium.webdriver.support.ui import WebDriverWait
-
-    timeout = _get_pdf_browser_challenge_wait_seconds()
-    print(f"Waiting up to {timeout}s for Litres browser challenge to clear")
-    try:
-        WebDriverWait(driver, timeout).until(
-            lambda current: not any(marker.lower() in current.page_source.lower() for marker in BLOCKED_MARKERS)
-        )
-    except TimeoutException:
-        # Keep the original non-image diagnostic from the subsequent fetch; it contains the exact URL and response body.
-        return
-
-
-def _get_litres_headers(driver=None):
-    user_agent = (
-        driver.execute_script("return navigator.userAgent")
-        if driver
-        else "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3"
-    )
-    return {
-        "Cookie": _get_litres_cookie_header(driver),
-        "User-Agent": user_agent,
-    }
-
-
-def _get_litres_page_image_headers(driver, referer=None):
-    headers = _get_litres_headers(driver)
-    headers.update(
-        {
-            "Accept": "image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8",
-            "Accept-Language": "ru-RU,ru;q=0.9,en-US;q=0.8,en;q=0.7",
-            "Sec-Fetch-Dest": "image",
-            "Sec-Fetch-Mode": "no-cors",
-            "Sec-Fetch-Site": "same-origin",
-        }
-    )
-    if referer:
-        headers["Referer"] = referer
-    return headers
-
-
-def _get_litres_cookie_header(driver=None):
-    if not driver:
-        return f"SID={get_sid()};"
-    return "; ".join(f"{cookie['name']}={cookie['value']}" for cookie in driver.get_cookies())
-
-
-def _is_image_response(response):
-    return (response.headers.get("content-type") or "").lower().startswith("image/")
-
-
-def _response_details(response):
-    return {
-        "status": response.status_code,
-        "url": response.url,
-        "content_type": response.headers.get("content-type"),
-        "content": response.content,
-        "text": response.text,
-    }
-
-
-def _binary_response_details(content, content_type, status=200):
-    return {
-        "status": status,
-        "url": None,
-        "content_type": content_type,
-        "content": content,
-        "text": content.decode("utf-8", errors="replace"),
-    }
-
-
-def _temporary_path(path):
-    directory = os.path.dirname(path)
-    suffix = os.path.splitext(path)[1]
-    digest = hashlib.md5(os.path.abspath(path).encode("utf-8")).hexdigest()
-    return os.path.join(directory, f".tmp.{os.getpid()}.{digest}{suffix}")
-
-
-def _remove_if_exists(path):
-    if os.path.exists(path):
-        os.remove(path)
-
-
-def _remove_stale_temporary_files(directory):
-    for pattern in ("*.tmp.*", ".tmp.*"):
-        for tmp_file in glob.glob(os.path.join(directory, pattern)):
-            _remove_if_exists(tmp_file)
-
-
-def _create_pdf(book):
-    """
-    Create pdf from downloaded pages images
-    """
-    file_id = book['file_id']
-    artifacts_dir = get_in_workdir(f"images/{file_id}")
-    pdf_dir = get_in_workdir("docs")
-    os.makedirs(pdf_dir, exist_ok=True)
-    _remove_stale_temporary_files(pdf_dir)
-
-    name_with_ext = f"{book['full_name']}.pdf"
-    pdf_file = os.path.join(pdf_dir, name_with_ext)
-    if _is_valid_pdf_file(pdf_file):
-        return pdf_file
-
-    tmp_pdf_file = _temporary_path(pdf_file)
-    options = _get_pdf_compression_options()
-    try:
-        with pymupdf.open() as doc:
-            # sort pages by number
-            images = sorted([f for f in os.listdir(artifacts_dir)], key=lambda x: int(x.split(".")[0]))
-            for page_number, page in enumerate(track(images, description=f"Creating pdf for file: {file_id}")):
-                if RUNTIME.get():
-                    RUNTIME.get().budget.check()
-                image_bytes, image_filetype = _page_image_bytes_for_pdf(
-                    os.path.join(artifacts_dir, page),
-                    page_number,
-                    options,
-                )
-                with pymupdf.open(stream=image_bytes, filetype=image_filetype) as img:
-                    rect = img[0].rect  # pic dimension
-                    with pymupdf.open("pdf", img.convert_to_pdf()) as img_pdf:
-                        page = doc.new_page(width=rect.width, height=rect.height)
-                        page.show_pdf_page(rect, img_pdf, 0)  # image fills the page
-
-            doc.save(tmp_pdf_file)
-        if not _is_valid_pdf_file(tmp_pdf_file):
-            raise ValueError(f"Created invalid PDF: {tmp_pdf_file}")
-        os.replace(tmp_pdf_file, pdf_file)
-    finally:
-        _remove_if_exists(tmp_pdf_file)
-    return pdf_file
-
-
-def _is_valid_pdf_file(path):
-    if not os.path.exists(path) or os.path.getsize(path) == 0:
-        return False
-    try:
-        with pymupdf.open(path) as doc:
-            return doc.page_count > 0
-    except pymupdf.FileDataError:
-        return False
-
-
-def _get_pdf_compression_options():
-    pdf_config = _get_pdf_config()
-    options = {
-        "jpeg_quality": int(_required_config_value(pdf_config, "pdf.jpeg_quality")),
-        "max_width": _required_config_value(pdf_config, "pdf.max_width", allow_none=True),
-        "dpi": int(_required_config_value(pdf_config, "pdf.dpi")),
-        "lossless_first_pages": int(_required_config_value(pdf_config, "pdf.lossless_first_pages")),
-    }
-    if options["max_width"] is not None:
-        options["max_width"] = int(options["max_width"])
-
-    if not 1 <= options["jpeg_quality"] <= 100:
-        raise ValueError("pdf.jpeg_quality must be between 1 and 100")
-    if options["max_width"] is not None and options["max_width"] <= 0:
-        raise ValueError("pdf.max_width must be positive or null")
-    if options["dpi"] <= 0:
-        raise ValueError("pdf.dpi must be positive")
-    if options["lossless_first_pages"] < 0:
-        raise ValueError("pdf.lossless_first_pages must be zero or positive")
-    return options
-
-
-def _get_pdf_browser_headless():
-    pdf_config = _get_pdf_config()
-    return _config_bool(
-        _required_config_value(pdf_config, "pdf.browser_headless"),
-        "pdf.browser_headless",
-    )
-
-
-def _get_pdf_browser_challenge_wait_seconds():
-    pdf_config = _get_pdf_config()
-    value = int(_required_config_value(pdf_config, "pdf.browser_challenge_wait_seconds"))
-    if value <= 0:
-        raise ValueError("pdf.browser_challenge_wait_seconds must be positive")
-    return value
-
-
-def _get_pdf_config():
-    config = read_config()
-    if not isinstance(config, dict):
-        raise ValueError("sources.litres in the selected operational YAML is empty or invalid")
-    pdf_config = config.get("pdf")
-    if not isinstance(pdf_config, dict):
-        raise ValueError("pdf is not set in sources.litres in the selected operational YAML")
-    return pdf_config
-
-
-def _required_config_value(config, name, allow_none=False):
-    key = name.rsplit(".", 1)[-1]
-    if key not in config:
-        raise ValueError(f"{name} is not set in sources.litres in the selected operational YAML")
-    value = config.get(key)
-    if value is None and allow_none:
-        return value
-    if value is None or value == "":
-        raise ValueError(f"{name} is not set in sources.litres in the selected operational YAML")
-    return value
-
-
-def _config_bool(value, name):
-    if isinstance(value, bool):
-        return value
-    if isinstance(value, str):
-        normalized = value.strip().lower()
-        if normalized in {"true", "yes", "1"}:
-            return True
-        if normalized in {"false", "no", "0"}:
-            return False
-    raise ValueError(f"{name} must be true or false")
-
-
-def _compressed_page_jpeg_bytes(image_path, options):
-    with Image.open(image_path) as source:
-        source.load()
-        image = _to_rgb_image(source)
-
-    max_width = options["max_width"]
-    if max_width and image.width > max_width:
-        ratio = max_width / image.width
-        size = (max_width, max(1, round(image.height * ratio)))
-        image = image.resize(size, _resample_lanczos())
-
-    output = io.BytesIO()
-    image.save(
-        output,
-        format="JPEG",
-        quality=options["jpeg_quality"],
-        dpi=(options["dpi"], options["dpi"]),
-        optimize=True,
-    )
-    return output.getvalue()
-
-
-def _page_image_bytes_for_pdf(image_path, page_number, options):
-    if page_number < options["lossless_first_pages"]:
-        return _lossless_page_png_bytes(image_path, options), "png"
-    return _compressed_page_jpeg_bytes(image_path, options), "jpeg"
-
-
-def _lossless_page_png_bytes(image_path, options):
-    with Image.open(image_path) as source:
-        source.load()
-        image = source.copy()
-
-    output = io.BytesIO()
-    image.save(
-        output,
-        format="PNG",
-        dpi=(options["dpi"], options["dpi"]),
-        optimize=True,
-    )
-    return output.getvalue()
-
-
-def _to_rgb_image(image):
-    if image.mode in {"RGBA", "LA"} or "transparency" in image.info:
-        rgba = image.convert("RGBA")
-        background = Image.new("RGB", rgba.size, "white")
-        background.paste(rgba, mask=rgba.getchannel("A"))
-        return background
-    if image.mode == "RGB":
-        return image.copy()
-    return image.convert("RGB")
-
-
-def _resample_lanczos():
-    return getattr(getattr(Image, "Resampling", Image), "LANCZOS")

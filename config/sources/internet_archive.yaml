@@ -1,0 +1,11 @@
+extends: ../defaults.yaml
+sources:
+  internet_archive:
+    archive_url: https://archive.org
+    operational:
+      internet_archive:
+        search_url: https://archive.org/advancedsearch.php
+        query: mediatype:texts AND (language:tat OR language:tt OR language:tatar)
+        batch_size: 100
+        url_archive_org: archive.org
+        url_archive_org_224: .archive.org

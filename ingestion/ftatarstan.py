@@ -1,4 +1,5 @@
 """Native OJS full-issue PDFs explicitly labelled Tatar by Fänni Tatarstan."""
+from .runtime_config import option as operational_option
 
 import re
 from urllib.parse import urlsplit
@@ -10,24 +11,24 @@ from .network import InvalidDocument, install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
-BASE = "https://ftatarstan.ru/index.php/ftat/ru/issue/"
-ARCHIVE_URL = BASE + "archive"
 PARSER_VERSION = 1
 ISSUE = re.compile(r"view/([1-9]\d*)")
 GALLEY = re.compile(r"(?:view|download)/([1-9]\d*)/([1-9]\d*)(?:/[1-9]\d*)?")
 
 
-def native_url(href, base=ARCHIVE_URL):
+def native_url(href, base=None):
+    if base is None:
+        base = operational_option('ftatarstan', 'archive_url')
     url = canonical(href.strip(), base).rstrip("/")
     parsed = urlsplit(url)
-    if (not same_origin(url, BASE) or parsed.query or not url.startswith(BASE)
-            or not re.fullmatch(r"archive(?:/[1-9]\d*)?|view/[1-9]\d*|(?:view|download)/[1-9]\d*/[1-9]\d*(?:/[1-9]\d*)?", url[len(BASE):])):
+    if (not same_origin(url, operational_option('ftatarstan', 'base')) or parsed.query or not url.startswith(operational_option('ftatarstan', 'base'))
+            or not re.fullmatch(r"archive(?:/[1-9]\d*)?|view/[1-9]\d*|(?:view|download)/[1-9]\d*/[1-9]\d*(?:/[1-9]\d*)?", url[len(operational_option('ftatarstan', 'base')):])):
         raise ValueError("Only native journal archive, issue and PDF-galley routes are supported.")
     return url
 
 
 def galley_identity(url):
-    match = GALLEY.fullmatch(native_url(url)[len(BASE):])
+    match = GALLEY.fullmatch(native_url(url)[len(operational_option('ftatarstan', 'base')):])
     if match is None:
         raise ValueError("Expected a native issue PDF galley.")
     return match[1], match[2]
@@ -47,7 +48,7 @@ def prepare_http(http, session_file):
 
 def parse_listing(html, request, root):
     url = native_url(request.url)
-    if not re.fullmatch(r"archive(?:/[1-9]\d*)?", url[len(BASE):]):
+    if not re.fullmatch(r"archive(?:/[1-9]\d*)?", url[len(operational_option('ftatarstan', 'base')):]):
         raise ValueError("Expected the native journal archive.")
     soup = BeautifulSoup(html, "html.parser")
     area = soup.select_one(".page_issue_archive")
@@ -59,18 +60,18 @@ def parse_listing(html, request, root):
         if anchor is None or not anchor.get_text(strip=True):
             raise ValueError("Journal archive issue title is missing.")
         target = native_url(anchor["href"], url)
-        if ISSUE.fullmatch(target[len(BASE):]) is None:
+        if ISSUE.fullmatch(target[len(operational_option('ftatarstan', 'base')):]) is None:
             raise ValueError("Archive card does not identify a native issue.")
         entries[target] = {"catalog_url": url, "title_raw": anchor.get_text(" ", strip=True),
                            "href_raw": anchor["href"]}
     if not entries:
         raise ValueError("Archive page contains no recognizable issues.")
-    page = int(url.rsplit("/", 1)[1]) if url != ARCHIVE_URL else 1
+    page = int(url.rsplit("/", 1)[1]) if url != operational_option('ftatarstan', 'archive_url') else 1
     following = {}
     for anchor in area.select(".cmp_pagination a[href]"):
         target = native_url(anchor["href"], url)
-        match = re.fullmatch(r"archive/([1-9]\d*)", target[len(BASE):])
-        if match is None and target != ARCHIVE_URL:
+        match = re.fullmatch(r"archive/([1-9]\d*)", target[len(operational_option('ftatarstan', 'base')):])
+        if match is None and target != operational_option('ftatarstan', 'archive_url'):
             raise ValueError("Archive pager left its native archive.")
         number = int(match[1]) if match else 1
         if number == page + 1:
@@ -83,7 +84,7 @@ def parse_listing(html, request, root):
 
 def record(html, page_url):
     url = native_url(page_url)
-    identity = ISSUE.fullmatch(url[len(BASE):])
+    identity = ISSUE.fullmatch(url[len(operational_option('ftatarstan', 'base')):])
     soup = BeautifulSoup(html, "html.parser")
     area = soup.select_one(".page_issue .obj_issue_toc")
     heading = soup.select_one(".page_issue h1")
@@ -127,7 +128,7 @@ def resolve_record(http, metadata, assets):
         targets = {}
         for anchor in soup.select("a.download[href]"):
             target = native_url(anchor["href"], asset["galley_view_url"])
-            if not target.startswith(BASE + "download/") or galley_identity(target) != galley_identity(asset["galley_view_url"]):
+            if not target.startswith(operational_option('ftatarstan', 'base') + "download/") or galley_identity(target) != galley_identity(asset["galley_view_url"]):
                 raise ValueError("Native viewer download link changed its issue or galley identity.")
             targets[target] = anchor["href"]
         if len(targets) != 1:

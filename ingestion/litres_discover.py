@@ -1,4 +1,5 @@
 """Discover likely Tatar Litres books from broad search pages and write a reviewable candidate index."""
+from .runtime_config import option as operational_option
 
 import json
 import re
@@ -8,7 +9,7 @@ from urllib.parse import urlencode
 import bs4 as bs
 from .litres_utils import requests
 
-from .litres_consts import domain
+
 from .litres_index import (
     _content_type_from_book_page_html,
     _parse_books,
@@ -17,12 +18,7 @@ from .litres_index import (
 )
 from .litres_utils import RUNTIME, create_driver, load_index, save_index, get_hash, get_sid, read_config
 
-MAX_PAGES_PER_QUERY_CAP = 20
-DEFAULT_SEARCH_FILTERS = {
-    "art_types": "text_book",
-    "only_litres_subscription_arts": "true",
-    "languages": ("ru", "en", "ba"),
-}
+
 TATAR_LETTERS = set("әөүҗңһӘӨҮҖҢҺ")
 EXPLICIT_TATAR_PHRASES = (
     "на татарском",
@@ -154,7 +150,7 @@ def _discover_config():
     max_pages_per_query = int(_required_config_value(discover, "discover.max_pages_per_query"))
     return {
         "search_queries": search_queries,
-        "max_pages_per_query": min(max_pages_per_query, MAX_PAGES_PER_QUERY_CAP, RUNTIME.get().settings.max_pages if RUNTIME.get() else MAX_PAGES_PER_QUERY_CAP),
+        "max_pages_per_query": min(max_pages_per_query, operational_option('litres_discover', 'max_pages_per_query_cap'), RUNTIME.get().settings.max_pages if RUNTIME.get() else operational_option('litres_discover', 'max_pages_per_query_cap')),
         "min_score": int(_required_config_value(discover, "discover.min_score")),
         "browser_headless": _config_bool(
             _required_config_value(discover, "discover.browser_headless")
@@ -192,13 +188,13 @@ def _headers():
 def _search_url(query, page):
     params = [
         ("q", query),
-        ("art_types", DEFAULT_SEARCH_FILTERS["art_types"]),
-        ("only_litres_subscription_arts", DEFAULT_SEARCH_FILTERS["only_litres_subscription_arts"]),
+        ("art_types", operational_option('litres_discover', 'default_search_filters')["art_types"]),
+        ("only_litres_subscription_arts", operational_option('litres_discover', 'default_search_filters')["only_litres_subscription_arts"]),
     ]
-    params.extend(("languages", language) for language in DEFAULT_SEARCH_FILTERS["languages"])
+    params.extend(("languages", language) for language in operational_option('litres_discover', 'default_search_filters')["languages"])
     if page > 1:
         params.append(("page", str(page)))
-    return f"{domain}/search/?{urlencode(params)}"
+    return f"{operational_option('litres_consts', 'domain')}/search/?{urlencode(params)}"
 
 
 def _fetch_search_page_html(url, headers, driver_provider=None, retries=None):
@@ -207,7 +203,7 @@ def _fetch_search_page_html(url, headers, driver_provider=None, retries=None):
     last_error = None
     for attempt in range(1, retries + 1):
         try:
-            with requests.get(url, headers=headers, timeout=30) as response:
+            with requests.get(url, headers=headers, timeout=operational_option('litres_discover', 'request_timeout_seconds')) as response:
                 response.raise_for_status()
                 _raise_if_blocked(response.text, url)
                 return response.text
@@ -278,7 +274,7 @@ def _details_from_search_item(item):
 
 
 def _normalize_book_url(href):
-    return f"{domain}{href}" if href.startswith("/") else href
+    return f"{operational_option('litres_consts', 'domain')}{href}" if href.startswith("/") else href
 
 
 def _content_type_from_art_type(art_type):
@@ -310,7 +306,7 @@ def _enrich_candidate(parsed, headers):
     details = dict(parsed)
     details.setdefault("subscription", True)
     try:
-        with requests.get(details["url"], headers=headers, timeout=30) as response:
+        with requests.get(details["url"], headers=headers, timeout=operational_option('litres_discover', 'request_timeout_seconds')) as response:
             response.raise_for_status()
             _raise_if_blocked(response.text, details["url"])
             html = response.text

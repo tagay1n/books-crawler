@@ -1,0 +1,20 @@
+artifacts_root: ../../__artifacts/ingestion
+storage:
+  s3:
+    bucket:
+      env: S3_BUCKET
+    prefix: books
+limits:
+  max_pages: 25
+  max_items: 25
+  max_download_bytes: 1073741824
+  max_file_bytes: 104857600
+  disk_reserve_bytes: 536870912
+  soft_deadline_seconds: 900
+  max_derived_pdf_bytes: 536870912
+network:
+  connect_timeout_seconds: 10
+  read_timeout_seconds: 60
+  pacing_seconds: 1
+  retry_attempts: 3
+  user_agent: BooksCrawler/1.0 (local document acquisition)

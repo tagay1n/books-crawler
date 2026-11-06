@@ -3,10 +3,10 @@
 Add `sources.commons` from the example to the selected operational YAML:
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source commons --max-pages 2
-.venv/bin/python cli.py --config ingestion.yaml download --source commons --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source commons --max-pages 5 --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source commons
+.venv/bin/python cli.py --config config/sources/commons.yaml discover --source commons --max-pages 2
+.venv/bin/python cli.py --config config/sources/commons.yaml download --source commons --limit 1
+.venv/bin/python cli.py --config config/sources/commons.yaml run --source commons --max-pages 5 --limit 1
+.venv/bin/python cli.py --config config/sources/commons.yaml status --source commons
 ```
 
 The seed is native category ID `70354556` (Tatar-language books). Discovery follows

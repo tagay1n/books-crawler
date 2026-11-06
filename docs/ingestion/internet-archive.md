@@ -4,11 +4,11 @@ Configure `sources.internet_archive.archive_url: https://archive.org` in the
 operational YAML. No login, borrowing credentials, or new dependencies are needed.
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source internet_archive --max-pages 2
-.venv/bin/python cli.py --config ingestion.yaml download --source internet_archive --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source internet_archive --max-pages 2 --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source internet_archive
-.venv/bin/python cli.py --config ingestion.yaml download --source internet_archive --recheck --limit 1
+.venv/bin/python cli.py --config config/sources/internet_archive.yaml discover --source internet_archive --max-pages 2
+.venv/bin/python cli.py --config config/sources/internet_archive.yaml download --source internet_archive --limit 1
+.venv/bin/python cli.py --config config/sources/internet_archive.yaml run --source internet_archive --max-pages 2 --limit 1
+.venv/bin/python cli.py --config config/sources/internet_archive.yaml status --source internet_archive
+.venv/bin/python cli.py --config config/sources/internet_archive.yaml download --source internet_archive --recheck --limit 1
 ```
 
 The fixed query is `mediatype:texts AND (language:tat OR language:tt OR language:tatar)`.

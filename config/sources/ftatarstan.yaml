@@ -1,0 +1,7 @@
+extends: ../defaults.yaml
+sources:
+  ftatarstan:
+    archive_url: https://ftatarstan.ru/index.php/ftat/ru/issue/archive
+    operational:
+      ftatarstan:
+        base: https://ftatarstan.ru/index.php/ftat/ru/issue/

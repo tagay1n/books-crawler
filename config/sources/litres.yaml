@@ -1,0 +1,58 @@
+extends: ../defaults.yaml
+sources:
+  litres:
+    archive_url: https://www.litres.ru/new/?art_types=text_book&languages=tt&only_litres_subscription_arts=true
+    sid:
+      env: LITRES_SID
+    pdf:
+      jpeg_quality: 85
+      max_width: null
+      dpi: 200
+      lossless_first_pages: 1
+      browser_headless: true
+      browser_challenge_wait_seconds: 30
+    discover:
+      search_queries:
+      - татарская литература
+      - татарча
+      max_pages_per_query: 20
+      min_score: 3
+      search_request_retries: 3
+      browser_headless: true
+    operational:
+      litres_discover:
+        max_pages_per_query_cap: 20
+        default_search_filters:
+          art_types: text_book
+          only_litres_subscription_arts: 'true'
+          languages:
+          - ru
+          - en
+          - ba
+        request_timeout_seconds: 30
+      litres_pdf_config:
+        pdf_request_timeout_seconds: 30
+        pdf_response_snippet_bytes: 300
+        raw_page_dpi: 300
+      litres_upload_books:
+        remote_dir: /НейроТатарлар/kitaplar/_все книги/litres
+      litres_consts:
+        domain: https://www.litres.ru
+        entry_point: https://www.litres.ru/new/?art_types=text_book&languages=tt&only_litres_subscription_arts=true
+        total_pages: 18
+      litres_hf:
+        hf_dataset: yasalma/tt-litres-books
+      litres_pdf:
+        book_attempts: 2
+      litres:
+        url_www_litres_ru: www.litres.ru
+        url_litres_ru: litres.ru
+      litres_index:
+        reader_click_attempts: 3
+        card_ancestor_depth: 8
+        reader_wait_seconds: 20
+        reader_open_wait_seconds: 10
+      litres_text:
+        request_timeout_seconds: 20
+      litres_utils:
+        url_litres_ru: .litres.ru

@@ -8,9 +8,9 @@ echovek:
 ```
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source echovek --max-pages 2
-.venv/bin/python cli.py --config ingestion.yaml download --source echovek --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source echovek
+.venv/bin/python cli.py --config config/sources/echovek.yaml discover --source echovek --max-pages 2
+.venv/bin/python cli.py --config config/sources/echovek.yaml download --source echovek --limit 1
+.venv/bin/python cli.py --config config/sources/echovek.yaml status --source echovek
 ```
 
 The adapter follows native issue-archive pagination, then the contents of each

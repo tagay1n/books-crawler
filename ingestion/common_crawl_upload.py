@@ -12,7 +12,7 @@ def upload():
 
     runtime = _runtime()
     config = runtime.settings.source_options['yandex']['disk']
-    target = config.get('target_dir', '/НейроТатарлар/kitaplar/common_crawl').rstrip('/')
+    target = config['target_dir'].rstrip('/')
     index = _load_index()
     with Session() as session:
         known = set(session.scalars(select(Document.md5)))

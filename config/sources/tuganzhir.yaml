@@ -1,0 +1,10 @@
+extends: ../defaults.yaml
+sources:
+  tuganzhir:
+    archive_url: https://tuganzhir.org/archive/
+    operational:
+      tuganzhir:
+        pdf_roots:
+        - https://tuganzhir.org/wp-content/uploads/
+        - https://tatar-congress.org/wp-content/uploads/
+        - https://tatarcongress.firsts3.ru/uploads/

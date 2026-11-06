@@ -1,3 +1,4 @@
+from .runtime_config import option as operational_option
 import re
 from pathlib import PurePosixPath
 from urllib.parse import unquote, urlsplit
@@ -9,7 +10,6 @@ from .documents import DOCUMENT_EXTENSIONS, canonical, same_origin
 from .paging import ListingPage, PageRequest
 
 
-ARCHIVE_URL = "https://magarif-uku.ru/documents"
 PARSER_VERSION = 1
 
 

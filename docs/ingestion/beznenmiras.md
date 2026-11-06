@@ -8,9 +8,9 @@ beznenmiras:
 ```
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source beznenmiras --max-pages 1
-.venv/bin/python cli.py --config ingestion.yaml download --source beznenmiras --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source beznenmiras
+.venv/bin/python cli.py --config config/sources/beznenmiras.yaml discover --source beznenmiras --max-pages 1
+.venv/bin/python cli.py --config config/sources/beznenmiras.yaml download --source beznenmiras --limit 1
+.venv/bin/python cli.py --config config/sources/beznenmiras.yaml status --source beznenmiras
 ```
 
 Discovery follows the native «Саннар» issue archive and its forward pagination.

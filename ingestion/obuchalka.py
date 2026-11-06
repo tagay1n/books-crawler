@@ -1,4 +1,5 @@
 """Reviewed Tatar textbook PDFs from Obuchalka and public Fileskachat links."""
+from .runtime_config import option as operational_option
 
 from pathlib import Path
 import re
@@ -11,7 +12,6 @@ from .network import BudgetStop, InvalidDocument
 from .paging import ListingPage
 
 
-ARCHIVE_URL = "https://obuchalka.org/knigi-po-tatarskomu-yaziku/"
 PARSER_VERSION = 1
 UNIQUE_RECORDS = True
 BOOK_PATH = re.compile(r"/((?:19|20)\d{10,14})/[a-z0-9-]+\.html")
@@ -24,20 +24,24 @@ DESCRIPTORS = ("url", "label", "extension", "source_asset_key", "delivery_provid
                "hrefs_raw", "source_unsupported_code", "source_unsupported_reason")
 
 
-def book_url(href, base=ARCHIVE_URL):
+def book_url(href, base=None):
+    if base is None:
+        base = operational_option('obuchalka', 'archive_url')
     p = urlsplit(urljoin(base, href))
     if (p.scheme not in {"http", "https"} or p.netloc not in {"obuchalka.org", "www.obuchalka.org"}
-            or p.query or not (p.path == urlsplit(ARCHIVE_URL).path or BOOK_PATH.fullmatch(p.path))):
+            or p.query or not (p.path == urlsplit(operational_option('obuchalka', 'archive_url')).path or BOOK_PATH.fullmatch(p.path))):
         raise ValueError("Expected the selected Obuchalka category or a native dated book record.")
     return urlunsplit(("https", "obuchalka.org", p.path, "", ""))
 
 
-def file_url(href, base=ARCHIVE_URL):
+def file_url(href, base=None):
+    if base is None:
+        base = operational_option('obuchalka', 'archive_url')
     p = urlsplit(urljoin(base, href))
-    if (p.scheme not in {"http", "https"} or p.netloc != "fileskachat.com"
+    if (p.scheme not in {"http", "https"} or p.netloc != operational_option('obuchalka', 'url_fileskachat_com')
             or p.query or p.fragment or not FILE_PATH.fullmatch(p.path)):
         raise ValueError("Expected an explicitly linked Fileskachat file page.")
-    return urlunsplit(("https", "fileskachat.com", p.path, "", ""))
+    return urlunsplit(("https", operational_option('obuchalka', 'url_fileskachat_com'), p.path, "", ""))
 
 
 def route(url):
@@ -46,7 +50,7 @@ def route(url):
         raise ValueError("Only the selected HTTPS retrieval routes are supported.")
     if p.netloc in {"obuchalka.org", "www.obuchalka.org"}:
         return "book", book_url(url)
-    if p.netloc == "fileskachat.com":
+    if p.netloc == operational_option('obuchalka', 'url_fileskachat_com'):
         for kind, pattern in (("file", FILE_PATH), ("download", DOWNLOAD_PATH), ("getfile", GET_PATH)):
             match = pattern.fullmatch(p.path)
             if match:
@@ -58,7 +62,7 @@ def route(url):
 
 
 def parse_listing(html, request, root):
-    if book_url(request.url) != ARCHIVE_URL:
+    if book_url(request.url) != operational_option('obuchalka', 'archive_url'):
         raise ValueError("Unexpected Obuchalka category route.")
     soup = BeautifulSoup(html, "html.parser")
     area = soup.select_one("#content .art")
@@ -74,7 +78,7 @@ def parse_listing(html, request, root):
         title = anchor.get_text(" ", strip=True)
         if not title:
             raise ValueError("Obuchalka book link is missing its title.")
-        entries.setdefault(url, {"catalog_url": ARCHIVE_URL, "title_raw": title})
+        entries.setdefault(url, {"catalog_url": operational_option('obuchalka', 'archive_url'), "title_raw": title})
     if not entries:
         raise ValueError("Obuchalka category has no recognizable book records.")
     if area.select_one('a[rel~="next"], .pagination a[href], .pager a[href]'):
@@ -98,10 +102,10 @@ def record(html, page_url):
     for anchor in area.select("a[href]"):
         raw = anchor["href"]
         target = urljoin(url, raw)
-        if urlsplit(target).netloc not in {"fileskachat.com", "yadi.sk", "disk.yandex.ru"}:
+        if urlsplit(target).netloc not in {operational_option('obuchalka', 'url_fileskachat_com'), operational_option('obuchalka', 'url_yadi_sk'), operational_option('obuchalka', 'url_disk_yandex_ru')}:
             continue
         links.append({"url_raw": target, "label_raw": anchor.get_text(" ", strip=True)})
-        if not FILE_PATH.fullmatch(urlsplit(target).path) or urlsplit(target).netloc != "fileskachat.com":
+        if not FILE_PATH.fullmatch(urlsplit(target).path) or urlsplit(target).netloc != operational_option('obuchalka', 'url_fileskachat_com'):
             continue
         stable = file_url(target)
         asset = assets.setdefault(stable, {

@@ -1,4 +1,5 @@
 """Local acquisition of the five public Isxaki book/work collections."""
+from .runtime_config import option as operational_option
 
 from pathlib import PurePosixPath
 from urllib.parse import unquote, urljoin, urlsplit, urlunsplit
@@ -11,7 +12,6 @@ from .network import install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
-ARCHIVE_URL = "https://isxaki.com/ijat/"
 PARSER_VERSION = 1
 COLLECTION_PATHS = (
     "/ijat/kitaplar/", "/ijat/asarlar/", "/asarlar-1908-1918-ellar/",
@@ -31,9 +31,11 @@ def normalize_url(href, base):
     return requote_uri(url)
 
 
-def native_url(href, base=ARCHIVE_URL):
+def native_url(href, base=None):
+    if base is None:
+        base = operational_option('isxaki', 'archive_url')
     url = canonical(href, base)
-    if not same_origin(url, ARCHIVE_URL):
+    if not same_origin(url, operational_option('isxaki', 'archive_url')):
         raise ValueError("Isxaki requires native HTTPS resources.")
     return requote_uri(url)
 
@@ -87,7 +89,7 @@ def record(html, page_url):
             card["links"].append({"href_raw": anchor["href"], "original_url": original,
                                   "url": url, "label": label})
             asset = assets.setdefault(url, {"url": url, "label": card_title, "extension": extension,
-                "unsupported_reason": None if same_origin(url, ARCHIVE_URL) else "Attachment is outside the configured source origin.",
+                "unsupported_reason": None if same_origin(url, operational_option('isxaki', 'archive_url')) else "Attachment is outside the configured source origin.",
                 "card_titles": []})
             if card_title not in asset["card_titles"]:
                 asset["card_titles"].append(card_title)

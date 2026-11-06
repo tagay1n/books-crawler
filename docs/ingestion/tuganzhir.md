@@ -13,9 +13,9 @@ sources:
 ```
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source tuganzhir --max-pages 1
-.venv/bin/python cli.py --config ingestion.yaml download --source tuganzhir --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source tuganzhir
+.venv/bin/python cli.py --config config/sources/tuganzhir.yaml discover --source tuganzhir --max-pages 1
+.venv/bin/python cli.py --config config/sources/tuganzhir.yaml download --source tuganzhir --limit 1
+.venv/bin/python cli.py --config config/sources/tuganzhir.yaml status --source tuganzhir
 ```
 
 The 2022 issue's imprint (PDF page 5) explicitly declares Tatar and Russian.

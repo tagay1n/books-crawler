@@ -1,4 +1,5 @@
 """Scrapes Litres catalog pages to update a Postgres index of titles, authors, URLs, and content types, merging with any existing index."""
+from .runtime_config import option as operational_option
 
 import re
 from urllib.parse import parse_qs, urljoin, urlparse
@@ -6,7 +7,7 @@ from urllib.parse import parse_qs, urljoin, urlparse
 import bs4 as bs
 from .litres_utils import requests
 
-from .litres_consts import TOTAL_PAGES, entry_point, domain
+
 from .litres_utils import RUNTIME, create_driver, load_index, save_index, get_sid, get_hash
 
 
@@ -36,8 +37,8 @@ def index():
     reader_resolver = _ReaderContentTypeResolver()
     try:
         try:
-            for i in range(1, (RUNTIME.get().settings.max_pages if RUNTIME.get() else TOTAL_PAGES) + 1):
-                paginated_url = f"{entry_point}&page={i}"
+            for i in range(1, (RUNTIME.get().settings.max_pages if RUNTIME.get() else operational_option('litres_consts', 'total_pages')) + 1):
+                paginated_url = f"{operational_option('litres_consts', 'entry_point')}&page={i}"
                 print(f"Processing page: {paginated_url}")
                 with requests.get(paginated_url, headers=headers) as r:
                     r.raise_for_status()
@@ -136,7 +137,7 @@ def _is_book_href(href):
 
 
 def _normalize_book_url(href):
-    url = urljoin(domain, href)
+    url = urljoin(operational_option('litres_consts', 'domain'), href)
     parsed = urlparse(url)
     return f"{parsed.scheme}://{parsed.netloc}{parsed.path}"
 
@@ -230,8 +231,8 @@ def _open_reader_url(url, driver):
     from selenium.webdriver.support.ui import WebDriverWait
 
     driver.get(url)
-    wait = WebDriverWait(driver, 20)
-    for attempt in range(3):
+    wait = WebDriverWait(driver, operational_option('litres_index', 'reader_wait_seconds'))
+    for attempt in range(operational_option('litres_index', 'reader_click_attempts')):
         try:
             read_button = _find_read_button(wait)
             old_handles = set(driver.window_handles)
@@ -282,7 +283,7 @@ def _wait_for_reader_navigation(driver, initial_url, old_handles):
             return True
         return current.current_url != initial_url
 
-    WebDriverWait(driver, 10).until(_reader_opened)
+    WebDriverWait(driver, operational_option('litres_index', 'reader_open_wait_seconds')).until(_reader_opened)
 
 
 def _content_type_from_reader_url(reader_url, book_url):
@@ -362,7 +363,7 @@ def _node_search_text(node):
 
 def _find_card_root(link):
     current = link
-    for _ in range(8):
+    for _ in range(operational_option('litres_index', 'card_ancestor_depth')):
         if not current:
             return None
         if current.name in {"article", "li"}:

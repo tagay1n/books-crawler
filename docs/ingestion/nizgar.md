@@ -8,9 +8,9 @@ nizgar:
 ```
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source nizgar --max-pages 1
-.venv/bin/python cli.py --config ingestion.yaml download --source nizgar --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source nizgar
+.venv/bin/python cli.py --config config/sources/nizgar.yaml discover --source nizgar --max-pages 1
+.venv/bin/python cli.py --config config/sources/nizgar.yaml download --source nizgar --limit 1
+.venv/bin/python cli.py --config config/sources/nizgar.yaml status --source nizgar
 ```
 
 The selected native page has WordPress file blocks rather than issue-detail

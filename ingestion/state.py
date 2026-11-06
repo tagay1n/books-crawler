@@ -44,7 +44,7 @@ def source_lock(directory: Path, source=None):
 
 
 class Manifest:
-    def __init__(self, directory: Path, source="magarif", *, checkpoint=None):
+    def __init__(self, directory: Path, source="magarif", *, checkpoint=None, data=None):
         from .checkpoints import Checkpoint
         self.coordinator = checkpoint or Checkpoint()
         self.directory = directory
@@ -52,7 +52,7 @@ class Manifest:
         from .postgres_state import Repository
         _directory_sources[str(directory.resolve())] = source
         self.repository = Repository(source)
-        self.data = self.repository.load()
+        self.data = self.repository.load() if data is None else data
         self._assets_by_record = None
 
     def _record_asset_index(self):
@@ -131,7 +131,7 @@ class Manifest:
                 counts[asset["status"]] = counts.get(asset["status"], 0) + 1
         result = {"source": self.data["source"], "records": len(self.data["records"]),
                 "records_without_attachments": sum(r.get("attachment_count") == 0 for r in self.data["records"].values()),
-                "current_assets": counts, "historical_results": sum(len(a["results"]) for a in self.data["assets"].values())}
+                "current_assets": counts, "historical_results": self.data.get("_historical_results", sum(len(a["results"]) for a in self.data["assets"].values()))}
         if "discovery" in self.data:
             result["discovery"] = self.data["discovery"].copy()
         result.update(discovery_error_counts(self.data))

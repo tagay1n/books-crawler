@@ -1,0 +1,5 @@
+extends: ../defaults.yaml
+sources:
+  nizgar:
+    archive_url: https://nizgar.ru/zhurnal-nizhegorodskie-tatary-nizhgar-tatarlary/
+    operational: {}

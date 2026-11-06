@@ -1,4 +1,5 @@
 """Public academic KFU PDFs, discovered through the native Tatar topic search."""
+from .runtime_config import option as operational_option
 
 import json
 from email.message import Message
@@ -16,24 +17,20 @@ from .network import InvalidDocument
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
-ORIGIN = "https://dspace.kpfu.ru"
-ARCHIVE_URL = ORIGIN + "/xmlui/discover"
-QUERY = "татар"
 PARSER_VERSION = 2
 UNIQUE_RECORDS = True
-SEARCH = {"query": QUERY, "rpp": "10", "group_by": "none", "etal": "0"}
 
 
 def search_url(page=1):
-    return ARCHIVE_URL + "?" + urlencode({**SEARCH, "page": str(page)})
+    return operational_option('kfu_dspace', 'archive_url') + "?" + urlencode({**operational_option('kfu_dspace', 'search'), "page": str(page)})
 
 
 def search_page(url):
     parsed = urlsplit(url)
     query = parse_qs(parsed.query, keep_blank_values=True)
     page = query.pop("page", ["1"])
-    if (not same_origin(url, ORIGIN) or parsed.path != "/xmlui/discover" or parsed.fragment
-            or query != {key: [value] for key, value in SEARCH.items()}
+    if (not same_origin(url, operational_option('kfu_dspace', 'origin')) or parsed.path != "/xmlui/discover" or parsed.fragment
+            or query != {key: [value] for key, value in operational_option('kfu_dspace', 'search').items()}
             or len(page) != 1 or not re.fullmatch(r"[1-9]\d*", page[0])):
         raise ValueError("Academic KFU search lost its fixed query or native pagination settings.")
     return int(page[0])
@@ -42,7 +39,7 @@ def search_page(url):
 def handle(url):
     parsed = urlsplit(url)
     match = re.fullmatch(r"/xmlui/handle/(net/[1-9]\d*)", parsed.path)
-    if (not same_origin(url, ORIGIN) or parsed.fragment or match is None
+    if (not same_origin(url, operational_option('kfu_dspace', 'origin')) or parsed.fragment or match is None
             or parse_qs(parsed.query, keep_blank_values=True) not in ({}, {"show": ["full"]})):
         raise ValueError("Invalid academic KFU handle URL.")
     return match[1]
@@ -58,7 +55,7 @@ def safe_filename(name):
 def original_url(viewer, identity):
     parsed = urlsplit(viewer)
     query = parse_qs(parsed.query, keep_blank_values=True)
-    if (not same_origin(viewer, ORIGIN) or parsed.path not in {"/xmlui/viewer", "/xmlui/viewer-img"} or parsed.fragment
+    if (not same_origin(viewer, operational_option('kfu_dspace', 'origin')) or parsed.path not in {"/xmlui/viewer", "/xmlui/viewer-img"} or parsed.fragment
             or set(query) != {"file", "sequence", "isAllowed"}
             or any(len(values) != 1 for values in query.values())):
         raise ValueError("Unexpected academic KFU viewer route.")
@@ -69,7 +66,7 @@ def original_url(viewer, identity):
     if not re.fullmatch(r"-1|[1-9]\d*", query["sequence"][0]) or query["isAllowed"][0] not in {"y", "n"}:
         raise ValueError("Invalid academic KFU viewer sequence or access flag.")
     # PDF paths follow the site's linked PDF.js script; other formats remain inventory.
-    url = (f"{ORIGIN}/xmlui/bitstream/handle/{identity}/{quote(name, safe='')}?"
+    url = (f"{operational_option('kfu_dspace', 'origin')}/xmlui/bitstream/handle/{identity}/{quote(name, safe='')}?"
            + urlencode({"sequence": query["sequence"][0], "isAllowed": query["isAllowed"][0]}))
     return url, name, query["isAllowed"][0] == "y"
 
@@ -78,7 +75,7 @@ def bitstream(url, *, public_only=True):
     parsed = urlsplit(url)
     match = re.fullmatch(r"/xmlui/bitstream/handle/(net/[1-9]\d*)/([^/]+)", parsed.path)
     query = parse_qs(parsed.query, keep_blank_values=True)
-    if (not same_origin(url, ORIGIN) or parsed.fragment or match is None
+    if (not same_origin(url, operational_option('kfu_dspace', 'origin')) or parsed.fragment or match is None
             or set(query) != {"sequence", "isAllowed"}
             or query["isAllowed"] not in (["y"], ["n"]) or (public_only and query["isAllowed"] != ["y"])
             or len(query["sequence"]) != 1 or not re.fullmatch(r"-1|[1-9]\d*", query["sequence"][0])):
@@ -111,7 +108,7 @@ def parse_listing(html, request, root):
         identity = handle(target)
         if urlsplit(target).query:
             raise ValueError("Unexpected academic KFU result handle query.")
-        records.append(f"{ORIGIN}/xmlui/handle/{identity}?show=full")
+        records.append(f"{operational_option('kfu_dspace', 'origin')}/xmlui/handle/{identity}?show=full")
     offset = (page_number - 1) * 10
     if (not records or first != offset + 1 or last != offset + len(records)
             or len(records) != min(10, count - offset)):
@@ -129,7 +126,7 @@ def parse_listing(html, request, root):
         following = [PageRequest(search_url(page_number + 1), context={"count": count})]
     return ListingPage(records, following, entries=len(records), advertised=count,
                        fingerprint=json.dumps(records), detect_repeats=True,
-                       record_context={url: {"query": QUERY, "listing_url": request.url} for url in records})
+                       record_context={url: {"query": operational_option('kfu_dspace', 'query'), "listing_url": request.url} for url in records})
 
 
 def record(html, page_url):
@@ -139,7 +136,7 @@ def record(html, page_url):
     table = main.select_one("table.detailtable") if main else None
     dc = [{"name": m["name"], "content": m.get("content")} for m in soup.select('meta[name^="DC."]')]
     identifiers = [m["content"] for m in dc if m["name"] == "DC.identifier"]
-    expected = f"{ORIGIN}/xmlui/handle/{identity}"
+    expected = f"{operational_option('kfu_dspace', 'origin')}/xmlui/handle/{identity}"
     self_links = {canonical(a["href"], page_url) for a in main.select("p.item-view-toggle a[href]")} if main else set()
     item_identifiers = {value.replace("http:", "https:", 1) for value in identifiers
                         if isinstance(value, str) and re.match(r"https?://dspace\.kpfu\.ru/xmlui/handle/", value)}

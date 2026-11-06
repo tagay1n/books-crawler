@@ -6,10 +6,10 @@ from `ingestion.example.yaml` to the selected operational YAML. The existing
 KFU books and manuscripts sources continue to admit all collection languages.
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source kfu_il --max-pages 1
-.venv/bin/python cli.py --config ingestion.yaml download --source kfu_il --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source kfu_il --max-pages 1 --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source kfu_il
+.venv/bin/python cli.py --config config/sources/kfu_il.yaml discover --source kfu_il --max-pages 1
+.venv/bin/python cli.py --config config/sources/kfu_il.yaml download --source kfu_il --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_il.yaml run --source kfu_il --max-pages 1 --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_il.yaml status --source kfu_il
 ```
 
 Il requires an explicit `DC.language` value of `tt`, `tat`, `Tatar`, `татарский`,

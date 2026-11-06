@@ -1,0 +1,5 @@
+extends: ../defaults.yaml
+sources:
+  tatarica:
+    archive_url: https://tatarica.org/tat/razdely/tatarika-kitaphanse
+    operational: {}

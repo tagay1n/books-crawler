@@ -1,4 +1,5 @@
 """Litres implementation of the shared local and publication stages."""
+from .runtime_config import option as operational_option
 import contextlib
 import hashlib
 import os
@@ -12,7 +13,7 @@ from .network import Budget, BudgetStop, HTTP, SourceAccessError
 from .state import Manifest, atomic_json, now, source_lock
 from .core import check_space, file_digests
 
-ARCHIVE_URL = 'https://www.litres.ru/new/?art_types=text_book&languages=tt&only_litres_subscription_arts=true'
+
 SUPPORTED_COMMANDS = {'discover', 'download', 'run', 'status', 'finalize', 'metadata', 'review', 'publish', 'import-state'}
 
 
@@ -40,7 +41,7 @@ class Runtime:
         self.budget = Budget(settings)
         self.http = HTTP(settings, self.budget, summary)
         def guard(response, *args, **kwargs):
-            if response.is_redirect and urlsplit(urljoin(response.url, response.headers.get("Location", ""))).hostname not in {"www.litres.ru", "litres.ru"}:
+            if response.is_redirect and urlsplit(urljoin(response.url, response.headers.get("Location", ""))).hostname not in {operational_option('litres', 'url_www_litres_ru'), operational_option('litres', 'url_litres_ru')}:
                 response.close()
                 raise SourceAccessError("Litres redirected outside its supported origin")
             return response
@@ -52,7 +53,7 @@ class Runtime:
     def get(self, url, **kwargs):
         if self.offline:
             raise ValueError('Finalization requires a missing input; run download first')
-        if urlsplit(url).hostname not in {'www.litres.ru', 'litres.ru'}:
+        if urlsplit(url).hostname not in {operational_option('litres', 'url_www_litres_ru'), operational_option('litres', 'url_litres_ru')}:
             raise ValueError('Litres resource is outside the supported origin')
         sid = self.config.get('sid')
         if not isinstance(sid, str) or not sid.strip() or sid == '<SET ME>':
@@ -107,7 +108,7 @@ def discover(runtime, items):
         try:
             for _ in range(runtime.settings.max_pages):
                 page = scan['next_page']
-                url = f'{ARCHIVE_URL}&page={page}'
+                url = f'{operational_option('litres', 'archive_url')}&page={page}'
                 response = runtime.get(url)
                 response.raise_for_status()
                 index._raise_if_blocked(response.text, url)
@@ -332,13 +333,14 @@ def import_state(runtime, items):
     commit(runtime, items)
 
 
-def execute(settings, command, *, recheck=False, log=print, options=None, checkpoint=None):
+def execute(settings, command, *, recheck=False, log=print, options=None, checkpoint=None, status_data=None):
+    from .postgres_state import Repository
     from .commands import CommandOptions, validate
     options = options or CommandOptions(recheck=recheck)
     validate("litres", command, options)
     directory = settings.artifacts_root / 'litres'
     if command == 'status':
-        manifest = Manifest(directory, 'litres', checkpoint=checkpoint)
+        manifest = Manifest(directory, 'litres', checkpoint=checkpoint, data=status_data if status_data is not None else Repository('litres').load_status())
         result = manifest.status()
         records = books(manifest)
         result['acquired'] = sum(bool(b.get('acquired') or b.get('imported_acquisition_complete')) for b in records.values())

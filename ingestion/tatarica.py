@@ -1,4 +1,5 @@
 """Tatarica library catalog and edition links; no content-language inference."""
+from .runtime_config import option as operational_option
 
 import re
 from pathlib import PurePosixPath
@@ -10,7 +11,6 @@ from .documents import DOCUMENT_EXTENSIONS, canonical, same_origin
 from .paging import ListingPage, PageRequest
 
 
-ARCHIVE_URL = "https://tatarica.org/tat/razdely/tatarika-kitaphanse"
 PARSER_VERSION = 1
 LIBRARY_PATHS = ("/tat/razdely/tatarika-kitaphanse/", "/tat/razdely/biblioteka-tatarika/")
 

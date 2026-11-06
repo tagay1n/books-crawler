@@ -15,9 +15,9 @@ sources:
 ```
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source magarif
-.venv/bin/python cli.py --config ingestion.yaml download --source magarif --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source magarif
+.venv/bin/python cli.py --config config/sources/magarif.yaml discover --source magarif
+.venv/bin/python cli.py --config config/sources/magarif.yaml download --source magarif --limit 1
+.venv/bin/python cli.py --config config/sources/magarif.yaml status --source magarif
 ```
 
 See [shared configuration, budgets and recovery](operations.md).

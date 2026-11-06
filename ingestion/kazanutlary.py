@@ -1,4 +1,5 @@
 """Kazan Utları's linked archive and the JPEG pages supplied by its reader."""
+from .runtime_config import option as operational_option
 
 import json
 import re
@@ -10,7 +11,6 @@ from .documents import canonical, same_origin
 from .paging import ListingPage, PageRequest
 
 
-ARCHIVE_URL = "https://kazanutlary.ru/j-archive"
 PARSER_VERSION = 1
 DOWNLOAD_UNIT = "issue"
 ISSUE_PATH = re.compile(r"/j-archive/journals/([\w-]+)/?")
@@ -20,7 +20,7 @@ YEAR_PATH = re.compile(r"/j-archive/sections/[\w-]+/[\w-]+/journals/?")
 def checked_url(href, base, pattern):
     url = canonical(href, base)
     parsed = urlsplit(url)
-    if not same_origin(url, ARCHIVE_URL) or not pattern.fullmatch(parsed.path):
+    if not same_origin(url, operational_option('kazanutlary', 'archive_url')) or not pattern.fullmatch(parsed.path):
         raise ValueError(f"Unexpected archive URL: {url}")
     return url
 

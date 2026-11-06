@@ -1,0 +1,56 @@
+extends: ../defaults.yaml
+sources:
+  milli_kitaphana:
+    aes:
+      raw_key:
+        env: MILLI_KITAPHANA_AES_RAW_KEY
+      default_iv:
+        env: MILLI_KITAPHANA_AES_DEFAULT_IV
+      salt:
+        env: MILLI_KITAPHANA_AES_SALT
+    priv_key:
+      env: MILLI_KITAPHANA_PRIV_KEY
+    sig_prefix:
+      env: MILLI_KITAPHANA_SIG_PREFIX
+    database_url:
+      env: MILLI_KITAPHANA_DATABASE_URL
+    yandex:
+      disk:
+        oauth_token:
+          env: MILLI_KITAPHANA_YANDEX_DISK_OAUTH_TOKEN
+        target_dir:
+          env: MILLI_KITAPHANA_YANDEX_DISK_TARGET_DIR
+    archive_url: https://kitap.tatar.ru/tt/ssearch/ecollection/
+    operational:
+      milli_kitaphana_utils:
+        host: https://kitap.tatar.ru
+      milli_kitaphana_index:
+        entry_point: https://kitap.tatar.ru/tt/ssearch/ecollection/
+        language_queries:
+        - tat
+        - ara
+        collection_queries:
+        - name: COLLECTION_12
+          params:
+          - - fattr
+            - fond_sf
+          - - fq
+            - COLLECTION_12
+          - - sort
+            - record-create-date
+        url_https_kitap_tatar_ru: https://kitap.tatar.ru
+      milli_kitaphana_mark_existing_limited:
+        request_timeout_seconds: 60
+        metadata_root: ~/.monocorpus/misc/upstream_metadata
+        flag_name: needs_full_download
+      milli_kitaphana_download:
+        url_http_kitap_tatar_ru_dl: http://kitap.tatar.ru/dl
+        url_kitap_tatar_ru_dl: /kitap.tatar.ru/dl
+      milli_kitaphana:
+        url_kitap_tatar_ru: kitap.tatar.ru
+        url_https_kitap_tatar_ru: https://kitap.tatar.ru
+      milli_kitaphana_recover:
+        workers: 4
+        download_workers: 4
+      milli_kitaphana_decrypt:
+        workers: 4

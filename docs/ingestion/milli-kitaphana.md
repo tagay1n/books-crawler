@@ -1,6 +1,6 @@
 # Milli Kitaphana unified pipeline
 
-Use `.venv/bin/python cli.py --config ingestion.yaml COMMAND --source milli_kitaphana`.
+Use `.venv/bin/python cli.py --config config/sources/milli_kitaphana.yaml COMMAND --source milli_kitaphana`.
 Provider helpers live in `ingestion/milli_kitaphana_*.py`; the old source directory
 and standalone entry point have been removed.
 

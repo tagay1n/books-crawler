@@ -1,4 +1,5 @@
 """Direct originals from Turuz's Tatar-labelled dictionary listing rows."""
+from .runtime_config import option as operational_option
 
 import re
 import unicodedata
@@ -13,7 +14,6 @@ from .network import install_native_get_guard
 from .paging import ListingPage
 
 
-ARCHIVE_URL = "https://turuz.com/index/pitik/category/2"
 PARSER_VERSION = 1
 FORMATS = {".pdf", ".djvu", ".djv", ".doc", ".docx"}
 
@@ -43,13 +43,15 @@ def file_url(href, base):
 def allowed_url(url):
     parsed = urlsplit(url)
     path = unquote(parsed.path)
-    return (same_origin(url, ARCHIVE_URL) and not parsed.query and not parsed.fragment
-            and (parsed.path == urlsplit(ARCHIVE_URL).path
+    return (same_origin(url, operational_option('turuz', 'archive_url')) and not parsed.query and not parsed.fragment
+            and (parsed.path == urlsplit(operational_option('turuz', 'archive_url')).path
                  or (path.startswith("/storage/") and "\\" not in path
                      and not {".", ".."}.intersection(path.split("/")))))
 
 
-def native_url(href, base=ARCHIVE_URL):
+def native_url(href, base=None):
+    if base is None:
+        base = operational_option('turuz', 'archive_url')
     url = urljoin(base, href)
     if not allowed_url(url):
         raise ValueError("Turuz requires its native HTTPS dictionary or storage paths.")
@@ -61,7 +63,7 @@ def prepare_http(http, session_file):
 
 
 def catalog(html, page_url):
-    if page_url.rstrip("/") != ARCHIVE_URL:
+    if page_url.rstrip("/") != operational_option('turuz', 'archive_url'):
         raise ValueError("Unexpected Turuz dictionary listing URL.")
     soup = BeautifulSoup(html, "html.parser")
     heading = next((h for h in soup.select("h1") if h.get_text(" ", strip=True) == "Sözlük"), None)
@@ -101,7 +103,7 @@ def catalog(html, page_url):
 def parse_listing(html, request, root):
     catalog(html, request.url)
     # Like Isxaki, one native collection observation retains individual book cards.
-    return ListingPage([ARCHIVE_URL], [])
+    return ListingPage([operational_option('turuz', 'archive_url')], [])
 
 
 def record(html, page_url):
@@ -121,7 +123,7 @@ def record(html, page_url):
                                        "extension": extension, "unsupported_reason": reason,
                                        "catalog_rows": []})
         asset["catalog_rows"].append(row)
-    metadata = {"url": ARCHIVE_URL, "title": "Turuz: Tatar dictionary selection",
+    metadata = {"url": operational_option('turuz', 'archive_url'), "title": "Turuz: Tatar dictionary selection",
                 "title_raw": "Sözlük", "cards": rows,
                 "admission_reason": "Native Tatar dictionary title claims; bilingual works included, Crimean Tatar and general multilingual titles excluded. Document language and edition completeness remain unverified.",
                 "scope": "Dictionary category only; no whole-site search, reader conversion or package expansion.",

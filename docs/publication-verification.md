@@ -21,3 +21,17 @@ PostgreSQL asset-query compilation; missing-DATABASE_URL handling; `git diff --c
 No automated tests were added or run. No operational configuration or originals changed.
 Live selected-record/error inspection and database/S3 interruption, recovery and receipt
 reconciliation remain unverified: DATABASE_URL is unset and Docker socket access is denied.
+
+## Follow-up agent efficiency refactor (2026-11-06)
+
+Added explicit preview omission metadata and record field selection, paged record-key
+listing, selected-source capabilities, shared artifact directories, read-only projected
+status snapshots and a SQL history-count aggregate. Split Litres PDF transport, assembly
+and configuration into focused modules while retaining helper imports at the old path.
+
+Verification: all 50 original Litres PDF function/class AST bodies match their moved
+versions; local two-page PDF assembly succeeded and repeat assembly preserved its bytes.
+Compiled ingestion/scripts modules; checked capability filters, unknown sources, CLI help,
+record-list limits and missing-database errors. Reviewed snapshot/write-baseline separation
+and shared path use. No automated tests added. Live PostgreSQL projection, pagination,
+and publication counts remain unverified: DATABASE_URL is unset and Docker access is denied.

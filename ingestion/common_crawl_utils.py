@@ -26,9 +26,9 @@ def _dump_index(index):
     runtime.checkpoint(runtime.repository, runtime.data)
 
 
-def configured_path(name, default):
+def configured_path(name):
     runtime = _runtime()
-    path = Path(runtime.settings.source_options.get(name, default)).expanduser()
+    path = Path(runtime.settings.source_options[name]).expanduser()
     return path if path.is_absolute() else Path(runtime.settings.source_options['_config_dir']) / path
 
 

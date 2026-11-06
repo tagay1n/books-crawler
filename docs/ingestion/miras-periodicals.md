@@ -10,11 +10,11 @@ miras_periodicals:
 ```
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source miras_periodicals --max-pages 1 \
+.venv/bin/python cli.py --config config/sources/miras_periodicals.yaml discover --source miras_periodicals --max-pages 1 \
   --session-file ~/Downloads/books-crawler/miras/miras-session.json
-.venv/bin/python cli.py --config ingestion.yaml download --source miras_periodicals --limit 1 \
+.venv/bin/python cli.py --config config/sources/miras_periodicals.yaml download --source miras_periodicals --limit 1 \
   --session-file ~/Downloads/books-crawler/miras/miras-session.json
-.venv/bin/python cli.py --config ingestion.yaml status --source miras_periodicals
+.venv/bin/python cli.py --config config/sources/miras_periodicals.yaml status --source miras_periodicals
 ```
 
 Records represent periodical series, identified by native numeric IDs as

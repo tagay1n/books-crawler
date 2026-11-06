@@ -19,6 +19,7 @@ from .state import atomic_json, now
 
 @dataclass(frozen=True)
 class InspectionSettings:
+    user_agent: str = "BooksCrawler/1.0 (local document acquisition)"
     soft_deadline_seconds: float = 60
     connect_timeout_seconds: float = 10
     read_timeout_seconds: float = 15

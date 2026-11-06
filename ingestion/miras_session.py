@@ -1,4 +1,5 @@
 """Miras-only HTTP access using cookies exported from a verified browser."""
+from .runtime_config import option as operational_option
 
 import json
 from pathlib import Path
@@ -8,7 +9,7 @@ from uuid import uuid4
 
 from .core import acquire
 from .discovery import READ_ERRORS
-from .miras_probe import SAMPLE_RECORD, book, catalog, validate_pdf
+from .miras_probe import book, catalog, validate_pdf
 from .network import Budget, BudgetStop, HTTP
 from .state import Manifest, now, source_lock
 
@@ -29,7 +30,7 @@ def read_json(path):
 
 
 def load_session(http, value):
-    if value.get("format") != "miras-session-v1" or value.get("origin") != "https://miras.info":
+    if value.get("format") != "miras-session-v1" or value.get("origin") != operational_option('miras_session', 'url_https_miras_info'):
         raise ValueError("Expected a Miras-only session JSON with format miras-session-v1.")
     agent, cookies = value.get("user_agent"), value.get("cookies")
     if not isinstance(agent, str) or not agent or len(agent) > 1024 or any(ord(c) < 32 for c in agent):
@@ -58,7 +59,7 @@ def load_session(http, value):
         count += 1
     if not count:
         raise ValueError("No unexpired Miras cookies in the export. Verify in your browser and export again.")
-    http.session.headers.update({"User-Agent": agent, "Referer": SAMPLE_RECORD})
+    http.session.headers.update({"User-Agent": agent, "Referer": operational_option('miras_probe', 'sample_record')})
     return count
 
 
@@ -83,6 +84,10 @@ def observe_sample(manifest, metadata):
     return next(a for a in manifest.data["assets"].values() if a.get("current", True))
 
 
+from .runtime_config import configured
+
+
+@configured
 def run_cookie_probe(settings, session_file, *, log=print):
     _, session = read_json(session_file)
     summary = summary_for("probe-cookies")
@@ -98,7 +103,7 @@ def run_cookie_probe(settings, session_file, *, log=print):
             log("Trying the exported Miras session with the HTTP downloader; cookie values are not logged.")
             metadata = None
             for url, parser, name in ((settings.archive_url.rstrip("/") + "/", catalog, "http_catalog"),
-                                       (SAMPLE_RECORD, book, "http_record")):
+                                       (operational_option('miras_probe', 'sample_record'), book, "http_record")):
                 try:
                     result = parser(http.text(url))
                     summary["checks"][name] = {"ok": True, "url": url}

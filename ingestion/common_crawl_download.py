@@ -1,4 +1,5 @@
 """Acquire FinePDFs originals directly, then fall back to Common Crawl WARC offsets."""
+from .runtime_config import option as operational_option
 
 import hashlib
 import os
@@ -82,7 +83,7 @@ def _move_file(path_to_file, md5, url, script):
     if url.endswith('.pdf'):
         source_name = os.path.splitext(os.path.basename(urlparse(url).path))[0][:100]
     new_name = f"{md5}{'-' + source_name if source_name else ''}.pdf"
-    target_dir = configured_path('result_dir', '~/.common-crawl/result') / script
+    target_dir = configured_path('result_dir') / script
     target_dir.mkdir(parents=True, exist_ok=True)
     check_space(target_dir, _runtime().settings.disk_reserve_bytes, Path(path_to_file).stat().st_size)
     target_path = target_dir / new_name
@@ -105,7 +106,7 @@ def _look_for_filename_in_index(doc, frame):
 
 def _fetch_record_from_offset(warc_filename, offset, output_file):
     runtime = _runtime()
-    url = 'https://data.commoncrawl.org/' + warc_filename.removeprefix('s3://commoncrawl/')
+    url = operational_option('common_crawl_download', 'url_https_data_commoncrawl_org') + warc_filename.removeprefix('s3://commoncrawl/')
 
     def fetch():
         with runtime.http.get(url, headers={'Range': f'bytes={offset}-'}) as response:
@@ -127,11 +128,11 @@ def _fetch_record_from_offset(warc_filename, offset, output_file):
 
 def _get_warc(warc_filename):
     runtime = _runtime()
-    directory = configured_path('cache_dir', '~/.common-crawl/warcs')
+    directory = configured_path('cache_dir')
     directory.mkdir(parents=True, exist_ok=True)
     path = directory / warc_filename.replace('/', '_')
     if not path.exists():
-        url = warc_filename.replace('s3://commoncrawl/', 'https://data.commoncrawl.org/')
+        url = warc_filename.replace('s3://commoncrawl/', operational_option('common_crawl_download', 'url_https_data_commoncrawl_org'))
         temporary = Path(str(path) + '.part')
         def fetch():
             with runtime.http.get(url) as response:

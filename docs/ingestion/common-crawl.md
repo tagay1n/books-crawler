@@ -35,11 +35,11 @@ status need no Yandex token. MD5 publication deduplication uses the existing
 
 ```bash
 .venv/bin/python cli.py sources
-.venv/bin/python cli.py --config ingestion.yaml discover --source common_crawl
-.venv/bin/python cli.py --config ingestion.yaml download --source common_crawl --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source common_crawl --limit 1
-.venv/bin/python cli.py --summary-only --config ingestion.yaml status --source common_crawl
-.venv/bin/python cli.py --config ingestion.yaml publish --source common_crawl --target yandex
+.venv/bin/python cli.py --config config/sources/common_crawl.yaml discover --source common_crawl
+.venv/bin/python cli.py --config config/sources/common_crawl.yaml download --source common_crawl --limit 1
+.venv/bin/python cli.py --config config/sources/common_crawl.yaml run --source common_crawl --limit 1
+.venv/bin/python cli.py --summary-only --config config/sources/common_crawl.yaml status --source common_crawl
+.venv/bin/python cli.py --config config/sources/common_crawl.yaml publish --source common_crawl --target yandex
 ```
 
 The former `index` command is now `discover`; `upload` is now explicit

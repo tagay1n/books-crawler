@@ -7,3 +7,6 @@ __artifacts
 common-crawl/__pycache__/*
 ingestion.yaml
 **/miras-session.json
+
+# Private per-source configuration overrides
+config/local/

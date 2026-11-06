@@ -41,17 +41,21 @@ def fail(ctx, error, command, source=None):
 
 
 @app.command("sources")
-def sources_command(ctx: typer.Context, details: bool = typer.Option(False, "--details")):
+def sources_command(ctx: typer.Context, details: bool = typer.Option(False, "--details"),
+                    source: Optional[str] = typer.Option(None, "--source")):
     """List adapters implemented in the shared CLI."""
+    if source is not None and source not in SOURCES:
+        fail(ctx, ValueError(f"Unknown source: {source}"), "sources", source)
+    names = [source] if source else list(SOURCES)
     if details:
         from .commands import capabilities
-        typer.echo(json.dumps({source: capabilities(source) for source in SOURCES}, ensure_ascii=False, separators=(",", ":")))
+        typer.echo(json.dumps({name: capabilities(name) for name in names}, ensure_ascii=False, separators=(",", ":")))
         return
     if ctx.meta.get("summary_only"):
-        emit_result(ctx, {"sources": list(SOURCES)}, "sources")
+        emit_result(ctx, {"sources": names}, "sources")
         return
-    for source in SOURCES:
-        typer.echo(source)
+    for name in names:
+        typer.echo(name)
 
 
 @app.command("inspect")
@@ -202,7 +206,7 @@ def merge_index(ctx: typer.Context, path: Path, source: str = typer.Option(..., 
 
 
 @app.command()
-def recover(ctx: typer.Context, source: str = typer.Option(..., "--source"), report: str = typer.Option("default", help="Postgres recovery journal name."), workers: int = typer.Option(4, min=1), download: bool = False, retry_failed: bool = False, download_workers: int = typer.Option(4, min=1)):
+def recover(ctx: typer.Context, source: str = typer.Option(..., "--source"), report: str = typer.Option("default", help="Postgres recovery journal name."), workers: Optional[int] = typer.Option(None, min=1), download: bool = False, retry_failed: bool = False, download_workers: Optional[int] = typer.Option(None, min=1)):
     execute(ctx, "recover", source, maintenance=dict(report_path=report, workers=workers, download=download, retry_failed=retry_failed, download_workers=download_workers))
 
 

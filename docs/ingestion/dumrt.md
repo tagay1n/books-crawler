@@ -12,9 +12,9 @@ sources:
 ```
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source dumrt --max-pages 40
-.venv/bin/python cli.py --config ingestion.yaml download --source dumrt --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source dumrt
+.venv/bin/python cli.py --config config/sources/dumrt.yaml discover --source dumrt --max-pages 40
+.venv/bin/python cli.py --config config/sources/dumrt.yaml download --source dumrt --limit 1
+.venv/bin/python cli.py --config config/sources/dumrt.yaml status --source dumrt
 ```
 
 Use a YAML page cap of at least 40 for that discovery command, or use smaller

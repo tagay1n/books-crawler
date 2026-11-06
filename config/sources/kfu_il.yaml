@@ -1,0 +1,16 @@
+extends: ../defaults.yaml
+sources:
+  kfu_il:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/28060
+    operational:
+      image_issues:
+        colour_policy:
+          dpi: 200
+          jpeg_quality: 85
+          mode: RGB
+      kfu:
+        origin: https://repo.kpfu.ru
+      kfu_reader:
+        url_repo_kpfu_ru: repo.kpfu.ru
+    collection_id: '28060'
+    tatar_only: true

@@ -1,4 +1,5 @@
 """Tatar Galyame's public catalog API and explicitly listed hosted documents."""
+from .runtime_config import option as operational_option
 
 import json
 from pathlib import PurePosixPath
@@ -12,8 +13,6 @@ from .network import InvalidDocument
 from .paging import ListingPage, PageRequest
 
 
-ORIGIN = "https://tatargalyame.kpfu.ru"
-ARCHIVE_URL = ORIGIN + "/catalogue"
 PARSER_VERSION = 1
 DOCUMENT_FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
 UUID = r"[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}"
@@ -32,7 +31,7 @@ def filename(value):
 
 def route(url):
     parsed = urlsplit(url)
-    if not same_origin(url, ORIGIN) or parsed.fragment:
+    if not same_origin(url, operational_option('tatargalyame', 'origin')) or parsed.fragment:
         raise ValueError("Tatar Galyame acquisition must stay on its HTTPS source origin.")
     query = parse_qs(parsed.query, keep_blank_values=True)
     if parsed.path == "/api/struct" or parsed.path.startswith("/api/struct/"):
@@ -52,7 +51,7 @@ def route(url):
 
 
 def category_url(parts):
-    return ORIGIN + "/api/struct" + ("/" + "/".join(parts) if parts else "") + "?lang=tt&q="
+    return operational_option('tatargalyame', 'origin') + "/api/struct" + ("/" + "/".join(parts) if parts else "") + "?lang=tt&q="
 
 
 def initial_request(root):
@@ -101,9 +100,9 @@ def parse_listing(raw, request, root):
                 continue  # Match the public catalog's own visibility rule.
             if not re.fullmatch(UUID, sid):
                 raise ValueError("Invalid Tatar Galyame resource identity/type.")
-            url = f"{ORIGIN}/api/sid/{sid}?lang=tt"
+            url = f"{operational_option('tatargalyame', 'origin')}/api/sid/{sid}?lang=tt"
             records.append(url)
-            contexts[url] = {"category_url": ARCHIVE_URL + ("/" + "/".join(parts) if parts else ""),
+            contexts[url] = {"category_url": operational_option('tatargalyame', 'archive_url') + ("/" + "/".join(parts) if parts else ""),
                              "category_api_url": request.url, "parents_raw": data["parents"],
                              "listing_document_raw": doc}
     if not parts and not (records or following):
@@ -142,7 +141,7 @@ def record(raw, page_url):
         if extension not in DOCUMENT_FORMATS and code is None:
             code, reason = "unsupported_format", "Attachment is not a supported original document format."
         asset = {"url": url, "label": label, "extension": extension, "source_asset_key": url,
-                 "kind": "hosted_document" if same_origin(url, ORIGIN) and not code else "reference",
+                 "kind": "hosted_document" if same_origin(url, operational_option('tatargalyame', 'origin')) and not code else "reference",
                  "unsupported_code": code, "unsupported_reason": reason}
         if timestamp is not None:
             asset["source_version"] = str(timestamp)
@@ -153,7 +152,7 @@ def record(raw, page_url):
         if not name.strip():
             continue
         filename(name)
-        url = f"{ORIGIN}/files/{sid}/{quote(name, safe='')}"
+        url = f"{operational_option('tatargalyame', 'origin')}/files/{sid}/{quote(name, safe='')}"
         extension = PurePosixPath(name).suffix.lower()
         decision = attachment(url, name, extension)
         inventory.append({"filename_raw": name, "url": url, "selection_reason": decision})
@@ -161,7 +160,7 @@ def record(raw, page_url):
     for href in references:
         if not href.strip():
             continue
-        url = requote_uri(canonical(href, ARCHIVE_URL))
+        url = requote_uri(canonical(href, operational_option('tatargalyame', 'archive_url')))
         extension = PurePosixPath(unquote(urlsplit(url).path)).suffix.lower()
         decision = "reference_only"
         if extension in DOCUMENT_FORMATS and url not in assets:
@@ -173,13 +172,13 @@ def record(raw, page_url):
             if hosted:
                 decision = attachment(url, target[2], extension)
             else:
-                code = "external_origin" if not same_origin(url, ORIGIN) else "unsupported_route"
+                code = "external_origin" if not same_origin(url, operational_option('tatargalyame', 'origin')) else "unsupported_route"
                 decision = attachment(url, doc["name"], extension, code,
                                       "Only explicitly listed hosted /files/ documents are selected; retain this reference for follow-up.")
         elif url in assets:
             decision = assets[url]["unsupported_code"] or "eligible"
         reference_inventory.append({"url_raw": href, "url": url, "selection_reason": decision})
-    metadata = {"url": f"{ARCHIVE_URL}/{sid}", "sid": sid, "title": " ".join(doc["name"].split()),
+    metadata = {"url": f"{operational_option('tatargalyame', 'archive_url')}/{sid}", "sid": sid, "title": " ".join(doc["name"].split()),
                 "title_raw": doc["name"], "api_url": page_url, "document_raw": doc,
                 "parents_raw": data["parents"], "catalog_locale": "tt", "language_selection": "unverified",
                 "admission_reason": "Owner selected all hosted catalog documents; catalog locale and Tatar descriptions do not establish document language.",

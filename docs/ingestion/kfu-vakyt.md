@@ -7,10 +7,10 @@ The adapter supplies the fixed filter and native ten-record pagination itself;
 it does not enumerate the other newspapers in that collection.
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source kfu_vakyt --max-pages 25
-.venv/bin/python cli.py --config ingestion.yaml download --source kfu_vakyt --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source kfu_vakyt --max-pages 25 --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source kfu_vakyt
+.venv/bin/python cli.py --config config/sources/kfu_vakyt.yaml discover --source kfu_vakyt --max-pages 25
+.venv/bin/python cli.py --config config/sources/kfu_vakyt.yaml download --source kfu_vakyt --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_vakyt.yaml run --source kfu_vakyt --max-pages 25 --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_vakyt.yaml status --source kfu_vakyt
 ```
 
 Repeated discovery resumes the saved frontier and pending records. The advertised

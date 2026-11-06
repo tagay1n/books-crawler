@@ -1,4 +1,5 @@
 """Miras books and exposed original PDFs, without a language filter."""
+from .runtime_config import option as operational_option
 
 import json
 from pathlib import Path, PurePosixPath
@@ -13,7 +14,6 @@ from .network import SourceAccessError
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
-ARCHIVE_URL = "https://miras.info/projects/mirasxane/books/"
 PARSER_VERSION = 1
 REQUIRES_SESSION = True
 BOOK_PATH = re.compile(r"/projects/mirasxane/books/(\d+)-[^/]+\.html")
@@ -53,7 +53,7 @@ def prepare_http(http, session_file):
         raise SourceAccessError(str(error)) from None
     finally:
         session.clear()
-    http.session.headers["Referer"] = ARCHIVE_URL
+    http.session.headers["Referer"] = operational_option('miras', 'archive_url')
     http.summary["acquisition_method"] = "http_cookie_export"
 
     def validate_prefix(prefix):
@@ -64,8 +64,8 @@ def prepare_http(http, session_file):
 
     def check_response(response, *args, **kwargs):
         location = response.headers.get("Location")
-        outside = not same_origin(response.url, ARCHIVE_URL) or (
-            response.is_redirect and location and not same_origin(canonical(location, response.url), ARCHIVE_URL))
+        outside = not same_origin(response.url, operational_option('miras', 'archive_url')) or (
+            response.is_redirect and location and not same_origin(canonical(location, response.url), operational_option('miras', 'archive_url')))
         html_pdf = (response.status_code == 200 and urlsplit(response.url).path.lower().endswith(".pdf")
                     and response.headers.get("Content-Type", "").split(";", 1)[0].lower()
                     in {"text/html", "application/xhtml+xml"})
@@ -80,7 +80,7 @@ def prepare_http(http, session_file):
 def page_number(url, *, page_path=PAGE_PATH, catalog="books"):
     parsed = urlsplit(url)
     match = page_path.fullmatch(parsed.path.rstrip("/") + "/")
-    if not same_origin(url, ARCHIVE_URL) or not match or parsed.query:
+    if not same_origin(url, operational_option('miras', 'archive_url')) or not match or parsed.query:
         raise ValueError(f"Listing is outside the unfiltered Miras {catalog} catalog.")
     return int(match.group(1) or 1)
 
@@ -136,7 +136,7 @@ def book_target(href, base, *, record_path=BOOK_PATH):
     identity = record_path.fullmatch(parsed.path)
     if identity is None:
         return None
-    if not same_origin(url, ARCHIVE_URL) or parsed.query:
+    if not same_origin(url, operational_option('miras', 'archive_url')) or parsed.query:
         raise ValueError("Unexpected publication link in the Miras catalog.")
     return identity.group(1), url
 
@@ -194,7 +194,7 @@ def parse_listing(html, request, root, *, record_path=BOOK_PATH, page_path=PAGE_
 
 
 def record(html, page_url, *, record_path=BOOK_PATH, kind="book", admission_reason=None):
-    identity = book_target(page_url, ARCHIVE_URL, record_path=record_path)
+    identity = book_target(page_url, operational_option('miras', 'archive_url'), record_path=record_path)
     if identity is None:
         raise ValueError(f"Unrecognized Miras {kind} URL.")
     area = content(check_page(html))
@@ -214,14 +214,14 @@ def record(html, page_url, *, record_path=BOOK_PATH, kind="book", admission_reas
         if viewer:
             readers.append(target)
             values = parse_qs(parsed.query).get("file", [])
-            if same_origin(target, ARCHIVE_URL) and len(values) == 1 and values[0]:
+            if same_origin(target, operational_option('miras', 'archive_url')) and len(values) == 1 and values[0]:
                 target = canonical(values[0], target)
                 parsed = urlsplit(target)
         extension = PurePosixPath(unquote(parsed.path)).suffix.lower()
         if not viewer and node.name != "iframe" and extension not in DOCUMENT_EXTENSIONS:
             continue
         code, reason = None, None
-        if not same_origin(target, ARCHIVE_URL):
+        if not same_origin(target, operational_option('miras', 'archive_url')):
             code, reason = "external_origin", "Original is outside the Miras origin."
         elif extension != ".pdf":
             code, reason = "format_unsupported", "Reader/link does not expose a supported original PDF."

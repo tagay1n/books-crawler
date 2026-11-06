@@ -1,4 +1,5 @@
 """Безнең мирас issue archive; covers are not complete journal documents."""
+from .runtime_config import option as operational_option
 
 import re
 from pathlib import PurePosixPath
@@ -11,7 +12,6 @@ from .network import InvalidDocument
 from .paging import ListingPage, PageRequest
 
 
-ARCHIVE_URL = "https://beznenmiras.ru/categories/widget/list/svezii-vypusk"
 PARSER_VERSION = 1
 LISTING_PATH = re.compile(r"/categories/widget/list/svezii-vypusk(?:/page/([1-9]\d*))?/?")
 ISSUE_PATH = re.compile(r"/categories/([\w-]+)/?")
@@ -21,20 +21,20 @@ DOCUMENT_FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
 def checked_url(href, base, pattern):
     url = canonical(href, base)
     parsed = urlsplit(url)
-    if not same_origin(url, ARCHIVE_URL) or parsed.query or not pattern.fullmatch(parsed.path):
+    if not same_origin(url, operational_option('beznenmiras', 'archive_url')) or parsed.query or not pattern.fullmatch(parsed.path):
         raise ValueError(f"Unexpected Безнең мирас archive URL: {url}")
     return url
 
 
 def prepare_http(http, session_file):
     def validate_request(method, url, data):
-        if method != "GET" or data or not same_origin(url, ARCHIVE_URL):
+        if method != "GET" or data or not same_origin(url, operational_option('beznenmiras', 'archive_url')):
             raise ValueError("Безнең мирас permits only same-origin read-only HTTPS requests.")
     http.validate_request = validate_request
 
     def check_response(response, *args, **kwargs):
         target = canonical(response.headers.get("Location", ""), response.url) if response.is_redirect else response.url
-        if not same_origin(response.url, ARCHIVE_URL) or not same_origin(target, ARCHIVE_URL):
+        if not same_origin(response.url, operational_option('beznenmiras', 'archive_url')) or not same_origin(target, operational_option('beznenmiras', 'archive_url')):
             response.close()
             raise InvalidDocument("Безнең мирас redirected outside its HTTPS source origin.")
         return response
@@ -81,7 +81,7 @@ def parse_listing(html, request, root):
 
 
 def record(html, page_url):
-    url = checked_url(page_url, ARCHIVE_URL, ISSUE_PATH)
+    url = checked_url(page_url, operational_option('beznenmiras', 'archive_url'), ISSUE_PATH)
     soup = BeautifulSoup(html, "html.parser")
     area = soup.select_one(".single-page__main")
     heading = area.select_one("h1.single__title") if area else None
@@ -112,7 +112,7 @@ def record(html, page_url):
         assets[target] = {
             "url": target, "label": anchor.get_text(" ", strip=True) or title,
             "extension": extension,
-            "unsupported_reason": None if same_origin(target, ARCHIVE_URL) else "Attachment is outside the configured source origin.",
+            "unsupported_reason": None if same_origin(target, operational_option('beznenmiras', 'archive_url')) else "Attachment is outside the configured source origin.",
         }
     metadata["attachments"] = [{"url": a["url"], "label": a["label"]} for a in assets.values()]
     metadata["acquisition_note"] = (

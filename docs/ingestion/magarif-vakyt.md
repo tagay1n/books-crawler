@@ -9,9 +9,9 @@ magarif_vakyt:
 ```
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source magarif_vakyt --max-pages 1
-.venv/bin/python cli.py --config ingestion.yaml download --source magarif_vakyt --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source magarif_vakyt
+.venv/bin/python cli.py --config config/sources/magarif_vakyt.yaml discover --source magarif_vakyt --max-pages 1
+.venv/bin/python cli.py --config config/sources/magarif_vakyt.yaml download --source magarif_vakyt --limit 1
+.venv/bin/python cli.py --config config/sources/magarif_vakyt.yaml status --source magarif_vakyt
 ```
 
 Discovery selects public Yandex Disk shares attached to publisher-labelled

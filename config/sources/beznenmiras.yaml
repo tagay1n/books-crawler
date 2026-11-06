@@ -1,0 +1,5 @@
+extends: ../defaults.yaml
+sources:
+  beznenmiras:
+    archive_url: https://beznenmiras.ru/categories/widget/list/svezii-vypusk
+    operational: {}

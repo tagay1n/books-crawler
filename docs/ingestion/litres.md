@@ -1,6 +1,6 @@
 # Litres unified pipeline
 
-Use `.venv/bin/python cli.py --config ingestion.yaml COMMAND --source litres`.
+Use `.venv/bin/python cli.py --config config/sources/litres.yaml COMMAND --source litres`.
 Copy the Litres source section from `ingestion.example.yaml` into your selected
 operational YAML. Set `sources.litres.sid` to your Litres SID cookie. Source
 settings are never loaded from the legacy `litres/config.yaml`. Provider helpers

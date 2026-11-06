@@ -1,0 +1,9 @@
+extends: ../defaults.yaml
+sources:
+  echovek:
+    archive_url: https://www.echovek.ru/ru/publications
+    operational:
+      echovek:
+        hosts:
+        - echovek.ru
+        - www.echovek.ru

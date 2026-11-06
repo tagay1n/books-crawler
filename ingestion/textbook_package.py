@@ -1,4 +1,5 @@
 """Read bounded FlipHTML5 ZIP members and derive PDFs without executing content."""
+from .runtime_config import option as operational_option
 
 import hashlib
 from io import BytesIO
@@ -20,13 +21,6 @@ from .state import now
 
 
 RECIPE = "fliphtml5-zip-jpeg-v1/pymupdf-" + pymupdf.VersionBind
-DPI = 200
-MAX_MEMBERS = 20000
-MAX_UNCOMPRESSED = 2 * 1024**3
-MAX_PAGE_BYTES = 32 * 1024**2
-MAX_CONFIG_BYTES = 1024**2
-MAX_PAGES = 2000
-MAX_BOOKS = 20
 
 
 def member_path(name):
@@ -39,7 +33,7 @@ def member_path(name):
 
 def inventory(archive, budget):
     items = archive.infolist()
-    if not items or len(items) > MAX_MEMBERS:
+    if not items or len(items) > operational_option('textbook_package', 'max_members'):
         raise InvalidDocument("ZIP is empty or exceeds the member-count limit.")
     total, names = 0, {}
     for item in items:
@@ -53,7 +47,7 @@ def inventory(archive, budget):
         if item.compress_type not in {zipfile.ZIP_STORED, zipfile.ZIP_DEFLATED}:
             raise InvalidDocument("ZIP uses an unsupported compression method.")
         total += item.file_size
-        if total > MAX_UNCOMPRESSED:
+        if total > operational_option('textbook_package', 'max_uncompressed'):
             raise InvalidDocument("ZIP exceeds the total uncompressed-size limit.")
         names[key] = item
     return names, total
@@ -94,11 +88,11 @@ def read_member(archive, item, cap, budget):
 def plans(archive, names, budget):
     configurations = [name for name, item in names.items()
                       if not item.is_dir() and name.endswith("/javascript/config.js")]
-    if not configurations or len(configurations) > MAX_BOOKS:
+    if not configurations or len(configurations) > operational_option('textbook_package', 'max_books'):
         raise InvalidDocument("Expected one or more supported textbook reader configurations.")
     output, total_pages = [], 0
     for name in sorted(configurations):
-        encoded = read_member(archive, names[name], MAX_CONFIG_BYTES, budget)
+        encoded = read_member(archive, names[name], operational_option('textbook_package', 'max_config_bytes'), budget)
         text = encoded.decode("utf-8-sig")
         count = re.findall(r"\btotalPageCount\s*:\s*(\d+)\b", text)
         assignments = list(re.finditer(r"\bvar\s+fliphtml5_pages\s*=\s*", text))
@@ -110,8 +104,8 @@ def plans(archive, names, budget):
             raise InvalidDocument("Reader page list is not a literal JSON array.") from None
         expected = int(count[0])
         total_pages += expected
-        if (not isinstance(pages, list) or not 0 < expected <= MAX_PAGES
-                or len(pages) != expected or total_pages > MAX_PAGES):
+        if (not isinstance(pages, list) or not 0 < expected <= operational_option('textbook_package', 'max_pages')
+                or len(pages) != expected or total_pages > operational_option('textbook_package', 'max_pages')):
             raise InvalidDocument("Declared reader count and explicit page list disagree or exceed limits.")
         root = PurePosixPath(name).parent.parent
         members = []
@@ -120,7 +114,7 @@ def plans(archive, names, budget):
             if not isinstance(target, str) or not re.fullmatch(r"files/large/[^/]+\.(?:jpg|jpeg)", target, re.IGNORECASE):
                 raise InvalidDocument("Reader does not declare a supported original JPEG for every page.")
             member = member_path((root / member_path(target)).as_posix())
-            if member not in names or names[member].is_dir() or names[member].file_size > MAX_PAGE_BYTES:
+            if member not in names or names[member].is_dir() or names[member].file_size > operational_option('textbook_package', 'max_page_bytes'):
                 raise InvalidDocument("A declared reader page is absent or oversized.")
             members.append(member)
         if len(set(members)) != len(members):
@@ -158,7 +152,7 @@ def assemble(http, manifest, record, asset, temporary, summary):
             for plan in books:
                 http.budget.check()
                 fingerprint = hashlib.sha256(json.dumps(
-                    {"recipe": RECIPE, "dpi": DPI, "archive_sha256": source["sha256"],
+                    {"recipe": RECIPE, "dpi": operational_option('textbook_package', 'dpi'), "archive_sha256": source["sha256"],
                      "source_observation_id": observation["id"], "plan": plan}, sort_keys=True).encode()).hexdigest()
                 previous = next((r for r in reversed(state["results"]) if r["input_fingerprint"] == fingerprint
                                  and valid_local(manifest.directory, r, folder="derived")), None)
@@ -176,9 +170,9 @@ def assemble(http, manifest, record, asset, temporary, summary):
                     with pymupdf.open() as output:
                         for index, name in enumerate(plan["members"]):
                             http.budget.check()
-                            data = read_member(archive, names[name], MAX_PAGE_BYTES, http.budget)
+                            data = read_member(archive, names[name], operational_option('textbook_package', 'max_page_bytes'), http.budget)
                             width, height = jpeg_dimensions(data)
-                            page = output.new_page(width=width * 72 / DPI, height=height * 72 / DPI)
+                            page = output.new_page(width=width * 72 / operational_option('textbook_package', 'dpi'), height=height * 72 / operational_option('textbook_package', 'dpi'))
                             page.insert_image(page.rect, stream=data)
                             inputs.append({"member": name, "page_index": index,
                                            "sha256": hashlib.sha256(data).hexdigest(), "size": len(data),
@@ -203,7 +197,7 @@ def assemble(http, manifest, record, asset, temporary, summary):
                     target.parent.mkdir(parents=True, exist_ok=True)
                     os.replace(partial, target)
                     result = {"id": uuid4().hex, "kind": "derived_pdf", "created_at": now(),
-                              "recipe": RECIPE, "assumed_dpi": DPI, "image_policy": "embed_original_jpeg",
+                              "recipe": RECIPE, "assumed_dpi": operational_option('textbook_package', 'dpi'), "image_policy": "embed_original_jpeg",
                               "source_observation_id": observation["id"], "source_asset_id": asset["id"],
                               "archive_result_id": source["id"], "archive_sha256": source["sha256"],
                               "configuration_member": plan["configuration_member"],

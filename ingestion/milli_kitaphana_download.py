@@ -1,4 +1,5 @@
 """Downloads Milli Kitaphana documents by scraping cards, performing key exchange, fetching encrypted parts, and updating the index with download state."""
+from .runtime_config import option as operational_option
 
 import base64
 import copy
@@ -27,28 +28,13 @@ from .milli_kitaphana_progress_wrapper import ProgressWrapper
 from rich import print
 
 from .milli_kitaphana_decrypt import _decrypt_file
-from .milli_kitaphana_utils import (
-    HOST,
-    download_part,
-    dump_index,
-    get_index_file_loc,
-    get_list_file_loc,
-    get_not_downloaded_docs,
-    get_part_paths,
-    is_valid_encrypted_part,
-    open_lock,
-    load_index_file,
-    read_config,
-    require_runtime,
-    request,
-)
+from .milli_kitaphana_utils import download_part, dump_index, get_index_file_loc, get_list_file_loc, get_not_downloaded_docs, get_part_paths, is_valid_encrypted_part, open_lock, load_index_file, read_config, require_runtime, request
 
 # Disable SSL warnings
 requests.packages.urllib3.disable_warnings(
     requests.packages.urllib3.exceptions.InsecureRequestWarning)
 
 # URLS
-DETAILS_URL = HOST + "/tt/dl/edoc2"
 
 
 def download(limited, index_name, recheck=False):
@@ -141,7 +127,7 @@ def download(limited, index_name, recheck=False):
 
 
 def _scrap_doc_card(card_path, meta, proxies):
-    with request(method="GET", url=HOST + card_path, proxies=proxies) as r:
+    with request(method="GET", url=operational_option('milli_kitaphana_utils', 'host') + card_path, proxies=proxies) as r:
         soup = bs.BeautifulSoup(r.text, "html.parser")
 
     record = soup.select_one(".record")
@@ -181,14 +167,14 @@ def _scrap_doc_card(card_path, meta, proxies):
         for i_ in record.select("a"):
             if (re.match(r'Эл?ектр?оннн?ы?ы?й рес?урс', i_.text.strip()) or
                 # case for broken content management
-                    i_.text.startswith("http://kitap.tatar.ru/dl")):
+                    i_.text.startswith(operational_option('milli_kitaphana_download', 'url_http_kitap_tatar_ru_dl'))):
                 meta["doc_url"] = i_['href']
                 break
         else:
-            raise ValueError("Could not parse document's url", HOST + card_path)
+            raise ValueError("Could not parse document's url", operational_option('milli_kitaphana_utils', 'host') + card_path)
         meta["download_code"] = (urlparse(meta["doc_url"]).path
                                  .removeprefix('/dl')
-                                 .removeprefix('/kitap.tatar.ru/dl')
+                                 .removeprefix(operational_option('milli_kitaphana_download', 'url_kitap_tatar_ru_dl'))
                                  .strip('/')
                                  .replace('-', '_'))
     meta['doc_card_url'] = r.url
@@ -212,7 +198,7 @@ def _get_details(context):
     # generate a random token1 for the requestpwd
     token1 = ''.join(rnd.choice(string.ascii_lowercase) for _ in range(9))
 
-    with request("GET", DETAILS_URL, params={"code": code, "token1": token1}, proxies=context.get('proxies')) as response:
+    with request("GET", (operational_option('milli_kitaphana_utils', 'host') + "/tt/dl/edoc2"), params={"code": code, "token1": token1}, proxies=context.get('proxies')) as response:
         if response.headers.get("Content-Type") != "application/zip":
             raise ValueError(
                 f"Unexpected content type: {response.headers.get('Content-Type')}")
@@ -267,7 +253,7 @@ def _get_dh_params(context):
         "s": base64.b64encode(sig),
     }
 
-    with request(method="POST", url=HOST + context['keyUrl'], data=form_data, proxies=context.get('proxies')) as resp:
+    with request(method="POST", url=operational_option('milli_kitaphana_utils', 'host') + context['keyUrl'], data=form_data, proxies=context.get('proxies')) as resp:
         context['dh_params'] = base64.b64decode(resp.json()['data'])
         # here we can verify the server's signature, but we don't need it for now
 
@@ -314,7 +300,7 @@ def _dh_key_exchange(context):
         "dh2": base64.b64encode(dh_sig),
     }
 
-    with request(method="POST", url=HOST + context['keyUrl'], data=form_data, proxies=context.get('proxies')) as resp:
+    with request(method="POST", url=operational_option('milli_kitaphana_utils', 'host') + context['keyUrl'], data=form_data, proxies=context.get('proxies')) as resp:
         # decrypt the document key
         # this key will be used to encrypt the document later on
         ciphertext = base64.b64decode(resp.json()['data'])

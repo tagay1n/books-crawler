@@ -1,4 +1,5 @@
 """KFU historical collections: public documents and colour page-image PDFs."""
+from .runtime_config import option as operational_option
 
 import json
 from email.message import Message
@@ -16,7 +17,6 @@ from .network import InvalidDocument
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
-ORIGIN = "https://repo.kpfu.ru"
 COLLECTIONS = {"27574": "books", "18503": "manuscripts", "28060": "il", "25046": "shura",
                "27528": "azad_halyk"}
 PERIODICALS = {"28060": ("Ил", "newspaper"), "25046": ("Шура", "journal"),
@@ -45,7 +45,7 @@ def select_tatar(metadata, assets, *, publication="Il"):
 def handle(url):
     parsed = urlsplit(url)
     match = re.fullmatch(r"/jspui/handle/(net/[1-9]\d*)/?", parsed.path)
-    if not same_origin(url, ORIGIN) or parsed.fragment or match is None:
+    if not same_origin(url, operational_option('kfu', 'origin')) or parsed.fragment or match is None:
         raise ValueError("Invalid KFU record handle URL.")
     return match[1]
 
@@ -53,7 +53,7 @@ def handle(url):
 def bitstream(url):
     parsed = urlsplit(url)
     match = re.fullmatch(r"/jspui/bitstream/(net/[1-9]\d*)/([1-9]\d*)/(.+)", parsed.path)
-    if not same_origin(url, ORIGIN) or parsed.query or parsed.fragment or match is None:
+    if not same_origin(url, operational_option('kfu', 'origin')) or parsed.query or parsed.fragment or match is None:
         raise ValueError("Invalid KFU bitstream URL.")
     name = unquote(match[3])
     if ("\\" in name or any(part in {"", ".", ".."} for part in name.split("/"))
@@ -65,7 +65,7 @@ def bitstream(url):
 def reader_reference(url):
     parsed = urlsplit(url)
     match = re.fullmatch(r"(net/[1-9]\d*)/([1-9]\d*)-([1-9]\d*)/view", parsed.query)
-    if (not same_origin(url, ORIGIN) or parsed.path != "/jspui/bitstream.jsp"
+    if (not same_origin(url, operational_option('kfu', 'origin')) or parsed.path != "/jspui/bitstream.jsp"
             or parsed.fragment or match is None or int(match[3]) < int(match[2])):
         raise ValueError("Invalid KFU image-reader URL.")
     return match[1], int(match[2]), int(match[3])
@@ -106,7 +106,7 @@ def parse_listing(html, request, root):
         item_handle = handle(url)
         if urlsplit(url).query or item_handle.rsplit("/", 1)[1] in COLLECTIONS:
             raise ValueError("KFU catalog row is not an item record.")
-        records.append(f"{ORIGIN}/jspui/handle/{item_handle}")
+        records.append(f"{operational_option('kfu', 'origin')}/jspui/handle/{item_handle}")
     if not records or first != start + 1 or last != start + len(records) or last > count:
         raise ValueError("KFU collection range disagrees with its rows or requested offset.")
     if len(set(records)) != len(records):
@@ -149,7 +149,7 @@ def record(html, page_url):
           for tag in soup.select('meta[name^="DC."]')]
     title = next((entry["content"] for entry in dc if entry["name"] == "DC.title" and entry["content"]), None)
     identifiers = [entry["content"] for entry in dc if entry["name"] == "DC.identifier"]
-    canonical_url = f"{ORIGIN}/jspui/handle/{item_handle}"
+    canonical_url = f"{operational_option('kfu', 'origin')}/jspui/handle/{item_handle}"
     if table is None or title is None or canonical_url not in identifiers:
         raise ValueError("KFU item metadata is missing, mismatched, or replaced by a login page.")
     bibliography = []
@@ -190,7 +190,7 @@ def record(html, page_url):
                 continue
             parsed = urlsplit(target)
             single = re.fullmatch(r"(net/[1-9]\d*)/([1-9]\d*)/view", parsed.query)
-            if single and same_origin(target, ORIGIN) and not parsed.fragment:
+            if single and same_origin(target, operational_option('kfu', 'origin')) and not parsed.fragment:
                 reference, first, last = single[1], int(single[2]), int(single[2])
                 code = "kfu_restricted" if restricted else "reader_unsupported"
                 source_key = f"single-viewer:{first}"
@@ -264,7 +264,7 @@ def prepare_http(http, session_file, *, listing_route=None, all_collections=Fals
     http.session.headers.update({"Accept-Language": "ru,en;q=0.5"})
 
     def route(url):
-        if not same_origin(url, ORIGIN):
+        if not same_origin(url, operational_option('kfu', 'origin')):
             raise ValueError("KFU acquisition must stay on its HTTPS source origin.")
         if urlsplit(url).path.startswith("/jspui/bitstream/"):
             return ("file", *bitstream(url))
@@ -278,7 +278,7 @@ def prepare_http(http, session_file, *, listing_route=None, all_collections=Fals
             return ("listing", listing_route(url))
         native = handle(url)
         if all_collections:
-            offset(url, f"{ORIGIN}/jspui/handle/{native}")
+            offset(url, f"{operational_option('kfu', 'origin')}/jspui/handle/{native}")
         elif native.rsplit("/", 1)[1] in COLLECTIONS:
             offset(url, http.settings.archive_url)
         elif urlsplit(url).query:
@@ -326,10 +326,9 @@ class CollectionAdapter:
     prepare_http = staticmethod(prepare_http)
     resolve_record = staticmethod(resolve_record)
 
-    def __init__(self, collection_id, *, tatar_only=False):
-        if collection_id not in COLLECTIONS:
+    def __init__(self, collection_id=None, *, tatar_only=False):
+        if collection_id is not None and collection_id not in COLLECTIONS:
             raise ValueError("Unknown KFU collection.")
-        self.ARCHIVE_URL = f"{ORIGIN}/jspui/handle/net/{collection_id}"
         self.tatar_only = tatar_only
         self.collection_id = collection_id
 

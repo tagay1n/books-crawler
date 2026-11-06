@@ -6,10 +6,10 @@ archive is distinct from the separately supplied Cyrillic `татаровед.р
 address; this adapter covers only `tataroved.ru` and its `www` alias.
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source tataroved --max-pages 2
-.venv/bin/python cli.py --config ingestion.yaml download --source tataroved --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source tataroved --max-pages 2 --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source tataroved
+.venv/bin/python cli.py --config config/sources/tataroved.yaml discover --source tataroved --max-pages 2
+.venv/bin/python cli.py --config config/sources/tataroved.yaml download --source tataroved --limit 1
+.venv/bin/python cli.py --config config/sources/tataroved.yaml run --source tataroved --max-pages 2 --limit 1
+.venv/bin/python cli.py --config config/sources/tataroved.yaml status --source tataroved
 ```
 
 The root catalog exposes a flattened native link hierarchy. Initial inspection

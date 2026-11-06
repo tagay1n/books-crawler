@@ -1,0 +1,7 @@
+extends: ../defaults.yaml
+sources:
+  dumrt:
+    archive_url: https://dumrt.ru/media/din-va-magishet/
+    operational:
+      dumrt:
+        origin: https://dumrt.ru

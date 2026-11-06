@@ -1,0 +1,12 @@
+extends: ../defaults.yaml
+sources:
+  commons:
+    archive_url: https://commons.wikimedia.org/wiki/Category:Tatar-language_books
+    operational:
+      commons:
+        api_url: https://commons.wikimedia.org/w/api.php
+        root_category_id: 70354556
+        batch_size: 10
+        user_agent: BooksCrawlerBot/1.0 (https://github.com/tagay1n/books-crawler;
+          local Commons acquisition)
+        url_https_commons_wikimedia_org_w_index_php_curid: https://commons.wikimedia.org/w/index.php?curid=

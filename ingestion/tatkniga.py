@@ -1,4 +1,5 @@
 """Current Tatkniga library: direct documents and public image-based readers."""
+from .runtime_config import option as operational_option
 
 import json
 import re
@@ -11,7 +12,6 @@ from .documents import DOCUMENT_EXTENSIONS, canonical, same_origin
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
-ARCHIVE_URL = "https://tatkniga.ru/catalog/biblioteka/"
 SUPPORTED_COMMANDS = {"discover", "download", "finalize", "run", "status"}
 PARSER_VERSION = 2
 BOOK_PATH = re.compile(r"/catalog/biblioteka/[^/]+\.html")
@@ -121,7 +121,7 @@ def record(html, page_url):
     heading = soup.select_one("h1.changeName")
     product = soup.select_one("#catalogElement")
     browse = product.select_one("#browse") if product else None
-    if (heading is None or product is None or browse is None or not same_origin(page_url, ARCHIVE_URL)
+    if (heading is None or product is None or browse is None or not same_origin(page_url, operational_option('tatkniga', 'archive_url'))
             or not BOOK_PATH.fullmatch(urlsplit(page_url).path)):
         raise ValueError("Current Tatkniga publication structure is missing.")
     clean_heading = BeautifulSoup(str(heading), "html.parser")

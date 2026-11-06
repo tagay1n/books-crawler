@@ -1,0 +1,22 @@
+extends: ../defaults.yaml
+sources:
+  kfu_dspace:
+    archive_url: https://dspace.kpfu.ru/xmlui/discover
+    operational:
+      image_issues:
+        colour_policy:
+          dpi: 200
+          jpeg_quality: 85
+          mode: RGB
+      kfu_dspace:
+        origin: https://dspace.kpfu.ru
+        query: татар
+        search:
+          query: татар
+          rpp: '10'
+          group_by: none
+          etal: '0'
+      kfu:
+        origin: https://repo.kpfu.ru
+      kfu_reader:
+        url_repo_kpfu_ru: repo.kpfu.ru

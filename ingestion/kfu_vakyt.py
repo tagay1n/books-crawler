@@ -1,4 +1,5 @@
 """Exact-series KFU Vakyt search, with explicit item-language admission."""
+from .runtime_config import option as operational_option
 
 import json
 import re
@@ -11,28 +12,25 @@ from .documents import canonical, same_origin
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
-ARCHIVE_URL = kfu.ORIGIN + "/jspui/handle/net/86/simple-search"
 PARSER_VERSION = 1
 UNIQUE_RECORDS = True
-PARAMETERS = {"query": "", "filter_field_1": "is_part_of_series",
-              "filter_type_1": "equals", "filter_value_1": "Вакыт",
-              "sort_by": "score", "order": "desc", "rpp": "10", "etal": "0"}
+
 record_key = kfu.record_key
 resolve_record = kfu.resolve_record
 
 
 def search_url(start=0):
-    return ARCHIVE_URL + "?" + urlencode({**PARAMETERS, "start": str(start)})
+    return operational_option('kfu_vakyt', 'archive_url') + "?" + urlencode({**operational_option('kfu_vakyt', 'parameters'), "start": str(start)})
 
 
 def position(url):
     parsed = urlsplit(url)
-    if (not same_origin(url, ARCHIVE_URL) or parsed.path != urlsplit(ARCHIVE_URL).path
+    if (not same_origin(url, operational_option('kfu_vakyt', 'archive_url')) or parsed.path != urlsplit(operational_option('kfu_vakyt', 'archive_url')).path
             or parsed.fragment):
         raise ValueError("Vakyt search must stay within its native filtered listing.")
     query = parse_qs(parsed.query, keep_blank_values=True)
     start = query.pop("start", ["0"])
-    if (query != {key: [value] for key, value in PARAMETERS.items()}
+    if (query != {key: [value] for key, value in operational_option('kfu_vakyt', 'parameters').items()}
             or len(start) != 1 or not start[0].isascii() or not start[0].isdecimal()
             or int(start[0]) % 10):
         raise ValueError("Vakyt listing lost its exact series filter or native pagination settings.")
@@ -70,7 +68,7 @@ def parse_listing(html, request, root):
         identity = kfu.handle(url)
         if urlsplit(url).query or identity == "net/86" or identity.split("/")[1] in kfu.COLLECTIONS:
             raise ValueError("Vakyt result is not an item record.")
-        records.append(kfu.ORIGIN + "/jspui/handle/" + identity)
+        records.append(operational_option('kfu', 'origin') + "/jspui/handle/" + identity)
     if first != start + 1 or len(records) != min(10, count - start) or last != start + len(records) or not records:
         raise ValueError("Vakyt pagination range disagrees with its rows.")
     if len(set(records)) != len(records):

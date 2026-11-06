@@ -1,4 +1,5 @@
 """Miras periodical series and explicitly exposed original issue PDFs."""
+from .runtime_config import option as operational_option
 
 from pathlib import PurePosixPath
 import re
@@ -8,7 +9,6 @@ from . import miras
 from .documents import canonical, same_origin
 
 
-ARCHIVE_URL = "https://miras.info/projects/mirasxane/periodicals/"
 PARSER_VERSION = 1
 REQUIRES_SESSION = True
 PERIODICAL_PATH = re.compile(r"/projects/mirasxane/periodicals/(\d+)-[^/]+\.html")
@@ -17,7 +17,7 @@ PAGE_PATH = re.compile(r"/projects/mirasxane/periodicals/(?:page/([1-9]\d*)/?)?"
 
 def prepare_http(http, session_file):
     miras.prepare_http(http, session_file)
-    http.session.headers["Referer"] = ARCHIVE_URL
+    http.session.headers["Referer"] = operational_option('miras_periodicals', 'archive_url')
 
 
 def parse_listing(html, request, root):
@@ -31,7 +31,7 @@ def option_pdf(value, page_url):
     parsed = urlsplit(target)
     if parsed.path.endswith("/viewer.html"):
         values = parse_qs(parsed.query).get("file", [])
-        if not same_origin(target, ARCHIVE_URL) or len(values) != 1 or not values[0]:
+        if not same_origin(target, operational_option('miras_periodicals', 'archive_url')) or len(values) != 1 or not values[0]:
             return None
         target = canonical(values[0], target)
         parsed = urlsplit(target)
@@ -61,7 +61,7 @@ def record(html, page_url):
             if target is None:
                 unresolved.append({"control_id": select.get("id"), "value_raw": value, "label_raw": label})
                 continue
-            outside = not same_origin(target, ARCHIVE_URL)
+            outside = not same_origin(target, operational_option('miras_periodicals', 'archive_url'))
             descriptors.setdefault(target, {
                 "url": target, "label": label or "Issue PDF", "extension": ".pdf",
                 "unsupported_code": "external_origin" if outside else None,

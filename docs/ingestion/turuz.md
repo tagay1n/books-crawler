@@ -8,9 +8,9 @@ turuz:
 ```
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source turuz --max-pages 1
-.venv/bin/python cli.py --config ingestion.yaml download --source turuz --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source turuz
+.venv/bin/python cli.py --config config/sources/turuz.yaml discover --source turuz --max-pages 1
+.venv/bin/python cli.py --config config/sources/turuz.yaml download --source turuz --limit 1
+.venv/bin/python cli.py --config config/sources/turuz.yaml status --source turuz
 ```
 
 This initial slice covers the single native dictionary-category table, not the

@@ -1,0 +1,4 @@
+extends: ../defaults.yaml
+sources:
+  magarif:
+    archive_url: https://magarif-uku.ru/documents

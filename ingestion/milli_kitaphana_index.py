@@ -1,4 +1,5 @@
 """Scrapes Milli Kitaphana search pages, builds a metadata index, and merges it with existing records."""
+from .runtime_config import option as operational_option
 
 from .milli_kitaphana_utils import load_index_file, dump_index
 from .milli_kitaphana_utils import require_runtime
@@ -15,31 +16,18 @@ from rich import print
 from rich.progress import Progress, TextColumn, BarColumn, TaskProgressColumn, TimeRemainingColumn, MofNCompleteColumn, TimeElapsedColumn
 from .milli_kitaphana_merge_index import _merge_indexes
 
-ENTRY_POINT = "https://kitap.tatar.ru/tt/ssearch/ecollection/"
-LANGUAGE_QUERIES = ["tat", "ara"]
-COLLECTION_QUERIES = [
-    {
-        "name": "COLLECTION_12",
-        "params": [
-            ("fattr", "fond_sf"),
-            ("fq", "COLLECTION_12"),
-            ("sort", "record-create-date"),
-        ],
-    }
-]
-
 
 def index():
     print("Creating index of books")
     runtime = require_runtime()
     scans = runtime.manifest.data.setdefault('milli_catalog', {})
-    if len(scans) == len(LANGUAGE_QUERIES) + len(COLLECTION_QUERIES) and all(scan.get('complete') for scan in scans.values()):
+    if len(scans) == len(operational_option('milli_kitaphana_index', 'language_queries')) + len(operational_option('milli_kitaphana_index', 'collection_queries')) and all(scan.get('complete') for scan in scans.values()):
         scans.clear()
     new_index = {}
-    for lang_code in LANGUAGE_QUERIES:
+    for lang_code in operational_option('milli_kitaphana_index', 'language_queries'):
         lang_index = _create_newest_index(lang_code)
         new_index.update(lang_index)
-    for collection in COLLECTION_QUERIES:
+    for collection in operational_option('milli_kitaphana_index', 'collection_queries'):
         collection_index = _create_collection_index(collection)
         new_index.update(collection_index)
     print("Loading old index of books")
@@ -90,7 +78,7 @@ def _create_index(base_params, description):
                 raise BudgetStop('discovery page cap')
             params = base_params + [("page", next_page)]
             with requests.get(
-                url=ENTRY_POINT,
+                url=operational_option('milli_kitaphana_index', 'entry_point'),
                 params=params,
                 headers={
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'},
@@ -124,7 +112,7 @@ def _create_index(base_params, description):
                 latest = load_index_file()
                 merged = _merge_indexes(new_metas, latest)
                 for key, value in merged.items():
-                    runtime.manifest.observe({**value, 'url': value.get('url') or 'https://kitap.tatar.ru' + key}, [], record_key=key, persist=False)
+                    runtime.manifest.observe({**value, 'url': value.get('url') or operational_option('milli_kitaphana_index', 'url_https_kitap_tatar_ru') + key}, [], record_key=key, persist=False)
                 scan.update(next_page=next_page or 1, complete=next_page is None)
                 scan['seen'] = list(set(scan.get('seen', [])) | set(new_metas))
                 runtime.summary['pages'] += 1

@@ -6,13 +6,13 @@ checkpoints. All records in the selected collections are admitted; supplied
 language labels are retained without filtering or content-language inference.
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source kfu_books --max-pages 1
-.venv/bin/python cli.py --config ingestion.yaml discover --source kfu_manuscripts --max-pages 1
-.venv/bin/python cli.py --config ingestion.yaml download --source kfu_books --limit 1
-.venv/bin/python cli.py --config ingestion.yaml download --source kfu_manuscripts --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source kfu_books --max-pages 1 --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source kfu_books
-.venv/bin/python cli.py --config ingestion.yaml status --source kfu_manuscripts
+.venv/bin/python cli.py --config config/sources/kfu_books.yaml discover --source kfu_books --max-pages 1
+.venv/bin/python cli.py --config config/sources/kfu_manuscripts.yaml discover --source kfu_manuscripts --max-pages 1
+.venv/bin/python cli.py --config config/sources/kfu_books.yaml download --source kfu_books --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_manuscripts.yaml download --source kfu_manuscripts --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_books.yaml run --source kfu_books --max-pages 1 --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_books.yaml status --source kfu_books
+.venv/bin/python cli.py --config config/sources/kfu_manuscripts.yaml status --source kfu_manuscripts
 ```
 
 Discovery follows each collection's native `?offset=` links (currently 20 records

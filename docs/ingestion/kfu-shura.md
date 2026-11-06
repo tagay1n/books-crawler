@@ -5,10 +5,10 @@ independent manifest under `__artifacts/ingestion/kfu_shura/`. Add its source en
 from `ingestion.example.yaml` to the selected operational YAML.
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source kfu_shura --max-pages 2
-.venv/bin/python cli.py --config ingestion.yaml download --source kfu_shura --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source kfu_shura --max-pages 2 --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source kfu_shura
+.venv/bin/python cli.py --config config/sources/kfu_shura.yaml discover --source kfu_shura --max-pages 2
+.venv/bin/python cli.py --config config/sources/kfu_shura.yaml download --source kfu_shura --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_shura.yaml run --source kfu_shura --max-pages 2 --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_shura.yaml status --source kfu_shura
 ```
 
 Shura uses the same explicit Tatar language policy as Il: recognized Tatar labels

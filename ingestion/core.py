@@ -14,7 +14,9 @@ from urllib3.exceptions import HTTPError as TransportError
 from .discovery import discover
 from .documents import DOCUMENT_EXTENSIONS, same_origin
 from .network import Budget, BudgetStop, HTTP, InvalidDocument, SourceAccessError
-from .registry import SOURCES
+from .paths import source_directory
+from .registry import SOURCES, configured_adapter
+from .runtime_config import configured
 from .state import Manifest, now, source_lock
 
 
@@ -243,17 +245,17 @@ def download(http, manifest, summary, log, recheck, *, extensions=None, validate
                 log(f"Download failed: {asset['url']}: {error}")
 
 
-def _run_local(settings, source, command, *, recheck=False, session_file=None, log=print, options=None, checkpoint=None):
+def _run_local(settings, source, command, *, recheck=False, session_file=None, log=print, options=None, checkpoint=None, status_data=None):
     if source not in SOURCES:
         raise ValueError(f"Unknown source: {source}. Available: {', '.join(SOURCES)}")
     from .checkpoints import Checkpoint
     checkpoint = checkpoint or Checkpoint()
-    adapter = SOURCES[source]
+    adapter = configured_adapter(source, settings)
     if hasattr(adapter, "execute"):
-        return adapter.execute(settings, command, recheck=recheck, log=log, options=options, checkpoint=checkpoint)
-    directory = settings.artifacts_root / source
+        return adapter.execute(settings, command, recheck=recheck, log=log, options=options, checkpoint=checkpoint, status_data=status_data)
+    directory = source_directory(settings, source)
     if command == "status":
-        return Manifest(directory, source, checkpoint=checkpoint).status()
+        return Manifest(directory, source, checkpoint=checkpoint, data=status_data).status()
     summary = {"id": uuid4().hex, "source": source, "command": command, "started_at": now(),
                "pages": 0, "records": 0, "observations": 0, "downloaded": 0, "reused_blobs": 0,
                "not_modified": 0, "unchanged_downloads": 0, "skipped": 0,
@@ -310,6 +312,7 @@ def _run_local(settings, source, command, *, recheck=False, session_file=None, l
     return summary
 
 
+@configured
 def run(settings, source, command, *, recheck=False, session_file=None, log=print, options=None):
     """Common lifecycle around native acquisition implementations."""
     from . import publication
@@ -321,13 +324,12 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
     target = options.target
     remote = command == 'run' or (command == 'publish' and target == 's3')
     if command == 'status':
-        result = _run_local(settings, source, command, recheck=recheck, session_file=session_file, log=log, options=options)
-        data = Repository(source).load()
+        data = Repository(source).load_status()
+        result = _run_local(settings, source, command, recheck=recheck, session_file=session_file,
+                            log=log, options=options, status_data=data)
         result['s3'] = {'published_artifacts': len(data.get('s3_publications', {}))}
         if settings.s3:
-            directory = settings.artifacts_root / source
-            if source == 'milli_kitaphana':
-                directory = SOURCES[source].directory_for(settings)
+            directory = source_directory(settings, source)
             inventory = list(publication.artifacts(data, directory))
             result['s3']['current_artifacts'] = len(inventory)
             result['s3']['pending_artifacts'] = sum(not publication.completed(data, a, settings) for a in inventory)
@@ -335,13 +337,7 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
     if not remote:
         return _run_local(settings, source, command, recheck=recheck, session_file=session_file, log=log, options=options)
     publication.configuration(settings)
-    adapter = SOURCES[source]
-    directory = settings.artifacts_root / source
-    if source == 'milli_kitaphana':
-        directory = adapter.directory_for(settings)
-    elif source == 'common_crawl':
-        value = Path(settings.source_options.get('artifact_dir', directory)).expanduser()
-        directory = value if value.is_absolute() else Path(settings.source_options['_config_dir']) / value
+    directory = source_directory(settings, source)
     upload_budget = None
     if command == 'run':
         with source_lock(directory, source):

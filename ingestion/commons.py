@@ -1,4 +1,5 @@
 """Discover Commons books and acquire their checksum-verified original files."""
+from .runtime_config import option as operational_option
 
 import hashlib
 import json
@@ -11,14 +12,11 @@ from .network import BudgetStop, InvalidDocument, SourceAccessError
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
-ARCHIVE_URL = "https://commons.wikimedia.org/wiki/Category:Tatar-language_books"
-API_URL = "https://commons.wikimedia.org/w/api.php"
-ROOT_CATEGORY_ID = 70354556
 PARSER_VERSION = 3
 SUPPORTED_COMMANDS = {"discover", "download", "run", "status"}
 DOCUMENT_FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
-BATCH_SIZE = 10
-USER_AGENT = "BooksCrawlerBot/1.0 (https://github.com/tagay1n/books-crawler; local Commons acquisition)"
+
+
 MIMES = {
     ".pdf": {"application/pdf"}, ".djvu": {"image/vnd.djvu", "image/x-djvu", "application/x-djvu"},
     ".djv": {"image/vnd.djvu", "image/x-djvu", "application/x-djvu"},
@@ -35,7 +33,7 @@ MIMES = {
 
 
 def api_url(**parameters):
-    return API_URL + "?" + urlencode({"action": "query", "format": "json", "formatversion": 2,
+    return operational_option('commons', 'api_url') + "?" + urlencode({"action": "query", "format": "json", "formatversion": 2,
                                       "maxlag": 5, **parameters})
 
 
@@ -82,7 +80,7 @@ def source_version(asset):
 
 
 def prepare_http(http, session_file):
-    http.session.headers.update({"User-Agent": USER_AGENT, "Accept-Encoding": "identity"})
+    http.session.headers.update({"User-Agent": operational_option('commons', 'user_agent'), "Accept-Encoding": "identity"})
 
     def route(url):
         if urlsplit(url).netloc == "upload.wikimedia.org":
@@ -165,7 +163,7 @@ def download(http, manifest, summary, log, recheck):
 def category_request(category_id, continuation=None, seen=()):
     positive_id(category_id)
     params = {"list": "categorymembers", "cmpageid": category_id, "cmtype": "file|subcat",
-              "cmprop": "ids|title|type", "cmlimit": BATCH_SIZE,
+              "cmprop": "ids|title|type", "cmlimit": operational_option('commons', 'batch_size'),
               "prop": "info|categoryinfo", "pageids": category_id}
     if continuation:
         params.update(continuation)
@@ -174,9 +172,9 @@ def category_request(category_id, continuation=None, seen=()):
 
 
 def initial_request(root):
-    if root.rstrip("/") != ARCHIVE_URL:
+    if root.rstrip("/") != operational_option('commons', 'archive_url'):
         raise ValueError("Unexpected Commons seed category.")
-    return category_request(ROOT_CATEGORY_ID)
+    return category_request(operational_option('commons', 'root_category_id'))
 
 
 def file_request(page_id):
@@ -249,7 +247,7 @@ def parse_listing(text, request, root):
                 records.append(url)
                 # Stable seed context avoids observation churn when the same file
                 # is encountered via multiple categories or different cursors.
-                contexts[url] = {"seed_category_id": ROOT_CATEGORY_ID, "listing_url": ARCHIVE_URL,
+                contexts[url] = {"seed_category_id": operational_option('commons', 'root_category_id'), "listing_url": operational_option('commons', 'archive_url'),
                                  "label_raw": member["title"]}
         else:
             raise ValueError("Unexpected namespace in the Commons category-member response.")
@@ -289,8 +287,8 @@ def record(text, request_url):
         raise ValueError("Commons file request has no valid native ID.") from None
     data = payload(text)
     page = single_page(data, page_id)
-    metadata = {"url": f"https://commons.wikimedia.org/w/index.php?curid={page_id}",
-                "page_id": page_id, "seed_category_id": ROOT_CATEGORY_ID,
+    metadata = {"url": f"operational_option('commons', 'url_https_commons_wikimedia_org_w_index_php_curid'){page_id}",
+                "page_id": page_id, "seed_category_id": operational_option('commons', 'root_category_id'),
                 "admission_reason": "Document-format file enumerated in Tatar-language books or a subcategory; language and completeness unverified."}
     if isinstance(page.get("title"), str) and page["title"]:
         metadata.update(title=page["title"].removeprefix("File:"), title_raw=page["title"])

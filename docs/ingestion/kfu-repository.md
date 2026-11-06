@@ -7,10 +7,10 @@ collections appearing on later scans. Other domains such as `dspace.kpfu.ru`,
 `allfind.kpfu.ru` and `tatargalyame.kpfu.ru` are outside this adapter.
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source kfu_repository --max-pages 25
-.venv/bin/python cli.py --config ingestion.yaml download --source kfu_repository --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source kfu_repository --max-pages 25 --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source kfu_repository
+.venv/bin/python cli.py --config config/sources/kfu_repository.yaml discover --source kfu_repository --max-pages 25
+.venv/bin/python cli.py --config config/sources/kfu_repository.yaml download --source kfu_repository --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_repository.yaml run --source kfu_repository --max-pages 25 --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_repository.yaml status --source kfu_repository
 ```
 
 The native tree advertised 180 collections and 20,645 collection memberships

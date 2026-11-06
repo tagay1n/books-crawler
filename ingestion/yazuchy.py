@@ -1,4 +1,5 @@
 """The Writers' Union's Yazuchy publisher catalog and direct book PDFs."""
+from .runtime_config import option as operational_option
 
 from pathlib import Path, PurePosixPath
 import re
@@ -13,18 +14,19 @@ from .network import install_native_get_guard
 from .paging import ListingPage
 
 
-ARCHIVE_URL = "https://sptatar.com/yazuchy-n-shriyaty/"
 PARSER_VERSION = 1
 UNIQUE_RECORDS = True
 DESCRIPTORS = ("url", "label", "extension", "href_raw", "source_asset_key",
                "source_unsupported_code", "source_unsupported_reason")
 
 
-def native_url(href, base=ARCHIVE_URL):
+def native_url(href, base=None):
+    if base is None:
+        base = operational_option('yazuchy', 'archive_url')
     url = requote_uri(canonical(href, base))
     parsed = urlsplit(url)
     path = unquote(parsed.path)
-    if (not same_origin(url, ARCHIVE_URL) or parsed.query
+    if (not same_origin(url, operational_option('yazuchy', 'archive_url')) or parsed.query
             or "\\" in path or {".", ".."}.intersection(path.split("/"))
             or not (re.fullmatch(r"/[a-z0-9-]+/", path)
                     or (path.startswith("/wp-content/uploads/") and path.lower().endswith(".pdf")))):
@@ -40,7 +42,7 @@ def document_url(url):
 
 
 def parse_listing(html, request, root):
-    if native_url(request.url) != ARCHIVE_URL:
+    if native_url(request.url) != operational_option('yazuchy', 'archive_url'):
         raise ValueError("Unexpected Yazuchy publisher listing URL.")
     soup = BeautifulSoup(html, "html.parser")
     heading = soup.select_one("h1")
@@ -52,7 +54,7 @@ def parse_listing(html, request, root):
         if title is None or title.parent.name != "a" or not title.parent.get("href"):
             raise ValueError("Yazuchy book card is missing its title or native record link.")
         url = native_url(title.parent["href"], request.url)
-        if url == ARCHIVE_URL or url in entries:
+        if url == operational_option('yazuchy', 'archive_url') or url in entries:
             raise ValueError("Yazuchy catalog repeats a native book identity.")
         entries[url] = {"catalog_url": request.url,
                         "title_raw": title.get_text(" ", strip=True),
@@ -68,7 +70,7 @@ def parse_listing(html, request, root):
 
 def record(html, page_url):
     url = native_url(page_url)
-    if url == ARCHIVE_URL or urlsplit(url).path.startswith("/wp-content/"):
+    if url == operational_option('yazuchy', 'archive_url') or urlsplit(url).path.startswith("/wp-content/"):
         raise ValueError("Expected a Yazuchy book detail page.")
     soup = BeautifulSoup(html, "html.parser")
     area = soup.select_one(".single-blog-post")

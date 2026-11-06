@@ -1,0 +1,9 @@
+extends: ../defaults.yaml
+sources:
+  miras:
+    archive_url: https://miras.info/projects/mirasxane/books/
+    operational:
+      miras_probe:
+        sample_record: https://miras.info/projects/mirasxane/books/889-avyl-kyzy-.html
+      miras_session:
+        url_https_miras_info: https://miras.info

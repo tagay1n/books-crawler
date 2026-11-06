@@ -1,4 +1,5 @@
 """Shared helpers for Milli Kitaphana: database indexes, worker selections, and HTTP request wrappers."""
+from .runtime_config import option as operational_option
 
 import copy
 import os
@@ -19,7 +20,6 @@ def get_in_workdir(file):
     return os.path.abspath(os.path.normpath(os.path.join(script_dir, file)))
 
 
-HOST = "https://kitap.tatar.ru"
 RUNTIME = None
 
 
@@ -80,7 +80,7 @@ def dump_index(idx, index_file=None):
             manifest.data[get_list_file_loc(index_file)] = list(idx)
         else:
             for key, item in idx.items():
-                manifest.observe({**item, 'url': item.get('url') or HOST + key}, [], record_key=key, persist=False)
+                manifest.observe({**item, 'url': item.get('url') or operational_option('milli_kitaphana_utils', 'host') + key}, [], record_key=key, persist=False)
             for key in manifest.data['records'].keys() - idx.keys():
                 del manifest.data['records'][key]
         manifest.checkpoint()
@@ -123,7 +123,7 @@ def download_part(context, part):
     work_dir = context["work_dir"]
     enc_zip_path, enc_zip_part_path, enc_unzip_dir, enc_file_path = get_part_paths(work_dir, part)
 
-    url = HOST + context['meta']["format_url"].format(url=part)
+    url = operational_option('milli_kitaphana_utils', 'host') + context['meta']["format_url"].format(url=part)
     # Offline finalization uses the verified local encrypted payload.
     if require_runtime().offline:
         if not is_valid_encrypted_part(enc_file_path):

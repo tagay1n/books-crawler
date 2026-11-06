@@ -11,9 +11,9 @@ sources:
 ```
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source ftatarstan --max-pages 3
-.venv/bin/python cli.py --config ingestion.yaml download --source ftatarstan --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source ftatarstan
+.venv/bin/python cli.py --config config/sources/ftatarstan.yaml discover --source ftatarstan --max-pages 3
+.venv/bin/python cli.py --config config/sources/ftatarstan.yaml download --source ftatarstan --limit 1
+.venv/bin/python cli.py --config config/sources/ftatarstan.yaml status --source ftatarstan
 ```
 
 Discovery follows the native archive pager and issue title links, then resolves

@@ -1,0 +1,24 @@
+extends: ../defaults.yaml
+sources:
+  kfu_vakyt:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/86/simple-search
+    operational:
+      kfu_vakyt:
+        parameters:
+          query: ''
+          filter_field_1: is_part_of_series
+          filter_type_1: equals
+          filter_value_1: Вакыт
+          sort_by: score
+          order: desc
+          rpp: '10'
+          etal: '0'
+      image_issues:
+        colour_policy:
+          dpi: 200
+          jpeg_quality: 85
+          mode: RGB
+      kfu:
+        origin: https://repo.kpfu.ru
+      kfu_reader:
+        url_repo_kpfu_ru: repo.kpfu.ru

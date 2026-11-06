@@ -1,4 +1,5 @@
 """Original issue PDFs explicitly linked in the bilingual Tugan Zhir archive."""
+from .runtime_config import option as operational_option
 
 import re
 from urllib.parse import unquote, urlsplit
@@ -11,13 +12,10 @@ from .network import InvalidDocument, install_native_get_guard
 from .paging import ListingPage
 
 
-ARCHIVE_URL = "https://tuganzhir.org/archive/"
 PARSER_VERSION = 1
 PUBLICATION_TITLE = "Туган җир. Родной край"
 # These storage hosts are advertised by the archive, not inferred mirrors.
-PDF_ROOTS = ("https://tuganzhir.org/wp-content/uploads/",
-             "https://tatar-congress.org/wp-content/uploads/",
-             "https://tatarcongress.firsts3.ru/uploads/")
+
 LANGUAGE_EVIDENCE = {
     "scope": "Publisher-declared Tatar/Russian series; individual issue proportions unverified.",
     "claim_raw": "Татар һәм рус телләрендә",
@@ -27,18 +25,22 @@ LANGUAGE_EVIDENCE = {
 }
 
 
-def normalized_url(href, base=ARCHIVE_URL):
+def normalized_url(href, base=None):
+    if base is None:
+        base = operational_option('tuganzhir', 'archive_url')
     return requote_uri(canonical(href.strip(), base))
 
 
-def native_url(href, base=ARCHIVE_URL):
+def native_url(href, base=None):
+    if base is None:
+        base = operational_option('tuganzhir', 'archive_url')
     url = normalized_url(href, base)
     parsed = urlsplit(url)
     path = unquote(parsed.path)
     if (parsed.query or parsed.fragment or "\\" in path
             or {".", ".."}.intersection(path.split("/"))
-            or not (url == ARCHIVE_URL or
-                    (any(url.startswith(root) for root in PDF_ROOTS)
+            or not (url == operational_option('tuganzhir', 'archive_url') or
+                    (any(url.startswith(root) for root in operational_option('tuganzhir', 'pdf_roots'))
                      and path.lower().endswith(".pdf")))):
         raise ValueError("Only the native Tugan Zhir archive and its advertised PDF storage paths are supported.")
     return url
@@ -50,7 +52,7 @@ def prepare_http(http, session_file):
 
     def validate_download(response, asset):
         selected = native_url(asset["url"])
-        if selected == ARCHIVE_URL or any(native_url(r.url) != selected
+        if selected == operational_option('tuganzhir', 'archive_url') or any(native_url(r.url) != selected
                                           for r in [*response.history, response]):
             raise InvalidDocument("Delivered PDF changed the selected archive file identity.")
 
@@ -58,7 +60,7 @@ def prepare_http(http, session_file):
 
 
 def catalog(html, page_url):
-    if page_url != ARCHIVE_URL:
+    if page_url != operational_option('tuganzhir', 'archive_url'):
         raise ValueError("Unexpected Tugan Zhir archive URL.")
     soup = BeautifulSoup(html, "html.parser")
     heading = soup.select_one("h1.entry-title")
@@ -95,7 +97,7 @@ def catalog(html, page_url):
 
 def parse_listing(html, request, root):
     catalog(html, request.url)
-    return ListingPage([ARCHIVE_URL], [])
+    return ListingPage([operational_option('tuganzhir', 'archive_url')], [])
 
 
 def record(html, page_url):
@@ -113,7 +115,7 @@ def record(html, page_url):
                                        "issue_cards": [], "language_evidence": LANGUAGE_EVIDENCE})
         if card not in asset["issue_cards"]:
             asset["issue_cards"].append(card)
-    return {"url": ARCHIVE_URL, "title": PUBLICATION_TITLE, "cards": cards,
+    return {"url": operational_option('tuganzhir', 'archive_url'), "title": PUBLICATION_TITLE, "cards": cards,
             "language_evidence": LANGUAGE_EVIDENCE,
             "admission_reason": "Linked full issues of the publisher-declared Tatar/Russian series; article HTML, covers and unrelated library books excluded.",
             "coverage_note": "Observed archive only. Raw issue labels and size claims are retained; missing issues and dates are not synthesized.",

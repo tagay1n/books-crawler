@@ -7,14 +7,14 @@ Original and derived documents remain in local artifact directories.
 
 1. Create a virtual environment: `python -m venv .venv`.
 2. Install dependencies: `.venv/bin/pip install -r requirements.txt`.
-3. Copy `ingestion.example.yaml` to `ingestion.yaml` and configure selected sources.
+3. Review `config/sources/<source>.yaml` and `config/defaults.yaml`; supply the environment variables required by your source and publication target. See [configuration](docs/ingestion/operations.md).
 4. Follow [PostgreSQL setup and legacy import](docs/postgres-migration.md).
 
 ## Common commands
 
 ```bash
 .venv/bin/python cli.py sources
-.venv/bin/python cli.py --summary-only --config ingestion.yaml status --source magarif
+.venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml status --source magarif
 .venv/bin/python scripts/ingestion_overview.py --database --source magarif
 ```
 

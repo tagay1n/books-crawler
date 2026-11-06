@@ -1,0 +1,10 @@
+extends: ../defaults.yaml
+sources:
+  tataroved:
+    archive_url: https://tataroved.ru/publication/
+    operational:
+      tataroved:
+        origin: https://tataroved.ru
+        hosts:
+        - www.tataroved.ru
+        - tataroved.ru

@@ -1,4 +1,5 @@
 """Public publisher-labelled Tatar PDF editions, excluding images and packages."""
+from .runtime_config import option as operational_option
 
 from email.message import Message
 from pathlib import PurePosixPath
@@ -13,7 +14,6 @@ from .network import InvalidDocument, install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
-ARCHIVE_URL = "https://sarhaan.com/a/tatar-%d8%aa%d8%aa%d8%a7%d8%b1%d9%8a/"
 PARSER_VERSION = 2
 TATAR_LABEL = "Tatar - تتاري татар теле"
 
@@ -21,7 +21,7 @@ TATAR_LABEL = "Tatar - تتاري татар теле"
 def category_page(url):
     parsed = urlsplit(url)
     path = unquote(parsed.path)
-    base = unquote(urlsplit(ARCHIVE_URL).path)
+    base = unquote(urlsplit(operational_option('sarhaan', 'archive_url')).path)
     match = re.fullmatch(re.escape(base) + r"page/([1-9]\d*)/", path)
     if path != base and match is None:
         return None
@@ -31,12 +31,14 @@ def category_page(url):
     return int(value)
 
 
-def native_url(href, base=ARCHIVE_URL):
+def native_url(href, base=None):
+    if base is None:
+        base = operational_option('sarhaan', 'archive_url')
     url = requote_uri(canonical(href, base))
     p = urlsplit(url)
     path = unquote(p.path)
     query = parse_qs(p.query, keep_blank_values=True)
-    if (not same_origin(url, ARCHIVE_URL) or "\\" in path
+    if (not same_origin(url, operational_option('sarhaan', 'archive_url')) or "\\" in path
             or {".", ".."}.intersection(path.split("/"))
             or any(len(v) != 1 for v in query.values())):
         raise ValueError("Sarhaan requires native HTTPS resource URLs.")

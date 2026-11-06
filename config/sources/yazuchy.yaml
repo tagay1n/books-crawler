@@ -1,0 +1,5 @@
+extends: ../defaults.yaml
+sources:
+  yazuchy:
+    archive_url: https://sptatar.com/yazuchy-n-shriyaty/
+    operational: {}

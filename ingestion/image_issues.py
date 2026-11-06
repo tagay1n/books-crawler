@@ -1,4 +1,5 @@
 """Publication-level acquisition and derived PDFs from ordered upstream JPEG/JPEG2000 images."""
+from .runtime_config import option as operational_option
 
 import hashlib
 from io import BytesIO
@@ -19,25 +20,27 @@ from .state import now
 
 
 ASSEMBLER_VERSION = "jpeg-pages-v1/pymupdf-" + pymupdf.VersionBind
-COLOUR_POLICY = {"dpi": 200, "jpeg_quality": 85, "mode": "RGB"}
+
 CONVERSION_VERSION = "colour-lanczos-v1"
 
 
 def image_policy(record):
     policy = record["observations"][-1]["metadata"].get("pdf_image_policy")
-    if policy is not None and policy != COLOUR_POLICY:
+    if policy is not None and policy != operational_option('image_issues', 'colour_policy'):
         raise ValueError("Unsupported PDF image conversion policy.")
     return policy
 
 
 def colour_page(path):
     """Derive a 200 DPI colour page without changing the retained original."""
+    policy = operational_option("image_issues", "colour_policy")
+    target_dpi = policy["dpi"]
     with Image.open(path) as source:
         if source.width * source.height > 150_000_000:
             raise ValueError("Page exceeds the 150 megapixel decode limit.")
         dpi = source.info.get("dpi")
         if (not dpi or len(dpi) != 2
-                or any(not math.isfinite(float(d)) or float(d) < 200 for d in dpi)):
+                or any(not math.isfinite(float(d)) or float(d) < target_dpi for d in dpi)):
             raise ValueError("200 DPI assembly requires source image resolution metadata of at least 200 DPI.")
         xdpi, ydpi = map(float, dpi)
         orientation = source.getexif().get(274, 1)
@@ -49,10 +52,10 @@ def colour_page(path):
             xdpi, ydpi = ydpi, xdpi
         width, height = image.width * 72 / xdpi, image.height * 72 / ydpi
         image = image.convert("RGB").resize(
-            (math.ceil(image.width * 200 / xdpi), math.ceil(image.height * 200 / ydpi)),
+            (math.ceil(image.width * target_dpi / xdpi), math.ceil(image.height * target_dpi / ydpi)),
             Image.Resampling.LANCZOS)
         encoded = BytesIO()
-        image.save(encoded, format="JPEG", quality=85, optimize=True, dpi=(200, 200),
+        image.save(encoded, format="JPEG", quality=policy["jpeg_quality"], optimize=True, dpi=(target_dpi, target_dpi),
                    **({"icc_profile": profile} if profile else {}))
         return encoded.getvalue(), width, height
 

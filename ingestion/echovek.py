@@ -1,4 +1,5 @@
 """Tatar-labelled article PDFs discovered through Echo of Centuries issues."""
+from .runtime_config import option as operational_option
 
 import json
 from pathlib import PurePosixPath
@@ -12,17 +13,18 @@ from .network import InvalidDocument
 from .paging import ListingPage, PageRequest
 
 
-ARCHIVE_URL = "https://www.echovek.ru/ru/publications"
 PARSER_VERSION = 1
-HOSTS = {"echovek.ru", "www.echovek.ru"}
+
 ISSUE_PATH = re.compile(r"/ru/publication/[a-z0-9-]+")
 ARTICLE_PATH = re.compile(r"/(?:ru/article/[a-z0-9-]+|(?:ru|tt)/node/[1-9]\d*)")
 
 
-def native_url(href, base=ARCHIVE_URL):
+def native_url(href, base=None):
+    if base is None:
+        base = operational_option('echovek', 'archive_url')
     parsed = urlsplit(urljoin(base, href))
     path = unquote(parsed.path)
-    if (parsed.scheme not in {"http", "https"} or parsed.netloc not in HOSTS
+    if (parsed.scheme not in {"http", "https"} or parsed.netloc not in operational_option('echovek', 'hosts')
             or "\\" in path or {".", ".."}.intersection(path.split("/"))
             or any(ord(c) < 32 for c in path)):
         raise ValueError("Echo of Centuries URL is outside the native source or has an unsafe path.")
@@ -146,7 +148,7 @@ def parse_listing(html, request, root):
 
 
 def record(html, page_url):
-    url = native_url(page_url, ARCHIVE_URL)
+    url = native_url(page_url, operational_option('echovek', 'archive_url'))
     soup = BeautifulSoup(html, "html.parser")
     heading = soup.select_one("#main-content h1")
     fields = soup.select_one(".pane-views-statya-vitrina-har-block")
@@ -164,7 +166,7 @@ def record(html, page_url):
                 "language_raw": language.get_text(" ", strip=True) if language else None,
                 "representation": "non_journal_metadata",
                 "admission_reason": "Publisher book retained as metadata; acquisition is limited to journal article PDFs."}, []
-    article_url(url, ARCHIVE_URL)
+    article_url(url, operational_option('echovek', 'archive_url'))
     if (heading is None or not heading.get_text(strip=True) or fields is None
             or len(ids) != 1 or "node-type-vitrina" not in classes):
         raise ValueError("Article identity, title or bibliographic fields are missing.")

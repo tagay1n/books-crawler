@@ -1,4 +1,5 @@
 """Utilities for Litres workflows: config loading, SID authentication, Selenium driver setup, hashing, database indexes, and document path helpers."""
+from .runtime_config import option as operational_option
 
 import hashlib
 import copy
@@ -84,7 +85,6 @@ def create_driver(headless=True):
     from selenium import webdriver
     from webdriver_manager.chrome import ChromeDriverManager
 
-    from .litres_consts import domain
 
     options = webdriver.ChromeOptions()
     if headless:
@@ -102,8 +102,8 @@ def create_driver(headless=True):
     if runtime is not None:
         driver.set_page_load_timeout(min(runtime.settings.read_timeout_seconds, max(1, runtime.budget.deadline - __import__("time").monotonic())))
         runtime.drivers.append(driver)
-    driver.get(domain)
-    driver.add_cookie({"name": "SID", "value": get_sid(), "domain": ".litres.ru", "path": "/"})
+    driver.get(operational_option('litres_consts', 'domain'))
+    driver.add_cookie({"name": "SID", "value": get_sid(), "domain": operational_option('litres_utils', 'url_litres_ru'), "path": "/"})
     return driver
 
 

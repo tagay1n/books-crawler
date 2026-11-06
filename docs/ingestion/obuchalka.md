@@ -8,9 +8,9 @@ obuchalka:
 ```
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source obuchalka --max-pages 1
-.venv/bin/python cli.py --config ingestion.yaml download --source obuchalka --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source obuchalka
+.venv/bin/python cli.py --config config/sources/obuchalka.yaml discover --source obuchalka --max-pages 1
+.venv/bin/python cli.py --config config/sources/obuchalka.yaml download --source obuchalka --limit 1
+.venv/bin/python cli.py --config config/sources/obuchalka.yaml status --source obuchalka
 ```
 
 Discovery follows dated book-record links inside the selected category's

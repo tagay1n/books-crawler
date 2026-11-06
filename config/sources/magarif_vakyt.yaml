@@ -1,0 +1,25 @@
+extends: ../defaults.yaml
+sources:
+  magarif_vakyt:
+    archive_url: https://magarif-vakyt.ru/online2
+    operational:
+      magarif_vakyt:
+        api: https://cloud-api.yandex.net/v1/disk/public/resources
+        catalogs:
+          https://magarif-vakyt.ru/online2: Электронный формат
+          https://magarif-vakyt.ru/reading: Литература на татарском языке
+        url_https_disk_yandex_ru: https://disk.yandex.ru
+        url_cloud_api_yandex_net: cloud-api.yandex.net
+        url_disk_yandex_ru: disk.yandex.ru
+        url_yadi_sk: yadi.sk
+        url_downloader_disk_yandex_ru: downloader.disk.yandex.ru
+        url_disk_yandex_net: .disk.yandex.net
+        url_storage_yandex_net: .storage.yandex.net
+      textbook_package:
+        dpi: 200
+        max_members: 20000
+        max_uncompressed: 2147483648
+        max_page_bytes: 33554432
+        max_config_bytes: 1048576
+        max_pages: 2000
+        max_books: 20

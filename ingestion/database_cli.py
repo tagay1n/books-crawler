@@ -182,10 +182,11 @@ def inspection_result(operation):
 
 @app.command('record')
 def record_command(source: str = typer.Option(..., '--source'), key: str = typer.Option(..., '--key'),
-                   assets: int = typer.Option(0, '--assets', min=0, max=100)):
+                   assets: int = typer.Option(0, '--assets', min=0, max=100),
+                   field: list[str] = typer.Option([], '--field', help='Select metadata fields; repeatable.')):
     """Inspect one record without observation/result histories; optional asset preview."""
     from .state_inspection import record
-    inspection_result(lambda: record(source, key, assets))
+    inspection_result(lambda: record(source, key, assets, field))
 
 
 @app.command('errors')
@@ -200,3 +201,12 @@ def last_run_command(source: str = typer.Option(..., '--source')):
     """Read the compact last-run summary."""
     from .state_inspection import last_run
     inspection_result(lambda: last_run(source))
+
+
+@app.command('records')
+def records_command(source: str = typer.Option(..., '--source'),
+                    limit: int = typer.Option(10, '--limit', min=1, max=100),
+                    after: str | None = typer.Option(None, '--after', help='Continue after a returned record key.')):
+    """List record keys, titles and completion hints without loading histories."""
+    from .state_inspection import records
+    inspection_result(lambda: records(source, limit, after))

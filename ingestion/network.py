@@ -80,7 +80,7 @@ class HTTP:
     def __init__(self, settings, budget, summary):
         self.settings, self.budget, self.summary = settings, budget, summary
         self.session = requests.Session()
-        self.session.headers.update({"User-Agent": "BooksCrawler/1.0 (local document acquisition)",
+        self.session.headers.update({"User-Agent": settings.user_agent,
                                      "Accept-Encoding": "identity"})
         self.last_request = None
 

@@ -1,4 +1,5 @@
 """Resolve public FlipHTML5 readers into explicitly listed, ordered JPEG pages."""
+from .runtime_config import option as operational_option
 
 import json
 import re
@@ -8,7 +9,6 @@ from urllib.parse import unquote, urlsplit
 from bs4 import BeautifulSoup
 
 from .documents import canonical, same_origin
-from .tatkniga import ARCHIVE_URL
 
 
 class UnsupportedReader(ValueError):
@@ -38,7 +38,7 @@ def parse_configuration(configuration, reader_url):
             raise ValueError("Reader page has no listed large or normal image.")
         url = canonical(href, reader_url)
         extension = PurePosixPath(unquote(urlsplit(url).path)).suffix.lower()
-        if not same_origin(url, ARCHIVE_URL):
+        if not same_origin(url, operational_option('tatkniga', 'archive_url')):
             raise UnsupportedReader("Reader page image is outside the Tatkniga origin.")
         if extension not in {".jpg", ".jpeg"}:
             raise UnsupportedReader("Reader page is not a supported JPEG image.")
@@ -50,7 +50,7 @@ def parse_configuration(configuration, reader_url):
 
 
 def read_pages(http, reader_url):
-    html, final_reader_url = http.text_response(reader_url, origin=ARCHIVE_URL)
+    html, final_reader_url = http.text_response(reader_url, origin=operational_option('tatkniga', 'archive_url'))
     soup = BeautifulSoup(html, "html.parser")
     configurations = set()
     for script in soup.select("script[src]"):
@@ -67,9 +67,9 @@ def read_pages(http, reader_url):
     if len(configurations) != 1:
         raise UnsupportedReader("Reader does not link one recognized FlipHTML5 configuration.")
     configuration_url = configurations.pop()
-    if not same_origin(configuration_url, ARCHIVE_URL):
+    if not same_origin(configuration_url, operational_option('tatkniga', 'archive_url')):
         raise UnsupportedReader("Reader configuration is outside the Tatkniga origin.")
-    configuration, final_configuration_url = http.text_response(configuration_url, origin=ARCHIVE_URL)
+    configuration, final_configuration_url = http.text_response(configuration_url, origin=operational_option('tatkniga', 'archive_url'))
     pages = parse_configuration(configuration, final_reader_url)
     return {"reader_url": reader_url, "reader_final_url": final_reader_url,
             "reader_configuration_url": final_configuration_url,
@@ -82,7 +82,7 @@ def resolve(http, metadata, assets):
     has_pdf = any(a.get("extension") == ".pdf" and not a.get("unsupported_reason") for a in assets)
     for reader in readers:
         code, reason = None, None
-        if not same_origin(reader["url"], ARCHIVE_URL):
+        if not same_origin(reader["url"], operational_option('tatkniga', 'archive_url')):
             code, reason = "external_origin", "Reader is outside the Tatkniga origin."
         elif has_pdf:
             code, reason = "reader_superseded", "An eligible direct PDF is preferred over image assembly."

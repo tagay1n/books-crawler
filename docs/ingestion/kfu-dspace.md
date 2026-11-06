@@ -5,10 +5,10 @@
 operational YAML (also shown in `ingestion.example.yaml`).
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source kfu_dspace --max-pages 2
-.venv/bin/python cli.py --config ingestion.yaml download --source kfu_dspace --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source kfu_dspace --max-pages 2 --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source kfu_dspace
+.venv/bin/python cli.py --config config/sources/kfu_dspace.yaml discover --source kfu_dspace --max-pages 2
+.venv/bin/python cli.py --config config/sources/kfu_dspace.yaml download --source kfu_dspace --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_dspace.yaml run --source kfu_dspace --max-pages 2 --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_dspace.yaml status --source kfu_dspace
 ```
 
 Discovery follows the native `татар` topic search, with ten items per page. The

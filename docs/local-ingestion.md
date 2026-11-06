@@ -12,7 +12,7 @@ one source at a time.
 
 ```bash
 .venv/bin/python cli.py sources
-.venv/bin/python cli.py --config ingestion.yaml status --source magarif
+.venv/bin/python cli.py --config config/sources/magarif.yaml status --source magarif
 .venv/bin/python scripts/ingestion_overview.py --database --source magarif
 ```
 

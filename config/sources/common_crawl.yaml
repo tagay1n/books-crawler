@@ -1,0 +1,14 @@
+extends: ../defaults.yaml
+sources:
+  common_crawl:
+    archive_url: https://huggingface.co/datasets/HuggingFaceFW/finepdfs
+    result_dir: ~/.common-crawl/result
+    cache_dir: ~/.common-crawl/warcs
+    yandex:
+      disk:
+        oauth_token:
+          env: COMMON_CRAWL_YANDEX_DISK_OAUTH_TOKEN
+        target_dir: /НейроТатарлар/kitaplar/common_crawl
+    operational:
+      common_crawl_download:
+        url_https_data_commoncrawl_org: https://data.commoncrawl.org/

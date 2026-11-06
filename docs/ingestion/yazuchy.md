@@ -8,9 +8,9 @@ yazuchy:
 ```
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source yazuchy --max-pages 1
-.venv/bin/python cli.py --config ingestion.yaml download --source yazuchy --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source yazuchy
+.venv/bin/python cli.py --config config/sources/yazuchy.yaml discover --source yazuchy --max-pages 1
+.venv/bin/python cli.py --config config/sources/yazuchy.yaml download --source yazuchy --limit 1
+.venv/bin/python cli.py --config config/sources/yazuchy.yaml status --source yazuchy
 ```
 
 The initial slice follows book-card links on this publisher page, not the whole

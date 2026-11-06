@@ -1,0 +1,5 @@
+extends: ../defaults.yaml
+sources:
+  kazanutlary:
+    archive_url: https://kazanutlary.ru/j-archive
+    operational: {}

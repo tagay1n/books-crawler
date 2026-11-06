@@ -1,4 +1,5 @@
 """Downloads Litres text books by fetching JS page fragments, converts the structured content into markdown with images and footnotes, and stores artifacts under workdir."""
+from .runtime_config import option as operational_option
 
 import contextlib
 import json
@@ -12,7 +13,7 @@ from .litres_utils import requests
 import typer
 from rich.progress import track
 
-from .litres_consts import domain
+
 from .litres_index import _open_reader_url
 from .litres_utils import create_driver, load_index, save_index, get_in_workdir, get_hash, get_sid
 
@@ -94,7 +95,7 @@ def _download_page_descriptions(book, driver=None):
         output_path = os.path.join(incompleted_dir, file_name)
         if not os.path.exists(output_path):
             file_url = f"{resource_url}{file_name}"
-            resp = requests.get(file_url, headers=headers, timeout=20)
+            resp = requests.get(file_url, headers=headers, timeout=operational_option('litres_text', 'request_timeout_seconds'))
             if resp.status_code == 404:
                 break
             elif resp.status_code == 200:
@@ -133,18 +134,18 @@ def _resolve_resource_url_from_reader(url, driver=None):
     with _driver_context(driver) as active_driver:
         reader_url = _open_reader_url(url, active_driver)
         base_url = _base_url_from_reader_url(reader_url, url)
-        return f"{domain}{base_url}json/"
+        return f"{operational_option('litres_consts', 'domain')}{base_url}json/"
 
 
 def _guess_resource_url(url):
     if match := re.search(r"-(\d+)/?$", urlparse(url).path):
-        return f"{domain}/pub/t/{match.group(1)}.json/"
+        return f"{operational_option('litres_consts', 'domain')}/pub/t/{match.group(1)}.json/"
     return None
 
 
 def _resource_url_exists(resource_url):
     try:
-        resp = requests.get(f"{resource_url}000.js", headers=_headers(), timeout=20)
+        resp = requests.get(f"{resource_url}000.js", headers=_headers(), timeout=operational_option('litres_text', 'request_timeout_seconds'))
     except requests.RequestException:
         return False
     return resp.status_code == 200
@@ -245,7 +246,7 @@ def textify(item, ctxt, prefix="", suffix=""):
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
                 }
                 if not os.path.exists(image_location):
-                    with requests.get(image_url, headers=headers, timeout=20) as r:
+                    with requests.get(image_url, headers=headers, timeout=operational_option('litres_text', 'request_timeout_seconds')) as r:
                         r.raise_for_status()
                         with open(image_location, "wb") as f:
                             f.write(r.content)

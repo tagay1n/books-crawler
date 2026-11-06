@@ -11,9 +11,7 @@ _MODULES = {name: name for name in (
     "internet_archive", "kfu_repository", "kfu_dspace", "tataroved", "kfu_books",
     "kfu_manuscripts", "kfu_il", "kfu_azad_halyk", "kfu_vakyt", "kfu_shura", "tatargalyame",
 )}
-_COLLECTIONS = {"kfu_books": ("27574", False), "kfu_manuscripts": ("18503", False),
-                "kfu_il": ("28060", True), "kfu_azad_halyk": ("27528", True),
-                "kfu_shura": ("25046", True)}
+_COLLECTIONS = {"kfu_books", "kfu_manuscripts", "kfu_il", "kfu_azad_halyk", "kfu_shura"}
 _MODULES.update({name: "kfu" for name in _COLLECTIONS})
 
 
@@ -35,8 +33,7 @@ class _Sources(Mapping):
         if name not in self._loaded:
             module = import_module("." + module_name, __package__)
             if name in _COLLECTIONS:
-                collection_id, tatar_only = _COLLECTIONS[name]
-                adapter = module.CollectionAdapter(collection_id, tatar_only=tatar_only)
+                adapter = module.CollectionAdapter()
             else:
                 adapter = module
             self._loaded[name] = adapter
@@ -59,8 +56,18 @@ class _Pilots(Mapping):
     def __getitem__(self, name):
         if name not in self:
             raise KeyError(name)
-        return SOURCES[name].ARCHIVE_URL
+        return name
 
 
 # Retain the diagnostic command without importing Miras during CLI startup.
 PILOT_SOURCES = _Pilots()
+
+
+def configured_adapter(source, settings):
+    adapter = SOURCES[source]
+    if source in _COLLECTIONS:
+        options = settings.source_options
+        if not isinstance(options.get('collection_id'), str) or type(options.get('tatar_only')) is not bool:
+            raise ValueError(f'Missing or invalid sources.{source}.collection_id / tatar_only')
+        return type(adapter)(options['collection_id'], tatar_only=options['tatar_only'])
+    return adapter

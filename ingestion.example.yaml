@@ -1,18 +1,195 @@
-# Local pilot defaults. Copy to ingestion.yaml and select it with --config.
-# Relative paths are resolved against this YAML file, not the current directory.
+# Combined-file compatibility example. Prefer config/sources/<source>.yaml.
+extends: config/defaults.yaml
 artifacts_root: __artifacts/ingestion
-# Required for automatic S3 publication by run. Credentials come from the
-# standard AWS environment/profile/role chain, never this file.
-storage:
-  s3:
-    bucket: <SET ME>
-    prefix: books
-    # endpoint_url: https://your-s3-compatible-endpoint
-    # region: us-east-1
 sources:
+  beznenmiras:
+    archive_url: https://beznenmiras.ru/categories/widget/list/svezii-vypusk
+    operational: {}
+  common_crawl:
+    archive_url: https://huggingface.co/datasets/HuggingFaceFW/finepdfs
+    result_dir: ~/.common-crawl/result
+    cache_dir: ~/.common-crawl/warcs
+    yandex:
+      disk:
+        oauth_token:
+          env: COMMON_CRAWL_YANDEX_DISK_OAUTH_TOKEN
+        target_dir: /НейроТатарлар/kitaplar/common_crawl
+    operational:
+      common_crawl_download:
+        url_https_data_commoncrawl_org: https://data.commoncrawl.org/
+  commons:
+    archive_url: https://commons.wikimedia.org/wiki/Category:Tatar-language_books
+    operational:
+      commons:
+        api_url: https://commons.wikimedia.org/w/api.php
+        root_category_id: 70354556
+        batch_size: 10
+        user_agent: BooksCrawlerBot/1.0 (https://github.com/tagay1n/books-crawler;
+          local Commons acquisition)
+        url_https_commons_wikimedia_org_w_index_php_curid: https://commons.wikimedia.org/w/index.php?curid=
+  darul_kutub:
+    archive_url: https://darul-kutub.com/search
+    operational: {}
+  dumrt:
+    archive_url: https://dumrt.ru/media/din-va-magishet/
+    operational:
+      dumrt:
+        origin: https://dumrt.ru
+  echovek:
+    archive_url: https://www.echovek.ru/ru/publications
+    operational:
+      echovek:
+        hosts:
+        - echovek.ru
+        - www.echovek.ru
+  ftatarstan:
+    archive_url: https://ftatarstan.ru/index.php/ftat/ru/issue/archive
+    operational:
+      ftatarstan:
+        base: https://ftatarstan.ru/index.php/ftat/ru/issue/
+  internet_archive:
+    archive_url: https://archive.org
+    operational:
+      internet_archive:
+        search_url: https://archive.org/advancedsearch.php
+        query: mediatype:texts AND (language:tat OR language:tt OR language:tatar)
+        batch_size: 100
+        url_archive_org: archive.org
+        url_archive_org_224: .archive.org
+  isxaki:
+    archive_url: https://isxaki.com/ijat/
+    operational: {}
+  kazanutlary:
+    archive_url: https://kazanutlary.ru/j-archive
+    operational: {}
+  kfu_azad_halyk:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/27528
+    operational:
+      image_issues:
+        colour_policy:
+          dpi: 200
+          jpeg_quality: 85
+          mode: RGB
+      kfu:
+        origin: https://repo.kpfu.ru
+      kfu_reader:
+        url_repo_kpfu_ru: repo.kpfu.ru
+    collection_id: '27528'
+    tatar_only: true
+  kfu_books:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/27574
+    operational:
+      image_issues:
+        colour_policy:
+          dpi: 200
+          jpeg_quality: 85
+          mode: RGB
+      kfu:
+        origin: https://repo.kpfu.ru
+      kfu_reader:
+        url_repo_kpfu_ru: repo.kpfu.ru
+    collection_id: '27574'
+    tatar_only: false
+  kfu_dspace:
+    archive_url: https://dspace.kpfu.ru/xmlui/discover
+    operational:
+      image_issues:
+        colour_policy:
+          dpi: 200
+          jpeg_quality: 85
+          mode: RGB
+      kfu_dspace:
+        origin: https://dspace.kpfu.ru
+        query: татар
+        search:
+          query: татар
+          rpp: '10'
+          group_by: none
+          etal: '0'
+      kfu:
+        origin: https://repo.kpfu.ru
+      kfu_reader:
+        url_repo_kpfu_ru: repo.kpfu.ru
+  kfu_il:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/28060
+    operational:
+      image_issues:
+        colour_policy:
+          dpi: 200
+          jpeg_quality: 85
+          mode: RGB
+      kfu:
+        origin: https://repo.kpfu.ru
+      kfu_reader:
+        url_repo_kpfu_ru: repo.kpfu.ru
+    collection_id: '28060'
+    tatar_only: true
+  kfu_manuscripts:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/18503
+    operational:
+      image_issues:
+        colour_policy:
+          dpi: 200
+          jpeg_quality: 85
+          mode: RGB
+      kfu:
+        origin: https://repo.kpfu.ru
+      kfu_reader:
+        url_repo_kpfu_ru: repo.kpfu.ru
+    collection_id: '18503'
+    tatar_only: false
+  kfu_repository:
+    archive_url: https://repo.kpfu.ru/jspui/community-list
+    operational:
+      image_issues:
+        colour_policy:
+          dpi: 200
+          jpeg_quality: 85
+          mode: RGB
+      kfu:
+        origin: https://repo.kpfu.ru
+      kfu_reader:
+        url_repo_kpfu_ru: repo.kpfu.ru
+  kfu_shura:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/25046
+    operational:
+      image_issues:
+        colour_policy:
+          dpi: 200
+          jpeg_quality: 85
+          mode: RGB
+      kfu:
+        origin: https://repo.kpfu.ru
+      kfu_reader:
+        url_repo_kpfu_ru: repo.kpfu.ru
+    collection_id: '25046'
+    tatar_only: true
+  kfu_vakyt:
+    archive_url: https://repo.kpfu.ru/jspui/handle/net/86/simple-search
+    operational:
+      kfu_vakyt:
+        parameters:
+          query: ''
+          filter_field_1: is_part_of_series
+          filter_type_1: equals
+          filter_value_1: Вакыт
+          sort_by: score
+          order: desc
+          rpp: '10'
+          etal: '0'
+      image_issues:
+        colour_policy:
+          dpi: 200
+          jpeg_quality: 85
+          mode: RGB
+      kfu:
+        origin: https://repo.kpfu.ru
+      kfu_reader:
+        url_repo_kpfu_ru: repo.kpfu.ru
   litres:
     archive_url: https://www.litres.ru/new/?art_types=text_book&languages=tt&only_litres_subscription_arts=true
-    sid: <SET ME>
+    sid:
+      env: LITRES_SID
     pdf:
       jpeg_quality: 85
       max_width: null
@@ -21,128 +198,193 @@ sources:
       browser_headless: true
       browser_challenge_wait_seconds: 30
     discover:
-      search_queries: ["татарская литература", "татарча"]
+      search_queries:
+      - татарская литература
+      - татарча
       max_pages_per_query: 20
       min_score: 3
       search_request_retries: 3
       browser_headless: true
-    # Publishing only: retain existing destination credentials here.
-    # yandex.oauth_token: <SET ME>
-    # s3: {endpoint_url: ..., aws_access_key_id: ..., aws_secret_access_key: ..., bucket: ...}
-  # Original full-issue PDFs of the publisher-declared Tatar/Russian series.
-  tuganzhir:
-    archive_url: https://tuganzhir.org/archive/
-  # Contemporary DUM RT Tatar newspaper and almanac; linked original PDFs only.
-  dumrt:
-    archive_url: https://dumrt.ru/media/din-va-magishet/
-  # Native full-issue PDFs explicitly labelled Tatar; article files excluded.
-  ftatarstan:
-    archive_url: https://ftatarstan.ru/index.php/ftat/ru/issue/archive
-  # Explicit publisher Tatar item labels; individual PDF files only.
-  sarhaan:
-    archive_url: https://sarhaan.com/a/tatar-%d8%aa%d8%aa%d8%a7%d8%b1%d9%8a/
-  # Mixed subject catalog; only individually reviewed Tatar textbook PDFs are acquired.
-  obuchalka:
-    archive_url: https://obuchalka.org/knigi-po-tatarskomu-yaziku/
-  # Journal issue traversal; only article PDFs explicitly labelled Tatar are acquired.
-  echovek:
-    archive_url: https://www.echovek.ru/ru/publications
-  # Linked original PDFs of the bilingual Nizgar magazine; one archive observation.
-  nizgar:
-    archive_url: https://nizgar.ru/zhurnal-nizhegorodskie-tatary-nizhgar-tatarlary/
-  # Publisher book PDFs; explicit Tatar target-language claims or hash-pinned reviews.
-  yazuchy:
-    archive_url: https://sptatar.com/yazuchy-n-shriyaty/
-  # Tatar-labelled dictionaries only; Crimean Tatar and general multilingual titles excluded.
-  turuz:
-    archive_url: https://turuz.com/index/pitik/category/2
-  # Issue metadata and linked originals only; covers are not journal documents.
-  beznenmiras:
-    archive_url: https://beznenmiras.ru/categories/widget/list/svezii-vypusk
-  # Native publication catalog; explicit language claims or reviewed file hashes.
-  tataroved:
-    archive_url: https://tataroved.ru/publication/
-  # Academic archive: topic search plus item-language or hash-pinned file review.
-  kfu_dspace:
-    archive_url: https://dspace.kpfu.ru/xmlui/discover
-  # All historical repository collections; explicit Tatar item labels required.
-  kfu_repository:
-    archive_url: https://repo.kpfu.ru/jspui/community-list
-  # Azad Halyk newspaper: explicit Tatar item-language labels required.
-  kfu_azad_halyk:
-    archive_url: https://repo.kpfu.ru/jspui/handle/net/27528
-  # Vakyt newspaper: exact series search; explicit Tatar item labels required.
-  kfu_vakyt:
-    archive_url: https://repo.kpfu.ru/jspui/handle/net/86/simple-search
-  # Shura journal: explicit Tatar language labels required.
-  kfu_shura:
-    archive_url: https://repo.kpfu.ru/jspui/handle/net/25046
-  # All hosted documents; document language is not inferred from the catalog locale.
-  tatargalyame:
-    archive_url: https://tatargalyame.kpfu.ru/catalogue
-  # Il newspaper issues: explicit Tatar language labels required.
-  kfu_il:
-    archive_url: https://repo.kpfu.ru/jspui/handle/net/28060
-  kfu_books:
-    archive_url: https://repo.kpfu.ru/jspui/handle/net/27574
-  kfu_manuscripts:
-    archive_url: https://repo.kpfu.ru/jspui/handle/net/18503
-  internet_archive:
-    archive_url: https://archive.org
-  isxaki:
-    archive_url: https://isxaki.com/ijat/
+    operational:
+      litres_discover:
+        max_pages_per_query_cap: 20
+        default_search_filters:
+          art_types: text_book
+          only_litres_subscription_arts: 'true'
+          languages:
+          - ru
+          - en
+          - ba
+        request_timeout_seconds: 30
+      litres_pdf_config:
+        pdf_request_timeout_seconds: 30
+        pdf_response_snippet_bytes: 300
+        raw_page_dpi: 300
+      litres_upload_books:
+        remote_dir: /НейроТатарлар/kitaplar/_все книги/litres
+      litres_consts:
+        domain: https://www.litres.ru
+        entry_point: https://www.litres.ru/new/?art_types=text_book&languages=tt&only_litres_subscription_arts=true
+        total_pages: 18
+      litres_hf:
+        hf_dataset: yasalma/tt-litres-books
+      litres_pdf:
+        book_attempts: 2
+      litres:
+        url_www_litres_ru: www.litres.ru
+        url_litres_ru: litres.ru
+      litres_index:
+        reader_click_attempts: 3
+        card_ancestor_depth: 8
+        reader_wait_seconds: 20
+        reader_open_wait_seconds: 10
+      litres_text:
+        request_timeout_seconds: 20
+      litres_utils:
+        url_litres_ru: .litres.ru
   magarif:
     archive_url: https://magarif-uku.ru/documents
-  # Tatar textbook ZIPs linked by the publisher; retained originals plus derived PDFs.
   magarif_vakyt:
     archive_url: https://magarif-vakyt.ru/online2
-  tatarica:
-    archive_url: https://tatarica.org/tat/razdely/tatarika-kitaphanse
-  darul_kutub:
-    archive_url: https://darul-kutub.com/search
-  kazanutlary:
-    archive_url: https://kazanutlary.ru/j-archive
-  tatkniga:
-    archive_url: https://tatkniga.ru/catalog/biblioteka/
-  # Pass --session-file PATH to discover/download/run; status needs no session.
-  miras:
-    archive_url: https://miras.info/projects/mirasxane/books/
-  # Separate periodical series manifest; uses the same Miras browser session export.
-  miras_periodicals:
-    archive_url: https://miras.info/projects/mirasxane/periodicals/
-  # Original documents with source size/SHA-1 validation; cover images are skipped.
-  commons:
-    archive_url: https://commons.wikimedia.org/wiki/Category:Tatar-language_books
-  common_crawl:
-    archive_url: https://huggingface.co/datasets/HuggingFaceFW/finepdfs
-    result_dir: ~/.common-crawl/result
-    cache_dir: ~/.common-crawl/warcs
-    yandex:
-      disk:
-        oauth_token: <SET ME>
-        target_dir: /НейроТатарлар/kitaplar/common_crawl
+    operational:
+      magarif_vakyt:
+        api: https://cloud-api.yandex.net/v1/disk/public/resources
+        catalogs:
+          https://magarif-vakyt.ru/online2: Электронный формат
+          https://magarif-vakyt.ru/reading: Литература на татарском языке
+        url_https_disk_yandex_ru: https://disk.yandex.ru
+        url_cloud_api_yandex_net: cloud-api.yandex.net
+        url_disk_yandex_ru: disk.yandex.ru
+        url_yadi_sk: yadi.sk
+        url_downloader_disk_yandex_ru: downloader.disk.yandex.ru
+        url_disk_yandex_net: .disk.yandex.net
+        url_storage_yandex_net: .storage.yandex.net
+      textbook_package:
+        dpi: 200
+        max_members: 20000
+        max_uncompressed: 2147483648
+        max_page_bytes: 33554432
+        max_config_bytes: 1048576
+        max_pages: 2000
+        max_books: 20
   milli_kitaphana:
     aes:
-      raw_key: <SET ME>
-      default_iv: <SET ME>
-      salt: <SET ME>
-    priv_key: <SET ME>
-    sig_prefix: <SET ME>
-    database_url: <SET ME>
+      raw_key:
+        env: MILLI_KITAPHANA_AES_RAW_KEY
+      default_iv:
+        env: MILLI_KITAPHANA_AES_DEFAULT_IV
+      salt:
+        env: MILLI_KITAPHANA_AES_SALT
+    priv_key:
+      env: MILLI_KITAPHANA_PRIV_KEY
+    sig_prefix:
+      env: MILLI_KITAPHANA_SIG_PREFIX
+    database_url:
+      env: MILLI_KITAPHANA_DATABASE_URL
     yandex:
       disk:
-        oauth_token: <SET ME>
-        target_dir: <SET ME>
+        oauth_token:
+          env: MILLI_KITAPHANA_YANDEX_DISK_OAUTH_TOKEN
+        target_dir:
+          env: MILLI_KITAPHANA_YANDEX_DISK_TARGET_DIR
     archive_url: https://kitap.tatar.ru/tt/ssearch/ecollection/
-limits:
-  max_pages: 25
-  max_items: 25
-  max_download_bytes: 1073741824
-  max_file_bytes: 104857600
-  disk_reserve_bytes: 536870912
-  soft_deadline_seconds: 900
-network:
-  connect_timeout_seconds: 10
-  read_timeout_seconds: 60
-  pacing_seconds: 1
-  retry_attempts: 3
+    operational:
+      milli_kitaphana_utils:
+        host: https://kitap.tatar.ru
+      milli_kitaphana_index:
+        entry_point: https://kitap.tatar.ru/tt/ssearch/ecollection/
+        language_queries:
+        - tat
+        - ara
+        collection_queries:
+        - name: COLLECTION_12
+          params:
+          - - fattr
+            - fond_sf
+          - - fq
+            - COLLECTION_12
+          - - sort
+            - record-create-date
+        url_https_kitap_tatar_ru: https://kitap.tatar.ru
+      milli_kitaphana_mark_existing_limited:
+        request_timeout_seconds: 60
+        metadata_root: ~/.monocorpus/misc/upstream_metadata
+        flag_name: needs_full_download
+      milli_kitaphana_download:
+        url_http_kitap_tatar_ru_dl: http://kitap.tatar.ru/dl
+        url_kitap_tatar_ru_dl: /kitap.tatar.ru/dl
+      milli_kitaphana:
+        url_kitap_tatar_ru: kitap.tatar.ru
+        url_https_kitap_tatar_ru: https://kitap.tatar.ru
+      milli_kitaphana_recover:
+        workers: 4
+        download_workers: 4
+      milli_kitaphana_decrypt:
+        workers: 4
+  miras:
+    archive_url: https://miras.info/projects/mirasxane/books/
+    operational:
+      miras_probe:
+        sample_record: https://miras.info/projects/mirasxane/books/889-avyl-kyzy-.html
+      miras_session:
+        url_https_miras_info: https://miras.info
+  miras_periodicals:
+    archive_url: https://miras.info/projects/mirasxane/periodicals/
+    operational:
+      miras_probe:
+        sample_record: https://miras.info/projects/mirasxane/books/889-avyl-kyzy-.html
+      miras:
+        archive_url: https://miras.info/projects/mirasxane/books/
+      miras_session:
+        url_https_miras_info: https://miras.info
+  nizgar:
+    archive_url: https://nizgar.ru/zhurnal-nizhegorodskie-tatary-nizhgar-tatarlary/
+    operational: {}
+  obuchalka:
+    archive_url: https://obuchalka.org/knigi-po-tatarskomu-yaziku/
+    operational:
+      obuchalka:
+        url_fileskachat_com: fileskachat.com
+        url_yadi_sk: yadi.sk
+        url_disk_yandex_ru: disk.yandex.ru
+  sarhaan:
+    archive_url: https://sarhaan.com/a/tatar-%d8%aa%d8%aa%d8%a7%d8%b1%d9%8a/
+    operational: {}
+  tatargalyame:
+    archive_url: https://tatargalyame.kpfu.ru/catalogue
+    operational:
+      tatargalyame:
+        origin: https://tatargalyame.kpfu.ru
+  tatarica:
+    archive_url: https://tatarica.org/tat/razdely/tatarika-kitaphanse
+    operational: {}
+  tataroved:
+    archive_url: https://tataroved.ru/publication/
+    operational:
+      tataroved:
+        origin: https://tataroved.ru
+        hosts:
+        - www.tataroved.ru
+        - tataroved.ru
+  tatkniga:
+    archive_url: https://tatkniga.ru/catalog/biblioteka/
+    operational:
+      image_issues:
+        colour_policy:
+          dpi: 200
+          jpeg_quality: 85
+          mode: RGB
+  tuganzhir:
+    archive_url: https://tuganzhir.org/archive/
+    operational:
+      tuganzhir:
+        pdf_roots:
+        - https://tuganzhir.org/wp-content/uploads/
+        - https://tatar-congress.org/wp-content/uploads/
+        - https://tatarcongress.firsts3.ru/uploads/
+  turuz:
+    archive_url: https://turuz.com/index/pitik/category/2
+    operational: {}
+  yazuchy:
+    archive_url: https://sptatar.com/yazuchy-n-shriyaty/
+    operational: {}

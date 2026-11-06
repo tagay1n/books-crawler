@@ -1,4 +1,5 @@
 """Tataroved publication pages and public original document files."""
+from .runtime_config import option as operational_option
 
 import json
 from pathlib import PurePosixPath
@@ -14,9 +15,6 @@ from .network import InvalidDocument
 from .paging import ListingPage, PageRequest
 
 
-ORIGIN = "https://tataroved.ru"
-ARCHIVE_URL = ORIGIN + "/publication/"
-HOSTS = {"tataroved.ru", "www.tataroved.ru"}
 FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
 PARSER_VERSION = 1
 UNIQUE_RECORDS = True
@@ -24,9 +22,11 @@ DESCRIPTORS = ("url", "label", "extension", "filename_raw", "source_url_raw", "c
                "source_asset_key", "source_unsupported_code", "source_unsupported_reason")
 
 
-def native_url(raw, base=ARCHIVE_URL):
+def native_url(raw, base=None):
+    if base is None:
+        base = operational_option('tataroved', 'archive_url')
     parsed = urlsplit(urljoin(base, raw))
-    if parsed.scheme not in {"http", "https"} or parsed.netloc not in HOSTS:
+    if parsed.scheme not in {"http", "https"} or parsed.netloc not in operational_option('tataroved', 'hosts'):
         raise ValueError("Tataroved URLs must remain on the two native domain aliases.")
     path = unquote(parsed.path)
     if (not path.startswith("/") or "\\" in path
@@ -76,7 +76,7 @@ def catalog(html):
     entries = {}
     for anchor in main.select("a.sbb[href]"):
         target = native_url(anchor["href"])
-        if target == ARCHIVE_URL or not urlsplit(target).path.startswith("/publication/"):
+        if target == operational_option('tataroved', 'archive_url') or not urlsplit(target).path.startswith("/publication/"):
             continue
         label = anchor.get_text(" ", strip=True)
         if not label:
@@ -84,14 +84,14 @@ def catalog(html):
         subtitle = anchor.find_next_sibling("i", class_="snb")
         entries[target] = {"catalog_title_raw": label,
                            "catalog_description_raw": subtitle.get_text(" ", strip=True) if subtitle else "",
-                           "catalog_url": ARCHIVE_URL}
+                           "catalog_url": operational_option('tataroved', 'archive_url')}
     if not entries:
         raise ValueError("Tataroved catalog contains no publication links.")
     return entries
 
 
 def parse_listing(html, request, root):
-    if native_url(request.url) != ARCHIVE_URL:
+    if native_url(request.url) != operational_option('tataroved', 'archive_url'):
         raise ValueError("Unexpected Tataroved catalog listing URL.")
     entries = catalog(html)
     records = list(entries)
@@ -104,7 +104,7 @@ def parse_listing(html, request, root):
 
 
 def verification_request(root, count):
-    return PageRequest(ARCHIVE_URL, context={"verify": True, "count": count})
+    return PageRequest(operational_option('tataroved', 'archive_url'), context={"verify": True, "count": count})
 
 
 def source_language(subtitle):
@@ -124,7 +124,7 @@ def source_language(subtitle):
 
 def record(html, page_url):
     url = native_url(page_url)
-    if url == ARCHIVE_URL or not urlsplit(url).path.startswith("/publication/"):
+    if url == operational_option('tataroved', 'archive_url') or not urlsplit(url).path.startswith("/publication/"):
         raise ValueError("Expected a Tataroved publication record.")
     soup, main, content, heading = page_area(html)
     title = heading.get_text(" ", strip=True)
@@ -151,7 +151,7 @@ def record(html, page_url):
             target = native_url(raw, url)
         except ValueError:
             target = raw
-            code = "external_origin" if parsed.netloc not in HOSTS else "unsupported_url"
+            code = "external_origin" if parsed.netloc not in operational_option('tataroved', 'hosts') else "unsupported_url"
             reason = "Attachment is outside the native source or has an unsupported resource URL."
         if code is None and extension not in FORMATS:
             code, reason = "unsupported_format", "Archive expansion is deferred; only directly linked document originals are acquired."

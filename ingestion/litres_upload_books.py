@@ -1,4 +1,5 @@
 """Uploads Litres PDFs to Yandex Disk, publishes links, and writes document metadata to the monocorpus database."""
+from .runtime_config import option as operational_option
 
 import os.path
 import re
@@ -9,8 +10,6 @@ from sqlalchemy import text
 from yadisk_client import YaDisk, ConflictResolution
 
 from .litres_utils import load_index, read_config
-
-REMOTE_DIR = "/НейроТатарлар/kitaplar/_все книги/litres"
 
 
 def upload_pdfs(_all_docs=None):
@@ -26,7 +25,7 @@ def upload_pdfs(_all_docs=None):
     for doc in track([d for d in _all_docs.values() if d['content_type'] == 'pdf' and 'pdf_file' in d],
                      description="Uploading documents"):
         file = doc['pdf_file']
-        remote_path, md5 = client.upload_or_replace(file, remote_dir=REMOTE_DIR,
+        remote_path, md5 = client.upload_or_replace(file, remote_dir=operational_option('litres_upload_books', 'remote_dir'),
                                                     conflict_resolution=ConflictResolution.SKIP)
         client.publish(remote_path, fields=['public_key', 'public_url'])
 

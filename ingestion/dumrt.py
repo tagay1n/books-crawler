@@ -1,4 +1,5 @@
 """Original PDFs of DUM RT's two contemporary Tatar publication series."""
+from .runtime_config import option as operational_option
 
 from pathlib import PurePosixPath
 import re
@@ -12,21 +13,20 @@ from .network import install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
-ORIGIN = "https://dumrt.ru"
-ARCHIVE_URL = ORIGIN + "/media/din-va-magishet/"
 PARSER_VERSION = 2
 SERIES = {
     "/media/din-va-magishet/": {"id": "din_va_magishet", "title": "Дин вә мәгыйшәт", "heading": "Дин вә мәгыйшәт", "component": "751", "step": 6},
     "/media/shura-almanah/": {"id": "shura_modern", "title": "Шура", "heading": '"Шура" альманахы', "component": "757", "step": 10},
 }
-LANGUAGE_EVIDENCE_URL = ORIGIN + "/netcat_files/multifile/2627/otchet_DUM_2018.pdf"
 
 
-def native_url(href, base=ARCHIVE_URL):
+def native_url(href, base=None):
+    if base is None:
+        base = operational_option('dumrt', 'archive_url')
     url = requote_uri(canonical(href, base))
     p = urlsplit(url)
     path = unquote(p.path)
-    if (not same_origin(url, ORIGIN) or "\\" in path
+    if (not same_origin(url, operational_option('dumrt', 'origin')) or "\\" in path
             or {".", ".."}.intersection(path.split("/"))
             or any(ord(c) < 32 or ord(c) == 127 for c in path)):
         raise ValueError("Publisher resources must remain on safe native HTTPS paths.")
@@ -119,10 +119,10 @@ def parse_listing(html, request, root):
             following[target] = PageRequest(target)
     if later_page_advertised and not following:
         raise ValueError("Publisher pager skips its next native page.")
-    if url == ARCHIVE_URL:
+    if url == operational_option('dumrt', 'archive_url'):
         for other in SERIES:
             if other != path:
-                following[ORIGIN + other] = PageRequest(ORIGIN + other)
+                following[operational_option('dumrt', 'origin') + other] = PageRequest(operational_option('dumrt', 'origin') + other)
     return ListingPage(list(entries), list(following.values()), record_context=entries,
                        detect_repeats=True)
 
@@ -167,7 +167,7 @@ def record(html, page_url):
             "posted_date_raw": date.get_text(" ", strip=True) if date else None,
             "description_raw": description.get_text(" ", strip=True) if description else None,
             "language_evidence": {"language": "tt", "scope": "publication_series",
-                                  "source_url": LANGUAGE_EVIDENCE_URL,
+                                  "source_url": (operational_option('dumrt', 'origin') + "/netcat_files/multifile/2627/otchet_DUM_2018.pdf"),
                                   "claim": "Publisher activity report identifies these two series as Tatar-language publications."},
             "admission_reason": "Selected contemporary Tatar publication series; individual language composition and edition completeness remain unverified."}, list(assets.values())
 

@@ -5,10 +5,10 @@ its own manifest under `__artifacts/ingestion/kfu_azad_halyk/`. Add its source e
 from `ingestion.example.yaml` to the operational YAML.
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source kfu_azad_halyk --max-pages 2
-.venv/bin/python cli.py --config ingestion.yaml download --source kfu_azad_halyk --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source kfu_azad_halyk --max-pages 2 --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source kfu_azad_halyk
+.venv/bin/python cli.py --config config/sources/kfu_azad_halyk.yaml discover --source kfu_azad_halyk --max-pages 2
+.venv/bin/python cli.py --config config/sources/kfu_azad_halyk.yaml download --source kfu_azad_halyk --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_azad_halyk.yaml run --source kfu_azad_halyk --max-pages 2 --limit 1
+.venv/bin/python cli.py --config config/sources/kfu_azad_halyk.yaml status --source kfu_azad_halyk
 ```
 
 This source reuses KFU's native collection traversal, durable checkpoints,

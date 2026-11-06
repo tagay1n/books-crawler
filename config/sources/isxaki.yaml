@@ -1,0 +1,5 @@
+extends: ../defaults.yaml
+sources:
+  isxaki:
+    archive_url: https://isxaki.com/ijat/
+    operational: {}

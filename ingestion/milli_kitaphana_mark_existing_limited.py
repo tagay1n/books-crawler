@@ -18,6 +18,7 @@ How matching works:
 How to run:
 python cli.py --config ingestion.yaml mark-existing-limited --source milli_kitaphana
 """
+from .runtime_config import option as operational_option
 
 import json
 import os
@@ -30,8 +31,8 @@ from .database import transaction
 from .milli_kitaphana_utils import dump_index, load_index_file, read_config
 
 
-DEFAULT_METADATA_ROOT = Path(os.path.expanduser("~/.monocorpus/misc/upstream_metadata"))
-DEFAULT_FLAG_NAME = "needs_full_download"
+
+
 
 MIN_TITLE_PREFIX = 8
 
@@ -53,7 +54,7 @@ def _norm_title(value: str | None) -> str | None:
 def _download_zip(url: str, dest_path: Path) -> None:
     """Download an upstream metadata zip to the given path."""
     dest_path.parent.mkdir(parents=True, exist_ok=True)
-    with requests.get(url, stream=True, timeout=60) as resp:
+    with requests.get(url, stream=True, timeout=operational_option('milli_kitaphana_mark_existing_limited', 'request_timeout_seconds')) as resp:
         resp.raise_for_status()
         with open(dest_path, "wb") as f:
             for chunk in resp.iter_content(chunk_size=1024 * 1024):
@@ -162,8 +163,8 @@ def _match_index_entry_by_title(title: str | None, lookups: dict[str, dict[str, 
 
 
 def mark_existing_limited(
-    metadata_root: Path = DEFAULT_METADATA_ROOT,
-    flag_name: str = DEFAULT_FLAG_NAME,
+    metadata_root: Path | None = None,
+    flag_name: str | None = None,
 ) -> None:
     """
     Mark index entries that already exist in the DB as limited (Document.full == False).
@@ -171,6 +172,8 @@ def mark_existing_limited(
     The marker is stored in the index as `flag_name` and can be used later
     to skip downloads or produce a targeted subset.
     """
+    metadata_root = metadata_root if metadata_root is not None else Path(operational_option("milli_kitaphana_mark_existing_limited", "metadata_root")).expanduser()
+    flag_name = flag_name if flag_name is not None else operational_option("milli_kitaphana_mark_existing_limited", "flag_name")
     index = load_index_file()
     lookups = _build_lookups(index)
 

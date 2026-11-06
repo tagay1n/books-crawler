@@ -14,13 +14,13 @@ def compact_result(result, command, source=None):
     brief["error_count"] = len(result.get("errors", []))
     if result.get("errors"):
         brief["error_preview"] = [
-            {key: str(error[key])[:500] for key in ("stage", "record", "error") if key in error}
-            if isinstance(error, dict) else {"error": str(error)[:500]}
+            {key: str(error[key]) for key in ("stage", "record", "error") if key in error}
+            if isinstance(error, dict) else {"error": str(error)}
             for error in result["errors"][:3]]
     if "sources" in result:
         brief["source_count"] = len(result["sources"])
     if result.get("error"):
-        brief.update(error_count=1, error=str(result["error"])[:500])
+        brief.update(error_count=1, error=str(result["error"]))
     backlog = result.get("backlog", result)
     if "backlog" in result and "records" in backlog:
         brief["backlog_records"] = backlog["records"]
@@ -41,5 +41,13 @@ def compact_result(result, command, source=None):
                                          for p in result["pdf_probes"])
         brief["error_count"] = int(not result["ok"])
         if page.get("error"):
-            brief["error"] = page["error"][:500]
+            brief["error"] = page["error"]
+    from .views import preview
+    sources = brief.pop('sources', None)
+    # Keep decision-making counters ahead of potentially large provider metadata.
+    brief = {**{k: v for k, v in brief.items() if not isinstance(v, (dict, list))},
+             **{k: v for k, v in brief.items() if isinstance(v, (dict, list))}}
+    brief = preview(brief)
+    if sources is not None:
+        brief['sources'] = sources
     return brief

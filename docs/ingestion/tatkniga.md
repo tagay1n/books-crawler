@@ -44,11 +44,11 @@ or inconsistent declared page lists leave discovery incomplete and retryable.
 ## Unified CLI stages
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source tatkniga --max-pages 2
-.venv/bin/python cli.py --config ingestion.yaml download --source tatkniga --limit 1
-.venv/bin/python cli.py --config ingestion.yaml finalize --source tatkniga --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source tatkniga --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source tatkniga
+.venv/bin/python cli.py --config config/sources/tatkniga.yaml discover --source tatkniga --max-pages 2
+.venv/bin/python cli.py --config config/sources/tatkniga.yaml download --source tatkniga --limit 1
+.venv/bin/python cli.py --config config/sources/tatkniga.yaml finalize --source tatkniga --limit 1
+.venv/bin/python cli.py --config config/sources/tatkniga.yaml run --source tatkniga --limit 1
+.venv/bin/python cli.py --config config/sources/tatkniga.yaml status --source tatkniga
 ```
 
 Use `sources.tatkniga` from `ingestion.example.yaml` in your selected operational

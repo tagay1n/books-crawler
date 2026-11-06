@@ -7,31 +7,31 @@ artifacts and explicit exports. Older file-based recovery examples describe
 archived snapshots and are not the current source of progress.
 
 Use the repository virtual environment and its existing `requirements.txt`.
-Copy `ingestion.example.yaml` to `ingestion.yaml`, review its paths and limits,
+Review the selected `config/sources/<source>.yaml`, its shared defaults, paths and limits,
 then select that operational file explicitly:
 
 ```bash
 .venv/bin/python cli.py sources
-.venv/bin/python cli.py --config ingestion.yaml discover --source magarif
-.venv/bin/python cli.py --config ingestion.yaml status --source magarif
-.venv/bin/python cli.py --config ingestion.yaml download --source magarif --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source magarif
-.venv/bin/python cli.py --config ingestion.yaml download --source magarif --recheck
-.venv/bin/python cli.py --config ingestion.yaml discover --source tatarica --max-pages 2
-.venv/bin/python cli.py --config ingestion.yaml status --source tatarica
-.venv/bin/python cli.py --config ingestion.yaml download --source tatarica --limit 1
-.venv/bin/python cli.py --config ingestion.yaml discover --source darul_kutub --max-pages 2
-.venv/bin/python cli.py --config ingestion.yaml status --source darul_kutub
-.venv/bin/python cli.py --config ingestion.yaml download --source darul_kutub --limit 1
-.venv/bin/python cli.py --config ingestion.yaml discover --source kazanutlary --max-pages 2
-.venv/bin/python cli.py --config ingestion.yaml download --source kazanutlary --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source kazanutlary
-.venv/bin/python cli.py --config ingestion.yaml discover --source tatkniga --max-pages 2
-.venv/bin/python cli.py --config ingestion.yaml download --source tatkniga --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source tatkniga
-.venv/bin/python cli.py --config ingestion.yaml discover --source miras --max-pages 2 --session-file PATH
-.venv/bin/python cli.py --config ingestion.yaml download --source miras --limit 2 --session-file PATH
-.venv/bin/python cli.py --config ingestion.yaml status --source miras
+.venv/bin/python cli.py --config config/sources/magarif.yaml discover --source magarif
+.venv/bin/python cli.py --config config/sources/magarif.yaml status --source magarif
+.venv/bin/python cli.py --config config/sources/magarif.yaml download --source magarif --limit 1
+.venv/bin/python cli.py --config config/sources/magarif.yaml run --source magarif
+.venv/bin/python cli.py --config config/sources/magarif.yaml download --source magarif --recheck
+.venv/bin/python cli.py --config config/sources/tatarica.yaml discover --source tatarica --max-pages 2
+.venv/bin/python cli.py --config config/sources/tatarica.yaml status --source tatarica
+.venv/bin/python cli.py --config config/sources/tatarica.yaml download --source tatarica --limit 1
+.venv/bin/python cli.py --config config/sources/darul_kutub.yaml discover --source darul_kutub --max-pages 2
+.venv/bin/python cli.py --config config/sources/darul_kutub.yaml status --source darul_kutub
+.venv/bin/python cli.py --config config/sources/darul_kutub.yaml download --source darul_kutub --limit 1
+.venv/bin/python cli.py --config config/sources/kazanutlary.yaml discover --source kazanutlary --max-pages 2
+.venv/bin/python cli.py --config config/sources/kazanutlary.yaml download --source kazanutlary --limit 1
+.venv/bin/python cli.py --config config/sources/kazanutlary.yaml status --source kazanutlary
+.venv/bin/python cli.py --config config/sources/tatkniga.yaml discover --source tatkniga --max-pages 2
+.venv/bin/python cli.py --config config/sources/tatkniga.yaml download --source tatkniga --limit 1
+.venv/bin/python cli.py --config config/sources/tatkniga.yaml status --source tatkniga
+.venv/bin/python cli.py --config config/sources/miras.yaml discover --source miras --max-pages 2 --session-file PATH
+.venv/bin/python cli.py --config config/sources/miras.yaml download --source miras --limit 2 --session-file PATH
+.venv/bin/python cli.py --config config/sources/miras.yaml status --source miras
 ```
 
 `sources`, `inspect` and command help do not need configuration. Acquisition and status commands require
@@ -52,8 +52,8 @@ For compact machine-readable output, put the global `--summary-only` option
 before the command name:
 
 ```bash
-.venv/bin/python cli.py --summary-only --config ingestion.yaml discover --source magarif
-.venv/bin/python cli.py --summary-only --config ingestion.yaml status --source magarif
+.venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml discover --source magarif
+.venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml status --source magarif
 .venv/bin/python cli.py --summary-only inspect https://tuganzhir.org/archive/ --max-links 8
 ```
 
@@ -198,3 +198,43 @@ again and deduplicated. Postgres is the progress authority.
 
 This delivery stores originals and supported reader-derived PDFs locally. It does not
 upload, import catalog data, classify language, expand archives, or run scheduled jobs.
+
+
+## Per-source configuration
+
+Use `--config config/sources/<source>.yaml --source <source>`. Each registered
+source has a tracked configuration containing public operational values only.
+`config/defaults.yaml` holds shared budgets, network settings and S3 destination
+settings. Set `S3_BUCKET` when publishing; AWS credentials use the standard SDK
+credential chain. `DATABASE_URL` continues to select progress storage.
+
+`extends` names one parent YAML file, relative to the declaring file. Mappings
+merge recursively; lists and scalar values replace inherited values, including
+explicit nulls. Cycles and invalid mappings fail with a configuration error.
+Operational relative paths resolve against the selected file's directory,
+including values inherited from defaults. They do not resolve against the shell
+working directory. The shipped artifact root accounts for this directory layout.
+
+Use `{env: VARIABLE_NAME}` for secrets and deployment-specific values. Shared
+non-secret values resolve when loading; source references and S3 credentials
+resolve when accessed so local stages do not require unused publication secrets.
+Missing variables report their name and configuration key without their value.
+Environment references supply strings; numeric settings should use YAML numbers.
+No general shell substitution or `${...}` interpolation is performed.
+
+Provider helpers read invocation-local `sources.<source>.operational` settings,
+grouped by helper module. Configured URLs and allowed origins control native
+request checks; changing an origin does not adapt provider-specific URL patterns
+or HTML parsers. Parser versions, regexes, format signatures, protocol details and
+language-admission rules remain implementation constants. Library defaults remain
+implicit where no application override is needed.
+
+Combined files remain supported; `ingestion.example.yaml` demonstrates the current
+shape. Existing private files need the newly explicit operational settings and
+`limits.max_derived_pdf_bytes`. For a source-specific private override, place it in
+ignored `config/local/<source>.yaml`, extend `../sources/<source>.yaml`, and override
+only the relevant values. Relative paths still resolve against that private file.
+Never commit credentials. The obsolete local `ingestion.yaml` has been removed; use per-source files instead.
+
+CLI page/item limits still restrict configured caps. Source listing and database
+inspection remain configuration-free. GitHub workflow creation is a separate step.

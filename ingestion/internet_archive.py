@@ -1,4 +1,5 @@
 """Tatar-labelled Internet Archive text items and their original uploads."""
+from .runtime_config import option as operational_option
 
 import hashlib
 import json
@@ -11,10 +12,6 @@ from .network import BudgetStop, InvalidDocument
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
-ARCHIVE_URL = "https://archive.org"
-SEARCH_URL = ARCHIVE_URL + "/advancedsearch.php"
-QUERY = "mediatype:texts AND (language:tat OR language:tt OR language:tatar)"
-BATCH_SIZE = 100
 PARSER_VERSION = 1
 UNIQUE_RECORDS = True
 FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
@@ -37,24 +34,24 @@ def filename(value):
 
 
 def metadata_url(item_id):
-    return f"{ARCHIVE_URL}/metadata/{identifier(item_id)}"
+    return f"{operational_option('internet_archive', 'archive_url')}/metadata/{identifier(item_id)}"
 
 
 def file_url(item_id, name):
-    return f"{ARCHIVE_URL}/download/{identifier(item_id)}/{quote(filename(name), safe='/')}"
+    return f"{operational_option('internet_archive', 'archive_url')}/download/{identifier(item_id)}/{quote(filename(name), safe='/')}"
 
 
 def listing_request(page=1, advertised=None, *, validation=False):
-    params = {"q": QUERY, "output": "json", "rows": BATCH_SIZE, "page": page,
+    params = {"q": operational_option('internet_archive', 'query'), "output": "json", "rows": operational_option('internet_archive', 'batch_size'), "page": page,
               "sort[]": "identifier asc", "fl[]": "identifier"}
     context = {"advertised": advertised} if advertised is not None else {}
     if validation:
         context["validation"] = True
-    return PageRequest(SEARCH_URL + "?" + urlencode(params), context=context)
+    return PageRequest(operational_option('internet_archive', 'search_url') + "?" + urlencode(params), context=context)
 
 
 def initial_request(root):
-    if root.rstrip("/") != ARCHIVE_URL:
+    if root.rstrip("/") != operational_option('internet_archive', 'archive_url'):
         raise ValueError("Unexpected Archive source root.")
     return listing_request()
 
@@ -66,10 +63,10 @@ def verification_request(root, advertised):
 def search_page(url):
     parsed = urlsplit(url)
     params = parse_qs(parsed.query, keep_blank_values=True)
-    expected = {"q": [QUERY], "output": ["json"], "rows": [str(BATCH_SIZE)],
+    expected = {"q": [operational_option('internet_archive', 'query')], "output": ["json"], "rows": [str(operational_option('internet_archive', 'batch_size'))],
                 "sort[]": ["identifier asc"], "fl[]": ["identifier"]}
     pages = params.pop("page", [])
-    if (parsed.scheme != "https" or parsed.netloc != "archive.org"
+    if (parsed.scheme != "https" or parsed.netloc != operational_option('internet_archive', 'url_archive_org')
             or parsed.path != "/advancedsearch.php" or parsed.fragment or params != expected
             or len(pages) != 1 or not pages[0].isdecimal() or int(pages[0]) < 1):
         raise ValueError("Invalid bounded Archive search request.")
@@ -94,11 +91,11 @@ def parse_listing(text, request, root):
         raise ValueError("Archive search response is missing its result object.")
     total, start, docs = result.get("numFound"), result.get("start"), result.get("docs")
     if (type(total) is not int or total < 0 or type(start) is not int
-            or start != (page - 1) * BATCH_SIZE or not isinstance(docs, list)):
+            or start != (page - 1) * operational_option('internet_archive', 'batch_size') or not isinstance(docs, list)):
         raise ValueError("Archive search offset, total, or batch size is inconsistent.")
     if "advertised" in request.context and total != request.context["advertised"]:
         raise CatalogChanged("Archive search total changed; next discovery starts a fresh scan.")
-    if len(docs) != min(BATCH_SIZE, max(0, total - start)) or (start >= total and page != 1):
+    if len(docs) != min(operational_option('internet_archive', 'batch_size'), max(0, total - start)) or (start >= total and page != 1):
         raise ValueError("Archive search returned an incomplete or out-of-range batch.")
     ids = []
     for doc in docs:
@@ -151,7 +148,7 @@ def source_hints(file):
 
 def record(text, page_url):
     parsed = urlsplit(page_url)
-    if parsed.scheme != "https" or parsed.netloc != "archive.org" or parsed.query or parsed.fragment:
+    if parsed.scheme != "https" or parsed.netloc != operational_option('internet_archive', 'url_archive_org') or parsed.query or parsed.fragment:
         raise ValueError("Invalid Archive metadata URL.")
     match = re.fullmatch(r"/metadata/([^/]+)", parsed.path)
     item_id = identifier(match[1] if match else None)
@@ -200,7 +197,7 @@ def record(text, page_url):
                        "unsupported_reason": f"Archive original held: {code}." if code else None})
     raw_title = upstream.get("title")
     title = raw_title if isinstance(raw_title, str) and raw_title else item_id
-    metadata = {"url": f"{ARCHIVE_URL}/details/{item_id}", "identifier": item_id,
+    metadata = {"url": f"{operational_option('internet_archive', 'archive_url')}/details/{item_id}", "identifier": item_id,
                 "title": title, "title_raw": raw_title, "upstream": upstream, "files": files,
                 "file_decisions": decisions, "language_selection": language,
                 "admission_reason": (
@@ -220,10 +217,10 @@ def download_identity(url):
     parsed = urlsplit(url)
     host = parsed.hostname or ""
     if (parsed.scheme != "https" or parsed.netloc != host or parsed.query or parsed.fragment
-            or not (host == "archive.org" or host.endswith(".archive.org"))):
+            or not (host == operational_option('internet_archive', 'url_archive_org') or host.endswith(operational_option('internet_archive', 'url_archive_org_224')))):
         raise InvalidDocument("Archive download left its allowed HTTPS hosts.")
     path = unquote(parsed.path)
-    pattern = r"/download/([^/]+)/(.+)" if host == "archive.org" else r"/\d+/items/([^/]+)/(.+)"
+    pattern = r"/download/([^/]+)/(.+)" if host == operational_option('internet_archive', 'url_archive_org') else r"/\d+/items/([^/]+)/(.+)"
     match = re.fullmatch(pattern, path)
     if not match:
         raise InvalidDocument("Archive download left its expected file route.")
@@ -235,7 +232,7 @@ def prepare_http(http, session_file):
         if method != "GET" or data:
             raise ValueError("Archive ingestion permits only read-only GET requests.")
         parsed = urlsplit(url)
-        if parsed.scheme == "https" and parsed.netloc == "archive.org":
+        if parsed.scheme == "https" and parsed.netloc == operational_option('internet_archive', 'url_archive_org'):
             if parsed.path == "/advancedsearch.php":
                 search_page(url)
                 return
@@ -268,7 +265,7 @@ def prepare_http(http, session_file):
 
     def validate_acquisition(asset):
         expected = (asset["archive_identifier"], asset["archive_filename"])
-        if (urlsplit(asset["url"]).netloc != "archive.org" or download_identity(asset["url"]) != expected
+        if (urlsplit(asset["url"]).netloc != operational_option('internet_archive', 'url_archive_org') or download_identity(asset["url"]) != expected
                 or asset.get("unsupported_reason")):
             raise InvalidDocument("Invalid or ineligible Archive acquisition descriptor.")
         size = asset.get("reported_size")

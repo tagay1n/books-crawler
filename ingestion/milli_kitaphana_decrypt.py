@@ -1,6 +1,6 @@
 """Decrypts downloaded document parts, merges PDFs with metadata, uploads artifacts to storage, and updates the index for completed items."""
 
-from multiprocessing.pool import ThreadPool
+from .runtime_config import ConfiguredThreadPoolExecutor, option as operational_option
 import itertools
 from Crypto.Cipher import AES
 import os
@@ -49,13 +49,13 @@ def _remove_decryption_recovery_fields(meta):
 def decrypt_doc_parts(context):
     enc_part_paths = context['meta']['enc_part_paths']
     parts_count = len(enc_part_paths)
-    with ThreadPool(processes=4) as pool:
+    with ConfiguredThreadPoolExecutor(max_workers=operational_option('milli_kitaphana_decrypt', 'workers')) as pool:
         # decrypt the parts
         counter = itertools.count()
         context['progress'].main(f"Decrypted (0/{parts_count}) parts")
-        dec_part_paths = pool.map(lambda en: _decrypt_file_task(
+        dec_part_paths = list(pool.map(lambda en: _decrypt_file_task(
             context, en[0], en[1], en[2], counter, parts_count), [(i['num'], i['part_url'], i['enc_unzip_dir']) for i in enc_part_paths if i]
-        )
+        ))
 
      # accumulate all parts into one pdf doc
     context["progress"].main("Merging document parts...")

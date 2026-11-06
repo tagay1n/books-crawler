@@ -1,4 +1,5 @@
 """Original bilingual magazine PDFs from Nizgar's native archive page."""
+from .runtime_config import option as operational_option
 
 from pathlib import PurePosixPath
 import re
@@ -12,7 +13,6 @@ from .network import install_native_get_guard
 from .paging import ListingPage
 
 
-ARCHIVE_URL = "https://nizgar.ru/zhurnal-nizhegorodskie-tatary-nizhgar-tatarlary/"
 PUBLICATION_TITLE = "Нижегородские татары. Нижгар татарлары"
 PARSER_VERSION = 1
 MONTHS = {"январь": 1, "февраль": 2, "март": 3, "апрель": 4,
@@ -20,20 +20,24 @@ MONTHS = {"январь": 1, "февраль": 2, "март": 3, "апрель":
           "октябрь": 10, "ноябрь": 11, "декабрь": 12}
 
 
-def normalized_url(href, base=ARCHIVE_URL):
+def normalized_url(href, base=None):
+    if base is None:
+        base = operational_option('nizgar', 'archive_url')
     return requote_uri(canonical(href, base))
 
 
 def allowed_url(url):
     parsed = urlsplit(url)
     path = unquote(parsed.path)
-    return (same_origin(url, ARCHIVE_URL) and not parsed.query and not parsed.fragment
+    return (same_origin(url, operational_option('nizgar', 'archive_url')) and not parsed.query and not parsed.fragment
             and "\\" not in path and not {".", ".."}.intersection(path.split("/"))
-            and (parsed.path == urlsplit(ARCHIVE_URL).path
+            and (parsed.path == urlsplit(operational_option('nizgar', 'archive_url')).path
                  or (path.startswith("/wp-content/uploads/") and path.lower().endswith(".pdf"))))
 
 
-def native_url(href, base=ARCHIVE_URL):
+def native_url(href, base=None):
+    if base is None:
+        base = operational_option('nizgar', 'archive_url')
     url = urljoin(base, href)
     if not allowed_url(url):
         raise ValueError("Nizgar requires its native HTTPS archive or upload PDF paths.")
@@ -46,7 +50,7 @@ def prepare_http(http, session_file):
 
 
 def catalog(html, page_url):
-    if page_url != ARCHIVE_URL:
+    if page_url != operational_option('nizgar', 'archive_url'):
         raise ValueError("Unexpected Nizgar magazine archive URL.")
     soup = BeautifulSoup(html, "html.parser")
     heading = soup.select_one("h1")
@@ -87,7 +91,7 @@ def catalog(html, page_url):
 def parse_listing(html, request, root):
     catalog(html, request.url)
     # There are no issue detail pages: keep the native archive as one observation.
-    return ListingPage([ARCHIVE_URL], [])
+    return ListingPage([operational_option('nizgar', 'archive_url')], [])
 
 
 def record(html, page_url):
@@ -101,7 +105,7 @@ def record(html, page_url):
                                        "issue_cards": []})
         if card not in asset["issue_cards"]:
             asset["issue_cards"].append(card)
-    metadata = {"url": ARCHIVE_URL, "title": f"Журнал «{PUBLICATION_TITLE}»",
+    metadata = {"url": operational_option('nizgar', 'archive_url'), "title": f"Журнал «{PUBLICATION_TITLE}»",
                 "publication_title": PUBLICATION_TITLE, "cards": cards,
                 "language_scope": "Tatar-containing bilingual magazine series; individual issue language/proportion unverified.",
                 "admission_reason": "Issue PDF explicitly listed in the selected bilingual magazine archive; no inference from geography or upload date.",

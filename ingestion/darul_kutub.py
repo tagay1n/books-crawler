@@ -1,4 +1,5 @@
 """Darul-Kutub publications and exposed original files, across all languages."""
+from .runtime_config import option as operational_option
 
 import ast
 import json
@@ -12,7 +13,6 @@ from .documents import DOCUMENT_EXTENSIONS, canonical, same_origin
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
-ARCHIVE_URL = "https://darul-kutub.com/search"
 PARSER_VERSION = 1
 BOOK_PATH = re.compile(r"/books/(\d+)/?")
 

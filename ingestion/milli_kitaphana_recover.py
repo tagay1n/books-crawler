@@ -4,6 +4,7 @@ The report is a resumable journal. Limited documents are inspected but their
 index state is preserved. Only complete, successfully downloaded documents are
 marked full. Run with --download after reviewing the audit to fetch full docs.
 """
+from .runtime_config import option as operational_option
 
 import argparse
 import copy
@@ -12,7 +13,8 @@ import os
 import re
 import threading
 from collections import Counter
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from concurrent.futures import as_completed
+from .runtime_config import ConfiguredThreadPoolExecutor as ThreadPoolExecutor
 from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
@@ -23,9 +25,7 @@ import requests
 
 from . import milli_kitaphana_download as downloader
 from .milli_kitaphana_decrypt import _decrypt_file, decrypt_doc_parts
-from .milli_kitaphana_utils import (HOST, download_part,
-                   dump_index, load_index_file, open_lock, get_index_file_loc,
-                   read_config, request, request_session)
+from .milli_kitaphana_utils import download_part, dump_index, load_index_file, open_lock, get_index_file_loc, read_config, request, request_session
 
 
 _locks = {}
@@ -109,7 +109,7 @@ def catalog_cover_candidates(card_path, original):
     """Search cards can expose inventory codes when detail rendering fails."""
     if not original.get("title"):
         return []
-    with request("GET", HOST + "/tt/ssearch/ecollection/",
+    with request("GET", operational_option('milli_kitaphana_utils', 'host') + "/tt/ssearch/ecollection/",
                  params={"attr": "text_t", "q": original["title"]}) as response:
         soup = bs4.BeautifulSoup(response.text, "html.parser")
     candidates = []
@@ -159,7 +159,7 @@ def apply_link_repairs(report):
             if not result.get("link_repaired") and not (old_code and old_code != result["code"]):
                 continue
             meta["download_code"] = result["code"]
-            meta["doc_url"] = HOST + "/dl/" + result["code"]
+            meta["doc_url"] = operational_option('milli_kitaphana_utils', 'host') + "/dl/" + result["code"]
             for field in ("title", "author", "publish_year", "lang", "collection", "tags", "integrated_description"):
                 if not meta.get(field) and result.get("metadata", {}).get(field):
                     meta[field] = copy.deepcopy(result["metadata"][field])
@@ -250,7 +250,7 @@ def write_summary(report, path):
     for key, result in report["records"].items():
         if result["status"] not in ("limited", "recovered", "already_full", "available_full", "duplicate_completed", "collection"):
             errors = result.get("error") or result.get("card_error") or "; ".join(a["code"] + ": " + a["error"] for a in result.get("attempts", []))
-            rows.append(f"| [Catalog]({HOST}{key}) | {cell(result.get('code') or result.get('original_code'))} | {result['status']} | {cell(errors)} |")
+            rows.append(f"| [Catalog]({operational_option('milli_kitaphana_utils', 'host')}{key}) | {cell(result.get('code') or result.get('original_code'))} | {result['status']} | {cell(errors)} |")
     Path(path).write_text("\n".join(rows) + "\n", encoding="utf-8")
 
 
@@ -267,7 +267,7 @@ def _audit_one(card_path, original, config):
     meta = copy.deepcopy(original)
     codes = []
     try:
-        with request("GET", HOST + card_path) as response:
+        with request("GET", operational_option('milli_kitaphana_utils', 'host') + card_path) as response:
             soup = bs4.BeautifulSoup(response.text, "html.parser")
             record = soup.select_one(".record")
             if record is None:
@@ -366,7 +366,9 @@ def fetch_full(meta, config):
     return context
 
 
-def recover(report_path, workers=4, download=False, retry_failed=False, download_workers=4):
+def recover(report_path, workers=None, download=False, retry_failed=False, download_workers=None):
+    workers = workers if workers is not None else operational_option("milli_kitaphana_recover", "workers")
+    download_workers = download_workers if download_workers is not None else operational_option("milli_kitaphana_recover", "download_workers")
     from .milli_kitaphana_utils import require_runtime
     runtime = require_runtime()
     report_name = str(report_path)
@@ -454,7 +456,7 @@ def recover(report_path, workers=4, download=False, retry_failed=False, download
                     for key, result, _ in group:
                         updated = copy.deepcopy(meta)
                         if result.get("link_repaired"):
-                            updated["doc_url"] = HOST + "/dl/" + result["code"]
+                            updated["doc_url"] = operational_option('milli_kitaphana_utils', 'host') + "/dl/" + result["code"]
                         if unfinished(latest.get(key, {})):
                             latest[key] = updated
                     dump_index(latest)

@@ -1,4 +1,5 @@
 """Milli Kitaphana stages, reusing the original provider helpers."""
+from .runtime_config import option as operational_option
 import contextlib
 import hashlib
 import json
@@ -10,16 +11,13 @@ from .state import Manifest, source_lock, now
 from .network import HTTP, Budget, BudgetStop
 from .core import file_digests, check_space
 
-ARCHIVE_URL = 'https://kitap.tatar.ru/tt/ssearch/ecollection/'
+
 SUPPORTED_COMMANDS = {'discover', 'download', 'finalize', 'run', 'status', 'publish', 'import-state', 'split', 'merge-index', 'recover', 'mark-existing-limited'}
 
 
 def directory_for(settings):
-    value = settings.source_options.get('artifact_dir')
-    if not value:
-        return settings.artifacts_root / 'milli_kitaphana'
-    path = Path(value).expanduser()
-    return path if path.is_absolute() else Path(settings.source_options['_config_dir']) / path
+    from .paths import source_directory
+    return source_directory(settings, 'milli_kitaphana')
 
 
 class Runtime:
@@ -32,7 +30,7 @@ class Runtime:
         self.http = HTTP(settings, self.budget, summary)
         def guard(response, *args, **kwargs):
             from urllib.parse import urljoin, urlsplit
-            if response.is_redirect and urlsplit(urljoin(response.url, response.headers['Location'])).hostname != 'kitap.tatar.ru':
+            if response.is_redirect and urlsplit(urljoin(response.url, response.headers['Location'])).hostname != operational_option('milli_kitaphana', 'url_kitap_tatar_ru'):
                 response.close()
                 raise ValueError('Milli redirected outside its supported origin')
             return response
@@ -48,7 +46,7 @@ class Runtime:
         import requests
         if self.offline:
             raise ValueError('Missing local input; run download before finalize')
-        if urlsplit(url).hostname != 'kitap.tatar.ru':
+        if urlsplit(url).hostname != operational_option('milli_kitaphana', 'url_kitap_tatar_ru'):
             raise ValueError('Unsupported Milli resource origin')
         # Serialize provider worker requests so shared budgets and HTTP session remain coherent.
         with self.network_lock:
@@ -75,13 +73,14 @@ def records(manifest):
     return {key: dict(r['observations'][-1]['metadata']) for key, r in manifest.data['records'].items() if r.get('observations')}
 
 
-def execute(settings, command, *, recheck=False, log=print, options=None, checkpoint=None):
+def execute(settings, command, *, recheck=False, log=print, options=None, checkpoint=None, status_data=None):
+    from .postgres_state import Repository
     from .commands import CommandOptions, validate
     options = options or CommandOptions(recheck=recheck)
     validate("milli_kitaphana", command, options)
     directory = directory_for(settings)
-    manifest = Manifest(directory, 'milli_kitaphana', checkpoint=checkpoint)
     if command == 'status':
+        manifest = Manifest(directory, 'milli_kitaphana', checkpoint=checkpoint, data=status_data if status_data is not None else Repository('milli_kitaphana').load_status())
         items = records(manifest)
         return {**manifest.status(), 'acquired': sum(v.get('downloaded') == 'full' for v in items.values()),
                 'finalized': sum(bool(v.get('finalized')) for v in items.values()),
@@ -95,7 +94,7 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
         items = records(manifest)
         def commit():
             for key, item in items.items():
-                manifest.observe({**item, 'url': item.get('url') or 'https://kitap.tatar.ru' + key}, [], record_key=key, persist=False)
+                manifest.observe({**item, 'url': item.get('url') or operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru') + key}, [], record_key=key, persist=False)
             manifest.checkpoint()
         started = False
         try:

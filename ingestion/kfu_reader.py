@@ -1,4 +1,5 @@
 """Resolve KFU's advertised JPEG/JPEG2000 ranges against their public IIIF readers."""
+from .runtime_config import option as operational_option
 
 import hashlib
 import json
@@ -8,8 +9,7 @@ from urllib.parse import urlsplit
 from bs4 import BeautifulSoup
 
 from .documents import canonical
-from .kfu import ORIGIN, reader_reference
-from .image_issues import COLOUR_POLICY
+from .kfu import reader_reference
 
 
 class UnsupportedReader(ValueError):
@@ -34,16 +34,16 @@ def image_range(reader):
 
 def read_pages(http, reader):
     reference, first, last, number, width, extension, prefix = image_range(reader)
-    html, final_url = http.text_response(reader["url"], origin=ORIGIN)
+    html, final_url = http.text_response(reader["url"], origin=operational_option('kfu', 'origin'))
     soup = BeautifulSoup(html, "html.parser")
     candidates = set()
     for script in soup.select("script:not([src])"):
         candidates.update(re.findall(r"['\"]@id['\"]\s*:\s*['\"]([^'\"]+/info\.json)['\"]",
                                      script.get_text()))
-    expected = f"{ORIGIN}/api/manifest/{reference}/{first}-{last}/info.json"
+    expected = f"{operational_option('kfu', 'origin')}/api/manifest/{reference}/{first}-{last}/info.json"
     if {canonical(url, final_url) for url in candidates} != {expected}:
         raise UnsupportedReader("KFU reader does not link exactly its expected IIIF manifest.")
-    raw, final_manifest = http.text_response(expected, origin=ORIGIN)
+    raw, final_manifest = http.text_response(expected, origin=operational_option('kfu', 'origin'))
     manifest = json.loads(raw)
     if not isinstance(manifest, dict) or manifest.get("@type") != "sc:Manifest":
         raise ValueError("Expected a KFU IIIF presentation manifest.")
@@ -67,7 +67,7 @@ def read_pages(http, reader):
         image = resource.get("@id") if isinstance(resource, dict) else None
         parsed = urlsplit(image) if isinstance(image, str) else None
         if (parsed is None or parsed.scheme not in {"http", "https"}
-                or parsed.netloc != "repo.kpfu.ru" or parsed.query or parsed.fragment
+                or parsed.netloc != operational_option('kfu_reader', 'url_repo_kpfu_ru') or parsed.query or parsed.fragment
                 or not re.fullmatch(rf"/iiif/2/\d+\.{'jp2' if extension.lower() == 'jp2' else 'jpg'}/full/full/0/default\.jpg", parsed.path)
                 or resource.get("format") != "image/jpeg" or image in identities):
             raise ValueError("KFU IIIF canvas has an unexpected or repeated full image resource.")
@@ -75,7 +75,7 @@ def read_pages(http, reader):
         name = f"{prefix}{number + index:0{width}d}.{extension}"
         # Expand only the record's declared filenames and bitstream sequence range.
         # IIIF validates count/order; native bitstreams retain original DPI and colour.
-        url = f"{ORIGIN}/jspui/bitstream/{reference}/{first + index}/{name}"
+        url = f"{operational_option('kfu', 'origin')}/jspui/bitstream/{reference}/{first + index}/{name}"
         pages.append({"url": url, "label": f"Page {index + 1}: {label}",
                       "extension": "." + extension.lower(), "kind": "page_image",
                       "source_asset_key": f"bitstream:{first + index}:{name}",
@@ -113,7 +113,7 @@ def resolve(http, metadata, assets):
                 reader.update(unsupported_code="reader_unsupported", unsupported_reason=str(error))
         else:
             metadata.update(image_readers=details, expected_pages=len(pages),
-                            pdf_image_policy=dict(COLOUR_POLICY))
+                            pdf_image_policy=dict(operational_option('image_issues', 'colour_policy')))
             assets = [a for a in assets if a not in readers] + pages
     metadata["attachments"] = [{k: a[k] for k in ("url", "label", "unsupported_code", "page_index") if k in a}
                                for a in assets]

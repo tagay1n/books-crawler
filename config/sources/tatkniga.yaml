@@ -1,0 +1,10 @@
+extends: ../defaults.yaml
+sources:
+  tatkniga:
+    archive_url: https://tatkniga.ru/catalog/biblioteka/
+    operational:
+      image_issues:
+        colour_policy:
+          dpi: 200
+          jpeg_quality: 85
+          mode: RGB

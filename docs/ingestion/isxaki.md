@@ -4,10 +4,10 @@ Add `sources.isxaki.archive_url: https://isxaki.com/ijat/` to the operational YA
 or copy the entry from the example configuration. No credentials are required.
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source isxaki
-.venv/bin/python cli.py --config ingestion.yaml download --source isxaki --limit 1
-.venv/bin/python cli.py --config ingestion.yaml run --source isxaki --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source isxaki
+.venv/bin/python cli.py --config config/sources/isxaki.yaml discover --source isxaki
+.venv/bin/python cli.py --config config/sources/isxaki.yaml download --source isxaki --limit 1
+.venv/bin/python cli.py --config config/sources/isxaki.yaml run --source isxaki --limit 1
+.venv/bin/python cli.py --config config/sources/isxaki.yaml status --source isxaki
 ```
 
 Discovery covers these five collections: `/ijat/kitaplar/` (original editions),

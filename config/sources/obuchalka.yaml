@@ -1,0 +1,9 @@
+extends: ../defaults.yaml
+sources:
+  obuchalka:
+    archive_url: https://obuchalka.org/knigi-po-tatarskomu-yaziku/
+    operational:
+      obuchalka:
+        url_fileskachat_com: fileskachat.com
+        url_yadi_sk: yadi.sk
+        url_disk_yandex_ru: disk.yandex.ru

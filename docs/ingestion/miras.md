@@ -10,16 +10,16 @@ Supply a Miras-only session export from your ordinary, manually verified browser
 to each network command:
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source miras --max-pages 2 \
+.venv/bin/python cli.py --config config/sources/miras.yaml discover --source miras --max-pages 2 \
   --session-file ~/Downloads/books-crawler/miras/miras-session.json
-.venv/bin/python cli.py --config ingestion.yaml download --source miras --limit 2 \
+.venv/bin/python cli.py --config config/sources/miras.yaml download --source miras --limit 2 \
   --session-file ~/Downloads/books-crawler/miras/miras-session.json
-.venv/bin/python cli.py --config ingestion.yaml run --source miras --max-pages 2 --limit 2 \
+.venv/bin/python cli.py --config config/sources/miras.yaml run --source miras --max-pages 2 --limit 2 \
   --session-file ~/Downloads/books-crawler/miras/miras-session.json
-.venv/bin/python cli.py --config ingestion.yaml status --source miras
+.venv/bin/python cli.py --config config/sources/miras.yaml status --source miras
 
 # Retained diagnostic: inspect the catalog and download one fixed sample.
-.venv/bin/python cli.py --config ingestion.yaml probe --source miras \
+.venv/bin/python cli.py --config config/sources/miras.yaml probe --source miras \
   --session-file ~/Downloads/books-crawler/miras/miras-session.json
 ```
 

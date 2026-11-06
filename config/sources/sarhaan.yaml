@@ -1,0 +1,5 @@
+extends: ../defaults.yaml
+sources:
+  sarhaan:
+    archive_url: https://sarhaan.com/a/tatar-%d8%aa%d8%aa%d8%a7%d8%b1%d9%8a/
+    operational: {}

@@ -1,0 +1,5 @@
+extends: ../defaults.yaml
+sources:
+  darul_kutub:
+    archive_url: https://darul-kutub.com/search
+    operational: {}

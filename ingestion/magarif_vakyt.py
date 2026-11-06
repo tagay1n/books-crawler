@@ -1,4 +1,5 @@
 """Publisher-linked original PDFs and ZIPs with derived textbook PDFs."""
+from .runtime_config import option as operational_option
 
 import hashlib
 import json
@@ -15,11 +16,8 @@ from .network import BudgetStop, InvalidDocument
 from .paging import ListingPage, PageRequest
 
 
-ARCHIVE_URL = "https://magarif-vakyt.ru/online2"
-API = "https://cloud-api.yandex.net/v1/disk/public/resources"
 PARSER_VERSION = 2
-CATALOGS = {ARCHIVE_URL: "Электронный формат",
-            "https://magarif-vakyt.ru/reading": "Литература на татарском языке"}
+
 TATAR_TITLE = re.compile(r"^(?:Әдәби\s+уку|Әдәби\s+ярдәмлек|Туган\s+телдәге\s+әдәбият|Татар\s+Теле|Татар\s+әдәбияты)\b", re.IGNORECASE)
 UPSTREAM_FIELDS = ("name", "type", "size", "md5", "sha256", "resource_id", "created",
                    "modified", "mime_type", "media_type", "path", "public_url")
@@ -49,20 +47,20 @@ class DeliveryStream:
 
 def public_share(url):
     p = urlsplit(url)
-    if (p.scheme != "https" or p.netloc not in {"disk.yandex.ru", "yadi.sk"}
+    if (p.scheme != "https" or p.netloc not in {operational_option('magarif_vakyt', 'url_disk_yandex_ru'), operational_option('magarif_vakyt', 'url_yadi_sk')}
             or p.query or p.fragment or not re.fullmatch(r"/[di]/[A-Za-z0-9_-]+/?", p.path)):
         raise ValueError("Expected a publisher-linked public Yandex Disk share.")
-    return "https://disk.yandex.ru" + p.path.rstrip("/")
+    return operational_option('magarif_vakyt', 'url_https_disk_yandex_ru') + p.path.rstrip("/")
 
 
 def metadata_url(share):
-    return API + "?" + urlencode({"public_key": public_share(share)})
+    return operational_option('magarif_vakyt', 'api') + "?" + urlencode({"public_key": public_share(share)})
 
 
 def share_from_request(url):
     p = urlsplit(url)
     query = parse_qs(p.query)
-    if (p.scheme != "https" or p.netloc != "cloud-api.yandex.net"
+    if (p.scheme != "https" or p.netloc != operational_option('magarif_vakyt', 'url_cloud_api_yandex_net')
             or p.path != "/v1/disk/public/resources" or set(query) != {"public_key"}
             or len(query["public_key"]) != 1):
         raise ValueError("Unexpected Yandex metadata request.")
@@ -70,18 +68,18 @@ def share_from_request(url):
 
 
 def parse_listing(html, request, root):
-    if request.url not in CATALOGS:
+    if request.url not in operational_option('magarif_vakyt', 'catalogs'):
         raise ValueError("Unexpected publisher catalog route.")
     soup = BeautifulSoup(html, "html.parser")
     title = soup.title.get_text(" ", strip=True) if soup.title else ""
-    if CATALOGS[request.url] != title:
+    if operational_option('magarif_vakyt', 'catalogs')[request.url] != title:
         raise ValueError("Мәгариф–Вакыт electronic-textbook catalog is missing.")
     records, contexts = [], {}
     for anchor in soup.select("a[href]"):
         label = " ".join(anchor.get_text(" ", strip=True).split())
         if not TATAR_TITLE.search(label):
             continue
-        if urlsplit(anchor["href"]).netloc not in {"disk.yandex.ru", "yadi.sk"}:
+        if urlsplit(anchor["href"]).netloc not in {operational_option('magarif_vakyt', 'url_disk_yandex_ru'), operational_option('magarif_vakyt', 'url_yadi_sk')}:
             continue
         share = public_share(anchor["href"])
         url = metadata_url(share)
@@ -93,7 +91,7 @@ def parse_listing(html, request, root):
             raise ValueError("One publisher share has conflicting textbook titles.")
     if not records:
         raise ValueError("Publisher catalog exposes no recognizable Tatar textbook originals.")
-    following = [PageRequest(url) for url in CATALOGS if url != root] if request.url == root else []
+    following = [PageRequest(url) for url in operational_option('magarif_vakyt', 'catalogs') if url != root] if request.url == root else []
     return ListingPage(records, following, entries=len(records), record_context=contexts)
 
 
@@ -133,7 +131,7 @@ def record(raw, request_url):
              "unsupported_reason": None if supported else "Only standalone publisher-linked ZIPs and PDFs are supported."}
     metadata = {"url": share, "api_url": request_url, "title": upstream["name"],
                 "title_raw": upstream["name"], "upstream": upstream,
-                "publisher_catalog_url": ARCHIVE_URL, "language_selection": "source_context_unverified",
+                "publisher_catalog_url": operational_option('magarif_vakyt', 'archive_url'), "language_selection": "source_context_unverified",
                 "admission_reason": "Publisher-labelled Tatar language/literature/reading textbook; document language and edition completeness remain unverified.",
                 "attachments": [{k: asset[k] for k in ("url", "label", "unsupported_code")}]}
     return metadata, [asset]
@@ -158,8 +156,8 @@ def delivery_url(url):
     p = urlsplit(url)
     host = p.hostname or ""
     if (p.scheme != "https" or p.username or p.password or p.port not in {None, 443}
-            or not (host == "downloader.disk.yandex.ru" or host.endswith(".disk.yandex.net")
-                    or host.endswith(".storage.yandex.net"))):
+            or not (host == operational_option('magarif_vakyt', 'url_downloader_disk_yandex_ru') or host.endswith(operational_option('magarif_vakyt', 'url_disk_yandex_net'))
+                    or host.endswith(operational_option('magarif_vakyt', 'url_storage_yandex_net')))):
         raise InvalidDocument("Yandex returned an unexpected delivery origin.")
 
 
@@ -174,13 +172,13 @@ def prepare_http(http, session_file):
     def validate_request(method, url, data):
         if method != "GET" or data:
             raise ValueError("Publisher ingestion permits read-only GET requests only.")
-        if url in CATALOGS or url.startswith(API + "?") or url.startswith(API + "/download?"):
+        if url in operational_option('magarif_vakyt', 'catalogs') or url.startswith(operational_option('magarif_vakyt', 'api') + "?") or url.startswith(operational_option('magarif_vakyt', 'api') + "/download?"):
             return
         delivery_url(url)
 
     def check_response(response, *args, **kwargs):
         for url in [response.url, *([response.headers.get("Location", "")] if response.is_redirect else [])]:
-            if url in CATALOGS or url.startswith(API + "?") or url.startswith(API + "/download?"):
+            if url in operational_option('magarif_vakyt', 'catalogs') or url.startswith(operational_option('magarif_vakyt', 'api') + "?") or url.startswith(operational_option('magarif_vakyt', 'api') + "/download?"):
                 continue
             try:
                 delivery_url(url)
@@ -207,7 +205,7 @@ def prepare_http(http, session_file):
         if version(current) != asset["source_version"]:
             raise InvalidDocument("Yandex package changed; run discovery again before acquisition.")
         check_file_budget(http, current)
-        raw = http.text(API + "/download?" + urlencode({"public_key": share}))
+        raw = http.text(operational_option('magarif_vakyt', 'api') + "/download?" + urlencode({"public_key": share}))
         try:
             route = json.loads(raw)
             href = route["href"]

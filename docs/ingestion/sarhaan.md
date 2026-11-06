@@ -6,9 +6,9 @@ as `https://sarhaan.com/a/tatar-%d8%aa%d8%aa%d8%a7%d8%b1%d9%8a/` in an explicitl
 selected operational YAML, using the usual local limits and network settings.
 
 ```bash
-.venv/bin/python cli.py --config ingestion.yaml discover --source sarhaan
-.venv/bin/python cli.py --config ingestion.yaml download --source sarhaan --limit 1
-.venv/bin/python cli.py --config ingestion.yaml status --source sarhaan
+.venv/bin/python cli.py --config config/sources/sarhaan.yaml discover --source sarhaan
+.venv/bin/python cli.py --config config/sources/sarhaan.yaml download --source sarhaan --limit 1
+.venv/bin/python cli.py --config config/sources/sarhaan.yaml status --source sarhaan
 ```
 
 Acquisition requires matching explicit Tatar labels in the book hero and detail
