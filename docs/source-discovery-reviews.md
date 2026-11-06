@@ -40,7 +40,7 @@ initial baseline date) and record the attempt date in the history below.
 | `dumrt` | [DUM RT publications](ingestion/dumrt.md) | 2026-11-06 | Partial | 2026-11-07: 37 archive pages/235 issue URLs; metadata retention extended and one original verified. Full issue/attachment refresh and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `echovek` | [Echo of Centuries](ingestion/echovek.md) | 2026-11-06 | Partial | 2026-11-07: 64 listing pages/1,385 records; abstract/raw-field retention extended; one original verified. One unresolved card; full detail/admission and live PostgreSQL/S3 checks remain outstanding. |
 | `ftatarstan` | [Fänni Tatarstan](ingestion/ftatarstan.md) | 2026-11-06 | Partial | 2026-11-07: 51 issue pages/48 admitted galleys; contents metadata preserved and one original verified. One unlabelled galley and two missing issue files; live PostgreSQL/S3/repeat-run checks remain outstanding. |
-| `internet_archive` | [Internet Archive](ingestion/internet-archive.md) | 2026-11-06 | Baseline | — |
+| `internet_archive` | [Internet Archive](ingestion/internet-archive.md) | 2026-11-06 | Partial | 2026-11-07: 20 item inventories expose 47 eligible original PDFs; one verified. File-only scope/counts documented. Full scan, held-record sampling and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `isxaki` | [Isxaki](ingestion/isxaki.md) | 2026-11-06 | Baseline | — |
 | `kazanutlary` | [Kazan Utları](ingestion/kazanutlary.md) | 2026-11-06 | Baseline | — |
 | `kfu_azad_halyk` | [KFU «Азад халык»](ingestion/kfu-azad-halyk.md) | 2026-11-06 | Baseline | — |
@@ -242,3 +242,28 @@ acquired. Existing PostgreSQL/S3/manual Actions integration is retained; live
 durable resume, database-backed acquisition, repeat-run skipping and upload
 receipts require credentials. No production writes, uploads or workflow dispatch
 occurred. Preserve the baseline date pending remaining verification.
+
+### 2026-11-07 — internet_archive — Partial
+
+Owner clarified that outputs must be downloadable document files, without webpage
+text extraction or HTML conversion. Existing original-file admission already
+enforces that scope. Parser version 2 adds eligible/held/ignored file counts and
+an explicit note when no eligible original exists; item/file identities, source
+metadata preservation and size/MD5 integrity rules are unchanged.
+
+Two search pages enumerated 200 identifiers; 20 item inventories were inspected
+in 22 requests without errors or retries. They expose 47 eligible original PDFs
+and 567 ignored entries, with no held originals in this sample. The advertised
+5,343 items are not a downloadable-file count. One 1,945,345-byte, eight-page PDF
+was acquired and verified against Archive's size/MD5, including exact Unicode
+filename identity across a storage redirect. The other files remain unverified
+candidates. See the [source guide](ingestion/internet-archive.md) and ignored
+`__artifacts/internet-archive-review-20261107/` for evidence and hashes.
+
+Compilation, parsing/counts/integrity and workflow/configuration checks passed;
+no automated tests were added. Existing PostgreSQL/S3/manual workflow integration
+is retained. Full discovery, held/unknown-language sample coverage, database-backed
+resume/acquisition, repeat-run and S3 receipt verification remain outstanding;
+live database/storage checks need configured credentials. No production state,
+uploads or workflow dispatch occurred. Preserve the baseline review date pending
+remaining verification.

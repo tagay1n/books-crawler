@@ -12,7 +12,7 @@ from .network import BudgetStop, InvalidDocument
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
-PARSER_VERSION = 1
+PARSER_VERSION = 2
 UNIQUE_RECORDS = True
 FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
 TATAR_LABELS = {"tat", "tt", "tatar"}
@@ -205,6 +205,17 @@ def record(text, page_url):
                     if language == "selected" and upstream.get("mediatype") == "texts"
                     else "Held: current Archive language/media-type metadata does not establish eligibility."),
                 "attachments": [{"url": a["url"], "label": a["label"]} for a in assets]}
+    eligible = sum(asset["unsupported_reason"] is None for asset in assets)
+    metadata["file_counts"] = {
+        "eligible_original_documents": eligible,
+        "held_original_documents": len(assets) - eligible,
+        "ignored_inventory_entries": len(files) - len(assets),
+    }
+    metadata["acquisition_note"] = (
+        "Public original document files eligible for acquisition; webpage text is not acquired."
+        if eligible else
+        "No eligible public original document file; item metadata does not establish a downloadable book."
+    )
     return metadata, assets
 
 
