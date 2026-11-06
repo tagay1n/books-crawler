@@ -9,7 +9,7 @@ from urllib.parse import parse_qs, unquote, urljoin, urlsplit, urlunsplit
 from bs4 import BeautifulSoup
 from requests.utils import requote_uri
 
-from .network import InvalidDocument
+from .network import InvalidDocument, install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
@@ -52,31 +52,18 @@ def article_url(href, base):
 
 
 def prepare_http(http, session_file):
-    def validate_request(method, url, data):
-        if method != "GET" or data or urlsplit(url).scheme != "https":
-            raise ValueError("Echo of Centuries permits read-only GET requests only.")
-        native_url(url)
+    def https_native_url(href, base=None):
+        url = urljoin(base or operational_option('echovek', 'archive_url'), href)
+        if urlsplit(url).scheme != "https":
+            raise ValueError("Echo of Centuries permits HTTPS requests only.")
+        return native_url(url)
 
-    def check_response(response, *args, **kwargs):
-        try:
-            before = native_url(response.url)
-            if urlsplit(response.url).scheme != "https":
-                raise ValueError("HTTPS downgrade.")
-            if response.is_redirect:
-                target = urljoin(response.url, response.headers["Location"])
-                if urlsplit(target).scheme != "https" or native_url(target) != before:
-                    raise ValueError("Redirect changed the native resource.")
-        except (ValueError, KeyError):
-            response.close()
-            raise InvalidDocument("Echo of Centuries returned an unexpected resource redirect.") from None
-        return response
+    install_native_get_guard(http, https_native_url, "Echo of Centuries")
 
     def validate_download(response, asset):
         if any(native_url(hop.url) != asset["url"] for hop in [*response.history, response]):
             raise InvalidDocument("Article download belongs to a different source resource.")
 
-    http.validate_request = validate_request
-    http.session.hooks["response"].append(check_response)
     http.validate_download_response = validate_download
 
 

@@ -18,12 +18,20 @@ PostgreSQL is authoritative. These database views are read-only, need no operati
 YAML, and bound their previews. Use `--field title --field url` to select metadata;
 use `next_after` with `--after` to page records. Read individual evidence only when
 summaries identify a concrete question. Never dump private configs or full manifests.
-File arguments to the overview inspect archived snapshots only.
+File arguments to the overview inspect archived snapshots only. Database overviews
+use SQL counts, projected scan state and streamed errors rather than loading record
+or asset histories. Detailed error groups are lists of `{message, count}` ordered
+by frequency and message; previews bound both text and group counts and report
+omissions with `_truncation`.
 
 ## Find the code
 
+`cli.py sources --details --source NAME` includes repository paths for the adapter,
+provider helpers, source guide and configuration without importing providers.
+
 | Task | Open first |
 | --- | --- |
+| Adapter hooks and signatures | [Adapter interface](adapter-interface.md) |
 | Source-specific behavior | [Source index](local-ingestion.md), then its guide and adapter |
 | Registry/capabilities | `ingestion/registry.py`, `commands.py`; keep registry imports lazy |
 | CLI and compact output | `ingestion/cli.py`, `output.py` |

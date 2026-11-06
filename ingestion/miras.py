@@ -15,7 +15,6 @@ from .paging import CatalogChanged, ListingPage, PageRequest
 
 
 PARSER_VERSION = 1
-REQUIRES_SESSION = True
 BOOK_PATH = re.compile(r"/projects/mirasxane/books/(\d+)-[^/]+\.html")
 PAGE_PATH = re.compile(r"/projects/mirasxane/books/(?:page/([1-9]\d*)/?)?")
 PROPERTIES = {"Автор": "author_raw", "Авторы": "authors_raw", "Страниц": "pages_raw",
@@ -253,7 +252,7 @@ def validate_original(path):
     return {"pages": validate_pdf(path), "acquisition_method": "http_cookie_export"}
 
 
-def download(http, manifest, summary, log, recheck):
+def download(http, manifest, summary, log, recheck, *, selected_records=None):
     from .core import download as download_originals
 
     download_originals(http, manifest, summary, log, recheck, extensions={".pdf"}, validate_file=validate_original)

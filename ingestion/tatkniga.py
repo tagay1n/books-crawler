@@ -12,7 +12,6 @@ from .documents import DOCUMENT_EXTENSIONS, canonical, same_origin
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
-SUPPORTED_COMMANDS = {"discover", "download", "finalize", "run", "status"}
 PARSER_VERSION = 2
 BOOK_PATH = re.compile(r"/catalog/biblioteka/[^/]+\.html")
 PRODUCT_ID = re.compile(r"bx_\d+_(\d+)")

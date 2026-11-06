@@ -1,14 +1,13 @@
 """Read-only, compact manifest inventory for operators and coding agents."""
 
 import argparse
-from collections import Counter
 import json
 from pathlib import Path
 import sys
 
 # Keep the standalone repository command while sharing CLI error scoping.
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from ingestion.diagnostics import discovery_error_counts, partition_discovery_errors
+from ingestion.overview import database_overview, snapshot_overview
 
 
 def main():
@@ -29,7 +28,6 @@ def main():
         else:
             paths.update(root.glob("*/manifest.json"))
     if args.database:
-        from ingestion.postgres_state import Repository
         from ingestion.registry import SOURCES
         paths = {Path("postgres") / source for source in args.source or SOURCES}
     if not paths:
@@ -37,34 +35,14 @@ def main():
     failed = False
     for path in sorted(paths):
         try:
-            data = Repository(path.name).load() if args.database else json.loads(path.read_text(encoding="utf-8"))
-            records, assets = data["records"], data["assets"]
-            coverage = data.get("discovery", {})
-            states = Counter(a.get("status", "unknown") for a in assets.values() if a.get("current", True))
-            result = {"manifest": str(path), "source": data["source"], "records": len(records),
-                      "current_assets": dict(sorted(states.items())),
-                      "discovery_complete": coverage.get("complete"),
-                      "pages": coverage.get("pages"),
-                      "remaining_listings": coverage.get("remaining_listing_requests"),
-                      "remaining_records": coverage.get("remaining_record_urls"),
-                      **discovery_error_counts(data)}
-            if args.details:
-                result["scan"] = {key: coverage.get(key) for key in (
-                    "catalog_entries_enumerated", "unique_records_inspected",
-                    "advertised_catalog_entries", "count_verified", "restart_required")}
-                result["asset_formats"] = dict(sorted(Counter(
-                    a.get("extension") or "unknown" for a in assets.values()
-                    if a.get("current", True)).items()))
-                current, prior = partition_discovery_errors(data)
-                result["discovery_error_messages"] = dict(Counter(
-                    error.get("error", "unknown") for error in current.values()))
-                result["historical_discovery_error_messages"] = dict(Counter(
-                    error.get("error", "unknown") for error in
-                    [*data.get("discovery_error_history", []), *prior.values()]))
+            if args.database:
+                result = database_overview(path.name, details=args.details)
+            else:
+                result = snapshot_overview(json.loads(path.read_text(encoding="utf-8")), details=args.details)
+            result = {"manifest": str(path), **result}
         except (RuntimeError, OSError, ValueError, KeyError, TypeError, AttributeError) as error:
             result = {"manifest": str(path), "error": str(error)}
             failed = True
-        data = records = assets = None
         print(json.dumps(result, ensure_ascii=False, separators=(",", ":")))
     return int(failed)
 

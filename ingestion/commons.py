@@ -13,7 +13,6 @@ from .paging import CatalogChanged, ListingPage, PageRequest
 
 
 PARSER_VERSION = 3
-SUPPORTED_COMMANDS = {"discover", "download", "run", "status"}
 DOCUMENT_FORMATS = DOCUMENT_EXTENSIONS - {".html", ".htm"}
 
 
@@ -136,7 +135,7 @@ def prepare_http(http, session_file):
     http.validate_acquired_asset = validate_acquired
 
 
-def download(http, manifest, summary, log, recheck):
+def download(http, manifest, summary, log, recheck, *, selected_records=None):
     from .core import download as download_originals
 
     # Version hints also work for manifests produced by the discovery-only adapter.

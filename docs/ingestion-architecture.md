@@ -59,7 +59,9 @@ including Common Crawl's custom artifact directory during status.
 
 `ingestion/commands.py` defines typed invocation options and shared capability validation.
 Operational `Settings.source_options` contains source configuration, not invocation flags.
-Plain source listing remains lazy; detailed listing imports only selected adapters to resolve capabilities.
+Source descriptors in `ingestion/registry.py` own static capabilities. Both plain
+and detailed source listings remain lazy; detailed listings also report repository
+paths. See the [adapter interface](adapter-interface.md) for hook signatures.
 
 `ingestion/checkpoints.py` coordinates explicit progress commits and post-commit work.
 Pass the coordinator through runtimes/manifests; use `Manifest.checkpoint()` for progress

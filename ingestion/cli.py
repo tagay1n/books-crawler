@@ -5,7 +5,7 @@ from typing import Optional
 import typer
 
 from .output import compact_result
-from .registry import SOURCES
+from .registry import SOURCES, source_locations
 
 
 app = typer.Typer(pretty_exceptions_show_locals=False, no_args_is_help=True, help="Discover documents and download originals locally.")
@@ -51,7 +51,7 @@ def sources_command(ctx: typer.Context, details: bool = typer.Option(False, "--d
     names = [source] if source else list(SOURCES)
     if details:
         from .commands import capabilities
-        typer.echo(json.dumps({name: capabilities(name) for name in names}, ensure_ascii=False, separators=(",", ":")))
+        typer.echo(json.dumps({name: {**capabilities(name), "locations": source_locations(name)} for name in names}, ensure_ascii=False, separators=(",", ":")))
         return
     if ctx.meta.get("summary_only"):
         emit_result(ctx, {"sources": names}, "sources")

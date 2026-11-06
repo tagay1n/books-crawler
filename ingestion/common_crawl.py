@@ -11,7 +11,6 @@ from .postgres_state import Repository
 from .state import now
 
 
-SUPPORTED_COMMANDS = {'discover', 'download', 'run', 'status', 'publish'}
 
 
 def counts(data):

@@ -251,7 +251,7 @@ def resolve_record(http, metadata, assets):
     return resolve(http, metadata, assets)
 
 
-def download(http, manifest, summary, log, recheck, *, unit="file_or_book"):
+def download(http, manifest, summary, log, recheck, *, unit="file_or_book", selected_records=None):
     from .core import download as download_documents
     from .image_issues import download as download_images
 
@@ -347,6 +347,6 @@ class CollectionAdapter:
         return (select_tatar(metadata, assets, publication=publication)
                 if self.tatar_only else (metadata, assets))
 
-    def download(self, http, manifest, summary, log, recheck):
+    def download(self, http, manifest, summary, log, recheck, *, selected_records=None):
         return download(http, manifest, summary, log, recheck,
                         unit="file_or_issue" if self.collection_id in PERIODICALS else "file_or_book")

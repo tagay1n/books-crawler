@@ -214,7 +214,7 @@ def acquire(http, manifest, asset, temporary, summary, *, extensions=None, valid
     manifest.checkpoint()
 
 
-def download(http, manifest, summary, log, recheck, *, extensions=None, validate_file=None):
+def download(http, manifest, summary, log, recheck, *, selected_records=None, extensions=None, validate_file=None):
     workspace = manifest.directory / ".tmp"
     workspace.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="run-", dir=workspace) as temporary:
@@ -276,19 +276,19 @@ def _run_local(settings, source, command, *, recheck=False, session_file=None, l
                     summary["stops"].append(str(error))
                     summary["discovery_complete"] = False
             if command in {"download", "run"}:
-                if hasattr(adapter, "download"):
-                    if hasattr(adapter, "finalize"):
-                        try:
-                            adapter.download(http, manifest, summary, log, recheck, selected_records=selected_records)
-                        except BudgetStop as error:
-                            summary["stops"].append(str(error))
+                acquire = getattr(adapter, "download", None)
+                if acquire is None:
+                    if getattr(adapter, "DOWNLOAD_UNIT", None) == "issue":
+                        from .image_issues import download as acquire
                     else:
-                        adapter.download(http, manifest, summary, log, recheck)
-                elif getattr(adapter, "DOWNLOAD_UNIT", None) == "issue":
-                    from .image_issues import download as download_issues
-                    download_issues(http, manifest, summary, log, recheck)
-                else:
-                    download(http, manifest, summary, log, recheck)
+                        acquire = download
+                try:
+                    acquire(http, manifest, summary, log, recheck, selected_records=selected_records)
+                except BudgetStop as error:
+                    if not hasattr(adapter, "finalize"):
+                        raise
+                    # A staged adapter can finish already selected local inputs.
+                    summary["stops"].append(str(error))
             if command in {"finalize", "run"} and hasattr(adapter, "finalize"):
                 adapter.finalize(settings, budget, manifest, summary, log,
                                  selected_records=selected_records if command == "run" else None)

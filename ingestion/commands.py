@@ -1,7 +1,7 @@
 """Source capabilities and invocation options, separate from operational configuration."""
 from dataclasses import dataclass, field
 from pathlib import Path
-from .registry import SOURCES
+from .registry import SOURCES, DESCRIPTORS
 
 
 @dataclass(frozen=True)
@@ -19,13 +19,11 @@ class CommandOptions:
 
 
 def capabilities(source):
-    adapter = SOURCES[source]
-    return dict(commands=sorted(set(getattr(adapter, 'SUPPORTED_COMMANDS', {'discover', 'download', 'run', 'status'})) | {'publish'}),
-                modes=['catalog', 'candidates', 'all'] if source == 'litres' else ['catalog'],
-                formats=['all', 'pdf', 'text'] if source == 'litres' else ['all', 'pdf'] if source == 'common_crawl' else ['all'],
-                targets=['s3', 'yandex', 'hf', 's3-media'] if source == 'litres' else ['s3', 'yandex'] if source in {'common_crawl', 'milli_kitaphana'} else ['s3'],
-                requires_session=bool(getattr(adapter, 'REQUIRES_SESSION', False)),
-                recheck=source != 'common_crawl', maintenance=source == 'milli_kitaphana')
+    descriptor = DESCRIPTORS[source]
+    return dict(commands=sorted(descriptor.commands), modes=list(descriptor.modes),
+                formats=list(descriptor.formats), targets=list(descriptor.targets),
+                requires_session=descriptor.requires_session,
+                recheck=descriptor.recheck, maintenance=descriptor.maintenance)
 
 
 def validate(source, command, options):

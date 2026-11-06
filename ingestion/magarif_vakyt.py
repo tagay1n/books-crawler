@@ -246,7 +246,7 @@ def prepare_http(http, session_file):
     http.get = get_package
 
 
-def download(http, manifest, summary, log, recheck):
+def download(http, manifest, summary, log, recheck, *, selected_records=None):
     from .core import acquire, valid_local
     from .discovery import READ_ERRORS
     from .textbook_package import RECIPE, assemble, validate_zip

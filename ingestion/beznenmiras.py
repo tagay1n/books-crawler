@@ -8,7 +8,7 @@ from urllib.parse import unquote, urlsplit
 from bs4 import BeautifulSoup
 
 from .documents import DOCUMENT_EXTENSIONS, canonical, same_origin
-from .network import InvalidDocument
+from .network import install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
@@ -27,18 +27,16 @@ def checked_url(href, base, pattern):
 
 
 def prepare_http(http, session_file):
-    def validate_request(method, url, data):
-        if method != "GET" or data or not same_origin(url, operational_option('beznenmiras', 'archive_url')):
-            raise ValueError("Безнең мирас permits only same-origin read-only HTTPS requests.")
-    http.validate_request = validate_request
+    origin = operational_option('beznenmiras', 'archive_url')
 
-    def check_response(response, *args, **kwargs):
-        target = canonical(response.headers.get("Location", ""), response.url) if response.is_redirect else response.url
-        if not same_origin(response.url, operational_option('beznenmiras', 'archive_url')) or not same_origin(target, operational_option('beznenmiras', 'archive_url')):
-            response.close()
-            raise InvalidDocument("Безнең мирас redirected outside its HTTPS source origin.")
-        return response
-    http.session.hooks["response"].append(check_response)
+    def source_url(href, base=None):
+        url = canonical(href, base or origin)
+        if not same_origin(url, origin):
+            raise ValueError("Безнең мирас request left its configured HTTPS origin.")
+        return url
+
+    install_native_get_guard(http, source_url, "Безнең мирас",
+                             redirect_allowed=lambda before, after: same_origin(before, after))
 
 
 def parse_listing(html, request, root):

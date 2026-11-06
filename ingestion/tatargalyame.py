@@ -9,7 +9,7 @@ from urllib.parse import parse_qs, quote, unquote, urlsplit
 from requests.utils import requote_uri
 
 from .documents import DOCUMENT_EXTENSIONS, canonical, same_origin
-from .network import InvalidDocument
+from .network import InvalidDocument, install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
@@ -192,20 +192,10 @@ def record_key(metadata):
 
 
 def prepare_http(http, session_file):
-    def validate_request(method, url, data):
-        if method != "GET" or data:
-            raise ValueError("Tatar Galyame ingestion permits read-only GET requests only.")
-        route(url)
+    def native_route(href, base=None):
+        return route(canonical(href, base) if base is not None else href)
 
-    def check_response(response, *args, **kwargs):
-        try:
-            current = route(response.url)
-            if response.is_redirect and route(canonical(response.headers["Location"], response.url)) != current:
-                raise ValueError("Redirect changed the source resource.")
-        except (ValueError, KeyError):
-            response.close()
-            raise InvalidDocument("Tatar Galyame returned an unexpected route or login redirect.") from None
-        return response
+    install_native_get_guard(http, native_route, "Tatar Galyame")
 
     def validate_acquisition(asset):
         if (asset.get("kind") != "hosted_document" or route(asset["url"])[0] != "file"
@@ -217,7 +207,5 @@ def prepare_http(http, session_file):
         if any(route(hop.url) != expected for hop in [*response.history, response]):
             raise InvalidDocument("Tatar Galyame download response belongs to a different resource.")
 
-    http.validate_request = validate_request
     http.validate_acquisition = validate_acquisition
     http.validate_download_response = validate_download
-    http.session.hooks["response"].append(check_response)

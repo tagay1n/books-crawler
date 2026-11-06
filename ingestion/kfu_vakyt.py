@@ -108,5 +108,5 @@ def prepare_http(http, session_file):
     kfu.prepare_http(http, session_file, listing_route=position)
 
 
-def download(http, manifest, summary, log, recheck):
+def download(http, manifest, summary, log, recheck, *, selected_records=None):
     return kfu.download(http, manifest, summary, log, recheck, unit="file_or_issue")

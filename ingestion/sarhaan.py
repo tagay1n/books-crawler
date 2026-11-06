@@ -178,6 +178,6 @@ def record(html, page_url):
             "admission_reason": "Explicit publisher item-language claims; actual composition is not inferred from category membership."}, list(assets.values())
 
 
-def download(http, manifest, summary, log, recheck):
+def download(http, manifest, summary, log, recheck, *, selected_records=None):
     from .core import download as originals
     originals(http, manifest, summary, log, recheck, extensions={".pdf"})

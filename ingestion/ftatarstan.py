@@ -137,6 +137,6 @@ def resolve_record(http, metadata, assets):
     return metadata, assets
 
 
-def download(http, manifest, summary, log, recheck):
+def download(http, manifest, summary, log, recheck, *, selected_records=None):
     from .core import download as originals
     originals(http, manifest, summary, log, recheck, extensions={".pdf"})

@@ -10,7 +10,6 @@ from .documents import canonical, same_origin
 
 
 PARSER_VERSION = 1
-REQUIRES_SESSION = True
 PERIODICAL_PATH = re.compile(r"/projects/mirasxane/periodicals/(\d+)-[^/]+\.html")
 PAGE_PATH = re.compile(r"/projects/mirasxane/periodicals/(?:page/([1-9]\d*)/?)?")
 

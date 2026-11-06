@@ -274,7 +274,7 @@ def validate_pdf(path):
         raise InvalidDocument(f"Invalid academic KFU PDF: {error}") from error
 
 
-def download(http, manifest, summary, log, recheck):
+def download(http, manifest, summary, log, recheck, *, selected_records=None):
     from .core import download as download_originals
     keys = ("url", "label", "extension", "filename_raw", "viewer_url", "source_asset_key",
             "source_unsupported_code", "source_unsupported_reason")

@@ -11,6 +11,7 @@ or implementation file. Do not read every source guide or historical report.
 | Set up PostgreSQL or import legacy progress | [Database operations](postgres-migration.md) |
 | Inspect a candidate public website | [Bounded inspection](source-inspection.md) |
 | Audit discovery coverage | [Review register and checklist](source-discovery-reviews.md) |
+| Implement adapter hooks or stage overrides | [Adapter interface](adapter-interface.md) |
 | Change stage, checkpoint or routing contracts | [Implementation contracts](ingestion-architecture.md) |
 | Operate GitHub Actions ingestion | [Scheduled operations](scheduled-ingestion.md) |
 | Inspect generated UTC slots | [Schedule table](ingestion-schedules.md) |

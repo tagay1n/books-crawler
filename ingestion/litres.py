@@ -14,7 +14,6 @@ from .state import Manifest, atomic_json, now, source_lock
 from .core import check_space, file_digests
 
 
-SUPPORTED_COMMANDS = {'discover', 'download', 'run', 'status', 'finalize', 'metadata', 'review', 'publish', 'import-state'}
 
 
 class Session:

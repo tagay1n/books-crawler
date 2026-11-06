@@ -12,7 +12,6 @@ from .network import HTTP, Budget, BudgetStop
 from .core import file_digests, check_space
 
 
-SUPPORTED_COMMANDS = {'discover', 'download', 'finalize', 'run', 'status', 'publish', 'import-state', 'split', 'merge-index', 'recover', 'mark-existing-limited'}
 
 
 def directory_for(settings):

@@ -204,6 +204,6 @@ def reuse_originals(http, manifest, summary):
             wanted.pop(asset["url"], None)
 
 
-def download(http, manifest, summary, log, recheck):
+def download(http, manifest, summary, log, recheck, *, selected_records=None):
     reuse_originals(http, manifest, summary)
     return kfu.download(http, manifest, summary, log, recheck, unit="file_or_publication")
