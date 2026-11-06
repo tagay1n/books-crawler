@@ -11,7 +11,7 @@ from .network import InvalidDocument, install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
-PARSER_VERSION = 1
+PARSER_VERSION = 2
 ISSUE = re.compile(r"view/([1-9]\d*)")
 GALLEY = re.compile(r"(?:view|download)/([1-9]\d*)/([1-9]\d*)(?:/[1-9]\d*)?")
 
@@ -62,7 +62,11 @@ def parse_listing(html, request, root):
         target = native_url(anchor["href"], url)
         if ISSUE.fullmatch(target[len(operational_option('ftatarstan', 'base')):]) is None:
             raise ValueError("Archive card does not identify a native issue.")
+        cover = card.select_one("img[src]")
+        description = card.select_one(".description")
         entries[target] = {"catalog_url": url, "title_raw": anchor.get_text(" ", strip=True),
+                           "cover_url": canonical(cover["src"], url) if cover else None,
+                           "description_raw": description.get_text(" ", strip=True) if description else None,
                            "href_raw": anchor["href"]}
     if not entries:
         raise ValueError("Archive page contains no recognizable issues.")
@@ -107,12 +111,42 @@ def record(html, page_url):
                           "galley_view_url": target, "href_raw": anchor["href"],
                           "language_claim_raw": label,
                           "unsupported_reason": None if selected else "Full-issue galley lacks an explicit Tatar PDF label."}
-    return {"url": url, "issue_id": identity[1], "title": title,
+    metadata = {"url": url, "issue_id": identity[1], "title": title, "title_raw": title,
             "publication_date_raw": date.get_text(" ", strip=True) if date else None,
             "doi_raw": doi.get_text(" ", strip=True) if doi else None,
             "representation": "full_issue_pdf" if assets else "issue_metadata_only",
             "article_count_claim": len(area.select(".obj_article_summary")),
-            "admission_reason": "Only full-issue galleys explicitly labelled Tatar are acquired; article PDFs and covers are excluded."}, list(assets.values())
+            "admission_reason": "Only full-issue galleys explicitly labelled Tatar are acquired; article PDFs and covers are excluded."}
+    cover = area.select_one(".heading .cover img[src]")
+    if cover is not None:
+        metadata["cover_url"] = canonical(cover["src"], url)
+    description = area.select_one(":scope > .description, :scope > .heading .description")
+    if description is not None:
+        metadata["description_raw"] = description.get_text(" ", strip=True)
+        metadata["description_html"] = description.decode_contents()
+    metadata["contents"] = []
+    for article in area.select(".obj_article_summary"):
+        anchor = article.select_one(".title a[href]")
+        if anchor is None:
+            continue
+        section = article.find_parent("div", class_="section")
+        heading = section.select_one(":scope > h2, :scope > h3") if section else None
+        authors, pages = article.select_one(".authors"), article.select_one(".pages")
+        metadata["contents"].append({
+            "title_raw": anchor.get_text(" ", strip=True), "href_raw": anchor["href"],
+            "url": canonical(anchor["href"], url), "native_id_raw": anchor.get("id"),
+            "section_raw": heading.get_text(" ", strip=True) if heading else None,
+            "authors_raw": authors.get_text(" ", strip=True) if authors else None,
+            "pages_raw": pages.get_text(" ", strip=True) if pages else None,
+            "galleys": [{"url": canonical(a["href"], url), "label_raw": a.get_text(" ", strip=True)}
+                        for a in article.select(".galleys_links a[href]")],
+        })
+    metadata["attachments"] = [dict(asset) for asset in assets.values()]
+    metadata["acquisition_note"] = (
+        "Full-issue galley candidates; only explicit Tatar labels permit acquisition."
+        if assets else "Metadata only: no full-issue PDF galley exposed."
+    )
+    return metadata, list(assets.values())
 
 
 def record_key(metadata):
@@ -134,6 +168,7 @@ def resolve_record(http, metadata, assets):
         if len(targets) != 1:
             raise ValueError("Native PDF viewer must advertise one unique original download.")
         asset["url"], asset["download_href_raw"] = next(iter(targets.items()))
+    metadata["attachments"] = [dict(asset) for asset in assets]
     return metadata, assets
 
 

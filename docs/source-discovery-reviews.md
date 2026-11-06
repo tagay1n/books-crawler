@@ -39,7 +39,7 @@ initial baseline date) and record the attempt date in the history below.
 | `darul_kutub` | [Darul-Kutub](ingestion/darul-kutub.md) | 2026-11-06 | Partial | 2026-11-07: catalog/article context and chapter metadata retention fixed; one original PDF verified. Full scan and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `dumrt` | [DUM RT publications](ingestion/dumrt.md) | 2026-11-06 | Partial | 2026-11-07: 37 archive pages/235 issue URLs; metadata retention extended and one original verified. Full issue/attachment refresh and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `echovek` | [Echo of Centuries](ingestion/echovek.md) | 2026-11-06 | Partial | 2026-11-07: 64 listing pages/1,385 records; abstract/raw-field retention extended; one original verified. One unresolved card; full detail/admission and live PostgreSQL/S3 checks remain outstanding. |
-| `ftatarstan` | [Fänni Tatarstan](ingestion/ftatarstan.md) | 2026-11-06 | Baseline | — |
+| `ftatarstan` | [Fänni Tatarstan](ingestion/ftatarstan.md) | 2026-11-06 | Partial | 2026-11-07: 51 issue pages/48 admitted galleys; contents metadata preserved and one original verified. One unlabelled galley and two missing issue files; live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `internet_archive` | [Internet Archive](ingestion/internet-archive.md) | 2026-11-06 | Baseline | — |
 | `isxaki` | [Isxaki](ingestion/isxaki.md) | 2026-11-06 | Baseline | — |
 | `kazanutlary` | [Kazan Utları](ingestion/kazanutlary.md) | 2026-11-06 | Baseline | — |
@@ -221,3 +221,24 @@ credentials remain prerequisites for live persistence/resume, full acquisition,
 repeat-run and S3 receipt checks. Existing shared integration is retained. No
 production writes, remote uploads or GitHub dispatch occurred; preserve the
 baseline review date pending remaining verification.
+
+### 2026-11-07 — ftatarstan — Partial
+
+Native homepage navigation confirms the configured archive. Three archive pages
+and all 51 issue pages were inspected (55 requests including one retry): 49
+full-issue galleys, 48 explicitly Tatar-labelled and one unlabelled/held; two
+issues have no full-issue file. Parser version 2 preserves all 111 exposed article
+cards as contents evidence, listing/issue covers, descriptions and attachment
+locators. Issue/galley identities, Tatar-label admission and whole-issue-only
+acquisition remain unchanged. Article PDFs and cover images stay excluded.
+
+One viewer resolved to its advertised original; a complete 8,714,023-byte,
+196-page PDF matched the earlier sample hash. See the
+[source guide](ingestion/ftatarstan.md) and ignored
+`__artifacts/ftatarstan-review-20261107/` for commands, hashes and evidence.
+Metadata/count checks, compilation and workflow/configuration verification
+passed; no automated tests were added. Other viewers were not resolved or
+acquired. Existing PostgreSQL/S3/manual Actions integration is retained; live
+durable resume, database-backed acquisition, repeat-run skipping and upload
+receipts require credentials. No production writes, uploads or workflow dispatch
+occurred. Preserve the baseline date pending remaining verification.
