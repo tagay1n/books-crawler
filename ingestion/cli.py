@@ -95,10 +95,19 @@ def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, ses
         from .config import load_settings
         from .core import restricted_settings, run
         settings = restricted_settings(load_settings(ctx.obj, source), limit, max_pages)
-        if source in {"litres", "milli_kitaphana"}:
+        if source in {"litres", "milli_kitaphana", "common_crawl"}:
             if session_file is not None:
                 raise ValueError(f"{source} uses its operational source settings, not --session-file")
             settings.source_options.update(_limited=limited, _index_name=index_name, _maintenance=maintenance or {}, _mode=mode, _format=format, _action=action, _target=target, _from=str(from_path) if from_path else None)
+            if source == "common_crawl":
+                if command not in SOURCES[source].SUPPORTED_COMMANDS:
+                    raise ValueError(f"{source} does not implement the selected stage")
+                if mode != "catalog":
+                    raise ValueError("Common Crawl supports only --mode catalog")
+                if format not in {"all", "pdf"}:
+                    raise ValueError("Common Crawl supports only original PDFs (--format all or pdf)")
+                if recheck:
+                    raise ValueError("Common Crawl does not support --recheck")
         elif mode != "catalog" or format != "all" or command not in getattr(SOURCES[source], "SUPPORTED_COMMANDS", {"discover", "download", "run", "status"}):
             raise ValueError(f"{source} does not implement the selected stage or option")
         if source == "milli_kitaphana" and (mode != "catalog" or format != "all"):

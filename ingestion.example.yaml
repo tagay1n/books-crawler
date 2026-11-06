@@ -73,6 +73,14 @@ sources:
   # Discovery only: document files; cover/title-page images are skipped entirely.
   commons:
     archive_url: https://commons.wikimedia.org/wiki/Category:Tatar-language_books
+  common_crawl:
+    archive_url: https://huggingface.co/datasets/HuggingFaceFW/finepdfs
+    result_dir: ~/.common-crawl/result
+    cache_dir: ~/.common-crawl/warcs
+    yandex:
+      disk:
+        oauth_token: <SET ME>
+        target_dir: /НейроТатарлар/kitaplar/common_crawl
   milli_kitaphana:
     aes:
       raw_key: <SET ME>

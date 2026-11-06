@@ -2,10 +2,10 @@
 
 Source progress uses shared PostgreSQL persistence. See [setup and progress import](docs/postgres-migration.md) before running ingestion.
 
-The repository retains two independent legacy pipelines for collecting Tatar books and metadata:
+Provider workflows for collecting Tatar books and metadata live under `ingestion/`:
 
 - `ingestion/milli_kitaphana*.py`
-- `common-crawl/`
+- `ingestion/common_crawl*.py`
 
 Each pipeline uses shared Postgres progress storage. Document files remain under
 `__artifacts/` or `~/`; local processing indexes are no longer written.
@@ -24,8 +24,8 @@ with PyMuPDF.
 KFU readers retain their original JPEGs and produce 200 DPI colour PDFs at JPEG
 quality 85, preferring an available public direct PDF over image assembly.
 See [local ingestion](docs/local-ingestion.md) for configuration,
-commands, artifact locations, and recovery. The legacy pipeline commands below
-continue to operate independently.
+commands, artifact locations, and recovery. Common Crawl, Milli Kitaphana and
+Litres also use this shared CLI.
 
 Безнең мирас is available as `beznenmiras` for resumable issue discovery and
 downloading original document links found in issue content. Inspected issue pages
@@ -164,9 +164,11 @@ Tatar item-language labels are required; unlabelled records remain held. See
   - Litres now uses the [unified CLI](docs/ingestion/litres.md).
 
 - Common Crawl:
-  - `python common-crawl/cli.py index`
-  - `python common-crawl/cli.py download`
-  - `python common-crawl/cli.py upload`
+  - `python cli.py --config ingestion.yaml discover --source common_crawl`
+  - `python cli.py --config ingestion.yaml download --source common_crawl --limit 1`
+  - `python cli.py --config ingestion.yaml status --source common_crawl`
+  - `python cli.py --config ingestion.yaml publish --source common_crawl --target yandex`
+  - See [configuration and migration](docs/ingestion/common-crawl.md).
 - Tatkniga:
   - `python cli.py --config ingestion.yaml discover --source tatkniga`
   - `python cli.py --config ingestion.yaml download --source tatkniga --limit 1`
@@ -223,7 +225,8 @@ Tatar item-language labels are required; unlabelled records remain held. See
 
 - `__artifacts/milli.kitaphana/_index/books-index.json` stores Milli Kitaphana crawl/download state.
 - Litres state uses `<artifacts_root>/litres/manifest.json`; see its migration guide.
-- `__artifacts/common.crawl/docs-index.json` stores Common Crawl state.
+- Common Crawl state uses Postgres `ingestion.common_crawl_*` tables; legacy
+  `__artifacts/common.crawl/docs-index.json` is accepted only by explicit database import.
 - `~/.common-crawl/` stores downloaded Common Crawl files and caches.
 - `__artifacts/ingestion/tatkniga/` stores the new Tatkniga manifest and local files.
 - `__artifacts/ingestion/isxaki/` stores collection metadata and unchanged original document files.

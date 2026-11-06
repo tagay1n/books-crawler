@@ -2,7 +2,7 @@
 
 Use this register when asked to pick the next source and check whether document
 discovery still makes sense. It covers all shared CLI sources in
-`ingestion/registry.py` and the two independent legacy pipelines. Keep separate
+`ingestion/registry.py`, including Common Crawl, Milli Kitaphana and Litres. Keep separate
 rows for adapters on the same website because their scopes and filters differ.
 Add a row when a new source is implemented; unimplemented candidates remain in
 their existing inventory.
@@ -32,7 +32,7 @@ initial baseline date) and record the attempt date in the history below.
 | Source ID | Source guide | Last reviewed | Outcome | Outstanding findings / blockers |
 | --- | --- | --- | --- | --- |
 | `beznenmiras` | [Безнең мирас](ingestion/beznenmiras.md) | 2026-11-06 | Baseline | — |
-| `common-crawl` | [Common Crawl / FinePDFs (legacy)](../common-crawl/README.md) | 2026-11-06 | Baseline | — |
+| `common_crawl` | [Common Crawl / FinePDFs](ingestion/common-crawl.md) | 2026-11-06 | Baseline | — |
 | `commons` | [Wikimedia Commons](ingestion/commons.md) | 2026-11-06 | Baseline | — |
 | `darul_kutub` | [Darul-Kutub](ingestion/darul-kutub.md) | 2026-11-06 | Baseline | — |
 | `dumrt` | [DUM RT publications](ingestion/dumrt.md) | 2026-11-06 | Baseline | — |
@@ -52,7 +52,7 @@ initial baseline date) and record the attempt date in the history below.
 | `litres` | [Litres](ingestion/litres.md) | 2026-11-06 | Baseline | — |
 | `magarif` | [Мәгариф](ingestion/magarif.md) | 2026-11-06 | Baseline | — |
 | `magarif_vakyt` | [Мәгариф–Вакыт](ingestion/magarif-vakyt.md) | 2026-11-06 | Baseline | — |
-| `milli_kitaphana` | [Milli Kitaphana](../ingestion/milli-kitaphana.md) | 2026-11-06 | Baseline | — |
+| `milli_kitaphana` | [Milli Kitaphana](ingestion/milli-kitaphana.md) | 2026-11-06 | Baseline | — |
 | `miras` | [Miras books](ingestion/miras.md) | 2026-11-06 | Baseline | — |
 | `miras_periodicals` | [Miras periodicals](ingestion/miras-periodicals.md) | 2026-11-06 | Baseline | — |
 | `nizgar` | [Nizgar](ingestion/nizgar.md) | 2026-11-06 | Baseline | — |

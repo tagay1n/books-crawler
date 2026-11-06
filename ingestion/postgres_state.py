@@ -36,7 +36,7 @@ _tables = {}
 
 
 def tables(source):
-    if source not in SOURCES and source not in {'common_crawl', 'kfu_vakyt_pilot'}:
+    if source not in SOURCES and source != 'kfu_vakyt_pilot':
         raise ValueError('Unknown persistence source')
     if source not in _tables:
         _tables[source] = tuple(Table(source + '_' + suffix, _metadata,
@@ -49,7 +49,7 @@ bookkeeping = Table('bookkeeping', _metadata, Column('key', Text, primary_key=Tr
 
 
 def initialize():
-    for source in [*SOURCES, 'common_crawl']:
+    for source in SOURCES:
         tables(source)
     with transaction() as connection:
         connection.execute(text('CREATE SCHEMA IF NOT EXISTS ingestion'))

@@ -32,7 +32,7 @@ def main():
     if args.database:
         from ingestion.postgres_state import Repository
         from ingestion.registry import SOURCES
-        for source in args.source or [*SOURCES, "common_crawl"]:
+        for source in args.source or SOURCES:
             database_data[Path("postgres") / source] = Repository(source).load()
         paths = set(database_data)
     if not paths:

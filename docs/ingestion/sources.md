@@ -2,6 +2,9 @@
 
 The shared `cli.py` implements these acquisition sources:
 
+- `common_crawl`: <https://huggingface.co/datasets/HuggingFaceFW/finepdfs>,
+  Tatar Cyrillic and Latin PDF records, acquired directly or from Common Crawl
+  WARC offsets. See [configuration and migration](common-crawl.md).
 - `tuganzhir`: <https://tuganzhir.org/archive/>, linked original PDFs of the
   publisher-declared Tatar/Russian journal series.
 - `dumrt`: <https://dumrt.ru/media/din-va-magishet/>, linked original PDFs of the
@@ -68,5 +71,6 @@ The shared `cli.py` implements these acquisition sources:
 - `tatargalyame`: <https://tatargalyame.kpfu.ru/catalogue>, collecting explicitly
   listed hosted educational documents across all languages.
 
-All sources use the same local downloader and manifest implementation. Each
-adapter follows its selected catalog. Existing legacy collectors remain independent.
+Sources share the CLI and Postgres persistence. Common Crawl, Milli Kitaphana
+and Litres retain provider helpers for their native workflows. Each adapter
+follows its selected catalog.

@@ -25,6 +25,7 @@ Old section anchors are retained below for existing links and bookmarks.
 
 | Source | Focused guide |
 | --- | --- |
+| Common Crawl / FinePDFs | [Usage and migration](ingestion/common-crawl.md) |
 | <a id="tugan-zhir-archive"></a>Tugan Zhir archive | [Usage and evidence](ingestion/tuganzhir.md) |
 | <a id="dum-rt-contemporary-tatar-publications"></a>DUM RT contemporary Tatar publications | [Usage and evidence](ingestion/dumrt.md) |
 | <a id="fänni-tatarstan-issue-pdfs"></a>Fänni Tatarstan issue PDFs | [Usage and evidence](ingestion/ftatarstan.md) |

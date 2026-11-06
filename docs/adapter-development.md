@@ -14,6 +14,9 @@ selection, the review checklist, and recording findings and review dates.
   adapter. `ingestion/config.py` validates explicitly selected operational YAML.
   The registry is a lazy mapping: listing/checking names imports no providers;
   lookup loads and caches only the selected module or KFU collection instance.
+- `ingestion/common_crawl.py`: Common Crawl/FinePDFs stage dispatch. Its
+  `common_crawl_*.py` helpers retain the native Postgres record layout and the
+  existing result/cache paths; see [usage](ingestion/common-crawl.md).
 - `ingestion/discovery.py` and `paging.py`: durable listing frontier, per-record
   context, pagination fingerprints and resume checkpoints. Incomplete scans
   resume; calling discovery after completion starts a new scan.
