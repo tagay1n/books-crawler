@@ -7,19 +7,19 @@ import time
 from urllib.parse import urlencode
 
 import bs4 as bs
-from .utils import requests
+from .litres_utils import requests
 
-from .consts import domain
-from .index import (
+from .litres_consts import domain
+from .litres_index import (
     _content_type_from_book_page_html,
     _parse_books,
     _raise_if_blocked,
     _set_full_name,
 )
-from .utils import RUNTIME, create_driver, dump_json_atomic, get_hash, get_in_workdir, get_sid, read_config
+from .litres_utils import RUNTIME, create_driver, dump_json_atomic, get_hash, get_in_workdir, get_sid, read_config
 
-CANDIDATES_INDEX = "../__artifacts/litres/candidates-index.json"
-BOOKS_INDEX = "../__artifacts/litres/books-index.json"
+CANDIDATES_INDEX = "candidates-index.json"
+BOOKS_INDEX = "books-index.json"
 MAX_PAGES_PER_QUERY_CAP = 20
 DEFAULT_SEARCH_FILTERS = {
     "art_types": "text_book",
@@ -180,10 +180,10 @@ def _load_json(path):
 
 def _required_config_section(config, name):
     if not isinstance(config, dict):
-        raise ValueError("litres/config.yaml is empty or invalid")
+        raise ValueError("sources.litres in the selected operational YAML is empty or invalid")
     section = config.get(name)
     if not isinstance(section, dict):
-        raise ValueError(f"{name} is not set in litres/config.yaml")
+        raise ValueError(f"{name} is not set in sources.litres in the selected operational YAML")
     return section
 
 
@@ -191,7 +191,7 @@ def _required_config_value(config, name):
     key = name.rsplit(".", 1)[-1]
     value = config.get(key)
     if value is None or value == "":
-        raise ValueError(f"{name} is not set in litres/config.yaml")
+        raise ValueError(f"{name} is not set in sources.litres in the selected operational YAML")
     return value
 
 
@@ -216,7 +216,7 @@ def _search_url(query, page):
 
 def _fetch_search_page_html(url, headers, driver_provider=None, retries=None):
     if retries is None:
-        raise ValueError("discover.search_request_retries is not set in litres/config.yaml")
+        raise ValueError("discover.search_request_retries is not set in sources.litres in the selected operational YAML")
     last_error = None
     for attempt in range(1, retries + 1):
         try:

@@ -4,17 +4,17 @@ import json
 import re
 
 import bs4 as bs
-from .utils import requests
+from .litres_utils import requests
 from rich.progress import track
 
-from .utils import RUNTIME, dump_json_atomic, get_in_workdir, get_sid
+from .litres_utils import RUNTIME, dump_json_atomic, get_in_workdir, get_sid
 
 
 def scrap_metadata():
     """
     Scrap metadata for the books and save it to the file
     """
-    path_to_idx = get_in_workdir("../__artifacts/litres/books-index.json")
+    path_to_idx = get_in_workdir("books-index.json")
     with open(path_to_idx, "r") as f:
         _all_books = json.load(f)
     headers = {

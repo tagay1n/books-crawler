@@ -146,7 +146,7 @@ Tatar item-language labels are required; unlabelled records remain held. See
    `python -m pip install -r requirements.txt`
 3. Fill config templates with your real credentials only in local files:
    - `milli_kitaphana/config.yaml`
-   - `litres/config.yaml`
+   - `ingestion.yaml` (`sources.litres`; see the Litres guide)
    For the shared CLI, copy `ingestion.example.yaml` to `ingestion.yaml` and
    select it with `--config`. Tatkniga does not require cloud credentials.
 

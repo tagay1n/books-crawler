@@ -6,10 +6,10 @@ import re
 from urllib.parse import parse_qs, urljoin, urlparse
 
 import bs4 as bs
-from .utils import requests
+from .litres_utils import requests
 
-from .consts import TOTAL_PAGES, entry_point, domain
-from .utils import RUNTIME, create_driver, dump_json_atomic, get_sid, get_in_workdir, get_hash
+from .litres_consts import TOTAL_PAGES, entry_point, domain
+from .litres_utils import RUNTIME, create_driver, dump_json_atomic, get_sid, get_in_workdir, get_hash
 
 
 BOOK_PATH_MARKERS = ("/book/", "/audiobook/")
@@ -27,7 +27,7 @@ TEXT_CONTENT_MARKERS = (
 
 def index():
     index_file_name = "books-index.json"
-    index_dir = get_in_workdir("../__artifacts/litres")
+    index_dir = get_in_workdir("")
     os.makedirs(index_dir, exist_ok=True)
     index_file = os.path.join(index_dir, index_file_name)
     if os.path.exists(index_file):

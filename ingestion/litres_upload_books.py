@@ -9,13 +9,13 @@ from rich.progress import track
 from sqlalchemy import text
 from yadisk_client import YaDisk, ConflictResolution
 
-from .utils import get_in_workdir, read_config
+from .litres_utils import get_in_workdir, read_config
 
 REMOTE_DIR = "/НейроТатарлар/kitaplar/_все книги/litres"
 
 
 def upload_pdfs():
-    _index_file = get_in_workdir("../__artifacts/litres/books-index.json")
+    _index_file = get_in_workdir("books-index.json")
     with open(_index_file, "r") as f:
         _all_docs = json.load(f)
 

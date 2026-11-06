@@ -10,10 +10,10 @@ from urllib.parse import quote, unquote, urlparse
 from boto3 import Session
 from rich.progress import track
 
-from .utils import get_in_workdir, read_config
+from .litres_utils import get_in_workdir, read_config
 
-MARKDOWN_DIR = "../__artifacts/litres/markdown"
-OUTPUT_DIR = "../__artifacts/litres/markdown-s3"
+MARKDOWN_DIR = "markdown"
+OUTPUT_DIR = "markdown-s3"
 IMAGE_LINK_RE = re.compile(r"!\[([^\]]*)\]\(([^)]+)\)")
 
 
@@ -89,17 +89,17 @@ def _create_s3_client(config):
 
 def _required_config_section(config, key):
     if not isinstance(config, dict):
-        raise ValueError("litres/config.yaml is empty or invalid")
+        raise ValueError("sources.litres in the selected operational YAML is empty or invalid")
     section = config.get(key)
     if not isinstance(section, dict):
-        raise ValueError(f"{key} is not set in litres/config.yaml")
+        raise ValueError(f"{key} is not set in sources.litres in the selected operational YAML")
     return section
 
 
 def _required_config(config, key):
     value = config.get(key)
     if not value or value == "<SET ME>":
-        raise ValueError(f"s3.{key} is not set in litres/config.yaml")
+        raise ValueError(f"s3.{key} is not set in sources.litres in the selected operational YAML")
     return value
 
 

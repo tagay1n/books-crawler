@@ -3,7 +3,9 @@
 Use `.venv/bin/python cli.py --config ingestion.yaml COMMAND --source litres`.
 Copy the Litres source section from `ingestion.example.yaml` into your selected
 operational YAML. Set `sources.litres.sid` to your Litres SID cookie. Source
-settings are never loaded from `litres/config.yaml`. Relative artifact roots
+settings are never loaded from the legacy `litres/config.yaml`. Provider helpers
+now live alongside other adapters as `ingestion/litres_*.py`; `ingestion/litres.py`
+orchestrates the stages and helpers reuse shared state/network utilities. Relative artifact roots
 resolve against the operational YAML; all Litres state lives beneath its
 `litres/` directory. Never commit credentials.
 
@@ -73,3 +75,10 @@ Manual checks used `/tmp/litres-verification.yaml` and the isolated artifact roo
 and 127 candidate decisions. Synthetic PDF and text inputs each finalized with
 zero requests; the second invocation skipped both outputs. Compilation and
 `git diff --check` passed. No automated tests were added.
+
+After relocating helpers to `ingestion/`, manual CLI checks again covered source
+listing, status, review export/sync, repeated import, and fresh offline PDF and
+Markdown rebuilds followed by hash-based skipping. All ran against the isolated
+verification root; no authenticated acquisition or publishing was attempted.
+The unused legacy `litres/` code/configuration directory has been removed.
+Credentials must be set in the selected operational YAML under `sources.litres`.

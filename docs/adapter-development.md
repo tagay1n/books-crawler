@@ -87,7 +87,9 @@ New adapters and future migrations should expose source-neutral root commands:
 `discover`, `download`, `finalize`, `run`, `status`, with optional `metadata`,
 `review`, `publish`, and `import-state` capabilities. Litres is the first full
 pipeline reference; see [its guide](ingestion/litres.md) and `ingestion/litres.py`.
-The registry stays lazy. Source-specific operational options belong under
+Provider helpers live alongside the adapter in `ingestion/litres_*.py`; atomic
+JSON writes reuse `state.atomic_json`, and artifact paths require the active
+shared runtime. The registry stays lazy. Source-specific operational options belong under
 `sources.<source>`; command routing must reject unsupported capabilities.
 
 Discovery stores resumable source evidence and admission decisions. Download

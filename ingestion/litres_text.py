@@ -8,13 +8,13 @@ import shutil
 import unicodedata
 from urllib.parse import urlparse, parse_qs
 
-from .utils import requests
+from .litres_utils import requests
 import typer
 from rich.progress import track
 
-from .consts import domain
-from .index import _open_reader_url
-from .utils import create_driver, dump_json_atomic, get_in_workdir, get_hash, get_sid
+from .litres_consts import domain
+from .litres_index import _open_reader_url
+from .litres_utils import create_driver, dump_json_atomic, get_in_workdir, get_hash, get_sid
 
 PREVIEW_MARKERS = (
     "The end of the free preview",
@@ -22,7 +22,7 @@ PREVIEW_MARKERS = (
 
 
 def visit_text_books_pages():
-    path_to_idx = get_in_workdir("../__artifacts/litres/books-index.json")
+    path_to_idx = get_in_workdir("books-index.json")
     with open(path_to_idx, "r") as f:
         all_books = json.load(f)
 
@@ -74,7 +74,7 @@ def _save_books_index(path_to_idx, all_books):
 def _download_page_descriptions(book, driver=None):
     url = book['url']
     digest = book.get('hash') or get_hash(url)
-    artifacts_dir = get_in_workdir("../__artifacts/litres/js")
+    artifacts_dir = get_in_workdir("js")
     os.makedirs(artifacts_dir, exist_ok=True)
     completed_dir = os.path.join(artifacts_dir, digest)
     if os.path.exists(completed_dir) and not _must_refresh_text_cache(book):
@@ -180,7 +180,7 @@ def _base_url_from_reader_url(reader_url, book_url):
 def _make_up_markdown(input_dir, book, driver=None):
     # directory for resulting markdown file
     output_name = _markdown_output_name(book)
-    output_dir = get_in_workdir(f"../__artifacts/litres/markdown/{output_name}")
+    output_dir = get_in_workdir(f"markdown/{output_name}")
     os.makedirs(output_dir, exist_ok=True)
 
     # path to resulting markdown file

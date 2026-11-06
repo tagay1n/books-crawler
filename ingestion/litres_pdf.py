@@ -10,13 +10,13 @@ import re
 from urllib.parse import parse_qs, urlparse
 
 import pymupdf
-from .utils import requests
+from .litres_utils import requests
 from PIL import Image, UnidentifiedImageError
 from rich.progress import track
 
-from .consts import domain
-from .index import BLOCKED_MARKERS, _content_type_from_book_page_html, _content_type_from_reader_url, _open_reader_url
-from .utils import RUNTIME, create_driver, dump_json_atomic, get_sid, get_in_workdir, read_config
+from .litres_consts import domain
+from .litres_index import BLOCKED_MARKERS, _content_type_from_book_page_html, _content_type_from_reader_url, _open_reader_url
+from .litres_utils import RUNTIME, create_driver, dump_json_atomic, get_sid, get_in_workdir, read_config
 
 PDF_REQUEST_TIMEOUT_SECONDS = 30
 PDF_RESPONSE_SNIPPET_BYTES = 300
@@ -33,7 +33,7 @@ def visit_pdf_books_pages():
 
     Visit pdf books pages, download their pages separately and create pdf from them
     """
-    path_to_idx = get_in_workdir("../__artifacts/litres/books-index.json")
+    path_to_idx = get_in_workdir("books-index.json")
     with open(path_to_idx, "r", encoding="utf-8") as f:
         all_books = json.load(f)
 
@@ -257,7 +257,7 @@ def _execute_pdf_metadata_script(script_text, file_id, driver=None, driver_provi
 
 
 def download_page_images(file_id, page_extensions, session=None, driver=None, driver_provider=None, book_page_url=None):
-    artifacts_dir = get_in_workdir(f"../__artifacts/litres/images/{file_id}")
+    artifacts_dir = get_in_workdir(f"images/{file_id}")
     os.makedirs(artifacts_dir, exist_ok=True)
     _remove_stale_temporary_files(artifacts_dir)
     p = page_extensions['pages'][0]['p']
@@ -363,7 +363,7 @@ def _raise_for_non_javascript_pdf_metadata_response(response, url):
 def _raise_for_auth_response(response, message):
     if "/auth/login/" in (response.get("url") or ""):
         raise LitresAuthenticationError(
-            f"{message}. Update 'sid' in litres/config.yaml, then rerun the command."
+            f"{message}. Update 'sid' in sources.litres in the selected operational YAML, then rerun the command."
         )
 
 
@@ -564,8 +564,8 @@ def _create_pdf(book):
     Create pdf from downloaded pages images
     """
     file_id = book['file_id']
-    artifacts_dir = get_in_workdir(f"../__artifacts/litres/images/{file_id}")
-    pdf_dir = get_in_workdir("../__artifacts/litres/docs")
+    artifacts_dir = get_in_workdir(f"images/{file_id}")
+    pdf_dir = get_in_workdir("docs")
     os.makedirs(pdf_dir, exist_ok=True)
     _remove_stale_temporary_files(pdf_dir)
 
@@ -654,22 +654,22 @@ def _get_pdf_browser_challenge_wait_seconds():
 def _get_pdf_config():
     config = read_config()
     if not isinstance(config, dict):
-        raise ValueError("litres/config.yaml is empty or invalid")
+        raise ValueError("sources.litres in the selected operational YAML is empty or invalid")
     pdf_config = config.get("pdf")
     if not isinstance(pdf_config, dict):
-        raise ValueError("pdf is not set in litres/config.yaml")
+        raise ValueError("pdf is not set in sources.litres in the selected operational YAML")
     return pdf_config
 
 
 def _required_config_value(config, name, allow_none=False):
     key = name.rsplit(".", 1)[-1]
     if key not in config:
-        raise ValueError(f"{name} is not set in litres/config.yaml")
+        raise ValueError(f"{name} is not set in sources.litres in the selected operational YAML")
     value = config.get(key)
     if value is None and allow_none:
         return value
     if value is None or value == "":
-        raise ValueError(f"{name} is not set in litres/config.yaml")
+        raise ValueError(f"{name} is not set in sources.litres in the selected operational YAML")
     return value
 
 

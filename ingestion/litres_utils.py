@@ -1,12 +1,8 @@
 """Utilities for Litres workflows: config loading, SID authentication, Selenium driver setup, hashing, JSON writes, and workdir path helpers."""
 
 import hashlib
-import json
-import os
-import os.path
 from pathlib import Path
 
-import yaml
 import requests as native_requests
 from contextvars import ContextVar
 
@@ -15,10 +11,10 @@ RUNTIME = ContextVar("litres_runtime", default=None)
 
 class RequestsProxy:
     def __getattr__(self, name):
-        runtime = RUNTIME.get()
-        if runtime and name == "get":
+        runtime = require_runtime()
+        if name == "get":
             return runtime.get
-        if runtime and name == "Session":
+        if name == "Session":
             return runtime.session
         return getattr(native_requests, name)
 
@@ -26,58 +22,51 @@ class RequestsProxy:
 requests = RequestsProxy()
 
 
-def get_in_workdir(file):
-    """Return file in the current directory where script file is located"""
+def require_runtime():
     runtime = RUNTIME.get()
-    if runtime is not None and file.startswith("../__artifacts/litres"):
-        return str(runtime.directory / file.removeprefix("../__artifacts/litres").lstrip("/"))
-    return os.path.join(os.path.dirname(__file__), file)
+    if runtime is None:
+        raise RuntimeError("Litres helpers require the unified ingestion runtime")
+    return runtime
+
+
+def get_in_workdir(file):
+    """Resolve a provider artifact path beneath the selected source directory."""
+    directory = require_runtime().directory.resolve()
+    path = (directory / file).resolve()
+    if not path.is_relative_to(directory):
+        raise ValueError("Litres artifact path escapes the selected source directory")
+    return str(path)
 
 
 def dump_json_atomic(data, path):
-    """Write JSON through a temporary file so Ctrl+C cannot leave the target truncated."""
-    tmp_path = f"{path}.tmp.{os.getpid()}"
-    os.makedirs(os.path.dirname(path), exist_ok=True)
-    try:
-        with open(tmp_path, "w", encoding="utf-8") as f:
-            json.dump(data, f, indent=4, ensure_ascii=False)
-            f.flush()
-            os.fsync(f.fileno())
-        os.replace(tmp_path, path)
-    finally:
-        if os.path.exists(tmp_path):
-            os.remove(tmp_path)
+    """Reuse the shared atomic checkpoint writer."""
+    from .state import atomic_json
+    atomic_json(Path(path), data)
 
 
 def read_config():
-    if RUNTIME.get() is not None:
-        return RUNTIME.get().config
-    # read config file from the same directory
-    with open(get_in_workdir("config.yaml"), "r") as f:
-        return yaml.safe_load(f)
+    return require_runtime().config
 
 
 def get_sid():
     config = read_config()
     if (sid := config.get('sid')) and sid != "<SET ME>":
         return sid
-    raise ValueError("sid is not set in litres/config.yaml")
+    raise ValueError("sid is not set in sources.litres in the selected operational YAML")
 
 
 def create_driver(headless=True):
-    runtime = RUNTIME.get()
+    """Create a Selenium driver using the active shared runtime and SID."""
+    runtime = require_runtime()
     if runtime is not None:
         runtime.budget.check()
         if runtime.offline:
             raise ValueError("Browser access is unavailable during offline finalization")
-    """
-    Create a Selenium driver and preload Litres SID as a browser cookie.
-    """
     from selenium.webdriver.chrome.service import Service as ChromeService
     from selenium import webdriver
     from webdriver_manager.chrome import ChromeDriverManager
 
-    from .consts import domain
+    from .litres_consts import domain
 
     options = webdriver.ChromeOptions()
     if headless:

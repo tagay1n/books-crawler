@@ -97,7 +97,7 @@ def commit(runtime, items):
 
 
 def discover(runtime, items):
-    from litres import index
+    from . import litres_index as index
     mode = runtime.config.get('_mode', 'catalog')
     if mode in {'catalog', 'all'}:
         scan = runtime.manifest.data.setdefault('litres_catalog', {'next_page': 1, 'complete': False})
@@ -136,7 +136,7 @@ def discover(runtime, items):
         finally:
             resolver.close()
     if mode in {'candidates', 'all'}:
-        from litres.discover import discover_candidates
+        from .litres_discover import discover_candidates
         discover_candidates()
 
 
@@ -152,7 +152,7 @@ def media_nodes(value):
 
 
 def acquire(runtime, items, recheck):
-    from litres import pdf, text, utils
+    from . import litres_pdf as pdf, litres_text as text, litres_utils as utils
     selected = []
     for key, book in items.items():
         if runtime.config.get('_format', 'all') not in {'all', book.get('content_type')}:
@@ -221,7 +221,7 @@ def inputs_valid(book):
 
 
 def finalize(runtime, items, selected=None):
-    from litres import pdf, text
+    from . import litres_pdf as pdf, litres_text as text
     runtime.offline = True
     try:
         for key, book in items.items():
@@ -297,12 +297,12 @@ def import_state(runtime, items):
                     target = runtime.directory / ('docs' if field == 'pdf_file' else 'markdown') / source.name
                     target.parent.mkdir(parents=True, exist_ok=True)
                     if field == 'pdf_file':
-                        from litres.pdf import _is_valid_pdf_file
+                        from .litres_pdf import _is_valid_pdf_file
                         if not _is_valid_pdf_file(str(source)):
                             book.pop(field, None)
                             continue
                     else:
-                        from litres.text import _contains_preview_marker
+                        from .litres_text import _contains_preview_marker
                         if _contains_preview_marker(str(source)):
                             book.pop(field, None)
                             continue
@@ -345,7 +345,7 @@ def execute(settings, command, *, recheck=False, log=print):
     with source_lock(directory):
         manifest = Manifest(directory, 'litres')
         runtime = Runtime(settings, manifest, summary)
-        from litres.utils import RUNTIME
+        from .litres_utils import RUNTIME
         token = RUNTIME.set(runtime)
         items = books(manifest)
         try:
@@ -360,13 +360,13 @@ def execute(settings, command, *, recheck=False, log=print):
                 if command in {'finalize', 'run'}:
                     finalize(runtime, items, selected if command == 'run' else None)
                 if command == 'review':
-                    from litres import candidates
+                    from . import litres_candidates as candidates
                     action = runtime.config['_action']
                     {'export': candidates.export_review, 'sync': candidates.sync_review, 'import': candidates.import_accepted}[action]()
                     if action == 'import':
                         items = json.loads((directory / 'books-index.json').read_text())
                 if command == 'metadata':
-                    from litres.metadata import scrap_metadata
+                    from .litres_metadata import scrap_metadata
                     scrap_metadata()
                     items = json.loads((directory / 'books-index.json').read_text())
                 if command == 'publish':
@@ -380,13 +380,13 @@ def execute(settings, command, *, recheck=False, log=print):
                     atomic_json(directory / 'books-index.json', eligible)
                     target = runtime.config['_target']
                     if target == 'yandex':
-                        from litres.upload_books import upload_pdfs
+                        from .litres_upload_books import upload_pdfs
                         upload_pdfs()
                     elif target == 'hf':
-                        from litres.hf import upload_to_hf
+                        from .litres_hf import upload_to_hf
                         upload_to_hf()
                     else:
-                        from litres.s3_media import upload_media_to_s3
+                        from .litres_s3_media import upload_media_to_s3
                         upload_media_to_s3()
                     manifest.data.setdefault('publications', {})[target] = {'completed_at': now()}
         except BudgetStop as error:

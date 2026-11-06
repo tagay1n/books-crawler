@@ -1,8 +1,8 @@
 """Uploads prepared Litres markdown and images to a Hugging Face dataset."""
 
-from .utils import get_in_workdir
+from .litres_utils import get_in_workdir
 
-MARKDOWN_DIR = "../__artifacts/litres/markdown"
+MARKDOWN_DIR = "markdown"
 HF_DATASET = "yasalma/tt-litres-books"
 
 

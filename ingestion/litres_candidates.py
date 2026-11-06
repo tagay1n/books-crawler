@@ -4,12 +4,12 @@ import csv
 import json
 import os
 
-from .utils import dump_json_atomic, get_hash, get_in_workdir
+from .litres_utils import dump_json_atomic, get_hash, get_in_workdir
 
 
-CANDIDATES_INDEX = "../__artifacts/litres/candidates-index.json"
-BOOKS_INDEX = "../__artifacts/litres/books-index.json"
-REVIEW_TSV = "../__artifacts/litres/candidates-review.tsv"
+CANDIDATES_INDEX = "candidates-index.json"
+BOOKS_INDEX = "books-index.json"
+REVIEW_TSV = "candidates-review.tsv"
 VALID_REVIEW_STATUSES = {"candidate", "accepted", "rejected", "maybe"}
 REVIEW_COLUMNS = (
     "id",
