@@ -1,9 +1,7 @@
 """Builds or refreshes the Common Crawl PDF index by reading parquet datasets and merging URL, offset, and script metadata into a local JSON file."""
 
-import json
 from datatrove.pipeline.readers import ParquetReader
-import os
-from utils import _get_index_file_loc, _load_index
+from utils import _load_index, _dump_index
 from rich import print
 
 cyrl_sources = [
@@ -24,12 +22,8 @@ def index():
     for s in lat_sources:
         index.update(_get_urls_to_sources(s, "latn"))
         
-    index_path = _get_index_file_loc()
-    if os.path.exists(index_path):
-        existing_index = _load_index()
-    else:
-        existing_index = {}
-        
+    existing_index = _load_index()
+
     for id, value in index.items():
         if id in existing_index:
             _existing_value =  existing_index[id]
@@ -42,9 +36,8 @@ def index():
         else:
             existing_index[id] = value
             
-    with open(index_path, "w") as f:
-        json.dump(existing_index, f, indent=4, ensure_ascii=False)    
-          
+    _dump_index(existing_index)
+
     print(f"There are {len(existing_index)} docs in the index")
     
     

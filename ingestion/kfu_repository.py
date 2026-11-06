@@ -149,21 +149,16 @@ def reuse_originals(http, manifest, summary):
               and not (a["status"] == "downloaded" and a.get("results")
                        and valid_local(manifest.directory, a["results"][-1]))}
     summary["imported_originals"] = 0
-    for path in sorted(http.settings.artifacts_root.glob("kfu_*/manifest.json")):
+    from .registry import SOURCES
+    from .postgres_state import Repository
+    for source_name in sorted(name for name in SOURCES if name.startswith("kfu_")):
+        path = http.settings.artifacts_root / source_name / "manifest.json"
         if not wanted:
             break
         http.budget.check()
         if path.parent == manifest.directory:
             continue
-        # Read snapshots only; existing sources are never modified.
-        try:
-            data = json.loads(path.read_text())
-        except (OSError, ValueError) as error:
-            summary["errors"].append({"url": str(path), "stage": "local_reuse", "error": str(error)})
-            continue
-        if (not isinstance(data, dict) or data.get("schema_version") != 1
-                or not str(data.get("source", "")).startswith("kfu_")):
-            continue
+        data = Repository(source_name).load()
         for previous in data.get("assets", {}).values():
             http.budget.check()
             asset = wanted.get(previous.get("url"))

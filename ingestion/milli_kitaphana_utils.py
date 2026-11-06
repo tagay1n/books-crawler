@@ -1,15 +1,11 @@
-"""Shared helpers for Milli Kitaphana: index paths, file locking, list management, and HTTP request wrappers."""
+"""Shared helpers for Milli Kitaphana: database indexes, worker selections, and HTTP request wrappers."""
 
-import json
+import copy
 import os
-import shutil
-import time
 from contextlib import contextmanager
 from contextvars import ContextVar
-from datetime import datetime
 
 import requests
-import yaml
 import zipfile
 
 # Disable SSL warnings
@@ -24,9 +20,6 @@ def get_in_workdir(file):
 
 
 HOST = "https://kitap.tatar.ru"
-index_file_name = "books-index.json"
-index_dir_name = "_index"
-backups_dir_name = "_backups"
 RUNTIME = None
 
 
@@ -54,79 +47,43 @@ def read_config():
     return require_runtime().config
 
 
-def load_index_file(index_file=None):
-    if not index_file:
-        index_file = get_index_file_loc()
-    if os.path.exists(index_file):
-        with open(index_file, "r", encoding="utf-8-sig") as f:
-            books = json.load(f)
-    else:
-        books = {}
-    return books
-
-
-def get_index_dir():
-    """Return dedicated storage directory for index files."""
-    return os.path.normpath(os.path.join(str(require_runtime().directory), index_dir_name))
-
-
-def get_backups_dir():
-    """Return dedicated storage directory for index backups."""
-    return os.path.normpath(os.path.join(str(require_runtime().directory), backups_dir_name))
-
-
 def get_index_file_loc():
-    os.makedirs(str(require_runtime().directory), exist_ok=True)
-    index_dir = get_index_dir()
-    os.makedirs(index_dir, exist_ok=True)
-    return os.path.join(index_dir, index_file_name)
+    """Logical global index identifier, retained for provider helper callers."""
+    return 'books'
 
 
-def backup_index_snapshot():
-    """
-    Create a zip backup of current index state before a mutating command runs.
+def get_list_file_loc(name):
+    if not name or '/' in str(name) or '\\' in str(name):
+        raise ValueError('Worker selection must be a name, not a file path')
+    name = str(name).removesuffix('.json')
+    return name if name.startswith('selection:') else 'selection:' + name
 
-    Returns full path to the created backup archive.
-    """
-    index_file = get_index_file_loc()
-    backups_dir = get_backups_dir()
-    os.makedirs(backups_dir, exist_ok=True)
 
-    # Human-readable local timestamp: YYYY-MM-DD_HH-MM-SS
-    backup_file_name = f"{os.path.splitext(index_file_name)[0]}_{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.zip"
-    backup_path = os.path.abspath(os.path.normpath(os.path.join(backups_dir, backup_file_name)))
-
-    with zipfile.ZipFile(backup_path, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
-        if os.path.exists(index_file):
-            zf.write(index_file, arcname=index_file_name)
-        else:
-            zf.writestr(index_file_name, "{}\n")
-
-    return backup_path
+def load_index_file(index_file=None):
+    from .milli_kitaphana import records
+    runtime = require_runtime()
+    with runtime.state_lock:
+        index = copy.deepcopy(records(runtime.manifest))
+        if index_file is None or index_file == 'books':
+            return index
+        key = get_list_file_loc(index_file)
+        if key not in runtime.manifest.data:
+            raise ValueError('Unknown Postgres worker selection; run split first')
+        return {k:index[k] for k in runtime.manifest.data[key] if k in index}
 
 
 def dump_index(idx, index_file=None):
-    if not index_file:
-        index_file = get_index_file_loc()
-    from .state import atomic_json
-    from pathlib import Path
-    atomic_json(Path(index_file), idx)
-
-
-def get_lists_dir():
-    lists_dir = os.path.normpath(os.path.join(str(require_runtime().directory), "subindexes"))
-    os.makedirs(lists_dir, exist_ok=True)
-    return lists_dir
-
-
-def get_list_file_loc(name, lists_dir=None):
-    if not name:
-        raise ValueError("List name is required")
-    if not lists_dir:
-        lists_dir = get_lists_dir()
-    os.makedirs(lists_dir, exist_ok=True)
-    filename = name if name.endswith(".json") else f"{name}.json"
-    return os.path.normpath(os.path.join(lists_dir, filename))
+    runtime = require_runtime()
+    with runtime.state_lock:
+        manifest = runtime.manifest
+        if index_file is not None and index_file != 'books':
+            manifest.data[get_list_file_loc(index_file)] = list(idx)
+        else:
+            for key, item in idx.items():
+                manifest.observe({**item, 'url': item.get('url') or HOST + key}, [], record_key=key, persist=False)
+            for key in manifest.data['records'].keys() - idx.keys():
+                del manifest.data['records'][key]
+        manifest.save()
 
 
 def get_not_downloaded_docs(index, limited):
@@ -153,22 +110,13 @@ def get_not_downloaded_docs(index, limited):
 
 
 @contextmanager
-def open_lock(index_file, wait_seconds=0.5):
-    lock_file = f"{index_file}.lock"
-    try:
-        while True:
-            try:
-                with open(lock_file, "x", encoding="utf-8") as f:
-                    f.write(str(os.getpid()))
-                break
-            except FileExistsError:
-                time.sleep(wait_seconds)
+def open_lock(index_file=None, wait_seconds=None):
+    """The source's Postgres lease covers writers; serialize provider workers."""
+    runtime = require_runtime()
+    with runtime.state_lock:
+        from .database import assert_ownership
+        assert_ownership(owner=runtime.budget.database_owner)
         yield
-    finally:
-        try:
-            os.remove(lock_file)
-        except FileNotFoundError:
-            pass
 
 
 def download_part(context, part):

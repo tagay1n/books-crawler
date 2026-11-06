@@ -1,22 +1,19 @@
 """Scrapes per-book metadata fields from Litres pages and stores them back into the index."""
 
-import json
 import re
 
 import bs4 as bs
 from .litres_utils import requests
 from rich.progress import track
 
-from .litres_utils import RUNTIME, dump_json_atomic, get_in_workdir, get_sid
+from .litres_utils import RUNTIME, load_index, save_index, get_sid
 
 
 def scrap_metadata():
     """
-    Scrap metadata for the books and save it to the file
+    Scrape book metadata and checkpoint it in Postgres
     """
-    path_to_idx = get_in_workdir("books-index.json")
-    with open(path_to_idx, "r") as f:
-        _all_books = json.load(f)
+    _all_books = load_index('books')
     headers = {
         "Cookie": f"SID={get_sid()};",
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
@@ -57,6 +54,6 @@ def scrap_metadata():
             ): metadata['summary'] = summary.get_text(strip=True)
 
         b['metadata'] = metadata
-        dump_json_atomic(_all_books, path_to_idx)
+        save_index('books', _all_books)
 
-    dump_json_atomic(_all_books, path_to_idx)
+    save_index('books', _all_books)

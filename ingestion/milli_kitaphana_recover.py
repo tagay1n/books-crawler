@@ -23,7 +23,7 @@ import requests
 
 from . import milli_kitaphana_download as downloader
 from .milli_kitaphana_decrypt import _decrypt_file, decrypt_doc_parts
-from .milli_kitaphana_utils import (HOST, backup_index_snapshot, download_part,
+from .milli_kitaphana_utils import (HOST, download_part,
                    dump_index, load_index_file, open_lock, get_index_file_loc,
                    read_config, request, request_session)
 
@@ -367,13 +367,13 @@ def fetch_full(meta, config):
 
 
 def recover(report_path, workers=4, download=False, retry_failed=False, download_workers=4):
-    report_path = Path(report_path)
-    report_path.parent.mkdir(parents=True, exist_ok=True)
-    report = json.loads(report_path.read_text()) if report_path.exists() else {
-        "started_at": datetime.now(timezone.utc).isoformat(), "records": {}}
+    from .milli_kitaphana_utils import require_runtime
+    runtime = require_runtime()
+    report_name = str(report_path)
+    report = copy.deepcopy(runtime.manifest.data.get('recovery_reports', {}).get(report_name, {
+        'started_at': datetime.now(timezone.utc).isoformat(), 'records': {}}))
     index = load_index_file()
     config = read_config()
-    from .milli_kitaphana_utils import require_runtime
     targets = dict(list((k, v) for k, v in index.items() if unfinished(v))[:require_runtime().settings.max_items])
     report["target_count"] = len(set(targets) | set(report["records"]))
     if retry_failed:
@@ -389,9 +389,8 @@ def recover(report_path, workers=4, download=False, retry_failed=False, download
 
     def save():
         report["counts"] = dict(Counter(r["status"] for r in report["records"].values()))
-        temp = report_path.with_suffix(".tmp")
-        temp.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
-        temp.replace(report_path)
+        runtime.manifest.data.setdefault('recovery_reports', {})[report_name] = copy.deepcopy(report)
+        runtime.manifest.save()
 
     pending = [(k, v) for k, v in targets.items() if k not in report["records"]]
     with ThreadPoolExecutor(max_workers=workers) as pool:
@@ -409,10 +408,7 @@ def recover(report_path, workers=4, download=False, retry_failed=False, download
                 print(f"Audited {count}/{report['target_count']}: {result['status']} {result.get('code', key)}; {report['counts']}", flush=True)
     if not download:
         save()
-        write_summary(report, report_path.with_suffix(".md"))
         return report
-    if "index_backup" not in report:
-        report["index_backup"] = backup_index_snapshot()
     classify_collections(report)
     resolve_completed_duplicates(report)
     apply_link_repairs(report)
@@ -471,5 +467,4 @@ def recover(report_path, workers=4, download=False, retry_failed=False, download
                 print(f"DOWNLOAD FAILED {group[0][1]['code']}: {_error(exc)}", flush=True)
             save()
     save()
-    write_summary(report, report_path.with_suffix(".md"))
     return report

@@ -2,11 +2,14 @@
 
 from .milli_kitaphana_utils import load_index_file, dump_index
 from rich import print
+import json
+from pathlib import Path
 
 
 def merge_indexes(new_index_path):
     old_index = load_index_file()
-    new_index = load_index_file(new_index_path)
+    # Explicit legacy import, never an operational dependency.
+    new_index = json.loads(Path(new_index_path).read_text(encoding='utf-8-sig'))
     merged_index = _merge_indexes(new_index, old_index)
     dump_index(merged_index)
 

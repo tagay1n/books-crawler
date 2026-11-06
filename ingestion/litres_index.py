@@ -1,7 +1,5 @@
-"""Scrapes Litres catalog pages to build a JSON index of titles, authors, URLs, and content types, merging with any existing index."""
+"""Scrapes Litres catalog pages to update a Postgres index of titles, authors, URLs, and content types, merging with any existing index."""
 
-import json
-import os.path
 import re
 from urllib.parse import parse_qs, urljoin, urlparse
 
@@ -9,7 +7,7 @@ import bs4 as bs
 from .litres_utils import requests
 
 from .litres_consts import TOTAL_PAGES, entry_point, domain
-from .litres_utils import RUNTIME, create_driver, dump_json_atomic, get_sid, get_in_workdir, get_hash
+from .litres_utils import RUNTIME, create_driver, load_index, save_index, get_sid, get_hash
 
 
 BOOK_PATH_MARKERS = ("/book/", "/audiobook/")
@@ -26,15 +24,7 @@ TEXT_CONTENT_MARKERS = (
 
 
 def index():
-    index_file_name = "books-index.json"
-    index_dir = get_in_workdir("")
-    os.makedirs(index_dir, exist_ok=True)
-    index_file = os.path.join(index_dir, index_file_name)
-    if os.path.exists(index_file):
-        with open(index_file, "r") as f:
-            books = json.load(f)
-    else:
-        books = {}
+    books = load_index('books')
 
     headers = {
         "Cookie": f"SID={get_sid()};",
@@ -68,16 +58,16 @@ def index():
                             page_added += 1
                             added += 1
                         books[h] = details
-                    dump_json_atomic(books, index_file)
+                    save_index('books', books)
                 print(f"Page {i}: found {len(cards)} book card(s), added {page_added}, updated {page_updated}")
         except KeyboardInterrupt:
-            dump_json_atomic(books, index_file)
-            print(f"Interrupted; saved current index state to {index_file}")
+            save_index('books', books)
+            print("Interrupted; saved current index state to Postgres")
             raise
     finally:
         reader_resolver.close()
 
-    dump_json_atomic(books, index_file)
+    save_index('books', books)
 
     print(f"Discovered {discovered} book card(s), added {added}, updated {updated}")
     print(f"Index contains {len(books)} books")

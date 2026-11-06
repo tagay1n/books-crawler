@@ -25,7 +25,8 @@ import zipfile
 from pathlib import Path
 
 import requests
-from sqlalchemy import create_engine, text
+from sqlalchemy import text
+from .database import transaction
 from .milli_kitaphana_utils import dump_index, load_index_file, read_config
 
 
@@ -173,8 +174,7 @@ def mark_existing_limited(
     index = load_index_file()
     lookups = _build_lookups(index)
 
-    engine = create_engine(read_config()["limited_database_url"])
-    with engine.connect() as conn:
+    with transaction(read_config()["limited_database_url"]) as conn:
         rows = conn.execute(
             text('SELECT md5, "full", upstream_meta_url, title FROM document WHERE "full" = false')
         ).all()

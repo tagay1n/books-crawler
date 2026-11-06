@@ -1,6 +1,5 @@
 """Uploads Litres PDFs to Yandex Disk, publishes links, and writes document metadata to the monocorpus database."""
 
-import json
 import os.path
 import re
 
@@ -9,15 +8,14 @@ from rich.progress import track
 from sqlalchemy import text
 from yadisk_client import YaDisk, ConflictResolution
 
-from .litres_utils import get_in_workdir, read_config
+from .litres_utils import load_index, read_config
 
 REMOTE_DIR = "/НейроТатарлар/kitaplar/_все книги/litres"
 
 
-def upload_pdfs():
-    _index_file = get_in_workdir("books-index.json")
-    with open(_index_file, "r") as f:
-        _all_docs = json.load(f)
+def upload_pdfs(_all_docs=None):
+    if _all_docs is None:
+        _all_docs = load_index('books')
 
     config = read_config()
     client = YaDisk(config['yandex.oauth_token'])

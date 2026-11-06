@@ -8,12 +8,14 @@ from .output import compact_result
 from .registry import SOURCES
 
 
-app = typer.Typer(no_args_is_help=True, help="Discover documents and download originals locally.")
+app = typer.Typer(pretty_exceptions_show_locals=False, no_args_is_help=True, help="Discover documents and download originals locally.")
+from .database_cli import app as database_app
+app.add_typer(database_app, name="database")
 
 
 @app.callback()
 def main(ctx: typer.Context, config: Optional[Path] = typer.Option(None, "--config", help="Selected operational YAML file."),
-         summary_only: bool = typer.Option(False, "--summary-only", help="Print one compact JSON result and suppress progress; detailed reports remain in artifacts.")):
+         summary_only: bool = typer.Option(False, "--summary-only", help="Print one compact JSON result and suppress progress; run details are in Postgres.")):
     ctx.obj = config
     ctx.meta["summary_only"] = summary_only
 
@@ -192,7 +194,7 @@ def import_state(ctx: typer.Context, source: str = typer.Option(..., "--source")
 
 @app.command()
 def split(ctx: typer.Context, source: str = typer.Option(..., "--source"), parts: int = typer.Option(..., "--parts", "-p", min=1), dest: Optional[str] = None, prefix: str = "index-part"):
-    """Split Milli pending records into worker indexes."""
+    """Store Milli worker selections in Postgres; --dest also exports JSON."""
     execute(ctx, "split", source, maintenance=dict(parts=parts, dest=dest, prefix=prefix))
 
 
@@ -202,14 +204,8 @@ def merge_index(ctx: typer.Context, path: Path, source: str = typer.Option(..., 
 
 
 @app.command()
-def recover(ctx: typer.Context, source: str = typer.Option(..., "--source"), report: Optional[Path] = None, workers: int = typer.Option(4, min=1), download: bool = False, retry_failed: bool = False, download_workers: int = typer.Option(4, min=1)):
-    from .config import load_settings
-    from .milli_kitaphana import directory_for
-    try:
-        directory = directory_for(load_settings(ctx.obj, source))
-    except (ValueError, OSError) as error:
-        fail(ctx, error, "recover", source)
-    execute(ctx, "recover", source, maintenance=dict(report_path=str(report or directory / "_recovery/report.json"), workers=workers, download=download, retry_failed=retry_failed, download_workers=download_workers))
+def recover(ctx: typer.Context, source: str = typer.Option(..., "--source"), report: str = typer.Option("default", help="Postgres recovery journal name."), workers: int = typer.Option(4, min=1), download: bool = False, retry_failed: bool = False, download_workers: int = typer.Option(4, min=1)):
+    execute(ctx, "recover", source, maintenance=dict(report_path=report, workers=workers, download=download, retry_failed=retry_failed, download_workers=download_workers))
 
 
 @app.command("mark-existing-limited")

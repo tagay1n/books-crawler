@@ -2,13 +2,14 @@
 
 Incremental pipeline for Tatar PDFs sourced from the `HuggingFaceFW/finepdfs` dataset.
 
-Main state file: `__artifacts/common.crawl/docs-index.json`
+Progress lives in the shared Postgres `ingestion.common_crawl_*` tables.
+See [database setup and legacy import](../docs/postgres-migration.md).
 
 ## Commands
 
 - `python common-crawl/cli.py index`
   - Read parquet shards via `datatrove.ParquetReader`.
-  - Merge `url`, `file_path`, `offset`, `script` into local index.
+  - Merge `url`, `file_path`, `offset`, `script` into the database index.
 - `python common-crawl/cli.py download`
   - Tries direct PDF download by `url`.
   - Falls back to Common Crawl WARC offset fetch.
@@ -20,7 +21,7 @@ Main state file: `__artifacts/common.crawl/docs-index.json`
 
 ## Runtime files
 
-- Index: `__artifacts/common.crawl/docs-index.json`
+- Index: Postgres; legacy JSON is used only for explicit import.
 - Temporary PDF: `__artifacts/common.crawl/tmp.pdf`
 - WARC/parquet cache: `~/.common-crawl/warcs/`
 - Final downloaded files: `~/.common-crawl/result/`
@@ -28,4 +29,4 @@ Main state file: `__artifacts/common.crawl/docs-index.json`
 ## Notes
 
 - `upload.py` uses a hardcoded `token = "<<set me>>"` placeholder; set it before `upload`.
-- Index backups are written during download/upload operations.
+- Processing commands do not write index files or automatic backups.

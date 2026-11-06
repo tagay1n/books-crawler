@@ -13,7 +13,6 @@ upload_dir = "/НейроТатарлар/kitaplar/common_crawl"
 
 def upload():
     original_index = _load_index()
-    _dump_index(index=original_index, backup=True)
     index = _dedup(original_index)
     not_uploaded_docs = {k: v for k,v in index.items() if not v.get('uploaded', False)}
     print(f"About to upload {len(not_uploaded_docs)} docs")
@@ -33,7 +32,6 @@ def upload():
             print(f"Error: {e}")
         finally:
             _dump_index(original_index)
-            _dump_index(original_index, backup=True)
 
             
 

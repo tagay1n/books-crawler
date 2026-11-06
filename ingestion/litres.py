@@ -93,7 +93,6 @@ def commit(runtime, items):
     for key, book in items.items():
         runtime.manifest.observe(book, [], record_key=key, persist=False)
     runtime.manifest.save()
-    atomic_json(runtime.directory / 'books-index.json', items)
 
 
 def discover(runtime, items):
@@ -155,13 +154,21 @@ def acquire(runtime, items, recheck):
     from . import litres_pdf as pdf, litres_text as text, litres_utils as utils
     selected = []
     for key, book in items.items():
+        if book.get('imported_acquisition_complete') and not recheck:
+            runtime.summary['skipped'] += 1
+            if book.get('acquired') and not (book.get('pdf_file') or book.get('markdown_file') or book.get('finalized')) and len(selected) < runtime.settings.max_items:
+                selected.append(key)
+            continue
         if runtime.config.get('_format', 'all') not in {'all', book.get('content_type')}:
             continue
-        if book.get('acquired') and not recheck and inputs_valid(book):
+        if book.get('acquired') and not recheck:
             runtime.summary['skipped'] += 1
             if len(selected) < runtime.settings.max_items:
                 selected.append(key)
             continue
+        if recheck:
+            book.pop('imported_acquisition_complete', None)
+            book.pop('finalized', None)
         runtime.budget.start_item()
         try:
             if book['content_type'] == 'pdf':
@@ -227,16 +234,22 @@ def finalize(runtime, items, selected=None):
         for key, book in items.items():
             if selected is not None and key not in selected:
                 continue
-            if not book.get('acquired') or not inputs_valid(book):
+            runtime.budget.check()
+            if book.get('imported_acquisition_complete') and (book.get('pdf_file') or book.get('markdown_file') or book.get('finalized') or book.get('imported_outputs')):
+                runtime.summary['skipped'] += 1
+                continue
+            if not book.get('acquired'):
+                continue
+            fingerprint = hashlib.sha256(json.dumps([book.get('inputs', []), runtime.config.get('pdf', {})], sort_keys=True).encode()).hexdigest()
+            result = book.get('finalized', {})
+            if result.get('fingerprint') == fingerprint:
+                runtime.summary['skipped'] += 1
+                continue
+            if not inputs_valid(book):
+                runtime.summary['awaiting_inputs'] = runtime.summary.get('awaiting_inputs', 0) + 1
                 continue
             if selected is None:
                 runtime.budget.start_item()
-            runtime.budget.check()
-            fingerprint = hashlib.sha256(json.dumps([book['inputs'], runtime.config.get('pdf', {})], sort_keys=True).encode()).hexdigest()
-            result = book.get('finalized', {})
-            if result.get('fingerprint') == fingerprint and Path(result['path']).is_file() and file_digests(Path(result['path']))[0] == result['sha256']:
-                runtime.summary['skipped'] += 1
-                continue
             book.pop('pdf_file', None)
             if book['content_type'] == 'pdf':
                 book['full_name'] = Path(book['full_name']).name.replace('..', '_')
@@ -284,9 +297,8 @@ def import_state(runtime, items):
                 if key not in items:
                     items[key] = book
         else:
-            target = runtime.directory / name
-            current = json.loads(target.read_text()) if target.exists() else {}
-            atomic_json(target, {**data, **current})
+            runtime.manifest.data['candidates'] = {**data, **runtime.manifest.data.get('candidates', {})}
+            runtime.manifest.save()
     for book in items.values():
         for field in ('pdf_file', 'markdown_file'):
             if book.get(field):
@@ -327,13 +339,10 @@ def execute(settings, command, *, recheck=False, log=print):
         manifest = Manifest(directory, 'litres')
         result = manifest.status()
         records = books(manifest)
-        result['acquired'] = sum(bool(b.get('acquired')) for b in records.values())
-        result['finalized'] = sum(bool(b.get('finalized') or b.get('imported_outputs')) for b in records.values())
-        candidates_path = directory / 'candidates-index.json'
-        if candidates_path.exists():
-            from collections import Counter
-            candidates = json.loads(candidates_path.read_text())
-            result['review_counts'] = dict(Counter(c.get('status', 'candidate') for c in candidates.values()))
+        result['acquired'] = sum(bool(b.get('acquired') or b.get('imported_acquisition_complete')) for b in records.values())
+        result['finalized'] = sum(bool(b.get('finalized') or b.get('imported_outputs') or (b.get('imported_acquisition_complete') and (b.get('pdf_file') or b.get('markdown_file')))) for b in records.values())
+        from collections import Counter
+        result['review_counts'] = dict(Counter(c.get('status', 'candidate') for c in manifest.data.get('candidates', {}).values()))
         result['catalog'] = manifest.data.get('litres_catalog', {})
         result['publications'] = manifest.data.get('publications', {})
         return result
@@ -342,7 +351,7 @@ def execute(settings, command, *, recheck=False, log=print):
         if not isinstance(sid, str) or not sid.strip() or sid == '<SET ME>':
             raise ValueError('Set sources.litres.sid in the selected operational YAML')
     summary = {'source': 'litres', 'command': command, 'id': uuid4().hex, 'started_at': now(), 'pages': 0, 'downloaded': 0, 'skipped': 0, 'requests': 0, 'network_retries': 0, 'errors': [], 'stops': []}
-    with source_lock(directory):
+    with source_lock(directory, 'litres'):
         manifest = Manifest(directory, 'litres')
         runtime = Runtime(settings, manifest, summary)
         from .litres_utils import RUNTIME
@@ -364,11 +373,11 @@ def execute(settings, command, *, recheck=False, log=print):
                     action = runtime.config['_action']
                     {'export': candidates.export_review, 'sync': candidates.sync_review, 'import': candidates.import_accepted}[action]()
                     if action == 'import':
-                        items = json.loads((directory / 'books-index.json').read_text())
+                        items = books(manifest)
                 if command == 'metadata':
                     from .litres_metadata import scrap_metadata
                     scrap_metadata()
-                    items = json.loads((directory / 'books-index.json').read_text())
+                    items = books(manifest)
                 if command == 'publish':
                     eligible = {}
                     for key, book in items.items():
@@ -377,11 +386,10 @@ def execute(settings, command, *, recheck=False, log=print):
                             eligible[key] = book
                     if not eligible:
                         raise ValueError('No verified finalized outputs to publish')
-                    atomic_json(directory / 'books-index.json', eligible)
                     target = runtime.config['_target']
                     if target == 'yandex':
                         from .litres_upload_books import upload_pdfs
-                        upload_pdfs()
+                        upload_pdfs(eligible)
                     elif target == 'hf':
                         from .litres_hf import upload_to_hf
                         upload_to_hf()
@@ -394,14 +402,13 @@ def execute(settings, command, *, recheck=False, log=print):
         except Exception as error:
             summary['errors'].append({'stage': command, 'error': str(error).replace(str(settings.source_options.get('sid') or '\0'), '[redacted]')})
         finally:
-            if command == 'metadata' and (directory / 'books-index.json').exists():
-                items = json.loads((directory / 'books-index.json').read_text())
+            if command in {'metadata', 'review'}:
+                items = books(manifest)
             commit(runtime, items)
             runtime.close()
             RUNTIME.reset(token)
             summary.update(records=len(items), attempted_download_bytes=runtime.budget.bytes, started_items=runtime.budget.items, finished_at=now())
-            summary['summary_path'] = str(directory / 'summaries' / (summary['id'] + '.json'))
+            summary['state_key'] = 'last_run'
             manifest.data['last_run'] = summary
             manifest.save()
-            atomic_json(Path(summary['summary_path']), summary)
     return summary

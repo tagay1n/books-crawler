@@ -1,7 +1,6 @@
 """Discover likely Tatar Litres books from broad search pages and write a reviewable candidate index."""
 
 import json
-import os
 import re
 import time
 from urllib.parse import urlencode
@@ -16,10 +15,8 @@ from .litres_index import (
     _raise_if_blocked,
     _set_full_name,
 )
-from .litres_utils import RUNTIME, create_driver, dump_json_atomic, get_hash, get_in_workdir, get_sid, read_config
+from .litres_utils import RUNTIME, create_driver, load_index, save_index, get_hash, get_sid, read_config
 
-CANDIDATES_INDEX = "candidates-index.json"
-BOOKS_INDEX = "books-index.json"
 MAX_PAGES_PER_QUERY_CAP = 20
 DEFAULT_SEARCH_FILTERS = {
     "art_types": "text_book",
@@ -53,12 +50,11 @@ def discover_candidates():
     """
     Discover likely Tatar books outside the strict Litres language filter.
 
-    Results are written to candidates-index.json for review; this command does not mutate books-index.json.
+    Candidates and their traversal checkpoints are committed together in Postgres.
     """
     config = _discover_config()
-    books = _load_json(get_in_workdir(BOOKS_INDEX))
-    candidates_path = get_in_workdir(CANDIDATES_INDEX)
-    candidates = _load_json(candidates_path)
+    books = load_index('books')
+    candidates = load_index('candidates')
     known_authors = _known_authors(books)
     existing_urls = {book.get("url") for book in books.values() if book.get("url")}
     driver = None
@@ -132,10 +128,9 @@ def discover_candidates():
                         added += 1
                     candidates[key] = details
                     page_kept += 1
-                dump_json_atomic(candidates, candidates_path)
                 if runtime:
                     scan["visited"].append(url)
-                    runtime.manifest.save()
+                save_index('candidates', candidates)
                 print(f"Page {page}: found {len(parsed_books)} book card(s), kept {page_kept}")
     finally:
         if driver:
@@ -144,8 +139,7 @@ def discover_candidates():
     if runtime:
         scan["complete"] = True
         runtime.manifest.save()
-    os.makedirs(os.path.dirname(candidates_path), exist_ok=True)
-    dump_json_atomic(candidates, candidates_path)
+    save_index('candidates', candidates)
     print(f"Discovered {discovered} book card(s), added {added}, updated {updated}")
     print(f"Skipped {skipped_low_score} low-score candidate(s)")
     print(f"Candidate index contains {len(candidates)} books")
@@ -169,13 +163,6 @@ def _discover_config():
             _required_config_value(discover, "discover.search_request_retries")
         ),
     }
-
-
-def _load_json(path):
-    if not os.path.exists(path):
-        return {}
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
 
 
 def _required_config_section(config, name):

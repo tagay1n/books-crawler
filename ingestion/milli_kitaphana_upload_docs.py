@@ -1,15 +1,16 @@
 """Uploads PDFs to Yandex Disk and stores upstream metadata in PostgreSQL."""
 
 import posixpath
-import psycopg
-from psycopg.types.json import Jsonb
+from sqlalchemy import text, bindparam
+from sqlalchemy.dialects.postgresql import JSONB
+from .database import transaction
 
 from yadisk_client import YaDisk, ConflictResolution
 
 
 UPSTREAM_METADATA_INSERT = """
     INSERT INTO monocorpus.library_upstream_metadata (md5, payload_json)
-    VALUES (%s, %s)
+    VALUES (:md5, :payload_json)
 """
 
 
@@ -33,5 +34,6 @@ def persist_upstream_metadata(md5, payload_json, database_url):
     if not database_url or database_url == "<SET ME>":
         raise ValueError("database_url is required")
 
-    with psycopg.connect(database_url) as connection:
-        connection.execute(UPSTREAM_METADATA_INSERT, (md5, Jsonb(payload_json)))
+    with transaction(database_url) as connection:
+        statement = text(UPSTREAM_METADATA_INSERT).bindparams(bindparam("payload_json", type_=JSONB))
+        connection.execute(statement, {"md5":md5, "payload_json":payload_json})

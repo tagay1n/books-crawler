@@ -98,6 +98,15 @@ def inputs_for(record, assets):
     return fingerprint, inputs
 
 
+def completed_output(record, assets):
+    """Completion depends on recorded inputs and recipe, not runner-local files."""
+    state = record.get('pdf', {})
+    if (state.get('status') != 'complete' or not state.get('results') or not assets
+            or any(a.get('status') != 'downloaded' or not a.get('results') for a in assets)):
+        return False
+    return state['results'][-1].get('input_fingerprint') == inputs_for(record, assets)[0]
+
+
 def assemble(http, manifest, record, assets, temporary, summary):
     fingerprint, inputs = inputs_for(record, assets)
     state = record["pdf"]
@@ -176,11 +185,20 @@ def download(http, manifest, summary, log, recheck, *, unit="issue",
         temporary = Path(temporary)
         for key, record in manifest.data["records"].items():
             http.budget.check()
+            if record.get("imported_acquisition_complete") and not recheck:
+                summary["skipped"] += 1
+                continue
+            if recheck:
+                record.pop("imported_acquisition_complete", None)
             metadata = record["observations"][-1]["metadata"]
             if metadata.get("expected_pages") is None:
                 continue
             assets = sorted(grouped.get(key, []), key=lambda a: a.get("page_index", -1))
             state = record.setdefault("pdf", {"status": "incomplete", "results": []})
+            if not recheck and completed_output(record, assets):
+                summary['skipped'] += len(assets)
+                summary['pdf_reused'] += 1
+                continue
             try:
                 if [a["page_index"] for a in assets] != list(range(metadata["expected_pages"])):
                     raise ValueError("Current images do not match the expected page sequence.")
@@ -203,7 +221,7 @@ def download(http, manifest, summary, log, recheck, *, unit="issue",
                 for asset in assets:
                     http.budget.check()
                     previous = asset["results"][-1] if asset["results"] else None
-                    if not recheck and asset["status"] == "downloaded" and valid_local(manifest.directory, previous):
+                    if not recheck and asset["status"] == "downloaded" and previous:
                         summary["skipped"] += 1
                         continue
                     try:
@@ -219,6 +237,9 @@ def download(http, manifest, summary, log, recheck, *, unit="issue",
                 if not assets or any(a["status"] != "downloaded" for a in assets):
                     state["last_error"] = "Expected page images remain unresolved; no complete PDF published."
                     log(f"Publication incomplete: {metadata['title']}")
+                elif assemble_outputs and not all(valid_local(manifest.directory, a["results"][-1]) for a in assets):
+                    summary["awaiting_inputs"] = summary.get("awaiting_inputs", 0) + 1
+                    state["last_error"] = "Restore page inputs or use download --recheck before assembly."
                 elif assemble_outputs:
                     assemble(http, manifest, record, assets, temporary, summary)
                     log(f"PDF ready: {metadata['title']} ({len(assets)} pages)")
@@ -250,11 +271,17 @@ def finalize(settings, budget, manifest, summary, log, *, selected_records=None)
             budget.check()
             if selected_records is not None and key not in selected_records:
                 continue
+            if record.get("imported_acquisition_complete"):
+                summary["skipped"] += 1
+                continue
             metadata = record["observations"][-1]["metadata"]
             if metadata.get("expected_pages") is None:
                 continue
             assets = sorted(grouped.get(key, []), key=lambda a: a.get("page_index", -1))
             state = record.setdefault("pdf", {"status": "incomplete", "results": []})
+            if completed_output(record, assets):
+                summary['pdf_reused'] += 1
+                continue
             try:
                 ready = bool(assets) and all(a["status"] == "downloaded" and a["results"]
                     and valid_local(manifest.directory, a["results"][-1]) for a in assets)
@@ -269,7 +296,9 @@ def finalize(settings, budget, manifest, summary, log, *, selected_records=None)
                 attempted += 1
                 state["status"] = "incomplete"
                 if not ready:
-                    raise ValueError("Missing or damaged page images; run download first.")
+                    summary["awaiting_inputs"] = summary.get("awaiting_inputs", 0) + 1
+                    state["last_error"] = "Restore page inputs or use download --recheck before finalization."
+                    continue
                 for asset in assets:
                     budget.check()
                     validate_page(manifest.directory / asset["results"][-1]["path"],

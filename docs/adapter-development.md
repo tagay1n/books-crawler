@@ -44,6 +44,11 @@ selection, the review checklist, and recording findings and review dates.
 
 ## Inspect state efficiently
 
+Authoritative state now lives in PostgreSQL; see [migration and setup](postgres-migration.md).
+Use `.venv/bin/python scripts/ingestion_overview.py --database` for current state.
+The file-based examples below inspect archived snapshots only.
+
+
 ```bash
 .venv/bin/python scripts/ingestion_overview.py __artifacts/ingestion
 .venv/bin/python scripts/ingestion_overview.py __artifacts/session-20261028
@@ -91,9 +96,9 @@ New adapters and future migrations should expose source-neutral root commands:
 `discover`, `download`, `finalize`, `run`, `status`, with optional `metadata`,
 `review`, `publish`, and `import-state` capabilities. Litres is the first full
 pipeline reference; see [its guide](ingestion/litres.md) and `ingestion/litres.py`.
-Provider helpers live alongside the adapter in `ingestion/litres_*.py`; atomic
-JSON writes reuse `state.atomic_json`, and artifact paths require the active
-shared runtime. The registry stays lazy. Source-specific operational options belong under
+Provider helpers live alongside the adapter in `ingestion/litres_*.py`; processing
+state uses the active Postgres-backed runtime. Reserve `state.atomic_json` for
+document content and explicitly requested exports. The registry stays lazy. Source-specific operational options belong under
 `sources.<source>`; command routing must reject unsupported capabilities.
 
 Discovery stores resumable source evidence and admission decisions. Download

@@ -14,18 +14,12 @@ metadata insert connection.
 
 `artifact_dir` overrides this source's artifact directory, relative to the YAML.
 Without it, artifacts live under `<artifacts_root>/milli_kitaphana`. This workspace
-uses `__artifacts/milli.kitaphana`, preserving all downloads, backups, subindexes
-and recovery journals in place. To initialize the shared manifest, run:
-
-```bash
-.venv/bin/python cli.py --config ingestion.yaml import-state --source milli_kitaphana --from __artifacts/milli.kitaphana
-```
-
-The import requires `artifact_dir` to resolve to `--from`; it does not copy or move
-originals. It imports the legacy index into the manifest and refreshes the index
-as a compatibility projection. Repeating import preserves newer shared records.
-Legacy `decrypted` remains historical completion state. A unique local PDF is
-opened and hashed before being admitted as a finalized legacy output.
+can use `__artifacts/milli.kitaphana` for existing documents. Progress, worker
+selections and recovery journals live in Postgres; no local indexes or backups
+are generated. See [Postgres setup and import](../postgres-migration.md) to import
+existing progress, including `--processing-dir` for worker/recovery state.
+Explicit `import-state --from DIRECTORY` also accepts a legacy index directory;
+it preserves newer database entries and leaves original files untouched.
 
 | Previous command | Root replacement |
 | --- | --- |
@@ -49,15 +43,16 @@ PostgreSQL using the existing clients. Each destination step is checkpointed per
 record. A process failure after a remote operation but before its checkpoint can
 require destination inspection before retrying, especially for insert-only SQL.
 
-`split` retains `--parts`, `--dest`, `--prefix` and the repository-root `filter.json`.
+`split` stores named worker selections in Postgres. `--dest` explicitly exports
+JSON in addition; filters belong under `sources.milli_kitaphana.split_filter`.
 `recover` retains `--report`, `--workers`, `--download`, `--retry-failed` and
-`--download-workers`; its default journal is `_recovery/report.json`. Recovery
+`--download-workers`; its default journal is the Postgres entry `default`; `--report` selects a name. Recovery
 keeps its combined download/local assembly behavior and never publishes.
 Source writers share a lock. Network operations use shared time/byte/retry limits;
 provider transfers are serialized for consistent accounting. Recovery candidates
 are capped by the configured item limit. `status` is read-only and needs no keys.
 Use global `--summary-only` for compact results; detailed errors remain in the
-reported summary JSON.
+source's `last_run` entry in Postgres.
 
 Manual verification used isolated `/tmp/milli-cli-check` artifacts: repeated
 import, split, local encrypted PDF assembly with zero requests, and a second

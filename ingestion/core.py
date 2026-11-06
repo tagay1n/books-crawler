@@ -15,7 +15,7 @@ from .discovery import discover
 from .documents import DOCUMENT_EXTENSIONS, same_origin
 from .network import Budget, BudgetStop, HTTP, InvalidDocument, SourceAccessError
 from .registry import SOURCES
-from .state import Manifest, atomic_json, now, source_lock
+from .state import Manifest, now, source_lock
 
 
 MIME_EXTENSIONS = {
@@ -222,10 +222,15 @@ def download(http, manifest, summary, log, recheck, *, extensions=None, validate
                     or asset.get("kind") == "page_image"):
                 continue
             previous = asset["results"][-1] if asset["results"] else None
-            if (asset["status"] == "downloaded" and not recheck and source_version_matches(asset)
-                    and valid_local(manifest.directory, previous)):
+            if asset.get("imported_acquisition_complete") and not recheck and source_version_matches(asset):
                 summary["skipped"] += 1
                 continue
+            if (asset["status"] == "downloaded" and not recheck and source_version_matches(asset)
+                    and previous):
+                summary["skipped"] += 1
+                continue
+            if recheck:
+                asset.pop("imported_acquisition_complete", None)
             http.budget.start_item()
             try:
                 acquire(http, manifest, asset, Path(temporary), summary,
@@ -258,7 +263,7 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
                "pages": 0, "records": 0, "observations": 0, "downloaded": 0, "reused_blobs": 0,
                "not_modified": 0, "unchanged_downloads": 0, "skipped": 0,
                "requests": 0, "network_retries": 0, "stops": [], "errors": []}
-    with source_lock(directory):
+    with source_lock(directory, source):
         manifest = Manifest(directory, source)
         budget = Budget(settings)
         http = HTTP(settings, budget, summary) if command != "finalize" else None
@@ -304,8 +309,7 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
             summary.update(finished_at=now(), attempted_download_bytes=budget.bytes, started_items=budget.items,
                            backlog=manifest.status())
             summary["stops"] = list(dict.fromkeys(summary["stops"]))
-            summary["summary_path"] = str(directory / "summaries" / (summary["id"] + ".json"))
+            summary['state_key'] = 'last_run'
             manifest.data["last_run"] = summary
             manifest.save()
-            atomic_json(Path(summary["summary_path"]), summary)
     return summary

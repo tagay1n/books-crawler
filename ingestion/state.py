@@ -32,46 +32,25 @@ def atomic_json(path: Path, value, *, compact=False):
             temporary.unlink(missing_ok=True)
 
 
+_directory_sources = {}
+
+
 @contextmanager
-def source_lock(directory: Path):
-    directory.mkdir(parents=True, exist_ok=True)
-    with (directory / ".lock").open("a+b") as handle:
-        handle.seek(0, os.SEEK_END)
-        if handle.tell() == 0:
-            handle.write(b"\0")
-            handle.flush()
-        handle.seek(0)
-        try:
-            if os.name == "nt":
-                import msvcrt
-                msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
-            else:
-                import fcntl
-                fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
-        except OSError as error:
-            raise RuntimeError("Another command is already writing this source's artifacts.") from error
-        try:
-            yield
-        finally:
-            handle.seek(0)
-            if os.name == "nt":
-                msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
-            else:
-                fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
+def source_lock(directory: Path, source=None):
+    from .database import source_lock as postgres_lock
+    source = source or _directory_sources.get(str(directory.resolve()), directory.name.replace('.', '_'))
+    with postgres_lock(source):
+        yield
 
 
 class Manifest:
     def __init__(self, directory: Path, source="magarif"):
         self.directory = directory
         self.path = directory / "manifest.json"
-        self.data = {"schema_version": 1, "source": source, "records": {}, "assets": {}}
-        if self.path.exists():
-            self.data = json.loads(self.path.read_text(encoding="utf-8"))
-            if (not isinstance(self.data, dict) or self.data.get("schema_version") != 1
-                    or self.data.get("source") != source
-                    or not isinstance(self.data.get("records"), dict)
-                    or not isinstance(self.data.get("assets"), dict)):
-                raise ValueError("Invalid or unsupported local manifest; refusing to overwrite it.")
+        from .postgres_state import Repository
+        _directory_sources[str(directory.resolve())] = source
+        self.repository = Repository(source)
+        self.data = self.repository.load()
         self._assets_by_record = None
 
     def _record_asset_index(self):
@@ -83,10 +62,7 @@ class Manifest:
         return self._assets_by_record
 
     def save(self):
-        # Large page inventories otherwise spend much of each checkpoint on
-        # whitespace. Keep the schema and atomic replacement behavior unchanged.
-        compact = len(self.data["assets"]) >= 1000 or len(self.data["records"]) >= 500
-        atomic_json(self.path, self.data, compact=compact)
+        self.repository.save(self.data)
 
     def observe(self, metadata, assets, parser_version=1, *, record_key=None, persist=True):
         """Observe a record; callers deferring persistence must save their checkpoint.
@@ -106,6 +82,7 @@ class Manifest:
         changed = (not history or history[-1]["fingerprint"] != fingerprint
                    or history[-1]["parser_version"] != parser_version)
         if changed:
+            record.pop("imported_acquisition_complete", None)
             history.append({"id": uuid4().hex, "observed_at": now(), "fingerprint": fingerprint,
                             "parser_version": parser_version, "metadata": metadata})
             if "pdf" in record:
@@ -123,6 +100,8 @@ class Manifest:
                 "id": key, "record_url": record_url, "status": "pending", "results": [],
             })
             previous_owner = asset.get("record_key", asset["record_url"])
+            if any(asset.get(field) != descriptor.get(field) for field in ("url", "source_version")):
+                asset.pop("imported_acquisition_complete", None)
             asset.update(descriptor, current=True, observation_id=history[-1]["id"])
             if record_key != record_url:
                 asset.update(record_key=record_key, record_url=record_url)

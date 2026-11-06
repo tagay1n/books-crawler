@@ -21,10 +21,9 @@ def download():
     
 def download_cc():
     index = _load_index()
-    _dump_index(index=index, backup=True)
     try: 
         _augment(index)
-        docs_to_download = [d for d in index.values() if not d.get('path_to_file', None)]
+        docs_to_download = [d for d in index.values() if not d.get('uploaded') and not d.get('path_to_file', None)]
         print(f"About to download {len(docs_to_download)} of {len(index)} documents")
         path_to_file = _get_in_workdir("../__artifacts/common.crawl/tmp.pdf")
 
@@ -84,9 +83,8 @@ def _augment(index):
 
 def download_directly():
     index = _load_index()
-    _dump_index(index=index, backup=True)
     try: 
-        docs_to_download = [d for d in index.values() if not d.get('path_to_file', None)]
+        docs_to_download = [d for d in index.values() if not d.get('uploaded') and not d.get('path_to_file', None)]
         path_to_file = _get_in_workdir(f"../__artifacts/common.crawl/tmp.pdf")
         slice_size = 25
         start = 0

@@ -6,8 +6,8 @@ operational YAML. Set `sources.litres.sid` to your Litres SID cookie. Source
 settings are never loaded from the legacy `litres/config.yaml`. Provider helpers
 now live alongside other adapters as `ingestion/litres_*.py`; `ingestion/litres.py`
 orchestrates the stages and helpers reuse shared state/network utilities. Relative artifact roots
-resolve against the operational YAML; all Litres state lives beneath its
-`litres/` directory. Never commit credentials.
+resolve against the operational YAML; processing state lives in Postgres and
+only document artifacts and explicit exports use its `litres/` directory. Never commit credentials.
 
 The old `litres/cli.py` entry point has been removed. Command replacements:
 
@@ -28,8 +28,8 @@ The old `litres/cli.py` entry point has been removed. Command replacements:
 `run --source litres --limit 1 --max-pages 1` discovers, acquires, and finalizes
 local outputs. `download` saves images or decoded text fragments and media;
 `finalize` verifies input hashes and creates PDFs or Markdown without network or
-a browser. Repeated finalization skips unchanged verified output. A missing or
-changed input must be downloaded again. `--recheck` refreshes acquisition inputs.
+a browser. Repeated finalization skips unchanged recorded output even on a fresh runner.
+Missing inputs for unfinished finalization are reported as `awaiting_inputs`. `--recheck` refreshes acquisition inputs.
 Review and publishing are explicit and never run automatically.
 
 Use `import-state --source litres --from __artifacts/litres` before acquisition
@@ -43,9 +43,10 @@ status. It performs no writes or network requests and requires no SID.
 Review statuses remain `candidate`, `accepted`, `rejected`, and `maybe`.
 Broad discovery (`--mode candidates` or `all`) preserves the existing language
 filters and scoring. Only accepted candidates are admitted by review import.
-The manifest is authoritative; books-index.json is a compatibility projection
-for reused provider components. Review candidates and TSV are separate local
-artifacts in the same source directory.
+The Postgres-backed manifest is authoritative; provider helpers read and update
+books and candidates directly through the runtime. No compatibility JSON indexes
+are written. The TSV is an explicit user export. See [Postgres setup and import](../postgres-migration.md)
+for importing completed legacy progress without requiring its document files.
 
 Publishing retains existing destination behavior: Yandex Disk plus monocorpus,
 the `yasalma/tt-litres-books` Hugging Face dataset, and S3 media exports.

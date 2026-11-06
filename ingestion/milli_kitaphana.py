@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 from uuid import uuid4
 
-from .state import Manifest, atomic_json, source_lock, now
+from .state import Manifest, source_lock, now
 from .network import HTTP, Budget, BudgetStop
 from .core import file_digests, check_space
 
@@ -40,6 +40,7 @@ class Runtime:
         self.selected = set()
         import threading
         self.network_lock = threading.RLock()
+        self.state_lock = threading.RLock()
 
     def request(self, method, url, params=None, data=None, stream=False, headers=None, proxies=None, **kwargs):
         from urllib.parse import urlsplit
@@ -84,7 +85,7 @@ def execute(settings, command, *, recheck=False, log=print):
                 'finalized': sum(bool(v.get('finalized')) for v in items.values()),
                 'publications': manifest.data.get('publications', {}), 'catalog': manifest.data.get('milli_catalog', {})}
     summary = dict(source='milli_kitaphana', command=command, id=uuid4().hex, started_at=now(), pages=0, downloaded=0, finalized=0, skipped=0, requests=0, network_retries=0, errors=[], stops=[])
-    with source_lock(directory):
+    with source_lock(directory, 'milli_kitaphana'):
         manifest = Manifest(directory, 'milli_kitaphana')
         runtime = Runtime(settings, manifest, summary)
         from . import milli_kitaphana_utils as utils
@@ -94,26 +95,30 @@ def execute(settings, command, *, recheck=False, log=print):
             for key, item in items.items():
                 manifest.observe({**item, 'url': item.get('url') or 'https://kitap.tatar.ru' + key}, [], record_key=key, persist=False)
             manifest.save()
-            atomic_json(directory / '_index/books-index.json', items)
         started = False
         try:
             from . import milli_kitaphana_download as downloader, milli_kitaphana_decrypt as decrypt
             from . import milli_kitaphana_recover as recovery, milli_kitaphana_index as index
-            for module in (downloader, decrypt, recovery):
-                module.base_dir = str(directory)
             with open(os.devnull, 'w') as sink, contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
                 if command == 'import-state':
                     started = True
                     origin = Path(settings.source_options['_from'])
-                    if origin.resolve() != directory.resolve():
-                        raise ValueError('Milli import currently requires artifact_dir to point to --from; downloads stay in place')
-                    incoming = utils.load_index_file(origin / '_index/books-index.json')
+                    from .database_cli import read_import
+                    imported, _, conflicts = read_import('milli_kitaphana', [origin / '_index/books-index.json'], processing_dir=origin)
+                    if conflicts:
+                        raise ValueError('Resolve import conflicts using database import preview')
+                    incoming = {key:record['observations'][-1]['metadata'] for key,record in imported['records'].items()}
+                    for name,value in imported.items():
+                        if name.startswith(('selection:', 'recovery_evidence:')):
+                            manifest.data.setdefault(name,value)
+                    for name,value in imported.get('recovery_reports',{}).items():
+                        manifest.data.setdefault('recovery_reports',{}).setdefault(name,value)
                     for key, item in incoming.items():
-                        # Existing local state wins on repeat import.
+                        # Existing database state wins on repeat import.
                         items.setdefault(key, item)
                         current = items[key]
                         if current.get('decrypted') and not current.get('finalized') and current.get('download_code'):
-                            candidates = list((directory / current['download_code']).glob('*.pdf'))
+                            candidates = list((origin / current['download_code']).glob('*.pdf'))
                             if len(candidates) == 1:
                                 import pymupdf
                                 try:
@@ -124,8 +129,6 @@ def execute(settings, command, *, recheck=False, log=print):
                                     summary['skipped'] += 1
                     commit()
                 else:
-                    if not items and (directory / '_index/books-index.json').exists():
-                        raise ValueError('Import the legacy index with import-state before running stages')
                     started = True
                     commit()
                     if command in {'discover', 'run'}:
@@ -139,7 +142,7 @@ def execute(settings, command, *, recheck=False, log=print):
                         commit()
                     if command in {'download', 'run'}:
                         try:
-                            downloader.download(settings.source_options.get('_limited', False), settings.source_options.get('_index_name'))
+                            downloader.download(settings.source_options.get('_limited', False), settings.source_options.get('_index_name'), recheck=recheck)
                         except BudgetStop as error:
                             if command != 'run':
                                 raise
@@ -149,9 +152,12 @@ def execute(settings, command, *, recheck=False, log=print):
                     if command in {'finalize', 'run'}:
                         runtime.offline = True
                         for key, item in items.items():
-                            if command == 'run' and key not in runtime.selected:
+                            if (item.get('decrypted') or item.get('finalized')) and not recheck:
+                                summary['skipped'] += 1
                                 continue
                             if not item.get('enc_part_paths'):
+                                if item.get('downloaded') == 'full' and not item.get('decrypted'):
+                                    summary['awaiting_inputs'] = summary.get('awaiting_inputs', 0) + 1
                                 previous = item.get('finalized', {})
                                 if previous.get('path') and Path(previous['path']).is_file() and file_digests(Path(previous['path']))[0] == previous['sha256']:
                                     summary['skipped'] += 1
@@ -160,12 +166,15 @@ def execute(settings, command, *, recheck=False, log=print):
                             for part in item['enc_part_paths']:
                                 inputs.append(Path(part['enc_unzip_dir']) / 'enc.dat')
                             inputs.append(directory / item['download_code'] / 'part0_encrypted/enc.dat')
+                            if not all(p.is_file() for p in inputs):
+                                summary['awaiting_inputs'] = summary.get('awaiting_inputs', 0) + 1
+                                continue
                             fingerprint = hashlib.sha256(json.dumps({'recipe': 1, 'inputs': [(str(p), file_digests(p)[0]) for p in inputs], 'title': item.get('title'), 'author': item.get('author')}, sort_keys=True).encode()).hexdigest()
                             previous = item.get('finalized', {})
                             if not recheck and previous.get('inputs') == fingerprint and Path(previous['path']).is_file() and file_digests(Path(previous['path']))[0] == previous['sha256']:
                                 summary['skipped'] += 1
                                 continue
-                            if command != 'run':
+                            if command != 'run' or key not in runtime.selected:
                                 runtime.budget.start_item()
                             runtime.budget.check()
                             context = {'meta': item, 'config': runtime.config, 'work_dir': str(directory / item['download_code'])}
@@ -229,9 +238,8 @@ def execute(settings, command, *, recheck=False, log=print):
             runtime.http.close()
             utils.RUNTIME = None
             summary.update(records=len(items), finished_at=now(), attempted_download_bytes=runtime.budget.bytes, started_items=runtime.budget.items)
-            summary['summary_path'] = str(directory / 'summaries' / (summary['id'] + '.json'))
+            summary['state_key'] = 'last_run'
             if started:
                 manifest.data['last_run'] = summary
                 manifest.save()
-            atomic_json(Path(summary['summary_path']), summary)
     return summary

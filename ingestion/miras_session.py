@@ -10,7 +10,7 @@ from .core import acquire
 from .discovery import READ_ERRORS
 from .miras_probe import SAMPLE_RECORD, book, catalog, validate_pdf
 from .network import Budget, BudgetStop, HTTP
-from .state import Manifest, atomic_json, now, source_lock
+from .state import Manifest, now, source_lock
 
 
 def read_json(path):
@@ -72,10 +72,9 @@ def finish(summary, manifest, http):
     http.close()
     summary.update(finished_at=now(), attempted_download_bytes=http.budget.bytes,
                    started_items=http.budget.items,
-                   summary_path=str(manifest.directory / "summaries" / (summary["id"] + ".json")))
+                   state_key="last_probe")
     manifest.data["last_probe"] = summary
     manifest.save()
-    atomic_json(Path(summary["summary_path"]), summary)
 
 
 def observe_sample(manifest, metadata):
@@ -89,7 +88,7 @@ def run_cookie_probe(settings, session_file, *, log=print):
     summary = summary_for("probe-cookies")
     summary["acquisition_method"] = "http_cookie_export"
     directory = settings.artifacts_root / "miras"
-    with source_lock(directory):
+    with source_lock(directory, 'miras'):
         manifest = Manifest(directory / "pilot", "miras")
         http = HTTP(settings, Budget(settings), summary)
         workspace = manifest.directory / ".tmp"

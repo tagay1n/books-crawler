@@ -264,8 +264,7 @@ def download(http, manifest, summary, log, recheck):
             record = manifest.data["records"][asset.get("record_key", asset["record_url"])]
             previous = asset["results"][-1] if asset["results"] else None
             ready = (asset["status"] == "downloaded" and bool(previous)
-                     and asset.get("verified_source_version") == asset.get("source_version")
-                     and valid_local(manifest.directory, previous))
+                     and asset.get("verified_source_version") == asset.get("source_version"))
             package = asset.get("kind") == "textbook_package"
             if not package and ready and not recheck:
                 summary["skipped"] += 1
@@ -274,7 +273,6 @@ def download(http, manifest, summary, log, recheck):
                     and record["package_pdf"].get("archive_sha256") == previous["sha256"]
                     and record["package_pdf"].get("source_observation_id") == record["observations"][-1]["id"]
                     and all(r.get("recipe") == RECIPE for r in record["package_pdf"].get("current_results", []))
-                    and all(valid_local(manifest.directory, r, folder="derived") for r in record["package_pdf"].get("current_results", []))
                     and record["package_pdf"].get("current_results")):
                 summary["skipped"] += 1
                 summary["pdf_reused"] += len(record["package_pdf"]["current_results"])
@@ -287,6 +285,9 @@ def download(http, manifest, summary, log, recheck):
                 else:
                     summary["skipped"] += 1
                 if package:
+                    if not valid_local(manifest.directory, asset["results"][-1]):
+                        summary["awaiting_inputs"] = summary.get("awaiting_inputs", 0) + 1
+                        continue
                     assemble(http, manifest, record, asset, Path(folder), summary)
                 log(f"Textbook original ready: {record['observations'][-1]['metadata']['title']}")
             except (*READ_ERRORS, RuntimeError) as error:

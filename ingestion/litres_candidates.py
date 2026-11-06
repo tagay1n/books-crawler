@@ -1,14 +1,11 @@
 """Review and import helpers for Litres discovery candidates."""
 
 import csv
-import json
 import os
 
-from .litres_utils import dump_json_atomic, get_hash, get_in_workdir
+from .litres_utils import load_index, save_index, get_hash, get_in_workdir
 
 
-CANDIDATES_INDEX = "candidates-index.json"
-BOOKS_INDEX = "books-index.json"
 REVIEW_TSV = "candidates-review.tsv"
 VALID_REVIEW_STATUSES = {"candidate", "accepted", "rejected", "maybe"}
 REVIEW_COLUMNS = (
@@ -25,8 +22,8 @@ REVIEW_COLUMNS = (
 
 
 def export_review():
-    """Export candidates-index.json to an editable TSV review file."""
-    candidates = _load_json(get_in_workdir(CANDIDATES_INDEX))
+    """Export Postgres candidates to an editable TSV review file."""
+    candidates = load_index('candidates')
     review_path = get_in_workdir(REVIEW_TSV)
     os.makedirs(os.path.dirname(review_path), exist_ok=True)
 
@@ -41,10 +38,9 @@ def export_review():
 
 
 def sync_review():
-    """Sync edited statuses from candidates-review.tsv back into candidates-index.json."""
-    candidates_path = get_in_workdir(CANDIDATES_INDEX)
+    """Commit edited review TSV statuses to Postgres candidates."""
     review_path = get_in_workdir(REVIEW_TSV)
-    candidates = _load_json(candidates_path)
+    candidates = load_index('candidates')
     rows = _load_review_rows(review_path)
 
     updated = 0
@@ -62,16 +58,15 @@ def sync_review():
         candidates[key]["status"] = status
         updated += 1
 
-    dump_json_atomic(candidates, candidates_path)
+    save_index('candidates', candidates)
     print(f"Synced review statuses from {review_path}")
     print(f"Updated {updated}, unchanged {unchanged}, skipped unknown {skipped_unknown}")
 
 
 def import_accepted():
-    """Import accepted discovery candidates into books-index.json."""
-    candidates = _load_json(get_in_workdir(CANDIDATES_INDEX))
-    books_path = get_in_workdir(BOOKS_INDEX)
-    books = _load_json(books_path)
+    """Admit accepted Postgres candidates into the book index."""
+    candidates = load_index('candidates')
+    books = load_index('books')
     existing_urls = {book.get("url") for book in books.values() if book.get("url")}
 
     accepted = 0
@@ -93,18 +88,11 @@ def import_accepted():
         existing_urls.add(candidate["url"])
         imported += 1
 
-    dump_json_atomic(books, books_path)
+    save_index('books', books)
     print(f"Accepted candidates: {accepted}")
-    print(f"Imported {imported} into {books_path}")
+    print(f"Imported {imported} into Postgres")
     print(f"Skipped existing {skipped_existing}, skipped invalid {skipped_invalid}")
     print(f"Index contains {len(books)} books")
-
-
-def _load_json(path):
-    if not os.path.exists(path):
-        return {}
-    with open(path, "r", encoding="utf-8") as f:
-        return json.load(f)
 
 
 def _review_row(key, candidate):

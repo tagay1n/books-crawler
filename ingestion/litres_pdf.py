@@ -1,7 +1,6 @@
 """Downloads Litres PDF books by fetching page metadata and images, reconstructs PDFs from image pages, and records file IDs and extensions in the index."""
 
 import io
-import json
 import os.path
 import base64
 import glob
@@ -16,7 +15,7 @@ from rich.progress import track
 
 from .litres_consts import domain
 from .litres_index import BLOCKED_MARKERS, _content_type_from_book_page_html, _content_type_from_reader_url, _open_reader_url
-from .litres_utils import RUNTIME, create_driver, dump_json_atomic, get_sid, get_in_workdir, read_config
+from .litres_utils import RUNTIME, create_driver, load_index, save_index, get_sid, get_in_workdir, read_config
 
 PDF_REQUEST_TIMEOUT_SECONDS = 30
 PDF_RESPONSE_SNIPPET_BYTES = 300
@@ -33,9 +32,7 @@ def visit_pdf_books_pages():
 
     Visit pdf books pages, download their pages separately and create pdf from them
     """
-    path_to_idx = get_in_workdir("books-index.json")
-    with open(path_to_idx, "r", encoding="utf-8") as f:
-        all_books = json.load(f)
+    all_books = load_index('books')
 
     pdf_books = _get_pdf_books_to_visit(all_books)
 
@@ -72,14 +69,14 @@ def visit_pdf_books_pages():
                             if actual_type and actual_type != "pdf":
                                 print(f"Skipping non-PDF book: {url} ({actual_type})")
                                 book["content_type"] = actual_type
-                                _save_books_index(path_to_idx, all_books)
+                                _save_books_index(all_books)
                                 break
                         if book.get("file_id"):
                             file_id = book["file_id"]
                         else:
                             file_id = _get_file_id(url, session=session, driver_provider=_get_driver)
                             book['file_id'] = file_id
-                            _save_books_index(path_to_idx, all_books)
+                            _save_books_index(all_books)
                         print(f"Visiting book page: {file_id}")
                         if book.get('ext'):
                             page_extensions = book['ext']
@@ -89,7 +86,7 @@ def visit_pdf_books_pages():
                         if file_id != book.get('file_id') or page_extensions != book.get('ext'):
                             book['file_id'] = file_id
                             book['ext'] = page_extensions
-                            _save_books_index(path_to_idx, all_books)
+                            _save_books_index(all_books)
 
                         download_page_images(
                             file_id,
@@ -100,7 +97,7 @@ def visit_pdf_books_pages():
                             book_page_url=url,
                         )
                         book['pdf_file'] = _create_pdf(book)
-                        _save_books_index(path_to_idx, all_books)
+                        _save_books_index(all_books)
                         break
                     except Exception as e:
                         if attempt == 0 and _is_invalid_selenium_session_error(e):
@@ -111,8 +108,8 @@ def visit_pdf_books_pages():
                         print(e)
                         break
         except KeyboardInterrupt:
-            _save_books_index(path_to_idx, all_books)
-            print(f"Interrupted; saved current index state to {path_to_idx}")
+            _save_books_index(all_books)
+            print("Interrupted; saved current index state to Postgres")
             raise
     finally:
         _close_driver()
@@ -133,8 +130,8 @@ def _has_pdf_runtime_details(book):
     return bool(book.get("file_id") and book.get("ext"))
 
 
-def _save_books_index(path_to_idx, all_books):
-    dump_json_atomic(all_books, path_to_idx)
+def _save_books_index(all_books):
+    save_index('books', all_books)
 
 
 def _get_file_id(book_page_url, driver=None, session=None, driver_provider=None):

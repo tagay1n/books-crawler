@@ -1,5 +1,11 @@
 # Shared configuration and operation
 
+Set `DATABASE_URL` and initialize Postgres before ingestion; see
+[setup, legacy imports and fresh-runner recovery](../postgres-migration.md).
+Processing state and run summaries live in Postgres. Disk holds document
+artifacts and explicit exports. Older file-based recovery examples describe
+archived snapshots and are not the current source of progress.
+
 Use the repository virtual environment and its existing `requirements.txt`.
 Copy `ingestion.example.yaml` to `ingestion.yaml`, review its paths and limits,
 then select that operational file explicitly:
@@ -30,7 +36,7 @@ then select that operational file explicitly:
 
 `sources`, `inspect` and command help do not need configuration. Acquisition and status commands require
 `--config` before the command name. Relative artifact paths resolve against the
-YAML file's directory. Environment variables do not override YAML settings, and
+YAML file's directory. `DATABASE_URL` supplies the shared state connection; source settings remain in YAML, and
 example files are never selected automatically. Miras network commands require
 `--session-file` from an ordinary verified browser, shared with `miras_periodicals`;
 Litres instead reads SID from sources.litres.sid in operational YAML; see [its guide](litres.md). Other adapters require no credentials. `--session-file` is rejected for other sources. `status` does not read
@@ -53,8 +59,8 @@ before the command name:
 
 This suppresses per-record progress and prints one compact JSON object with
 common counters, stop reasons, error counts, current queue counts and available
-report paths. Full structured run summaries and manifests are unchanged. Read the
-referenced summary/report only when a count or failure needs investigation.
+state references. Full structured run summaries live in each source's Postgres
+`last_run` entry; processing no longer writes summary files.
 Status remains read-only, and has no new report file to reference. `records`
 counts processed records for a run and retained records for status; run summaries
 also include `backlog_records` to make that distinction explicit.
@@ -93,24 +99,21 @@ With the example configuration, artifacts live under:
 
 ```text
 __artifacts/ingestion/magarif/
-  manifest.json             # schema_version: 1; records, observations, assets, results
   files/<sha256>.<extension> # acquired originals; upstream filenames are metadata
-  summaries/<run-id>.json   # structured command summaries
   .tmp/run-*/               # temporary bytes owned by individual runs
-  .lock                     # operating-system lock; released when the process exits
 ```
 
 Tatarica uses the same layout under `__artifacts/ingestion/tatarica/`. Its records
 use supplied CMS page IDs when available, and file assets use supplied download
 IDs. URLs are the fallback when native IDs are absent. URL aliases and renamed
 records retain their provenance without creating another native-ID identity.
-Magarif's existing URL identities and saved files require no migration.
+Magarif's URL identities and artifact naming remain unchanged.
 Darul-Kutub uses `__artifacts/ingestion/darul_kutub/`, publication IDs from
 `/books/<id>/`, and original URLs for file identity within each publication.
 
-Each source uses an exclusive writer lock. `status` only reads the manifest and
-does not issue network requests or create artifact files. It reports recorded
-counts, not a new filesystem/integrity audit. The manifest is saved atomically
+Each source uses an exclusive Postgres advisory writer lock. `status` reads
+recorded database state without contacting source websites or creating files. It reports recorded
+counts, not a new filesystem/integrity audit. Postgres state is committed atomically
 after individual records and completed downloads. Metadata changes append
 observations; unchanged consecutive observations are not duplicated. Original
 download results retain their captured observation IDs.
@@ -118,8 +121,9 @@ download results retain their captured observation IDs.
 
 
 
-`download` processes pending/failed current assets, verifies existing local bytes
-before skipping successes, and reacquires missing or damaged local copies.
+`download` processes pending/failed current assets and skips recorded successful
+acquisition even if runner-local copies are missing. Restore missing assembly
+inputs or explicitly reacquire them; unfinished assembly reports `awaiting_inputs`.
 `--recheck` additionally checks completed assets with ETag/Last-Modified
 conditions when available, or downloads again when no validator exists. Use it
 explicitly to detect replacements at an unchanged URL. New bytes get a new
@@ -186,11 +190,11 @@ not establish a transactional snapshot of a changing remote catalog.
 
 Every mutating command prints progress and a structured summary including errors,
 budget stops, request/retry counts, downloaded/skipped/reused files, attempted
-download bytes, backlog counts, and the summary file path. Ordinary failures
+download bytes, backlog counts, and the database state key. Ordinary failures
 remove only that run's partial bytes. A forcibly terminated process may leave
 its own `.tmp/run-*` directory; a later run does not need or automatically delete
 it. A published file whose manifest commit was interrupted may be downloaded
-again and deduplicated. The local manifest is the progress authority.
+again and deduplicated. Postgres is the progress authority.
 
 This delivery stores originals and supported reader-derived PDFs locally. It does not
 upload, import catalog data, classify language, expand archives, or run scheduled jobs.

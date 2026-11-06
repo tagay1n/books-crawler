@@ -8,7 +8,7 @@ import re
 from Crypto.Util.Padding import unpad
 import zipfile
 import pymupdf
-from .milli_kitaphana_utils import read_config, load_index_file, dump_index, download_part, backup_index_snapshot
+from .milli_kitaphana_utils import read_config, load_index_file, dump_index, download_part
 from .milli_kitaphana_progress_wrapper import ProgressWrapper
 import json
 import base64

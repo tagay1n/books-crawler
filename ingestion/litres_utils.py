@@ -1,6 +1,7 @@
-"""Utilities for Litres workflows: config loading, SID authentication, Selenium driver setup, hashing, JSON writes, and workdir path helpers."""
+"""Utilities for Litres workflows: config loading, SID authentication, Selenium driver setup, hashing, database indexes, and document path helpers."""
 
 import hashlib
+import copy
 from pathlib import Path
 
 import requests as native_requests
@@ -38,10 +39,27 @@ def get_in_workdir(file):
     return str(path)
 
 
-def dump_json_atomic(data, path):
-    """Reuse the shared atomic checkpoint writer."""
-    from .state import atomic_json
-    atomic_json(Path(path), data)
+def load_index(name):
+    """Read provider indexes from the active Postgres-backed manifest."""
+    runtime = require_runtime()
+    if name == 'books':
+        from .litres import books
+        return copy.deepcopy(books(runtime.manifest))
+    if name == 'candidates':
+        return copy.deepcopy(runtime.manifest.data.get('candidates', {}))
+    raise ValueError('Unknown Litres index')
+
+
+def save_index(name, data):
+    runtime = require_runtime()
+    if name == 'books':
+        from .litres import commit
+        commit(runtime, data)
+    elif name == 'candidates':
+        runtime.manifest.data['candidates'] = copy.deepcopy(data)
+        runtime.manifest.save()
+    else:
+        raise ValueError('Unknown Litres index')
 
 
 def read_config():

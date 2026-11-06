@@ -1,11 +1,14 @@
 # Books Crawler
 
+Source progress uses shared PostgreSQL persistence. See [setup and progress import](docs/postgres-migration.md) before running ingestion.
+
 The repository retains two independent legacy pipelines for collecting Tatar books and metadata:
 
 - `ingestion/milli_kitaphana*.py`
 - `common-crawl/`
 
-Each pipeline has its own CLI/scripts and its own local state in `__artifacts/` or `~/`.
+Each pipeline uses shared Postgres progress storage. Document files remain under
+`__artifacts/` or `~/`; local processing indexes are no longer written.
 
 The new shared CLI supports local discovery and document downloads from the
 Мәгариф archive, Tatarica library, Darul-Kutub catalog, Kazan Utları archive,

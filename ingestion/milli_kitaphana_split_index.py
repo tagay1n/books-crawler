@@ -1,12 +1,10 @@
-"""Splits pending index entries into N JSON sublists, optionally filtering by criteria."""
+"""Store pending record IDs in named Postgres worker selections."""
 
 import copy
-import json
-import os
 
 from rich import print
 
-from .milli_kitaphana_utils import dump_index, get_list_file_loc, get_lists_dir, get_not_downloaded_docs, load_index_file
+from .milli_kitaphana_utils import dump_index, get_list_file_loc, read_config, get_not_downloaded_docs, load_index_file
 
 
 def split_lists(parts: int, dest: str = None, prefix: str = None):
@@ -18,7 +16,7 @@ def split_lists(parts: int, dest: str = None, prefix: str = None):
 
     filters = _load_filter()
     if filters:
-        print(f"Loaded filter.json with {len(filters['download_codes'])} download_code(s) and {len(filters['titles'])} title(s)")
+        print(f"Loaded configured filter with {len(filters['download_codes'])} download_code(s) and {len(filters['titles'])} title(s)")
         docs = [
             (card_path, meta)
             for card_path, meta in docs
@@ -29,32 +27,29 @@ def split_lists(parts: int, dest: str = None, prefix: str = None):
         print("No pending documents to split, exiting...")
         return
 
-    dest_dir = dest or get_lists_dir()
-    os.makedirs(dest_dir, exist_ok=True)
-
     buckets = [[] for _ in range(parts)]
     for idx, (card_path, meta) in enumerate(docs):
         buckets[idx % parts].append((card_path, copy.deepcopy(meta)))
 
     total = len(docs)
     for i, bucket in enumerate(buckets, start=1):
-        list_path = get_list_file_loc(f"{prefix}-{i}", lists_dir=dest_dir)
+        list_path = get_list_file_loc(f"{prefix or 'index-part'}-{i}")
         subset = {card_path: meta for card_path, meta in bucket}
         dump_index(subset, index_file=list_path)
-        print(f"Wrote {len(bucket)} docs to {list_path}")
+        if dest:
+            from pathlib import Path
+            from .state import atomic_json
+            atomic_json(Path(dest) / (list_path.removeprefix('selection:') + '.json'), subset)
+        print(f"Stored {len(bucket)} docs in Postgres {list_path}")
 
-    print(f"Split {total} pending doc(s) into {parts} list(s) under {dest_dir}")
+    print(f"Split {total} pending doc(s) into {parts} Postgres selections")
 
 
 def _load_filter():
     """
-    Returns dict with 'codes' and 'titles' sets (lowercased), or None if no filter.json or empty filters.
+    Read an optional selection filter from the selected operational source settings.
     """
-    filter_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "filter.json"))
-    if not os.path.exists(filter_path):
-        return None
-    with open(filter_path, "r", encoding="utf-8-sig") as f:
-        data = json.load(f)
+    data = read_config().get('split_filter', {})
     codes = {c.strip() for c in data.get("download_codes", [])}
     titles = {t.strip().lower() for t in data.get("titles", [])}
     if not codes and not titles:

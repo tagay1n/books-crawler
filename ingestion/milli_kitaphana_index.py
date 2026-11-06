@@ -1,6 +1,6 @@
 """Scrapes Milli Kitaphana search pages, builds a metadata index, and merges it with existing records."""
 
-from .milli_kitaphana_utils import load_index_file, dump_index, backup_index_snapshot
+from .milli_kitaphana_utils import load_index_file, dump_index
 from .milli_kitaphana_utils import require_runtime
 
 class Requests:
@@ -31,8 +31,6 @@ COLLECTION_QUERIES = [
 
 def index():
     print("Creating index of books")
-    backup_path = backup_index_snapshot()
-    print(f"Created index backup: {backup_path}")
     runtime = require_runtime()
     scans = runtime.manifest.data.setdefault('milli_catalog', {})
     if len(scans) == len(LANGUAGE_QUERIES) + len(COLLECTION_QUERIES) and all(scan.get('complete') for scan in scans.values()):
@@ -125,7 +123,6 @@ def _create_index(base_params, description):
 
                 latest = load_index_file()
                 merged = _merge_indexes(new_metas, latest)
-                dump_index(merged)
                 for key, value in merged.items():
                     runtime.manifest.observe({**value, 'url': value.get('url') or 'https://kitap.tatar.ru' + key}, [], record_key=key, persist=False)
                 scan.update(next_page=next_page or 1, complete=next_page is None)

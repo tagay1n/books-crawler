@@ -34,12 +34,12 @@ from .milli_kitaphana_utils import (
     get_index_file_loc,
     get_list_file_loc,
     get_not_downloaded_docs,
-    backup_index_snapshot,
     get_part_paths,
     is_valid_encrypted_part,
     open_lock,
     load_index_file,
     read_config,
+    require_runtime,
     request,
 )
 
@@ -51,9 +51,7 @@ requests.packages.urllib3.disable_warnings(
 DETAILS_URL = HOST + "/tt/dl/edoc2"
 
 
-def download(limited, index_name):
-    backup_path = backup_index_snapshot()
-    print(f"Created index backup: {backup_path}")
+def download(limited, index_name, recheck=False):
     global_index_file = get_index_file_loc()
     worker_index_file = get_list_file_loc(index_name) if index_name else global_index_file
     worker_is_global = worker_index_file == global_index_file
@@ -65,6 +63,10 @@ def download(limited, index_name):
     code_to_card_path = {v['download_code']: k for k, v in global_index.items() if 'download_code' in v}
     print(f"Loaded {len(index_part)} items from the index for downloading")
     not_downloaded_docs = get_not_downloaded_docs(index_part, limited)
+    if recheck:
+        not_downloaded_docs = [(key, meta) for key,meta in index_part.items()
+                               if meta.get('record_type') != 'collection' and not meta.get('broken')
+                               and (not limited or meta.get('needs_full_download'))]
     print(f"Found {len(not_downloaded_docs)} not downloaded document(s) in the index")
     if not not_downloaded_docs:
         print("No docs for downloading, exiting...")
@@ -111,6 +113,8 @@ def download(limited, index_name):
                 print(f"Ignoring limited document '{meta['title']}'")
                 continue
 
+            meta.pop('imported_acquisition_complete', None)
+            meta.pop('finalized', None)
             require_runtime().selected.add(card_path)
             require_runtime().summary["downloaded"] += 1
             meta["downloaded"] = "full"
@@ -196,7 +200,7 @@ def _get_details(context):
     code = context["meta"]["download_code"]
     # path to the directory where the artifacts of the key exchange will be stored
 
-    work_dir = os.path.join(base_dir, code)
+    work_dir = os.path.join(str(require_runtime().directory), code)
     context["work_dir"] = work_dir
     # path to the zip file obtained from the server
     zip_path = os.path.join(work_dir, "key_exchange_response.zip")

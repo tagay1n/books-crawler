@@ -13,10 +13,12 @@ from ingestion.diagnostics import discovery_error_counts, partition_discovery_er
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("roots", nargs="+", type=Path,
+    parser.add_argument("roots", nargs="*", type=Path,
                         help="Artifact roots, source directories, or individual manifest.json files.")
     parser.add_argument("--details", action="store_true",
                         help="Include scan counts, asset formats and grouped discovery errors without dumping records.")
+    parser.add_argument("--database", action="store_true", help="Read authoritative Postgres state instead of local snapshots.")
+    parser.add_argument("--source", action="append", help="Select database sources (repeatable).")
     args = parser.parse_args()
     paths = set()
     for root in args.roots:
@@ -26,12 +28,19 @@ def main():
             paths.add(root / "manifest.json")
         else:
             paths.update(root.glob("*/manifest.json"))
+    database_data = {}
+    if args.database:
+        from ingestion.postgres_state import Repository
+        from ingestion.registry import SOURCES
+        for source in args.source or [*SOURCES, "common_crawl"]:
+            database_data[Path("postgres") / source] = Repository(source).load()
+        paths = set(database_data)
     if not paths:
         parser.error("No manifests found at the selected paths.")
     failed = False
     for path in sorted(paths):
         try:
-            data = json.loads(path.read_text(encoding="utf-8"))
+            data = database_data[path] if args.database else json.loads(path.read_text(encoding="utf-8"))
             records, assets = data["records"], data["assets"]
             coverage = data.get("discovery", {})
             states = Counter(a.get("status", "unknown") for a in assets.values() if a.get("current", True))

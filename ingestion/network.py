@@ -49,11 +49,15 @@ def install_native_get_guard(http, normalize_url, label, *, redirect_allowed=Non
 class Budget:
     def __init__(self, settings):
         self.settings = settings
+        from .database import _owner
+        self.database_owner = _owner.get()
         self.deadline = time.monotonic() + settings.soft_deadline_seconds
         self.bytes = 0
         self.items = 0
 
     def check(self):
+        from .database import assert_ownership
+        assert_ownership(force=False, owner=self.database_owner)
         if time.monotonic() >= self.deadline:
             raise BudgetStop("soft deadline")
 
