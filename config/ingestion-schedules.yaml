@@ -1,0 +1,7 @@
+# Number of starts per month, spread over days 1..28 (works every February).
+# Source keys must exist in ingestion/registry.py; Common Crawl is excluded.
+runs_per_month: 2
+overrides: {}
+# Example:
+# overrides:
+#   magarif: 1

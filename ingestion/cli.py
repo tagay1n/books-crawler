@@ -15,9 +15,11 @@ app.add_typer(database_app, name="database")
 
 @app.callback()
 def main(ctx: typer.Context, config: Optional[Path] = typer.Option(None, "--config", help="Selected operational YAML file."),
+         profile: Optional[Path] = typer.Option(None, "--profile", help="Public configuration overlay, e.g. config/scheduled.yaml."),
          summary_only: bool = typer.Option(False, "--summary-only", help="Print one compact JSON result and suppress progress; run details are in Postgres.")):
     ctx.obj = config
     ctx.meta["summary_only"] = summary_only
+    ctx.meta["profile"] = profile
 
 
 def progress(ctx):
@@ -102,14 +104,18 @@ def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, ses
             raise ValueError(f"Unknown source: {source}. Available: {', '.join(SOURCES)}")
         from .config import load_settings
         from .core import restricted_settings, run
-        settings = restricted_settings(load_settings(ctx.obj, source), limit, max_pages)
+        settings = restricted_settings(load_settings(ctx.obj, source, profile=ctx.meta.get('profile')), limit, max_pages)
         from .commands import CommandOptions
         options = CommandOptions(mode=mode, format=format, target=target or "s3", action=action,
                                  from_path=from_path, limited=limited, index_name=index_name,
                                  maintenance=maintenance or {}, recheck=recheck, session_file=session_file)
         result = run(settings, source, command, options=options, log=progress(ctx))
+        from .automation import job_summary
+        job_summary(result, source, command)
         emit_result(ctx, result, command, source)
     except (ValueError, OSError, RuntimeError, ImportError) as error:
+        from .automation import job_summary
+        job_summary({'errors': [{}]}, source, command)
         fail(ctx, error, command, source)
     if result.get("errors"):
         raise typer.Exit(1)

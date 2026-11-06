@@ -26,15 +26,23 @@ class Settings:
     s3: dict = field(default_factory=dict, repr=False)
     max_derived_pdf_bytes: int = field(kw_only=True)
     user_agent: str = field(kw_only=True)
+    discovery_deadline_seconds: float | None = None
+    publication_grace_seconds: float = 0
 
 
-def load_settings(path: Path | None, source: str = "magarif") -> Settings:
+def load_settings(path: Path | None, source: str = "magarif", *, profile: Path | None = None) -> Settings:
     if source not in SOURCES and source not in PILOT_SOURCES:
         raise ValueError(f"Unknown source: {source}")
     if path is None:
         raise ValueError("Select an operational YAML file with --config; examples are never loaded automatically.")
     path = path.expanduser().resolve()
     data = read_configuration(path)
+    if profile is not None:
+        profile = profile.expanduser().resolve()
+        overlay = read_configuration(profile)
+        data = merge_configuration(data, overlay)
+        if 'artifacts_root' in overlay:
+            data['artifacts_root'] = str(profile.parent / overlay['artifacts_root'])
 
     def section(name):
         value = data.get(name)
@@ -76,6 +84,10 @@ def load_settings(path: Path | None, source: str = "magarif") -> Settings:
     if not isinstance(network.get("user_agent"), str) or not network["user_agent"].strip():
         raise ValueError("network.user_agent must be a nonempty string")
     return Settings(
+        discovery_deadline_seconds=(number(limits, 'discovery_deadline_seconds')
+                                    if 'discovery_deadline_seconds' in limits else None),
+        publication_grace_seconds=(number(limits, 'publication_grace_seconds')
+                                   if 'publication_grace_seconds' in limits else 0),
         user_agent=network["user_agent"],
         artifacts_root=root.resolve(), archive_url=archive_url,
         s3=(data.get("storage") or {}).get("s3", {}),

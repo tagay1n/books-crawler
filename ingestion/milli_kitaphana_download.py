@@ -105,6 +105,9 @@ def download(limited, index_name, recheck=False):
             require_runtime().summary["downloaded"] += 1
             meta["downloaded"] = "full"
             meta["decrypted"] = False
+            if require_runtime().finalize_during_download:
+                from .milli_kitaphana import finalize_items
+                finalize_items(require_runtime(), {card_path: meta})
 
         except KeyboardInterrupt:
             print("Interrupting....")

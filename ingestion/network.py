@@ -47,24 +47,34 @@ def install_native_get_guard(http, normalize_url, label, *, redirect_allowed=Non
 
 
 class Budget:
-    def __init__(self, settings):
+    def __init__(self, settings, *, publication=False):
         self.settings = settings
         from .database import _owner
         self.database_owner = _owner.get()
-        self.deadline = time.monotonic() + settings.soft_deadline_seconds
+        from .runtime_config import _deadlines
+        deadlines = _deadlines.get()
+        self.publication = publication
+        self._deadline = (deadlines[int(publication)] if deadlines else
+                          time.monotonic() + settings.soft_deadline_seconds)
         self.bytes = 0
         self.items = 0
+
+    @property
+    def deadline(self):
+        from .runtime_config import _discovery_deadline
+        discovery = None if self.publication else _discovery_deadline.get()
+        return min(self._deadline, discovery) if discovery is not None else self._deadline
 
     def check(self):
         from .database import assert_ownership
         assert_ownership(force=False, owner=self.database_owner)
         if time.monotonic() >= self.deadline:
-            raise BudgetStop("soft deadline")
+            raise BudgetStop("discovery time cap" if self.deadline < self._deadline else "soft deadline")
 
     def wait(self, seconds):
         self.check()
         if seconds >= self.deadline - time.monotonic():
-            raise BudgetStop("soft deadline")
+            raise BudgetStop("discovery time cap" if self.deadline < self._deadline else "soft deadline")
         time.sleep(seconds)
 
     def start_item(self):

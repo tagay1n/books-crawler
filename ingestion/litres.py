@@ -38,6 +38,7 @@ class Runtime:
         self.settings, self.manifest, self.summary = settings, manifest, summary
         self.directory = manifest.directory
         self.config = settings.source_options
+        self.finalize_during_download = False
         self.budget = Budget(settings)
         self.http = HTTP(settings, self.budget, summary)
         def guard(response, *args, **kwargs):
@@ -167,6 +168,8 @@ def acquire(runtime, items, recheck):
             runtime.summary['skipped'] += 1
             if len(selected) < runtime.settings.max_items:
                 selected.append(key)
+            if runtime.finalize_during_download:
+                finalize(runtime, items, [key])
             continue
         if recheck:
             book.pop('imported_acquisition_complete', None)
@@ -215,6 +218,8 @@ def acquire(runtime, items, recheck):
             book.pop('download_error', None)
             selected.append(key)
             runtime.summary['downloaded'] += 1
+            if runtime.finalize_during_download:
+                finalize(runtime, items, [key])
         except (BudgetStop, SourceAccessError):
             raise
         except Exception as error:
@@ -358,6 +363,7 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
     with source_lock(directory, 'litres'):
         manifest = Manifest(directory, 'litres', checkpoint=checkpoint)
         runtime = Runtime(settings, manifest, summary, options)
+        runtime.finalize_during_download = command == 'run' and settings.discovery_deadline_seconds is not None
         from .litres_utils import RUNTIME
         token = RUNTIME.set(runtime)
         items = books(manifest)
@@ -367,7 +373,14 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                 if command == 'import-state':
                     import_state(runtime, items)
                 if command in {'discover', 'run'}:
-                    discover(runtime, items)
+                    try:
+                        from .runtime_config import discovery_window
+                        with discovery_window(settings):
+                            discover(runtime, items)
+                    except BudgetStop as error:
+                        if command != 'run':
+                            raise
+                        summary['stops'].append(str(error))
                 if command in {'download', 'run'}:
                     selected = acquire(runtime, items, recheck)
                 if command in {'finalize', 'run'}:

@@ -224,7 +224,8 @@ def download(http, manifest, summary, log, recheck, *, unit="issue",
                 for asset in assets:
                     http.budget.check()
                     previous = asset["results"][-1] if asset["results"] else None
-                    if not recheck and asset["status"] == "downloaded" and previous:
+                    if (not recheck and asset["status"] == "downloaded" and previous
+                            and valid_local(manifest.directory, previous)):
                         summary["skipped"] += 1
                         continue
                     try:

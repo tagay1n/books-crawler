@@ -92,8 +92,8 @@ def publish(settings, data, directory, save, summary, budget, *, available_only=
     inventory = list(artifacts(data, directory))
     if available_only and not any(a.path.is_file() and not completed(data, a, settings) for a in inventory):
         return
-    client = Session().client('s3', endpoint_url=config.get('endpoint_url'),
-                              region_name=config.get('region'), config=Config(
+    client = Session().client('s3', endpoint_url=config.get('endpoint_url') or None,
+                              region_name=config.get('region') or None, config=Config(
                                   connect_timeout=settings.connect_timeout_seconds,
                                   read_timeout=settings.read_timeout_seconds,
                                   retries={'max_attempts': settings.retry_attempts, 'mode': 'standard'}))
@@ -103,7 +103,7 @@ def publish(settings, data, directory, save, summary, budget, *, available_only=
             if available_only and not artifact.path.is_file():
                 continue
             budget.check()
-            if completed(data, artifact, settings) and artifact.path.suffix.lower() != '.md':
+            if completed(data, artifact, settings) and (artifact.path.suffix.lower() != '.md' or not artifact.path.is_file()):
                 receipts[receipt_key(artifact)]['provenance'] = artifact.provenance
                 summary['s3_skipped'] = summary.get('s3_skipped', 0) + 1
                 continue
@@ -157,9 +157,29 @@ def publish(settings, data, directory, save, summary, budget, *, available_only=
 
 def restore_missing(settings, data, directory):
     """Invalidate only missing, unpublished inputs; retain acquisition history."""
-    missing = {a.record for a in artifacts(data, directory)
+    inventory = list(artifacts(data, directory))
+    settled = {a.record for a in inventory if completed(data, a, settings)}
+    missing = {a.record for a in inventory
                if not completed(data, a, settings) and not a.path.is_file()}
     source = data['source']
+    # Incomplete assemblies have no publishable artifact yet. Their recorded
+    # acquisition flags cannot establish that inputs survived an ephemeral runner.
+    for key, record in data['records'].items():
+        if key in settled and key not in missing:
+            continue
+        observations = record.get('observations') or [{}]
+        meta = observations[-1].get('metadata', {})
+        if source == 'litres' and meta.get('acquired'):
+            inputs = meta.get('inputs', [])
+            if not inputs or any(not Path(p['path']).is_file() for p in inputs):
+                missing.add(key)
+        if source == 'milli_kitaphana' and meta.get('downloaded'):
+            parts = meta.get('enc_part_paths', [])
+            paths = [Path(p['enc_unzip_dir']) / 'enc.dat' for p in parts]
+            if meta.get('download_code'):
+                paths.append(directory / meta['download_code'] / 'part0_encrypted/enc.dat')
+            if not paths or any(not p.is_file() for p in paths):
+                missing.add(key)
     for key in missing:
         record = data['records'][key]
         if source == 'common_crawl':
@@ -170,16 +190,21 @@ def restore_missing(settings, data, directory):
             record.setdefault('s3_recovery_evidence', []).append(copy.deepcopy(record['observations'][-1]['metadata']))
             meta = record['observations'][-1]['metadata']
             # Provider helpers already implement re-acquisition from pending state.
-            for field in ('acquired', 'imported_acquisition_complete', 'downloaded', 'decrypted', 'finalized'):
+            for field in ('acquired', 'imported_acquisition_complete', 'downloaded', 'decrypted', 'finalized', 'enc_part_paths'):
                 meta.pop(field, None)
         else:
             for field in ('pdf', 'package_pdf'):
                 if field in record:
                     record[field]['status'] = 'incomplete'
     for asset in data['assets'].values():
+        if not asset.get('current', True) or asset.get('status') == 'unsupported':
+            continue
         owner = asset.get('record_key', asset['record_url'])
-        if owner in missing and asset.get('results'):
+        if (owner in missing or owner not in settled) and asset.get('results'):
             if not (directory / asset['results'][-1]['path']).is_file():
+                if asset['status'] != 'pending' or asset.get('imported_acquisition_complete'):
+                    missing.add(owner)
                 asset['status'] = 'pending'
                 asset.pop('imported_acquisition_complete', None)
+                data['records'].get(owner, {}).pop('imported_acquisition_complete', None)
     return bool(missing)

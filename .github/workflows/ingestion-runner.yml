@@ -1,0 +1,105 @@
+name: Shared ingestion runner
+on:
+  workflow_call:
+    inputs:
+      source:
+        required: true
+        type: string
+    secrets:
+      DATABASE_URL:
+        required: true
+      AWS_ACCESS_KEY_ID:
+        required: true
+      AWS_SECRET_ACCESS_KEY:
+        required: true
+      AWS_SESSION_TOKEN:
+        required: false
+      S3_BUCKET:
+        required: true
+      LITRES_SID:
+        required: false
+      MILLI_KITAPHANA_AES_RAW_KEY:
+        required: false
+      MILLI_KITAPHANA_AES_DEFAULT_IV:
+        required: false
+      MILLI_KITAPHANA_AES_SALT:
+        required: false
+      MILLI_KITAPHANA_PRIV_KEY:
+        required: false
+      MILLI_KITAPHANA_SIG_PREFIX:
+        required: false
+      SOURCE_SESSION_JSON:
+        required: false
+permissions:
+  contents: read
+jobs:
+  ingest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    env:
+      SOURCE: ${{ inputs.source }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      AWS_ENDPOINT_URL_S3: ${{ vars.S3_ENDPOINT_URL }}
+      AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION || 'us-east-1' }}
+      LITRES_SID: ${{ secrets.LITRES_SID }}
+      MILLI_KITAPHANA_AES_RAW_KEY: ${{ secrets.MILLI_KITAPHANA_AES_RAW_KEY }}
+      MILLI_KITAPHANA_AES_DEFAULT_IV: ${{ secrets.MILLI_KITAPHANA_AES_DEFAULT_IV }}
+      MILLI_KITAPHANA_AES_SALT: ${{ secrets.MILLI_KITAPHANA_AES_SALT }}
+      MILLI_KITAPHANA_PRIV_KEY: ${{ secrets.MILLI_KITAPHANA_PRIV_KEY }}
+      MILLI_KITAPHANA_SIG_PREFIX: ${{ secrets.MILLI_KITAPHANA_SIG_PREFIX }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Install dependencies
+        run: |
+          python -m venv .venv
+          .venv/bin/python -m pip install -r requirements.txt
+      - name: Prepare source access
+        env:
+          SOURCE_SESSION_JSON: ${{ secrets.SOURCE_SESSION_JSON }}
+        run: |
+          .venv/bin/python - <<'PY'
+          import os
+          from pathlib import Path
+          from ingestion.registry import SOURCES
+          from ingestion.config import load_settings
+          from ingestion.automation import require_access
+          source = os.environ['SOURCE']
+          if source not in SOURCES or source == 'common_crawl':
+              raise SystemExit('Unsupported automation source')
+          for key in ('DATABASE_URL', 'S3_BUCKET', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY'):
+              if not os.environ.get(key):
+                  raise SystemExit(f'Missing required secret: {key}')
+          require_access(load_settings(Path(f'config/sources/{source}.yaml'), source), source)
+          if source in {'miras', 'miras_periodicals'}:
+              value = os.environ.get('SOURCE_SESSION_JSON')
+              if not value:
+                  raise SystemExit('Missing source session export')
+              path = Path(os.environ['RUNNER_TEMP']) / 'source-session.json'
+              path.touch(mode=0o600)
+              path.write_text(value)
+          PY
+      - name: Run shared CLI
+        run: |
+          args=()
+          if [[ "$SOURCE" == miras || "$SOURCE" == miras_periodicals ]]; then
+            args+=(--session-file "$RUNNER_TEMP/source-session.json")
+          fi
+          .venv/bin/python cli.py --summary-only --config "config/sources/$SOURCE.yaml" \
+            --profile config/scheduled.yaml run --source "$SOURCE" "${args[@]}" \
+            > "$RUNNER_TEMP/ingestion-result.json" 2>&1
+      - name: Report setup or unexpected failure
+        if: ${{ always() && failure() }}
+        run: |
+          if ! grep -q '^## Ingestion:' "$GITHUB_STEP_SUMMARY"; then
+            printf '## Ingestion failed\n\nSetup or execution failed before a pipeline summary was available.\n' >> "$GITHUB_STEP_SUMMARY"
+          fi
+      - name: Remove session and private diagnostics
+        if: always()
+        run: rm -f "$RUNNER_TEMP/source-session.json" "$RUNNER_TEMP/ingestion-result.json"

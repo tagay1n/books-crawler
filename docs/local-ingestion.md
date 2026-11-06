@@ -77,3 +77,5 @@ separate evidence levels. Follow each adapter's admission and access policy.
 [Litres: unified stages, SID configuration and legacy migration](ingestion/litres.md).
 
 [Milli Kitaphana: unified stages and existing-state migration](ingestion/milli-kitaphana.md).
+
+Scheduled Actions execution uses the same CLI; see [scheduled ingestion operations](scheduled-ingestion.md) for profiles, credentials and the initially disabled rollout.

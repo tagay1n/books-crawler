@@ -1,19 +1,39 @@
 """Invocation-local operational configuration shared by adapter helpers."""
 from contextvars import ContextVar
 from functools import wraps
+import time
+from contextlib import contextmanager
 
 _settings = ContextVar('ingestion_settings')
+_deadlines = ContextVar('ingestion_deadlines', default=None)
+_discovery_deadline = ContextVar('discovery_deadline', default=None)
 
 
 def configured(function):
     @wraps(function)
     def invoke(settings, *args, **kwargs):
         token = _settings.set(settings)
+        started = time.monotonic()
+        deadline_token = _deadlines.set((started + settings.soft_deadline_seconds,
+                                        started + settings.soft_deadline_seconds + settings.publication_grace_seconds))
         try:
             return function(settings, *args, **kwargs)
         finally:
             _settings.reset(token)
+            _deadlines.reset(deadline_token)
     return invoke
+
+
+@contextmanager
+def discovery_window(settings):
+    """Leave time for acquisition even when the catalog scan cannot finish."""
+    deadline = (time.monotonic() + settings.discovery_deadline_seconds
+                if settings.discovery_deadline_seconds is not None else None)
+    token = _discovery_deadline.set(deadline)
+    try:
+        yield
+    finally:
+        _discovery_deadline.reset(token)
 
 
 def option(module, key):

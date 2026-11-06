@@ -16,7 +16,7 @@ from .documents import DOCUMENT_EXTENSIONS, same_origin
 from .network import Budget, BudgetStop, HTTP, InvalidDocument, SourceAccessError
 from .paths import source_directory
 from .registry import SOURCES, configured_adapter
-from .runtime_config import configured
+from .runtime_config import configured, discovery_window
 from .state import Manifest, now, source_lock
 
 
@@ -270,7 +270,8 @@ def _run_local(settings, source, command, *, recheck=False, session_file=None, l
                 adapter.prepare_http(http, session_file)
             if command in {"discover", "run"}:
                 try:
-                    discover(http, manifest, adapter, summary, log)
+                    with discovery_window(settings):
+                        discover(http, manifest, adapter, summary, log)
                 except BudgetStop as error:
                     summary["stops"].append(str(error))
                     summary["discovery_complete"] = False
@@ -321,6 +322,9 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
     options = options or CommandOptions(recheck=recheck, session_file=session_file)
     validate(source, command, options)
     recheck, session_file = options.recheck, options.session_file
+    if command == 'run':
+        from .automation import require_access
+        require_access(settings, source)
     target = options.target
     remote = command == 'run' or (command == 'publish' and target == 's3')
     if command == 'status':
@@ -351,7 +355,7 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
             if data['source'] != source:
                 return
             if upload_budget is None:
-                upload_budget = Budget(settings)
+                upload_budget = Budget(settings, publication=True)
             try:
                 publication.publish(settings, data, directory, lambda: repository.save(data), uploads,
                                     upload_budget, available_only=True)
@@ -370,9 +374,22 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
         repository = Repository(source)
         data = repository.load()
         try:
-            publication.publish(settings, data, directory, lambda: repository.save(data), summary, upload_budget or Budget(settings))
+            publication.publish(settings, data, directory, lambda: repository.save(data), summary,
+                                upload_budget or Budget(settings, publication=True), available_only=command == 'run')
         except BudgetStop as error:
             summary['stops'].append(str(error))
+        inventory = list(publication.artifacts(data, directory))
+        summary['s3'] = dict(current_artifacts=len(inventory),
+                             pending_artifacts=sum(not publication.completed(data, a, settings) for a in inventory),
+                             published_artifacts=len(data.get('s3_publications', {})))
+        summary['backlog'] = Manifest(directory, source, data=data).status()
+        summary['discovery'] = data.get('discovery', {})
+        if source == 'litres':
+            summary['discovery'] = data.get('litres_catalog', {})
+        elif source == 'milli_kitaphana':
+            scans = data.get('milli_catalog', {}).values()
+            summary['discovery'] = dict(scans=len(data.get('milli_catalog', {})),
+                                        complete_scans=sum(bool(s.get('complete')) for s in scans))
         summary.update(finished_at=now(), state_key='last_run')
         data['last_run'] = summary
         repository.save(data)

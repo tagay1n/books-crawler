@@ -1,0 +1,12 @@
+# Overlay on config/sources/<source>.yaml, also usable locally with --profile.
+artifacts_root: ../__artifacts/scheduled
+limits:
+  soft_deadline_seconds: 18000
+  discovery_deadline_seconds: 3600
+  publication_grace_seconds: 1800
+  max_pages: 10000
+  max_items: 10000
+  max_download_bytes: 21474836480
+  max_file_bytes: 1073741824
+  max_derived_pdf_bytes: 2147483648
+  disk_reserve_bytes: 3221225472
