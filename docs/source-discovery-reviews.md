@@ -38,7 +38,7 @@ initial baseline date) and record the attempt date in the history below.
 | `commons` | [Wikimedia Commons](ingestion/commons.md) | 2026-11-06 | Partial | 2026-11-07: 35 originals discovered; one PDF checksum verified; canonical record URLs fixed. Live PostgreSQL/S3 and repeat-run checks require credentials. |
 | `darul_kutub` | [Darul-Kutub](ingestion/darul-kutub.md) | 2026-11-06 | Partial | 2026-11-07: catalog/article context and chapter metadata retention fixed; one original PDF verified. Full scan and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `dumrt` | [DUM RT publications](ingestion/dumrt.md) | 2026-11-06 | Partial | 2026-11-07: 37 archive pages/235 issue URLs; metadata retention extended and one original verified. Full issue/attachment refresh and live PostgreSQL/S3/repeat-run checks remain outstanding. |
-| `echovek` | [Echo of Centuries](ingestion/echovek.md) | 2026-11-06 | Baseline | — |
+| `echovek` | [Echo of Centuries](ingestion/echovek.md) | 2026-11-06 | Partial | 2026-11-07: 64 listing pages/1,385 records; abstract/raw-field retention extended; one original verified. One unresolved card; full detail/admission and live PostgreSQL/S3 checks remain outstanding. |
 | `ftatarstan` | [Fänni Tatarstan](ingestion/ftatarstan.md) | 2026-11-06 | Baseline | — |
 | `internet_archive` | [Internet Archive](ingestion/internet-archive.md) | 2026-11-06 | Baseline | — |
 | `isxaki` | [Isxaki](ingestion/isxaki.md) | 2026-11-06 | Baseline | — |
@@ -199,3 +199,25 @@ uploads or workflow dispatch occurred. Individual remaining issues/attachments,
 durable resume, repeat-run skipping and S3 receipts remain unverified; the latter
 checks need configured credentials. Preserve the baseline review date pending
 that verification.
+
+### 2026-11-07 — echovek — Partial
+
+Inspected native homepage navigation, all three archive pages and 61 publication
+pages: 1,375 article URLs and ten metadata-only books, no remaining listing
+frontier, one distinct malformed article card without a node identifier retained
+as unresolved evidence. Parser version 2 preserves issue-card/article abstracts,
+raw labelled bibliography/HTML links, cover URLs and page metadata, keeping node
+identities, explicit Tatar admission and article-only acquisition unchanged.
+All retained listing pages were re-parsed to verify abstract context retention.
+
+Representative Tatar and Russian article pages preserved admission/exclusion;
+a publisher book remained metadata-only. A complete 1,811,915-byte, ten-page
+article PDF matched the prior SHA-256 and rendered Tatar body text. See the
+[source guide](ingestion/echovek.md) and ignored
+`__artifacts/echovek-review-20261107/` for evidence. Compilation, metadata and
+workflow/configuration checks passed; no automated tests were added. Full detail
+and unknown-language admission coverage was not refreshed. Database/storage
+credentials remain prerequisites for live persistence/resume, full acquisition,
+repeat-run and S3 receipt checks. Existing shared integration is retained. No
+production writes, remote uploads or GitHub dispatch occurred; preserve the
+baseline review date pending remaining verification.

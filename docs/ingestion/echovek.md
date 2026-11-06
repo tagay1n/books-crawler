@@ -69,8 +69,9 @@ must preserve the native resource. No form submissions or account creation occur
 The shared downloader enforces file signatures, transport lengths when supplied,
 byte/time/disk limits and atomic publication. Unchanged originals are retained
 under `<artifacts_root>/echovek/files/`, with SHA-256/MD5 and observation provenance.
-Local hash-verified files are skipped; missing/corrupt files remain eligible.
-`--recheck` requests source revalidation. The source does not supply checksums
+Completed current originals are skipped using recorded results. `run` restores
+missing unpublished inputs on fresh runners; `--recheck` verifies local hashes
+and requests source revalidation. The source does not supply checksums
 here; a complete PDF transfer does not certify article or printed-issue completeness.
 
 Pre-implementation inspection downloaded article 2683 on К. Насыйри anonymously:
@@ -96,3 +97,83 @@ poetry in Arabic-script inscriptions: 1,084,267 bytes, six PDF pages, SHA-256
 The PDF opened and sampled page 3 contains readable Tatar text. A repeat download
 before resuming discovery skipped it with zero requests. Evidence is under
 `/tmp/echovek-verification/`; acquisition made one request with no errors.
+
+## Metadata, PostgreSQL and publication
+
+Parser version 2 preserves article/issue-card abstracts as text and HTML,
+publisher-labelled bibliographic fields (including their HTML links and unknown
+fields), relevant HTML meta tags and exposed cover URLs. Publisher books retain
+their description and native publication fields but remain metadata-only. These
+additions do not change article/node identities, language admission or file paths.
+An abstract can be Russian even when the article-language field says Tatar; it
+never overrides that field. Raw HTML is evidence, not trusted renderable content.
+Images, issue previews and standalone book files are not acquisition candidates.
+
+PostgreSQL stores observations, frontier checkpoints, processing results, errors
+and S3 receipts. Set `DATABASE_URL` and initialize the schema once using
+`.venv/bin/python cli.py database init` before processing. Normal commands do not
+initialize it or fall back to JSON. Originals remain under the configured artifact
+root (`__artifacts/ingestion/echovek/` by default). See
+[database operations](../postgres-migration.md).
+
+`download` retains originals locally. `run` acquires and publishes finished
+documents to S3 after committed checkpoints, retaining local originals.
+Standalone `publish` retries from local files and reports missing files:
+
+```bash
+.venv/bin/python cli.py --summary-only --config config/sources/echovek.yaml run --source echovek --max-pages 2 --limit 1
+.venv/bin/python cli.py --summary-only --config config/sources/echovek.yaml publish --source echovek --target s3 --limit 1
+```
+
+Configure `S3_BUCKET` and standard AWS credentials. Shared publication uses
+deterministic object keys, SHA-256 metadata and PostgreSQL receipts. Fresh runners
+reacquire missing unpublished inputs while recorded receipts allow published
+originals to be skipped. Unsupported-language assets and metadata-only records
+are never uploaded as article documents.
+
+The existing **Ingest echovek** GitHub workflow supports manual dispatch through
+the shared runner and `config/scheduled.yaml` limits. No scheduled trigger is
+added. Initialize PostgreSQL before dispatch. Required repository secrets:
+`DATABASE_URL`, `S3_BUCKET`, `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`. Optional:
+`AWS_SESSION_TOKEN`; repository variables `S3_ENDPOINT_URL` and
+`AWS_DEFAULT_REGION`. Runner-local files are temporary; PostgreSQL and S3 retain
+durable state and published originals. See
+[runner operations](../scheduled-ingestion.md).
+
+## Bounded review, 2026-11-07 (Europe/Moscow)
+
+Independent homepage navigation advertises the issue archive. Live traversal
+completed 64 archive/issue pages and 64 requests, with zero retries and no
+remaining listing frontier: 1,375 article URLs and ten metadata-only book URLs.
+One distinct malformed article card lacking a node identifier remains unresolved;
+it is evidence of a coverage limitation, not a fabricated record. This listing
+audit did not refresh all article detail pages or the historical 95-file admission
+count. Re-parsing all retained listing pages with version 2 preserved abstracts
+for all 1,375 article contexts. The ten books remain outside acquisition scope.
+
+Article 2683 retained its explicit Tatar admission, five labelled bibliographic
+fields and a 1,137-character Russian abstract without conflating abstract language
+with article language. A current Russian-labelled article stayed excluded with
+its PDF unsupported. A sampled publisher book retained its abstract, fields and
+cover URL while exposing no acquisition candidates through this adapter.
+Unknown/unlabelled articles and all other detail pages were not freshly audited.
+
+One original was acquired through shared HTTP transport/native guards and format
+validation: 1,811,915 bytes, ten PDF pages, SHA-256
+`38056a12c5b5c26b1088a22eb8b3567c93d3c29a8f7d057d39f6170ae70e86fd`,
+matching the earlier article-2683 sample. Declared transfer length matched;
+rendered page 4 contains Tatar body text. No publisher checksum or printed-issue
+completeness was inferred. No bulk original acquisition occurred.
+
+Evidence is ignored under `__artifacts/echovek-review-20261107/`: 64 listing bodies,
+catalog/summary/enriched-context exports, admitted/excluded/book record samples,
+and sample PDF/render/hash report. Individual HTTP inspection responses are under
+`__artifacts/inspections/2026-11-06T21-42-*` through `2026-11-06T21-45-*` (UTC).
+These are review exports, not operational state.
+
+Manual traversal, metadata/admission inspection, module compilation, capability
+listing, scheduled profile loading, manual workflow generator equality and
+`git diff --check` passed. No automated tests were added. Database/storage
+credentials were unset, so live PostgreSQL checkpoint/resume, database-backed
+acquisition/repeat-run skipping and S3 upload receipts remain unverified. No
+production state, S3 objects or GitHub runs were changed.

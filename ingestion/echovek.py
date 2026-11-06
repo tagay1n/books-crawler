@@ -13,7 +13,7 @@ from .network import InvalidDocument, install_native_get_guard
 from .paging import ListingPage, PageRequest
 
 
-PARSER_VERSION = 1
+PARSER_VERSION = 2
 
 ISSUE_PATH = re.compile(r"/ru/publication/[a-z0-9-]+")
 ARTICLE_PATH = re.compile(r"/(?:ru/article/[a-z0-9-]+|(?:ru|tt)/node/[1-9]\d*)")
@@ -127,11 +127,43 @@ def parse_listing(html, request, root):
         target = article_url(anchor["href"], url)
         entries[target] = {"issue_url": url, "issue_title_raw": title,
                            "article_title_raw": anchor.get_text(" ", strip=True)}
+        summary = card.select_one(".st_kr")
+        if summary is not None:
+            entries[target]["description_raw"] = summary.get_text(" ", strip=True)
+            entries[target]["description_html"] = summary.decode_contents()
     if not entries:
         raise ValueError("Issue contents contain no recognizable article records.")
     for context in entries.values():
         context["unresolved_article_cards"] = unresolved
     return ListingPage(list(entries), [], record_context=entries)
+
+
+def upstream_metadata(soup, url, field_selector, description_selector):
+    """Retain publisher field labels/links without inferring bibliography."""
+    result = {"fields_raw": [], "page_metadata": [
+        {"name": tag.get("property") or tag.get("name"), "content": tag["content"]}
+        for tag in soup.select("meta[content]")
+        if (tag.get("property") or tag.get("name") or "").startswith((
+            "og:", "article:", "description", "author", "keywords"))
+    ]}
+    for node in soup.select(field_selector):
+        content = node.select_one(".field-content")
+        if content is None:
+            continue
+        label = node.select_one(".views-label")
+        result["fields_raw"].append({
+            "classes": node.get("class", []),
+            "label": label.get_text(" ", strip=True) if label else None,
+            "text": content.get_text(" ", strip=True), "html": content.decode_contents(),
+        })
+    description = soup.select_one(description_selector)
+    if description is not None:
+        result["description_raw"] = description.get_text(" ", strip=True)
+        result["description_html"] = description.decode_contents()
+    cover = soup.select_one(".pane-views-statya-vitrina-oblogka-block img[src], .pane-views-izdanie-vitrina-obl-block-block img[src]")
+    if cover is not None:
+        result["cover_url"] = urljoin(url, cover["src"])
+    return result
 
 
 def record(html, page_url):
@@ -148,7 +180,10 @@ def record(html, page_url):
                 or heading.get_text(" ", strip=True).startswith("Гасырлар авазы")):
             raise ValueError("Non-journal publication identity or title is missing.")
         language = soup.select_one(".views-field-field-izdanie-language .field-content")
-        return {"url": url, "publication_id": ids[0],
+        return {**upstream_metadata(soup, url,
+                                   '#main-content .views-field[class*="views-field-field-izdanie-"], .pane-views-izdanie-vitr-title-block .views-field',
+                                   '.izd_minianons'),
+                "url": url, "publication_id": ids[0],
                 "title": heading.get_text(" ", strip=True),
                 "language_raw": language.get_text(" ", strip=True) if language else None,
                 "representation": "non_journal_metadata",
@@ -184,7 +219,8 @@ def record(html, page_url):
         assets.setdefault(target, {"url": target, "label": title, "extension": ".pdf",
                                    "href_raw": raw, "link_label_raw": anchor.get_text(" ", strip=True),
                                    "unsupported_reason": reason})
-    metadata = {"url": url, "article_id": ids[0], "title": title, "title_raw": title,
+    metadata = {**upstream_metadata(soup, url, '.pane-views-statya-vitrina-har-block .views-field', '.statya_page_anons'),
+                "url": url, "article_id": ids[0], "title": title, "title_raw": title,
                 "authors_raw": field("author"), "rubric_raw": field("rubrik"),
                 "article_type_raw": field("type"), "publication_date_raw": field("date-public"),
                 "language_raw": language_raw, "language_selection": selection,
