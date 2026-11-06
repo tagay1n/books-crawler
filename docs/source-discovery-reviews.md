@@ -36,7 +36,7 @@ initial baseline date) and record the attempt date in the history below.
 | `beznenmiras` | [Безнең мирас](ingestion/beznenmiras.md) | 2026-11-06 | Partial | 2026-11-07: metadata preservation extended; sampled issues expose no originals. PostgreSQL/S3 verification requires credentials and a downloadable sample. |
 | `common_crawl` | [Common Crawl / FinePDFs](ingestion/common-crawl.md) | 2026-11-06 | Deferred | 2026-11-07: owner deferred this valuable special source. Resume only on explicit owner request; exclude from ordinary source rotation. |
 | `commons` | [Wikimedia Commons](ingestion/commons.md) | 2026-11-06 | Partial | 2026-11-07: 35 originals discovered; one PDF checksum verified; canonical record URLs fixed. Live PostgreSQL/S3 and repeat-run checks require credentials. |
-| `darul_kutub` | [Darul-Kutub](ingestion/darul-kutub.md) | 2026-11-06 | Baseline | — |
+| `darul_kutub` | [Darul-Kutub](ingestion/darul-kutub.md) | 2026-11-06 | Partial | 2026-11-07: catalog/article context and chapter metadata retention fixed; one original PDF verified. Full scan and live PostgreSQL/S3/repeat-run checks remain outstanding. |
 | `dumrt` | [DUM RT publications](ingestion/dumrt.md) | 2026-11-06 | Baseline | — |
 | `echovek` | [Echo of Centuries](ingestion/echovek.md) | 2026-11-06 | Baseline | — |
 | `ftatarstan` | [Fänni Tatarstan](ingestion/ftatarstan.md) | 2026-11-06 | Baseline | — |
@@ -157,3 +157,23 @@ No production database writes, S3 publication or workflow dispatch occurred.
 Full persistence/resume, database-backed acquisition and repeat-run/upload receipt
 verification still require configured database/storage credentials; preserve the
 last-reviewed baseline date until that verification is available.
+
+### 2026-11-07 — darul_kutub — Partial
+
+Inspected main search, its native books filter, two adjacent main catalog pages,
+and representative journal/book pages (3160 and 2245). Main search advertises
+15,573 rows and the books filter 1,591; neither is a verified unique-publication
+count. Forty sampled article rows now retain their bibliography and parent issue
+relationships through catalog context. Parser version 2 also preserves chapter
+JSON, badges, subjects and descriptive HTML; native identities and original-file
+selection remain unchanged. Both publication samples expose direct PDFs.
+
+One bounded original transfer acquired a valid 7,823,809-byte, 29-page PDF with
+complete declared length. Hashes, render findings, commands and evidence paths
+are recorded in the [source guide](ingestion/darul-kutub.md). No full catalog
+scan, production state writes, S3 uploads or workflow dispatch occurred. Manual
+pagination/metadata inspection, compilation and workflow/configuration checks
+passed; no automated tests were added. Existing PostgreSQL/S3/manual workflow
+integration is retained. Database/storage credentials are required for durable
+resume, full acquisition, repeat-run and receipt verification; preserve the
+baseline review date pending that work and broader catalog coverage.

@@ -13,7 +13,7 @@ from .documents import DOCUMENT_EXTENSIONS, canonical, same_origin
 from .paging import CatalogChanged, ListingPage, PageRequest
 
 
-PARSER_VERSION = 1
+PARSER_VERSION = 2
 BOOK_PATH = re.compile(r"/books/(\d+)/?")
 
 
@@ -43,7 +43,7 @@ def parse_listing(html, request, root):
     expected = min(page_size, max(0, count - (page_number - 1) * page_size))
     if len(cards) != expected:
         raise ValueError(f"Incomplete Darul-Kutub page {page_number}: expected {expected} rows, got {len(cards)}.")
-    records, rows = [], []
+    records, rows, contexts = [], [], {}
     for card in cards:
         title = card.select_one("a.book-title[href]")
         parent = card.select_one("a.book-source-link[href]")
@@ -55,7 +55,8 @@ def parse_listing(html, request, root):
         if not same_origin(target, root) or book_id is None:
             raise ValueError(f"Unexpected publication URL: {target}")
         # Reader page hints locate articles inside an original, not new publications.
-        records.append(canonical(f"/books/{book_id.group(1)}/", root))
+        record_url = canonical(f"/books/{book_id.group(1)}/", root)
+        records.append(record_url)
         details = card.select_one(".book-details")
         author = card.select_one(".book-author")
         rows.append({"entry_url": canonical(title["href"], root) if title else target,
@@ -63,6 +64,14 @@ def parse_listing(html, request, root):
                      "publication_url": target, "publication_label": link.get_text(" ", strip=True),
                      "details": details.get_text(" ", strip=True) if details else "",
                      "author": author.get_text(" ", strip=True) if author else ""})
+        # Article rows carry bibliography absent from their parent issue page.
+        # The shared frontier merges these relationships across listing pages.
+        rows[-1]["fields_raw"] = {
+            name.removeprefix("td-"): cell.get_text(" ", strip=True)
+            for cell in card.select(".table-cells > *")
+            for name in cell.get("class", []) if name.startswith("td-")
+        }
+        contexts.setdefault(record_url, {"listing_url": request.url, "rows": []})["rows"].append(rows[-1])
     following = []
     next_link = soup.select_one('.pagination a[rel~="next"][href]')
     more_expected = page_number * page_size < count
@@ -76,7 +85,8 @@ def parse_listing(html, request, root):
             raise ValueError("Darul-Kutub next-page link does not advance within the catalog.")
         following.append(PageRequest(next_url, context={"count": count, "page_size": page_size}))
     return ListingPage(list(dict.fromkeys(records)), following, entries=len(cards), advertised=count,
-                       fingerprint=json.dumps(rows, ensure_ascii=False, sort_keys=True), detect_repeats=True)
+                       fingerprint=json.dumps(rows, ensure_ascii=False, sort_keys=True), detect_repeats=True,
+                       record_context=contexts)
 
 
 def verification_request(root, _count):
@@ -105,6 +115,16 @@ def record(html, page_url):
                     if a.get_text(" ", strip=True)]
     if alternatives:
         metadata["alternate_titles_raw"] = alternatives
+    metadata["badges_raw"] = [e.get_text(" ", strip=True) for e in soup.select(".book-badge")]
+    metadata["subjects_raw"] = [e.get_text(" ", strip=True) for e in soup.select(".book-subcategory")]
+    cover = soup.select_one(".book-cover img[src]")
+    if cover is not None:
+        metadata["cover_url"] = canonical(cover["src"], page_url)
+    for key, selector in (("details_html", ".book-meta"), ("description_html", ".book-annotation")):
+        element = soup.select_one(selector)
+        if element is not None:
+            metadata[key] = element.decode_contents()
+    metadata["contents"] = []
     assets = {}
 
     def original(href, label, part_label=None, extension=None):
@@ -124,6 +144,15 @@ def record(html, page_url):
     tomes = soup.select(".book-parts-tab .tome")
     for index, tome in enumerate(tomes):
         part_label = part_labels[index] if index < len(part_labels) else None
+        for chapters in tome.select("chapter-list"):
+            raw = chapters.get(":items", "")
+            entry = {"part_label": part_label}
+            try:
+                entry["items"] = json.loads(raw)
+            except ValueError:
+                # Preserve changed publisher markup without losing originals.
+                entry["items_raw"] = raw
+            metadata["contents"].append(entry)
         for link in tome.select(".book-read a[href]"):
             if link["href"].startswith(("#", "javascript:")):
                 continue
