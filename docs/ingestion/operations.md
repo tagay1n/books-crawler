@@ -8,7 +8,29 @@ archived snapshots and are not the current source of progress.
 
 Use the repository virtual environment and its existing `requirements.txt`.
 Review the selected `config/sources/<source>.yaml`, its shared defaults, paths and limits,
-then select that operational file explicitly:
+then use its source subcommand. With no stage, this runs the pipeline using
+`config/sources/<source>.yaml`:
+
+```bash
+.venv/bin/python cli.py milli_kitaphana
+.venv/bin/python cli.py magarif --max-pages 2 --limit 1
+.venv/bin/python cli.py magarif status
+.venv/bin/python cli.py magarif download --limit 1
+.venv/bin/python cli.py magarif --summary-only status
+.venv/bin/python cli.py magarif --config config/local/magarif.yaml run --limit 1
+```
+
+Each source exposes its supported stages without `--source`. Put stage options
+after the stage name; when omitting the stage, put run options after the source
+name. Source groups accept `--config`, `--profile` and `--summary-only`; the root
+versions of these options also work. An explicit source-level `--config` takes
+precedence over the root option. The default configuration path is anchored to the
+repository, even when invoking `cli.py` from another working directory. Explicit
+paths remain relative to the working directory. Private overrides are selected
+explicitly, never automatically.
+
+The original command-first syntax remains supported and requires an explicit
+configuration:
 
 ```bash
 .venv/bin/python cli.py sources
@@ -18,8 +40,8 @@ then select that operational file explicitly:
 .venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml run --source magarif --max-pages 2 --limit 1
 ```
 
-`sources`, `inspect` and command help do not need configuration. Acquisition and status commands require
-`--config` before the command name. Relative artifact paths resolve against the
+`sources`, `inspect` and command help do not need configuration. Command-first acquisition and status commands require
+`--config` before the command name; source-first commands infer it as above. Relative artifact paths resolve against the
 YAML file's directory. `DATABASE_URL` supplies the shared state connection; source settings remain in YAML, and
 example files are never selected automatically. Miras network commands require
 `--session-file` from an ordinary verified browser, shared with `miras_periodicals`;
@@ -182,7 +204,7 @@ documents to S3; [scheduled workflows](../scheduled-ingestion.md) use the same C
 
 ## Per-source configuration
 
-Use `--config config/sources/<source>.yaml --source <source>`. Each registered
+Use `cli.py <source> [stage]` or `--config config/sources/<source>.yaml COMMAND --source <source>`. Each registered
 source has a tracked configuration containing public operational values only.
 `config/defaults.yaml` holds shared budgets, network settings and S3 destination
 settings. Set `S3_BUCKET` when publishing; AWS credentials use the standard SDK

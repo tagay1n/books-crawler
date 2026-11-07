@@ -80,7 +80,9 @@ See [historical verification](archive/implementation-verification.md).
 
 ## Operational configuration
 
-Select `config/sources/<source>.yaml` explicitly. Shared values live in
+Source-first CLI commands select `config/sources/<source>.yaml` automatically;
+`--config` overrides that choice. Command-first CLI commands require an explicit
+configuration. Shared values live in
 `config/defaults.yaml`; source-specific options, including native helper options,
 are always passed in `Settings.source_options`. Do not introduce operational
 literal defaults in Python. Add public values to the selected YAML instead;

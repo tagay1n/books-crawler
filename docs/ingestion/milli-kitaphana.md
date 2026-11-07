@@ -1,6 +1,11 @@
 # Milli Kitaphana unified pipeline
 
-Use `.venv/bin/python cli.py --config config/sources/milli_kitaphana.yaml COMMAND --source milli_kitaphana`.
+Use `.venv/bin/python cli.py milli_kitaphana` to run the pipeline with
+`config/sources/milli_kitaphana.yaml`. Select a stage with, for example,
+`.venv/bin/python cli.py milli_kitaphana status` or
+`.venv/bin/python cli.py milli_kitaphana download --limit 1`.
+Override configuration with `milli_kitaphana --config PATH [COMMAND]`.
+The original `.venv/bin/python cli.py --config config/sources/milli_kitaphana.yaml COMMAND --source milli_kitaphana` syntax remains supported.
 Provider helpers live in `ingestion/milli_kitaphana_*.py`; the old source directory
 and standalone entry point have been removed.
 
@@ -36,7 +41,7 @@ and obeys `--max-pages`. `download` retains `--limited` and `--index-name`, and
 acquires encrypted parts and metadata. `finalize` decrypts local inputs, assembles
 PDFs atomically, and skips unchanged hashed inputs/outputs without network access.
 Missing metadata requires another download. `run` composes discovery, download
-and local finalization; it never publishes.
+and local finalization, with automatic S3 publication at committed checkpoints.
 
 `publish --target yandex` uploads verified PDFs and inserts upstream metadata into
 PostgreSQL using the existing clients. Each destination step is checkpointed per

@@ -219,3 +219,7 @@ def recover(ctx: typer.Context, source: str = typer.Option(..., "--source"), rep
 @app.command("mark-existing-limited")
 def mark_existing_limited(ctx: typer.Context, source: str = typer.Option(..., "--source")):
     execute(ctx, "mark-existing-limited", source)
+
+
+from .source_cli import register_source_commands
+register_source_commands(app, run_command)
