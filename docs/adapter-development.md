@@ -28,6 +28,10 @@ omissions with `_truncation`.
 
 `cli.py sources --details --source NAME` includes repository paths for the adapter,
 provider helpers, source guide and configuration without importing providers.
+Add `--symbols` to include definition names and line numbers for the selected
+source. It implies `--details` and requires `--source`. Maps include at most 16
+files, 40 adapter definitions and 12 definitions per helper; omission counts
+identify where a targeted follow-up read is needed.
 
 | Task | Open first |
 | --- | --- |

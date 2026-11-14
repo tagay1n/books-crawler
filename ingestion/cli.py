@@ -44,14 +44,21 @@ def fail(ctx, error, command, source=None):
 
 @app.command("sources")
 def sources_command(ctx: typer.Context, details: bool = typer.Option(False, "--details"),
-                    source: Optional[str] = typer.Option(None, "--source")):
+                    source: Optional[str] = typer.Option(None, "--source"),
+                    symbols: bool = typer.Option(False, "--symbols", help="Include bounded definition/line maps; requires --source and implies --details.")):
     """List adapters implemented in the shared CLI."""
     if source is not None and source not in SOURCES:
         fail(ctx, ValueError(f"Unknown source: {source}"), "sources", source)
+    if symbols and source is None:
+        fail(ctx, ValueError("--symbols requires --source"), "sources")
     names = [source] if source else list(SOURCES)
-    if details:
+    if details or symbols:
         from .commands import capabilities
-        typer.echo(json.dumps({name: {**capabilities(name), "locations": source_locations(name)} for name in names}, ensure_ascii=False, separators=(",", ":")))
+        try:
+            result = {name: {**capabilities(name), "locations": source_locations(name, symbols=symbols)} for name in names}
+        except (OSError, SyntaxError, UnicodeError) as error:
+            fail(ctx, error, "sources", source)
+        typer.echo(json.dumps(result, ensure_ascii=False, separators=(",", ":")))
         return
     if ctx.meta.get("summary_only"):
         emit_result(ctx, {"sources": names}, "sources")

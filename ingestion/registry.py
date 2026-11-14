@@ -116,15 +116,19 @@ def configured_adapter(source, settings):
     return adapter
 
 
-def source_locations(source):
+def source_locations(source, *, symbols=False):
     """Repository-relative navigation, without importing the selected adapter."""
     descriptor = DESCRIPTORS[source]
     module = descriptor.module
     root = Path(__file__).resolve().parents[1]
     guide = descriptor.guide or source.replace('_', '-')
     adapter_modules = {entry.module for entry in DESCRIPTORS.values()}
-    return dict(adapter=f'ingestion/{module}.py',
+    locations = dict(adapter=f'ingestion/{module}.py',
                 helpers=[str(path.relative_to(root)) for path in sorted(
                     (root / 'ingestion').glob(module + '_*.py'))
                          if path.stem not in adapter_modules],
                 guide=f'docs/ingestion/{guide}.md', config=f'config/sources/{source}.yaml')
+    if symbols:
+        from .navigation import symbol_map
+        locations['symbols'] = symbol_map(root, [locations['adapter'], *locations['helpers']])
+    return locations
