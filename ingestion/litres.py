@@ -11,7 +11,7 @@ from uuid import uuid4
 
 from .network import Budget, BudgetStop, HTTP, SourceAccessError
 from .state import Manifest, atomic_json, now, source_lock
-from .files import check_space, file_digests
+from .files import file_digests
 from .native_records import records as books, update_records
 
 
@@ -62,17 +62,7 @@ class Runtime:
         def fetch():
             response = self.http.request('GET', url, headers={**kwargs.get('headers', {}), 'Cookie': f'SID={sid};'}, check_status=False)
             try:
-                chunks, size = [], 0
-                for chunk in response.iter_content(65536):
-                    self.budget.check()
-                    size += len(chunk)
-                    self.budget.bytes += len(chunk)
-                    if size > self.settings.max_file_bytes or self.budget.bytes > self.settings.max_download_bytes:
-                        raise BudgetStop('download byte cap')
-                    check_space(self.directory, self.settings.disk_reserve_bytes, size)
-                    chunks.append(chunk)
-                response._content = b''.join(chunks)
-                response._content_consumed = True
+                self.http.buffer_response(response, self.directory)
                 if '/auth/login/' in response.url:
                     raise SourceAccessError('Litres rejected SID; update sources.litres.sid')
                 if response.status_code in {408, 429, 500, 502, 503, 504}:

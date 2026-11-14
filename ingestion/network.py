@@ -143,6 +143,22 @@ class HTTP:
                 self.summary["network_retries"] += 1
                 self.budget.wait(delay)
 
+    def buffer_response(self, response, directory):
+        """Read a native response within shared limits; the caller closes it."""
+        from .files import check_space
+        chunks, size = [], 0
+        for chunk in response.iter_content(65536):
+            self.budget.check()
+            size += len(chunk)
+            self.budget.bytes += len(chunk)
+            if size > self.settings.max_file_bytes or self.budget.bytes > self.settings.max_download_bytes:
+                raise BudgetStop('download byte cap')
+            check_space(directory, self.settings.disk_reserve_bytes, size)
+            chunks.append(chunk)
+        response._content = b''.join(chunks)
+        response._content_consumed = True
+        return response
+
     def text(self, url, *, method="GET", data=None):
         return self.text_response(url, method=method, data=data)[0]
 

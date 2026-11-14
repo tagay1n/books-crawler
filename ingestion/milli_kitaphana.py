@@ -9,7 +9,7 @@ from uuid import uuid4
 
 from .state import Manifest, source_lock, now
 from .network import HTTP, Budget, BudgetStop
-from .files import file_digests, check_space
+from .files import file_digests
 from .native_records import records, update_records
 
 
@@ -57,18 +57,7 @@ class Runtime:
                 url = requests.Request('GET', url, params=params).prepare().url
             def fetch():
                 with self.http.request(method, url, headers=headers, data=data) as response:
-                    chunks, size = [], 0
-                    for chunk in response.iter_content(65536):
-                        self.budget.check()
-                        size += len(chunk)
-                        self.budget.bytes += len(chunk)
-                        if size > self.settings.max_file_bytes or self.budget.bytes > self.settings.max_download_bytes:
-                            raise BudgetStop('download byte cap')
-                        check_space(self.directory, self.settings.disk_reserve_bytes, size)
-                        chunks.append(chunk)
-                    response._content = b''.join(chunks)
-                    response._content_consumed = True
-                    return response
+                    return self.http.buffer_response(response, self.directory)
             return self.http.retry(fetch)
 
 
