@@ -104,7 +104,8 @@ def last_run(source):
     projection = payload.op('-')('errors').op('||')(func.jsonb_build_object('errors', errors))
     with transaction() as conn:
         row = conn.execute(select(projection, func.coalesce(func.jsonb_array_length(payload['errors']), 0))
-                           .where(table.c.key == 'last_run')).first()
+                           .where(table.c.key == 'last_run', func.jsonb_typeof(payload) == 'object',
+                                  payload != func.jsonb_build_object())).first()
     if row is None:
         return {'source': source, 'last_run': None}
     run = transform(row[0], decode_string)
