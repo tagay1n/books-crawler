@@ -264,19 +264,11 @@ def prepare_http(http, session_file):
         filename = disposition.get_filename()
         if filename is not None and filename != asset["filename_raw"]:
             raise InvalidDocument("Academic KFU response filename disagrees with item metadata.")
-    def validate_acquisition(asset):
-        if asset.get("language_review") != http.language_reviews.get(asset["url"]) and asset.get("language_review"):
-            raise InvalidDocument("File language review changed or was withdrawn; rediscover before acquisition.")
-    def validate_acquired(asset, result):
-        review = asset.get("language_review")
-        if review and result["sha256"] != review["sha256"]:
-            raise InvalidDocument("Downloaded PDF differs from its language-reviewed SHA-256; manual review is required.")
-        return {"language_review_sha256": review["sha256"]} if review else {}
     http.validate_request = validate_request
     http.session.hooks["response"].append(check_response)
     http.validate_download_response = validate_download
-    http.validate_acquisition = validate_acquisition
-    http.validate_acquired_asset = validate_acquired
+    http.validate_acquisition = lambda asset: language_reviews.validate_acquisition(http, asset)
+    http.validate_acquired_asset = language_reviews.validate_acquired
 
 
 def validate_pdf(path):
