@@ -36,7 +36,6 @@ class Runtime:
         self.http.session.hooks['response'].append(guard)
         self.offline = False
         self.selected = set()
-        self.finalize_during_download = False
         import threading
         self.network_lock = threading.RLock()
         self.state_lock = threading.RLock()
@@ -92,14 +91,13 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
         from . import milli_kitaphana_utils as utils
         utils.RUNTIME = runtime
         items = records(manifest)
-        runtime.finalize_during_download = command == 'run' and settings.discovery_deadline_seconds is not None
         def commit():
             for key, item in items.items():
                 manifest.observe({**item, 'url': item.get('url') or operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru') + key}, [], record_key=key, persist=False)
             manifest.checkpoint()
         started = False
         try:
-            from . import milli_kitaphana_download as downloader, milli_kitaphana_decrypt as decrypt
+            from . import milli_kitaphana_download as downloader
             from . import milli_kitaphana_recover as recovery, milli_kitaphana_index as index
             with open(os.devnull, 'w') as sink, contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
                 if command == 'import-state':
@@ -158,26 +156,10 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                     if command == 'publish':
                         if runtime.options.target != 'yandex':
                             raise ValueError('Milli supports only --target yandex')
-                        from .milli_kitaphana_upload_docs import upload_doc, persist_upstream_metadata
-                        if runtime.config.get('database_url') in (None, '', '<SET ME>') or runtime.config.get('yandex', {}).get('disk', {}).get('oauth_token') in (None, '', '<SET ME>'):
-                            raise ValueError('Configure Milli database_url and yandex.disk.oauth_token')
-                        publication = manifest.data.setdefault('publications', {})
-                        for key, item in items.items():
-                            output = item.get('finalized')
-                            if not output or not Path(output['path']).is_file() or file_digests(Path(output['path']))[0] != output['sha256']:
-                                continue
-                            runtime.budget.start_item()
-                            steps = publication.setdefault(key, {})
-                            if steps.get('sha256') != output['sha256']:
-                                steps.clear(); steps['sha256'] = output['sha256']
-                            if not steps.get('yandex'):
-                                upload_doc(output['path'], runtime.config, item.get('downloaded') == 'limited')
-                                steps['yandex'] = now(); manifest.checkpoint()
-                            if not steps.get('metadata'):
-                                persist_upstream_metadata(decrypt._calculate_md5(output['path']), decrypt._upstream_metadata(item), runtime.config['database_url'])
-                                steps['metadata'] = now(); manifest.checkpoint()
-                            item['decrypted'] = True
-                            commit()
+                        from .milli_kitaphana_upload_docs import publish_books
+                        publish_books(settings, manifest.data, directory, manifest.save,
+                                      summary, Budget(settings, publication=True))
+                        items = records(manifest)
                     options = runtime.options.maintenance
                     if command == 'split':
                         from .milli_kitaphana_split_index import split_lists
@@ -194,7 +176,7 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
             summary['stops'].append(str(error))
         except Exception as error:
             message = str(error)
-            # S3 ingestion does not require legacy Yandex/upstream credentials.
+            # Local stages do not require publication credentials.
             values = []
             for key in ('database_url', 'priv_key'):
                 try:

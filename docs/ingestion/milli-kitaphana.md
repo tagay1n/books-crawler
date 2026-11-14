@@ -42,11 +42,32 @@ acquires encrypted parts and metadata. `finalize` decrypts local inputs, assembl
 PDFs atomically, and skips unchanged hashed inputs/outputs without network access.
 Missing metadata requires another download. `run` composes discovery, download
 and local finalization, with automatic S3 publication at committed checkpoints.
+After S3 publication, it also uploads each verified PDF to Yandex Disk and inserts
+its upstream bibliographic metadata into PostgreSQL. Each destination step has
+its own saved receipt; rerunning skips completed steps for the same PDF hash.
+`run` requires S3 settings, provider access values, Yandex Disk token/target
+directory and the upstream metadata database connection before starting.
+Progress and receipts use `DATABASE_URL`; upstream metadata uses
+`MILLI_KITAPHANA_DATABASE_URL` with the shipped configuration.
+
+The default download pass fetches complete, non-limited books. It downloads the
+encrypted metadata first to check access, and skips book parts when any part is
+restricted. Book parts are downloaded before the local finalization pass.
+Parsed-page cover images are neither downloaded nor saved as artifacts; textual
+bibliographic metadata is retained. Recovery may read a cover URL as a clue to a
+broken inventory code, without downloading the image.
+
+Configured page, item, byte and time limits still apply. A single invocation may
+stop with a backlog; repeat the same command to resume. Downloads and local
+finalization remain available separately without Yandex/database publication
+credentials. `--summary-only` includes `yandex_published` and
+`upstream_metadata_saved` counts.
 
 `publish --target yandex` uploads verified PDFs and inserts upstream metadata into
 PostgreSQL using the existing clients. Each destination step is checkpointed per
 record. A process failure after a remote operation but before its checkpoint can
 require destination inspection before retrying, especially for insert-only SQL.
+The same caveat applies to automatic publication during `run`.
 
 `split` stores named worker selections in Postgres. `--dest` explicitly exports
 JSON in addition; filters belong under `sources.milli_kitaphana.split_filter`.

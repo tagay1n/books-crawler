@@ -20,7 +20,8 @@ acquires original inputs and required media within shared budgets. Finalization
 uses verified local inputs without credentials/network, records recipe/input
 provenance, and atomically publishes derived outputs. Run composes the local
 stages and automatic S3 publication at committed checkpoints. Review and legacy
-publication targets remain explicit. Status is read-only.
+publication targets remain explicit, except Milli Kitaphana's `run`, which also
+publishes S3-completed PDFs to Yandex Disk and stores upstream metadata. Status is read-only.
 The manifest owns record state; any compatibility index is a projection.
 
 Other providers currently combining acquisition and assembly retain their

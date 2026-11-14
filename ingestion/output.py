@@ -6,6 +6,7 @@ def compact_result(result, command, source=None):
     if source or result.get("source"):
         brief["source"] = source or result["source"]
     for key in ("success", "ok", "pages", "records", "observations", "requests", "network_retries",
+                "yandex_published", "upstream_metadata_saved",
                 "s3_attempted", "s3_published", "s3_skipped", "s3", "downloaded", "published", "skipped", "finalized", "acquired", "reused_blobs", "imported_originals", "not_modified",
                 "unchanged_downloads", "attempted_download_bytes", "started_items", "pdf_assembled",
                 "pdf_reused", "review_counts", "catalog", "publications", "stops", "stop", "summary_path", "report_path", "state_key", "awaiting_inputs", "sources"):

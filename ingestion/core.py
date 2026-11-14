@@ -378,6 +378,13 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
                                 upload_budget or Budget(settings, publication=True), available_only=command == 'run')
         except BudgetStop as error:
             summary['stops'].append(str(error))
+        if source == 'milli_kitaphana' and command == 'run':
+            from .milli_kitaphana_upload_docs import publish_books
+            try:
+                publish_books(settings, data, directory, lambda: repository.save(data),
+                              summary, Budget(settings, publication=True), require_s3=True)
+            except BudgetStop as error:
+                summary['stops'].append(str(error))
         inventory = list(publication.artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True))
         summary['s3'] = dict(current_artifacts=len(inventory),
                              pending_artifacts=sum(not publication.completed(data, a, settings) for a in inventory),

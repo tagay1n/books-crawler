@@ -166,6 +166,12 @@ def restore_missing(settings, data, directory):
     missing = {a.record for a in inventory
                if not completed(data, a, settings) and not a.path.is_file()}
     source = data['source']
+    if source == 'milli_kitaphana':
+        from .milli_kitaphana_upload_docs import publication_complete
+        # S3 alone does not settle a Milli book: another runner still needs
+        # local bytes until Yandex and upstream metadata are committed too.
+        pending = [a for a in inventory if not publication_complete(data, a.record, a.sha256)]
+        missing.update(a.record for a in pending if not a.path.is_file())
     # Incomplete assemblies have no publishable artifact yet. Their recorded
     # acquisition flags cannot establish that inputs survived an ephemeral runner.
     for key, record in data['records'].items():
