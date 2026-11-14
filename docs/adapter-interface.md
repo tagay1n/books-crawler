@@ -48,3 +48,8 @@ owns stage dispatch instead of using the shared discovery/download orchestration
 a read-only projected snapshot, without a writable repository baseline.
 Litres, Milli Kitaphana, and Common Crawl use this interface. Do not migrate their
 stage semantics incidentally while changing shared adapters.
+
+Native runtimes expose `close()` and bind through `runtime_config.bound_runtime`.
+Its context closes resources and restores the previous `ContextVar` binding even
+when a checkpoint fails. Helper workers use `ConfiguredThreadPoolExecutor` to
+carry the invocation and runtime bindings into their threads.

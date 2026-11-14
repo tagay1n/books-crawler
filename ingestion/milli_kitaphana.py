@@ -1,5 +1,5 @@
 """Milli Kitaphana stages, reusing the original provider helpers."""
-from .runtime_config import option as operational_option
+from .runtime_config import bound_runtime, option as operational_option
 import contextlib
 import hashlib
 import json
@@ -40,6 +40,9 @@ class Runtime:
         import threading
         self.network_lock = threading.RLock()
         self.state_lock = threading.RLock()
+
+    def close(self):
+        self.http.close()
 
     def request(self, method, url, params=None, data=None, stream=False, headers=None, proxies=None, **kwargs):
         from urllib.parse import urlsplit
@@ -82,11 +85,10 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                 'finalized': sum(bool(v.get('finalized')) for v in items.values()),
                 'publications': manifest.data.get('publications', {}), 'catalog': manifest.data.get('milli_catalog', {})}
     summary = dict(source='milli_kitaphana', command=command, id=uuid4().hex, started_at=now(), pages=0, downloaded=0, finalized=0, skipped=0, requests=0, network_retries=0, errors=[], stops=[])
-    with source_lock(directory, 'milli_kitaphana'):
+    from . import milli_kitaphana_utils as utils
+    with source_lock(directory, 'milli_kitaphana'), contextlib.ExitStack() as resources:
         manifest = Manifest(directory, 'milli_kitaphana', checkpoint=checkpoint)
-        runtime = Runtime(settings, manifest, summary, options)
-        from . import milli_kitaphana_utils as utils
-        utils.RUNTIME = runtime
+        runtime = resources.enter_context(bound_runtime(utils.RUNTIME, Runtime(settings, manifest, summary, options)))
         items = records(manifest)
         def commit():
             update_records(manifest, items, url_prefix=operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru'))
@@ -192,8 +194,6 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                 items = utils.load_index_file()
             if started:
                 commit()
-            runtime.http.close()
-            utils.RUNTIME = None
             summary.update(records=len(items), finished_at=now(), attempted_download_bytes=runtime.budget.bytes, started_items=runtime.budget.items)
             summary['state_key'] = 'last_run'
             if started:

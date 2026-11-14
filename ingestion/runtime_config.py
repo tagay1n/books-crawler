@@ -25,6 +25,19 @@ def configured(function):
 
 
 @contextmanager
+def bound_runtime(variable, runtime):
+    """Close native resources and restore the prior binding on every exit."""
+    token = variable.set(runtime)
+    try:
+        yield runtime
+    finally:
+        try:
+            runtime.close()
+        finally:
+            variable.reset(token)
+
+
+@contextmanager
 def discovery_window(settings):
     """Leave time for acquisition even when the catalog scan cannot finish."""
     deadline = (time.monotonic() + settings.discovery_deadline_seconds

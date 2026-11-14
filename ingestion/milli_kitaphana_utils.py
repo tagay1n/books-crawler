@@ -19,13 +19,14 @@ def get_in_workdir(file):
     return os.path.abspath(os.path.normpath(os.path.join(script_dir, file)))
 
 
-RUNTIME = None
+RUNTIME = ContextVar('milli_kitaphana_runtime', default=None)
 
 
 def require_runtime():
-    if RUNTIME is None:
+    runtime = RUNTIME.get()
+    if runtime is None:
         raise RuntimeError("Milli helpers require the unified runtime")
-    return RUNTIME
+    return runtime
 
 
 _http_session = ContextVar("milli_kitaphana_http_session", default=None)

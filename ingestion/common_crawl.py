@@ -1,5 +1,5 @@
 """Common Crawl/FinePDFs stages backed by the existing Postgres index."""
-from .runtime_config import option as operational_option
+from .runtime_config import bound_runtime, option as operational_option
 
 import contextlib
 import os
@@ -28,6 +28,9 @@ class Runtime:
         self.budget = Budget(settings)
         self.http = HTTP(settings, self.budget, summary)
 
+    def close(self):
+        self.http.close()
+
 
 def execute(settings, command, *, recheck=False, log=print, options=None, checkpoint=None, status_data=None):
     from .commands import CommandOptions, validate
@@ -48,12 +51,12 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
         return dict(source='common_crawl', **counts(data), last_run=data.get('last_run'))
     summary = dict(source='common_crawl', command=command, id=uuid4().hex, started_at=now(),
                    pages=0, downloaded=0, published=0, skipped=0, requests=0, network_retries=0, errors=[], stops=[])
-    with source_lock('common_crawl'):
+    from . import common_crawl_utils as utils
+    with source_lock('common_crawl'), contextlib.ExitStack() as resources:
         repository = Repository('common_crawl')
         data = repository.load()
-        runtime = Runtime(settings, repository, data, summary, options, checkpoint)
-        from . import common_crawl_utils as utils
-        utils.RUNTIME = runtime
+        runtime = resources.enter_context(bound_runtime(
+            utils.RUNTIME, Runtime(settings, repository, data, summary, options, checkpoint)))
         try:
             runtime.directory.mkdir(parents=True, exist_ok=True)
             # Provider libraries print progress; the shared CLI emits the structured result.
@@ -76,8 +79,6 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                 message = message.replace(str(token), '[redacted]')
             summary['errors'].append({'stage': command, 'error': message})
         finally:
-            runtime.http.close()
-            utils.RUNTIME = None
             summary.update(counts(data), finished_at=now(), attempted_download_bytes=runtime.budget.bytes,
                            started_items=runtime.budget.items, state_key='last_run')
             data['last_run'] = summary

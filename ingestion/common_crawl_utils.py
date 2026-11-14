@@ -1,14 +1,16 @@
 """Shared runtime and Postgres index access for Common Crawl helpers."""
 
 from pathlib import Path
+from contextvars import ContextVar
 
-RUNTIME = None
+RUNTIME = ContextVar('common_crawl_runtime', default=None)
 
 
 def _runtime():
-    if RUNTIME is None:
+    runtime = RUNTIME.get()
+    if runtime is None:
         raise RuntimeError('Run Common Crawl through the unified CLI')
-    return RUNTIME
+    return runtime
 
 
 def _get_in_workdir(file):

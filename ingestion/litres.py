@@ -1,5 +1,5 @@
 """Litres implementation of the shared local and publication stages."""
-from .runtime_config import option as operational_option
+from .runtime_config import bound_runtime, option as operational_option
 import contextlib
 import hashlib
 import os
@@ -359,12 +359,11 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
         if not isinstance(sid, str) or not sid.strip() or sid == '<SET ME>':
             raise ValueError('Set sources.litres.sid in the selected operational YAML')
     summary = {'source': 'litres', 'command': command, 'id': uuid4().hex, 'started_at': now(), 'pages': 0, 'downloaded': 0, 'skipped': 0, 'requests': 0, 'network_retries': 0, 'errors': [], 'stops': []}
-    with source_lock(directory, 'litres'):
+    from .litres_utils import RUNTIME
+    with source_lock(directory, 'litres'), contextlib.ExitStack() as resources:
         manifest = Manifest(directory, 'litres', checkpoint=checkpoint)
-        runtime = Runtime(settings, manifest, summary, options)
+        runtime = resources.enter_context(bound_runtime(RUNTIME, Runtime(settings, manifest, summary, options)))
         runtime.finalize_during_download = command == 'run' and settings.discovery_deadline_seconds is not None
-        from .litres_utils import RUNTIME
-        token = RUNTIME.set(runtime)
         items = books(manifest)
         try:
             with open(os.devnull, "w") as sink, contextlib.redirect_stdout(sink), contextlib.redirect_stderr(sink):
@@ -421,8 +420,6 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
             if command in {'metadata', 'review'}:
                 items = books(manifest)
             commit(runtime, items)
-            runtime.close()
-            RUNTIME.reset(token)
             summary.update(records=len(items), attempted_download_bytes=runtime.budget.bytes, started_items=runtime.budget.items, finished_at=now())
             summary['state_key'] = 'last_run'
             manifest.data['last_run'] = summary
