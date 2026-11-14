@@ -25,7 +25,7 @@ def publish_books(settings, data, directory, save, summary, budget, *, require_s
     """Checkpoint Yandex and metadata separately; run requires the S3 receipt first."""
     from pathlib import Path
     from . import publication
-    from .core import file_digests
+    from .files import file_digests
     from .milli_kitaphana_decrypt import _calculate_md5, _upstream_metadata
     from .network import BudgetStop
     from .state import now

@@ -38,6 +38,7 @@ provider helpers, source guide and configuration without importing providers.
 | Discovery/resume | `ingestion/discovery.py`, `paging.py` |
 | Active/historical errors | `ingestion/diagnostics.py` |
 | Acquisition and recovery | `ingestion/core.py`, `network.py`, `state.py`, `paths.py` |
+| Local-file integrity, space and signatures | `ingestion/files.py` |
 | Transactions/checkpoints | `ingestion/checkpoints.py`; see [contracts](ingestion-architecture.md) |
 | Publication | `ingestion/publication.py`; see [S3 behavior](ingestion/operations.md#s3-publication) |
 | Config inheritance | `ingestion/config.py`, `runtime_config.py`; [operations](ingestion/operations.md#per-source-configuration) |

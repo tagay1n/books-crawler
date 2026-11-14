@@ -142,7 +142,7 @@ def resolve_record(http, metadata, assets):
 
 def reuse_originals(http, manifest, summary):
     """Adopt matching verified originals from existing KFU source manifests."""
-    from .core import check_space, valid_local
+    from .files import check_space, valid_local
 
     wanted = {a["url"]: a for a in manifest.data["assets"].values()
               if a.get("current", True) and a["status"] != "unsupported"

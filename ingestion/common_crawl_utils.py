@@ -34,7 +34,7 @@ def configured_path(name):
 
 def write_stream(stream, output_file):
     """Bound each local input and account for bytes, deadline and free disk."""
-    from .core import check_space
+    from .files import check_space
     from .network import BudgetStop
 
     runtime = _runtime()

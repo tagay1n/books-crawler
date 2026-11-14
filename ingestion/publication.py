@@ -51,7 +51,7 @@ def artifacts(data, directory, *, direct_files_only=False):
         if (not asset.get('current', True) or asset.get('status') != 'downloaded'
                 or asset.get('kind') == 'page_image' or not asset.get('results')):
             continue
-        from .core import source_version_matches
+        from .files import source_version_matches
         if not source_version_matches(asset):
             continue
         result = asset['results'][-1]
@@ -91,7 +91,7 @@ def publish(settings, data, directory, save, summary, budget, *, available_only=
     from botocore.config import Config
     from botocore.exceptions import ClientError, BotoCoreError
     from boto3.exceptions import S3UploadFailedError
-    from .core import file_digests
+    from .files import file_digests
     config = configuration(settings)
     inventory = list(artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True))
     if available_only and not any(a.path.is_file() and not completed(data, a, settings) for a in inventory):

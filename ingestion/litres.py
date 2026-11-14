@@ -11,7 +11,7 @@ from uuid import uuid4
 
 from .network import Budget, BudgetStop, HTTP, SourceAccessError
 from .state import Manifest, atomic_json, now, source_lock
-from .core import check_space, file_digests
+from .files import check_space, file_digests
 
 
 

@@ -75,7 +75,7 @@ def _augment(index, docs):
 
 
 def _move_file(path_to_file, md5, url, script):
-    from .core import check_space
+    from .files import check_space
 
     if script not in {'cyrl', 'latn'}:
         raise ValueError('Unsupported Common Crawl script')

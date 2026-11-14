@@ -9,7 +9,7 @@ from uuid import uuid4
 
 from .state import Manifest, source_lock, now
 from .network import HTTP, Budget, BudgetStop
-from .core import file_digests, check_space
+from .files import file_digests, check_space
 
 
 

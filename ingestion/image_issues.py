@@ -13,7 +13,8 @@ from uuid import uuid4
 import pymupdf
 from PIL import Image, ImageOps, __version__ as PILLOW_VERSION
 
-from .core import acquire, check_space, file_digests, valid_local
+from .core import acquire
+from .files import check_space, file_digests, valid_local
 from .discovery import READ_ERRORS
 from .network import BudgetStop, InvalidDocument
 from .state import now

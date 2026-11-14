@@ -15,7 +15,7 @@ import zlib
 import pymupdf
 from PIL import Image
 
-from .core import check_space, file_digests, valid_local
+from .files import check_space, file_digests, valid_local
 from .network import InvalidDocument
 from .state import now
 
