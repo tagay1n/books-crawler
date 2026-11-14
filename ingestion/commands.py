@@ -3,6 +3,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from .registry import SOURCES, DESCRIPTORS
 
+REVIEW_ACTIONS = ('export', 'sync', 'import')
+
+
+def option_choices(name):
+    return tuple(dict.fromkeys(value for descriptor in DESCRIPTORS.values()
+                               for value in getattr(descriptor, name)))
+
 
 @dataclass(frozen=True)
 class CommandOptions:
@@ -26,23 +33,32 @@ def capabilities(source):
                 recheck=descriptor.recheck, maintenance=descriptor.maintenance)
 
 
-def validate(source, command, options):
+def validate_capabilities(source, command, options):
+    """Reject unsupported invocations without reading operational configuration."""
     if source not in SOURCES:
         raise ValueError(f'Unknown source: {source}')
     cap = capabilities(source)
-    if command not in cap['commands'] or options.mode not in cap['modes'] or options.format not in cap['formats']:
-        raise ValueError(f'{source} does not implement the selected stage or option')
+    for label, value, allowed in (('stage', command, cap['commands']),
+                                  ('--mode', options.mode, cap['modes']),
+                                  ('--format', options.format, cap['formats'])):
+        if value not in allowed:
+            raise ValueError(f'{source} does not support {label} {value!r}. Allowed: {", ".join(allowed)}')
     if command == 'publish' and options.target not in cap['targets']:
-        raise ValueError(f'{source} does not support publication target {options.target}')
+        raise ValueError(f'{source} does not support --target {options.target!r}. Allowed: {", ".join(cap["targets"])}')
     if options.recheck and not cap['recheck']:
         raise ValueError(f'{source} does not support --recheck')
     if options.session_file is not None and not cap['requires_session']:
         raise ValueError(f'{source} does not support --session-file')
-    if cap['requires_session'] and command != 'status' and not (command == 'publish' and options.target == 's3') and options.session_file is None:
-        raise ValueError(f'{source} requires --session-file')
     if not cap['maintenance'] and (options.limited or options.index_name or options.maintenance):
         raise ValueError('Selected options require --source milli_kitaphana')
-    if command == 'review' and options.action not in {'export', 'sync', 'import'}:
-        raise ValueError('Review action must be export, sync, or import')
+    if command == 'review' and options.action not in REVIEW_ACTIONS:
+        raise ValueError(f'{source} does not support --action {options.action!r}. Allowed: {", ".join(REVIEW_ACTIONS)}')
     if command == 'import-state' and options.from_path is None:
         raise ValueError('Import requires --from')
+
+
+def validate(source, command, options):
+    validate_capabilities(source, command, options)
+    if (DESCRIPTORS[source].requires_session and command != 'status'
+            and not (command == 'publish' and options.target == 's3') and options.session_file is None):
+        raise ValueError(f'{source} requires --session-file')

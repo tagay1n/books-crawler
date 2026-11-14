@@ -3,7 +3,9 @@ from pathlib import Path
 from typing import Optional
 
 import typer
+from click import Choice
 
+from .commands import CommandOptions, REVIEW_ACTIONS, option_choices, validate_capabilities
 from .output import compact_result
 from .registry import SOURCES, source_locations
 
@@ -109,13 +111,15 @@ def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, ses
     try:
         if source not in SOURCES:
             raise ValueError(f"Unknown source: {source}. Available: {', '.join(SOURCES)}")
-        from .config import load_settings
-        from .core import restricted_settings, run
-        settings = restricted_settings(load_settings(ctx.obj, source, profile=ctx.meta.get('profile')), limit, max_pages)
-        from .commands import CommandOptions
         options = CommandOptions(mode=mode, format=format, target=target or "s3", action=action,
                                  from_path=from_path, limited=limited, index_name=index_name,
                                  maintenance=maintenance or {}, recheck=recheck, session_file=session_file)
+        validate_capabilities(source, command, options)
+        from .config import load_settings
+        from .core import restricted_settings, run
+        settings = restricted_settings(load_settings(ctx.obj, source, profile=ctx.meta.get('profile')), limit, max_pages)
+        from dataclasses import replace
+        options = replace(options, session_file=session_file)
         result = run(settings, source, command, options=options, log=progress(ctx))
         from .automation import job_summary
         job_summary(result, source, command)
@@ -131,31 +135,27 @@ def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, ses
 @app.command()
 def discover(ctx: typer.Context, source: str = typer.Option(..., "--source"),
              max_pages: Optional[int] = typer.Option(None, "--max-pages"),
-             mode: str = typer.Option("catalog", "--mode", help="catalog, candidates, or all"),
+             mode: str = typer.Option("catalog", "--mode", click_type=Choice(option_choices('modes')), help="Discovery mode."),
              session_file: Optional[Path] = typer.Option(None, "--session-file", help="Browser session export for miras or miras_periodicals.")):
     """Discover archive records and attachments without downloading originals."""
-    if mode not in {"catalog", "candidates", "all"}:
-        fail(ctx, ValueError("Invalid discovery mode"), "discover", source)
     execute(ctx, "discover", source, max_pages=max_pages, session_file=session_file, mode=mode)
 
 
 @app.command()
 def download(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-             limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary, files/publications for tatkniga and KFU."),
-             format: str = typer.Option("all", "--format", help="all, pdf, or text"),
+             limit: Optional[int] = typer.Option(None, "--limit", help="Maximum source items within the configured cap."),
+             format: str = typer.Option("all", "--format", click_type=Choice(option_choices('formats')), help="Document format."),
              limited: bool = typer.Option(False, "--limited"),
              index_name: Optional[str] = typer.Option(None, "--index-name"),
              recheck: bool = typer.Option(False, "--recheck", help="Also revalidate completed downloads."),
              session_file: Optional[Path] = typer.Option(None, "--session-file", help="Browser session export for miras or miras_periodicals.")):
-    """Download committed originals; Tatkniga reader PDFs require finalize."""
-    if format not in {"all", "pdf", "text"}:
-        fail(ctx, ValueError("Invalid download format"), "download", source)
+    """Download original inputs; staged sources assemble outputs during finalize."""
     execute(ctx, "download", source, limit=limit, recheck=recheck, session_file=session_file, format=format, limited=limited, index_name=index_name)
 
 
 @app.command("run")
 def run_command(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-                limit: Optional[int] = typer.Option(None, "--limit", help="Maximum files; whole issues for kazanutlary, files/publications for tatkniga and KFU."),
+                limit: Optional[int] = typer.Option(None, "--limit", help="Maximum source items within the configured cap."),
                 max_pages: Optional[int] = typer.Option(None, "--max-pages"),
                 recheck: bool = typer.Option(False, "--recheck"),
                 session_file: Optional[Path] = typer.Option(None, "--session-file", help="Browser session export for miras or miras_periodicals.")):
@@ -184,19 +184,15 @@ def metadata(ctx: typer.Context, source: str = typer.Option(..., "--source")):
 
 @app.command()
 def review(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-           action: str = typer.Option(..., "--action")):
+           action: str = typer.Option(..., "--action", click_type=Choice(REVIEW_ACTIONS))):
     """Export or sync TSV review decisions, or import accepted candidates."""
-    if action not in {"export", "sync", "import"}:
-        fail(ctx, ValueError("Review action must be export, sync, or import"), "review", source)
     execute(ctx, "review", source, action=action)
 
 
 @app.command()
 def publish(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-            target: str = typer.Option("s3", "--target")):
+            target: str = typer.Option("s3", "--target", click_type=Choice(option_choices('targets')))):
     """Publish finalized outputs to an explicitly selected destination."""
-    if target not in {"s3", "yandex", "hf", "s3-media"}:
-        fail(ctx, ValueError("Publish target must be s3, yandex, hf, or s3-media"), "publish", source)
     execute(ctx, "publish", source, target=target)
 
 

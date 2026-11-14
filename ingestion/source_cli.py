@@ -2,23 +2,43 @@
 
 from functools import wraps
 from inspect import signature
+from copy import copy
 from pathlib import Path
 from typing import Optional
 
 import typer
+from click import Choice
+from typer.models import OptionInfo
 
 from .registry import DESCRIPTORS, PILOT_SOURCES
 
 
 def _bind_source(callback, source):
+    descriptor = DESCRIPTORS[source]
+    original = signature(callback)
+    defaults = {'source': source} if 'source' in original.parameters else {}
+    parameters = []
+    supported = {'session_file': descriptor.requires_session, 'recheck': descriptor.recheck,
+                 'limited': descriptor.maintenance, 'index_name': descriptor.maintenance}
+    choices = {'mode': descriptor.modes, 'format': descriptor.formats, 'target': descriptor.targets}
+    for name, parameter in original.parameters.items():
+        if name == 'source':
+            continue
+        if not supported.get(name, True):
+            defaults[name] = parameter.default.default
+            continue
+        if name in choices and isinstance(parameter.default, OptionInfo):
+            option = copy(parameter.default)
+            option.click_type = Choice(choices[name])
+            option.help = f'Allowed {name} for {source}.'
+            parameter = parameter.replace(default=option)
+        parameters.append(parameter)
+
     @wraps(callback)
     def bound(*args, **kwargs):
-        return callback(*args, source=source, **kwargs)
+        return callback(*args, **{**kwargs, **defaults})
 
-    bound.__signature__ = signature(callback).replace(parameters=[
-        parameter for name, parameter in signature(callback).parameters.items()
-        if name != "source"
-    ])
+    bound.__signature__ = original.replace(parameters=parameters)
     return bound
 
 
@@ -46,7 +66,7 @@ def _source_callback(source, run_command):
         elif limit is not None or max_pages is not None or recheck or session_file is not None:
             raise typer.BadParameter("Put stage options after the stage name, or omit the stage to run the pipeline.")
 
-    return source_main
+    return _bind_source(source_main, source)
 
 
 def register_source_commands(app, run_command):

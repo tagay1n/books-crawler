@@ -9,6 +9,9 @@ is required. Static capabilities and source/module mappings belong to
 Add `--symbols` for a bounded definition/line map without importing the adapter.
 Helper paths follow the adapter's filename prefix, excluding other adapters;
 shared utilities are listed in the development map.
+Source shortcuts derive option choices and supported session, recheck and
+maintenance flags from the descriptor. Root commands accept the union of choices
+and reject unsupported source selections before loading operational configuration.
 
 ## Shared discovery and acquisition
 
