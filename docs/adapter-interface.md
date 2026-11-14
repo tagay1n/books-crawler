@@ -6,7 +6,8 @@ Adapters are modules or configured `CollectionAdapter` instances. No base class
 is required. Static capabilities and source/module mappings belong to
 `registry.DESCRIPTORS`; `SOURCES[source]` lazily imports the implementation.
 `cli.py sources --details --source NAME` reports capabilities and repository paths.
-Add `--symbols` for a bounded definition/line map without importing the adapter.
+Add `--symbols` for a bounded definition/line map without importing the adapter;
+`--module` and `--symbol` narrow the map before preview limits.
 Helper paths follow the adapter's filename prefix, excluding other adapters;
 shared utilities are listed in the development map.
 Source shortcuts derive option choices and supported session, recheck and

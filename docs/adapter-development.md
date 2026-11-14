@@ -35,6 +35,15 @@ Add `--symbols` to include definition names and line numbers for the selected
 source. It implies `--details` and requires `--source`. Maps include at most 16
 files, 40 adapter definitions and 12 definitions per helper; omission counts
 identify where a targeted follow-up read is needed.
+Use `--module litres_text` (or `ingestion/litres_text.py`) to select a module and
+`--symbol _markdown_output_name` to match a case-sensitive name substring. Both
+imply `--symbols`; filters run before file and definition limits, so they can
+locate definitions omitted from the unfiltered map. Filtered maps distinguish
+`files_filtered` from `files_omitted`.
+
+```bash
+.venv/bin/python cli.py sources --source litres --module litres_text --symbol _markdown_output_name
+```
 
 | Task | Open first |
 | --- | --- |

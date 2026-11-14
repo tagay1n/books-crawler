@@ -47,18 +47,22 @@ def fail(ctx, error, command, source=None):
 @app.command("sources")
 def sources_command(ctx: typer.Context, details: bool = typer.Option(False, "--details"),
                     source: Optional[str] = typer.Option(None, "--source"),
-                    symbols: bool = typer.Option(False, "--symbols", help="Include bounded definition/line maps; requires --source and implies --details.")):
+                    symbols: bool = typer.Option(False, "--symbols", help="Include bounded definition/line maps; requires --source and implies --details."),
+                    module: Optional[str] = typer.Option(None, "--module", help="Module stem or repository Python path; implies --symbols."),
+                    symbol: Optional[str] = typer.Option(None, "--symbol", help="Case-sensitive definition name substring; implies --symbols.")):
     """List adapters implemented in the shared CLI."""
     if source is not None and source not in SOURCES:
         fail(ctx, ValueError(f"Unknown source: {source}"), "sources", source)
-    if symbols and source is None:
-        fail(ctx, ValueError("--symbols requires --source"), "sources")
+    navigation = symbols or module is not None or symbol is not None
+    if navigation and source is None:
+        fail(ctx, ValueError("Symbol navigation requires --source"), "sources")
     names = [source] if source else list(SOURCES)
-    if details or symbols:
+    if details or navigation:
         from .commands import capabilities
         try:
-            result = {name: {**capabilities(name), "locations": source_locations(name, symbols=symbols)} for name in names}
-        except (OSError, SyntaxError, UnicodeError) as error:
+            result = {name: {**capabilities(name), "locations": source_locations(
+                name, symbols=navigation, module=module, symbol=symbol)} for name in names}
+        except (OSError, SyntaxError, UnicodeError, ValueError) as error:
             fail(ctx, error, "sources", source)
         typer.echo(json.dumps(result, ensure_ascii=False, separators=(",", ":")))
         return
