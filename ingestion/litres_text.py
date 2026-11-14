@@ -11,63 +11,14 @@ from urllib.parse import urlparse, parse_qs
 
 from .litres_utils import requests
 import typer
-from rich.progress import track
 
 
 from .litres_index import _open_reader_url
-from .litres_utils import create_driver, load_index, save_index, get_in_workdir, get_hash, get_sid
+from .litres_utils import create_driver, get_in_workdir, get_hash, get_sid
 
 PREVIEW_MARKERS = (
     "The end of the free preview",
 )
-
-
-def visit_text_books_pages():
-    all_books = load_index('books')
-
-    books = _get_text_books_to_visit(all_books)
-
-    print(f"Visiting {len(books)} text docs")
-
-    failed = 0
-    try:
-        with create_driver() as driver:
-            for book in track(books, description="Downloading text books"):
-                print(f"Processing book: {book['full_name']}")
-                print(f"Book URL: {book['url']}")
-                try:
-                    artifacts_dir = _download_page_descriptions(book, driver=driver)
-                    book["markdown_file"] = _make_up_markdown(artifacts_dir, book, driver=driver)
-                    book.pop("download_error", None)
-                except Exception as e:
-                    failed += 1
-                    book.pop("markdown_file", None)
-                    book["download_error"] = str(e)
-                    print(f"Error processing text book: {book['url']}")
-                    print(e)
-                _save_books_index(all_books)
-    except KeyboardInterrupt:
-        _save_books_index(all_books)
-        print("Interrupted; saved current index state to Postgres")
-        raise
-    if failed:
-        print(f"Finished with {failed} text book download error(s)")
-
-
-def _get_text_books_to_visit(all_books):
-    """
-    Return text books that still need markdown output or previously failed.
-    """
-    return [
-        book
-        for book in all_books.values()
-        if book.get("content_type") == "text"
-        and (book.get("download_error") or not book.get("markdown_file"))
-    ]
-
-
-def _save_books_index(all_books):
-    save_index('books', all_books)
 
 
 def _download_page_descriptions(book, driver=None):
@@ -174,43 +125,6 @@ def _base_url_from_reader_url(reader_url, book_url):
     if base_url := queries.get("baseurl"):
         return base_url[0]
     raise ValueError(f"Could not find text resource base URL for {book_url}; reader URL was {reader_url}")
-
-
-def _make_up_markdown(input_dir, book, driver=None):
-    # directory for resulting markdown file
-    output_name = _markdown_output_name(book)
-    output_dir = get_in_workdir(f"markdown/{output_name}")
-    os.makedirs(output_dir, exist_ok=True)
-
-    # path to resulting markdown file
-    output_file = os.path.join(output_dir, f"{output_name}.md")
-    if os.path.exists(output_file):
-        if _contains_preview_marker(output_file):
-            os.remove(output_file)
-        else:
-            return output_file
-    # temporary file to store partial results, will be renamed to output_file at the end
-    partial_output = output_file + ".part"
-
-    files = sorted([f for f in os.listdir(input_dir) if f.endswith('.js')], key=lambda x: int(x.split(".")[0]))
-    all_footnotes = []
-    context = {'f': all_footnotes, 'book': book, 'workdir': output_dir, 'footn_counter': 1}
-    with open(partial_output, "w") as out, _driver_context(driver) as active_driver:
-        for f in files:
-            with open(os.path.join(input_dir, f), "r") as f:
-                results = []
-                for item in active_driver.execute_script("let c = " + f.read() + "; return c;"):
-                    if res := textify(item, context).rstrip('\n'):
-                        results.append(res)
-                out.write('\n\n'.join(results))
-
-        if all_footnotes:
-            out.write('\n\n')
-            out.write('\n\n'.join(all_footnotes))
-
-    _raise_if_preview_markdown(partial_output, book)
-    os.rename(partial_output, output_file)
-    return output_file
 
 
 def textify(item, ctxt, prefix="", suffix=""):

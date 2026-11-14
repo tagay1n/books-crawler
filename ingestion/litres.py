@@ -98,7 +98,9 @@ def commit(runtime, items):
 
 
 def discover(runtime, items):
+    from bs4 import BeautifulSoup
     from . import litres_index as index
+    from .litres_utils import get_hash
     mode = runtime.options.mode
     if mode in {'catalog', 'all'}:
         scan = runtime.manifest.data.setdefault('litres_catalog', {'next_page': 1, 'complete': False})
@@ -112,20 +114,20 @@ def discover(runtime, items):
                 response = runtime.get(url)
                 response.raise_for_status()
                 index._raise_if_blocked(response.text, url)
-                parsed = index._parse_books(index.bs.BeautifulSoup(response.text, 'html.parser'))
+                soup = BeautifulSoup(response.text, 'html.parser')
+                parsed = index._parse_books(soup)
                 if not parsed:
                     raise ValueError('Catalog cards missing; cannot establish catalog completion')
                 fingerprint = hashlib.sha256(json.dumps([b['url'] for b in parsed]).encode()).hexdigest()
                 if fingerprint in scan.setdefault('batches', []):
                     raise ValueError('Repeated Litres catalog page')
                 for book in parsed:
-                    key = index.get_hash(book['url'])
+                    key = get_hash(book['url'])
                     items[key] = index._merge_book_details(items.get(key, {}), book, resolver)
                     commit(runtime, items)
                 scan['batches'].append(fingerprint)
                 scan['next_page'] += 1
                 # Use explicit native next-page evidence, never the legacy fixed page count.
-                soup = index.bs.BeautifulSoup(response.text, 'html.parser')
                 next_page = any(f'page={page + 1}' in a.get('href', '') for a in soup.select('a[href]'))
                 scan['complete'] = not next_page
                 runtime.summary['pages'] += 1
@@ -154,6 +156,7 @@ def media_nodes(value):
 
 def acquire(runtime, items, recheck):
     from . import litres_pdf as pdf, litres_text as text, litres_utils as utils
+    from .litres_pdf_config import _get_pdf_browser_headless
     selected = []
     for key, book in items.items():
         if book.get('imported_acquisition_complete') and not recheck:
@@ -178,7 +181,7 @@ def acquire(runtime, items, recheck):
             if book['content_type'] == 'pdf':
                 if recheck:
                     shutil.rmtree(runtime.directory / 'images' / str(book.get('file_id', 'missing')), ignore_errors=True)
-                with utils.create_driver(headless=pdf._get_pdf_browser_headless()) as driver:
+                with utils.create_driver(headless=_get_pdf_browser_headless()) as driver:
                     session = runtime.session()
                     book['file_id'] = pdf._get_file_id(book['url'], session=session, driver=driver)
                     book['ext'] = pdf._get_page_extensions(book['file_id'], session=session, driver=driver)
@@ -234,7 +237,8 @@ def inputs_valid(book):
 
 
 def finalize(runtime, items, selected=None):
-    from . import litres_pdf as pdf, litres_text as text
+    from . import litres_text as text
+    from .litres_pdf_assembly import _create_pdf
     runtime.offline = True
     try:
         for key, book in items.items():
@@ -261,7 +265,7 @@ def finalize(runtime, items, selected=None):
                 book['full_name'] = Path(book['full_name']).name.replace('..', '_')
                 target = runtime.directory / 'docs' / f"{book['full_name']}.pdf"
                 target.unlink(missing_ok=True)
-                path = Path(pdf._create_pdf(book))
+                path = Path(_create_pdf(book))
                 book['pdf_file'] = str(path)
             else:
                 decoded = json.loads(Path(book['decoded_file']).read_text())
@@ -315,7 +319,7 @@ def import_state(runtime, items):
                     target = runtime.directory / ('docs' if field == 'pdf_file' else 'markdown') / source.name
                     target.parent.mkdir(parents=True, exist_ok=True)
                     if field == 'pdf_file':
-                        from .litres_pdf import _is_valid_pdf_file
+                        from .litres_pdf_assembly import _is_valid_pdf_file
                         if not _is_valid_pdf_file(str(source)):
                             book.pop(field, None)
                             continue

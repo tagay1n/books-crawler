@@ -1,4 +1,4 @@
-"""Scrapes Litres catalog pages to update a Postgres index of titles, authors, URLs, and content types, merging with any existing index."""
+"""Litres catalog parsing and reader content-type resolution."""
 from .runtime_config import option as operational_option
 
 import re
@@ -8,7 +8,7 @@ import bs4 as bs
 from .litres_utils import requests
 
 
-from .litres_utils import RUNTIME, create_driver, load_index, save_index, get_sid, get_hash
+from .litres_utils import create_driver, get_sid
 
 
 BOOK_PATH_MARKERS = ("/book/", "/audiobook/")
@@ -22,56 +22,6 @@ TEXT_CONTENT_MARKERS = (
     "текстовая книга",
     "электронная книга",
 )
-
-
-def index():
-    books = load_index('books')
-
-    headers = {
-        "Cookie": f"SID={get_sid()};",
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
-    }
-    discovered = 0
-    added = 0
-    updated = 0
-    reader_resolver = _ReaderContentTypeResolver()
-    try:
-        try:
-            for i in range(1, (RUNTIME.get().settings.max_pages if RUNTIME.get() else operational_option('litres_consts', 'total_pages')) + 1):
-                paginated_url = f"{operational_option('litres_consts', 'entry_point')}&page={i}"
-                print(f"Processing page: {paginated_url}")
-                with requests.get(paginated_url, headers=headers) as r:
-                    r.raise_for_status()
-                    _raise_if_blocked(r.text, paginated_url)
-                    soup = bs.BeautifulSoup(r.text, "html.parser")
-                    cards = _parse_books(soup)
-                    page_added = 0
-                    page_updated = 0
-                    for parsed in cards:
-                        discovered += 1
-                        h = get_hash(parsed["url"])
-                        if h in books:
-                            details = _merge_book_details(books[h], parsed, reader_resolver)
-                            page_updated += 1
-                            updated += 1
-                        else:
-                            details = _merge_book_details({}, parsed, reader_resolver)
-                            page_added += 1
-                            added += 1
-                        books[h] = details
-                    save_index('books', books)
-                print(f"Page {i}: found {len(cards)} book card(s), added {page_added}, updated {page_updated}")
-        except KeyboardInterrupt:
-            save_index('books', books)
-            print("Interrupted; saved current index state to Postgres")
-            raise
-    finally:
-        reader_resolver.close()
-
-    save_index('books', books)
-
-    print(f"Discovered {discovered} book card(s), added {added}, updated {updated}")
-    print(f"Index contains {len(books)} books")
 
 
 def _raise_if_blocked(html, url):
