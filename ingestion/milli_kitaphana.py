@@ -10,6 +10,7 @@ from uuid import uuid4
 from .state import Manifest, source_lock, now
 from .network import HTTP, Budget, BudgetStop
 from .files import file_digests, check_space
+from .native_records import records, update_records
 
 
 
@@ -68,10 +69,6 @@ class Runtime:
             return self.http.retry(fetch)
 
 
-def records(manifest):
-    return {key: dict(r['observations'][-1]['metadata']) for key, r in manifest.data['records'].items() if r.get('observations')}
-
-
 def execute(settings, command, *, recheck=False, log=print, options=None, checkpoint=None, status_data=None):
     from .postgres_state import Repository
     from .commands import CommandOptions, validate
@@ -92,8 +89,7 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
         utils.RUNTIME = runtime
         items = records(manifest)
         def commit():
-            for key, item in items.items():
-                manifest.observe({**item, 'url': item.get('url') or operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru') + key}, [], record_key=key, persist=False)
+            update_records(manifest, items, url_prefix=operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru'))
             manifest.checkpoint()
         started = False
         try:
@@ -245,7 +241,7 @@ def finalize_items(runtime, items, *, recheck=False):
                 raise ValueError('Derived PDF exceeds configured size limit')
             item['finalized'] = {'path': str(output), 'sha256': file_digests(output)[0], 'inputs': fingerprint}
             summary['finalized'] += 1
-            manifest.observe({**item, 'url': item.get('url') or operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru') + key}, [], record_key=key, persist=False)
+            update_records(manifest, {key: item}, url_prefix=operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru'))
             manifest.checkpoint()
     finally:
         runtime.offline = False

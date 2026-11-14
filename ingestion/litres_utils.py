@@ -44,8 +44,8 @@ def load_index(name):
     """Read provider indexes from the active Postgres-backed manifest."""
     runtime = require_runtime()
     if name == 'books':
-        from .litres import books
-        return copy.deepcopy(books(runtime.manifest))
+        from .native_records import records
+        return records(runtime.manifest)
     if name == 'candidates':
         return copy.deepcopy(runtime.manifest.data.get('candidates', {}))
     raise ValueError('Unknown Litres index')

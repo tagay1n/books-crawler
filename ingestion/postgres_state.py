@@ -129,20 +129,28 @@ class Repository:
         assert_ownership(owner=self.owner)
         if self.baseline is None:
             raise RuntimeError('Load repository before saving')
+        changes = []
         def write(conn):
             for table, group in zip(self.tables, ('records', 'assets', None)):
                 current = data[group] if group else {k:v for k,v in data.items() if k not in {'records','assets','source','schema_version'}}
                 previous = self.baseline[group] if group else {k:v for k,v in self.baseline.items() if k not in {'records','assets','source','schema_version'}}
-                rows = [{'key':encode_string(k), 'payload':transform(v, encode_string)} for k,v in current.items() if k not in previous or v != previous[k]]
+                changed = {k:v for k,v in current.items() if k not in previous or v != previous[k]}
+                rows = [{'key':encode_string(k), 'payload':transform(v, encode_string)} for k,v in changed.items()]
                 for start in range(0, len(rows), 250):
                     statement = insert(table).values(rows[start:start+250])
                     conn.execute(statement.on_conflict_do_update(index_elements=['key'], set_={'payload':statement.excluded.payload}))
                 removed = previous.keys() - current.keys()
                 if removed:
                     conn.execute(delete(table).where(table.c.key.in_([encode_string(k) for k in removed])))
+                changes.append((group, changed, removed))
         if connection is None:
             with transaction() as conn:
                 write(conn)
         else:
             write(connection)
-        self.baseline = copy.deepcopy(data)
+        # Preserve detached baselines without copying unchanged histories at every checkpoint.
+        for group, changed, removed in changes:
+            previous = self.baseline[group] if group else self.baseline
+            previous.update(copy.deepcopy(changed))
+            for key in removed:
+                del previous[key]

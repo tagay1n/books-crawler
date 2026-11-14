@@ -2,6 +2,7 @@
 from .runtime_config import option as operational_option
 
 from .milli_kitaphana_utils import load_index_file, dump_index
+from .native_records import records, update_records
 from .milli_kitaphana_utils import require_runtime
 
 class Requests:
@@ -92,9 +93,11 @@ def _create_index(base_params, description):
                         '.search-nav__item.search-nav__item_sm-ta-c > .search-nav__text')
                     total_docs = int(_div.text.split(':')[1].strip())
 
+                page_metas = {}
                 for book_card in soup.select('.list__col-text'):
                     card_link, meta = _parse_book_card(book_card)
                     new_metas[card_link] = meta
+                    page_metas[card_link] = meta
 
                 pagination_info = soup.select_one(".pagination")
                 current_page = int(
@@ -109,10 +112,10 @@ def _create_index(base_params, description):
                 else:
                     next_page = current_page + 1
 
-                latest = load_index_file()
-                merged = _merge_indexes(new_metas, latest)
-                for key, value in merged.items():
-                    runtime.manifest.observe({**value, 'url': value.get('url') or operational_option('milli_kitaphana_index', 'url_https_kitap_tatar_ru') + key}, [], record_key=key, persist=False)
+                latest = records(runtime.manifest, page_metas)
+                merged = {key: {**latest.get(key, {}), **value} for key, value in page_metas.items()}
+                update_records(runtime.manifest, merged,
+                               url_prefix=operational_option('milli_kitaphana_index', 'url_https_kitap_tatar_ru'))
                 scan.update(next_page=next_page or 1, complete=next_page is None)
                 scan['seen'] = list(set(scan.get('seen', [])) | set(new_metas))
                 runtime.summary['pages'] += 1

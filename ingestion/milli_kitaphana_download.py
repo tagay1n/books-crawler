@@ -121,9 +121,8 @@ def download(limited, index_name, recheck=False):
                 dump_index(idx=index_part, index_file=worker_index_file)
 
             with open_lock(global_index_file):
-                current_global_index = load_index_file(index_file=global_index_file)
-                current_global_index[card_path] = meta
-                dump_index(current_global_index, index_file=global_index_file)
+                from .milli_kitaphana_utils import update_index
+                update_index({card_path: meta})
 
 
 def _scrap_doc_card(card_path, meta, proxies):

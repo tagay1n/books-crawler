@@ -12,6 +12,7 @@ from uuid import uuid4
 from .network import Budget, BudgetStop, HTTP, SourceAccessError
 from .state import Manifest, atomic_json, now, source_lock
 from .files import check_space, file_digests
+from .native_records import records as books, update_records
 
 
 
@@ -87,13 +88,8 @@ class Runtime:
         self.http.close()
 
 
-def books(manifest):
-    return {key: dict(record['observations'][-1]['metadata']) for key, record in manifest.data['records'].items() if record.get('observations')}
-
-
 def commit(runtime, items):
-    for key, book in items.items():
-        runtime.manifest.observe(book, [], record_key=key, persist=False)
+    update_records(runtime.manifest, items)
     runtime.manifest.checkpoint()
 
 
@@ -124,7 +120,7 @@ def discover(runtime, items):
                 for book in parsed:
                     key = get_hash(book['url'])
                     items[key] = index._merge_book_details(items.get(key, {}), book, resolver)
-                    commit(runtime, items)
+                    commit(runtime, {key: items[key]})
                 scan['batches'].append(fingerprint)
                 scan['next_page'] += 1
                 # Use explicit native next-page evidence, never the legacy fixed page count.
@@ -228,7 +224,7 @@ def acquire(runtime, items, recheck):
             book['download_error'] = str(error)
             runtime.summary['errors'].append({'stage': 'download', 'error': str(error)})
         finally:
-            commit(runtime, items)
+            commit(runtime, {key: book})
     return selected
 
 
@@ -285,7 +281,7 @@ def finalize(runtime, items, selected=None):
                 raise ValueError('Derived output exceeds configured limit')
             book['finalized'] = {'path': str(path), 'sha256': file_digests(path)[0], 'fingerprint': fingerprint}
             runtime.summary['finalized'] = runtime.summary.get('finalized', 0) + 1
-            commit(runtime, items)
+            commit(runtime, {key: book})
     finally:
         runtime.offline = False
 

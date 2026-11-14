@@ -1,7 +1,6 @@
 """Shared helpers for Milli Kitaphana: database indexes, worker selections, and HTTP request wrappers."""
 from .runtime_config import option as operational_option
 
-import copy
 import os
 from contextlib import contextmanager
 from contextvars import ContextVar
@@ -60,16 +59,24 @@ def get_list_file_loc(name):
 
 
 def load_index_file(index_file=None):
-    from .milli_kitaphana import records
+    from .native_records import records
     runtime = require_runtime()
     with runtime.state_lock:
-        index = copy.deepcopy(records(runtime.manifest))
         if index_file is None or index_file == 'books':
-            return index
+            return records(runtime.manifest)
         key = get_list_file_loc(index_file)
         if key not in runtime.manifest.data:
             raise ValueError('Unknown Postgres worker selection; run split first')
-        return {k:index[k] for k in runtime.manifest.data[key] if k in index}
+        return records(runtime.manifest, runtime.manifest.data[key])
+
+
+def update_index(idx, *, replace=False):
+    from .native_records import update_records
+    runtime = require_runtime()
+    with runtime.state_lock:
+        update_records(runtime.manifest, idx,
+                       url_prefix=operational_option('milli_kitaphana_utils', 'host'), replace=replace)
+        runtime.manifest.checkpoint()
 
 
 def dump_index(idx, index_file=None):
@@ -78,12 +85,9 @@ def dump_index(idx, index_file=None):
         manifest = runtime.manifest
         if index_file is not None and index_file != 'books':
             manifest.data[get_list_file_loc(index_file)] = list(idx)
+            manifest.checkpoint()
         else:
-            for key, item in idx.items():
-                manifest.observe({**item, 'url': item.get('url') or operational_option('milli_kitaphana_utils', 'host') + key}, [], record_key=key, persist=False)
-            for key in manifest.data['records'].keys() - idx.keys():
-                del manifest.data['records'][key]
-        manifest.checkpoint()
+            update_index(idx, replace=True)
 
 
 def get_not_downloaded_docs(index, limited):

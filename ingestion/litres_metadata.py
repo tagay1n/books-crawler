@@ -18,7 +18,7 @@ def scrap_metadata():
         "Cookie": f"SID={get_sid()};",
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
     }
-    for b in track(_all_books.values(), description="Scraping metadata"):
+    for key, b in track(_all_books.items(), description="Scraping metadata"):
         if RUNTIME.get():
             RUNTIME.get().budget.start_item()
         with requests.get(b['url'], headers=headers) as resp:
@@ -57,6 +57,6 @@ def scrap_metadata():
             ): metadata['summary'] = summary.get_text(strip=True)
 
         b['metadata'] = metadata
-        save_index('books', _all_books)
+        save_index('books', {key: b})
 
     save_index('books', _all_books)
