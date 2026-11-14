@@ -23,6 +23,9 @@ use SQL counts, projected scan state and streamed errors rather than loading rec
 or asset histories. Detailed error groups are lists of `{message, count}` ordered
 by frequency and message; previews bound both text and group counts and report
 omissions with `_truncation`.
+Record inspection projects latest metadata and asset fields in SQL. Error views
+stream classification identities, count histories in SQL and fetch only selected
+entries. Last-run views fetch at most three errors while retaining the full count.
 
 ## Find the code
 
@@ -44,6 +47,7 @@ identify where a targeted follow-up read is needed.
 | Acquisition and recovery | `ingestion/core.py`, `network.py`, `state.py`, `paths.py` |
 | Local-file integrity, space and signatures | `ingestion/files.py` |
 | Transactions/checkpoints | `ingestion/checkpoints.py`; see [contracts](ingestion-architecture.md) |
+| Read-only JSONB projections | `ingestion/sql_views.py`, `state_inspection.py`, `overview.py` |
 | Native metadata projections and updates | `ingestion/native_records.py` |
 | Publication | `ingestion/publication.py`; see [S3 behavior](ingestion/operations.md#s3-publication) |
 | Config inheritance | `ingestion/config.py`, `runtime_config.py`; [operations](ingestion/operations.md#per-source-configuration) |

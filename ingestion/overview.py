@@ -4,6 +4,7 @@ from itertools import chain
 
 from .diagnostics import partition_discovery_errors
 from .views import preview
+from .sql_views import discovery_scan
 
 
 def summarize(source, coverage, record_count, states, formats, current, historical, *, details):
@@ -64,11 +65,7 @@ def database_overview(source, *, details=False):
         # Only coverage and pending request identities are needed, never visited
         # records, observations, asset results, or a writable repository baseline.
         coverage = conn.scalar(select(state.c.payload).where(state.c.key == 'discovery')) or {}
-        scan_payload = state.c.payload
-        scan_view = func.jsonb_build_object(*[
-            part for key in ('id', 'started_at', 'pending_records', 'frontier')
-            for part in (key, scan_payload[key])])
-        scan = conn.scalar(select(scan_view).where(state.c.key == 'discovery_scan'))
+        scan = conn.scalar(select(discovery_scan(state.c.payload)).where(state.c.key == 'discovery_scan'))
         scan = transform(scan, decode_string) if scan else None
         if scan:
             scan = {key: value for key, value in scan.items() if value is not None}

@@ -5,6 +5,7 @@ from sqlalchemy import MetaData, Table, Column, Text, select, text, delete, func
 from sqlalchemy.dialects.postgresql import JSONB, insert
 from .database import transaction, assert_ownership, _owner
 from .registry import SOURCES
+from .sql_views import latest_array, object_fields
 
 _ESCAPE = '__books_crawler_string_v1__:'
 
@@ -81,11 +82,6 @@ class Repository:
         self.baseline = None
         records, assets, state = self.tables
         r, a = records.c.payload, assets.c.payload
-        def latest_array(value):
-            return case((func.jsonb_typeof(value) == 'array',
-                         case((func.jsonb_array_length(value) > 0,
-                               func.jsonb_build_array(value[-1])), else_=func.jsonb_build_array())),
-                        else_=func.jsonb_build_array())
         record_view = func.jsonb_build_object(
             'observations', latest_array(r['observations']),
             'attachment_count', r['attachment_count'],
@@ -93,10 +89,7 @@ class Repository:
         for name in ('pdf', 'package_pdf'):
             value = r[name]
             output = func.jsonb_build_object('results', latest_array(value['results']))
-            for field in ('status', 'current_results'):
-                output = output.op('||')(case((value.has_key(field),
-                                              func.jsonb_build_object(field, value[field])),
-                                             else_=func.jsonb_build_object()))
+            output = output.op('||')(object_fields(value, ('status', 'current_results')))
             record_view = record_view.op('||')(case((r.has_key(name), func.jsonb_build_object(name, output)),
                                                    else_=func.jsonb_build_object()))
         if self.source == 'common_crawl':
@@ -106,9 +99,7 @@ class Repository:
                         'record_url', 'observation_id', 'source_version', 'verified_source_version')
         # Omit absent keys: absence has different semantics from JSON null.
         asset_view = func.jsonb_build_object('results', latest_array(a['results']))
-        for name in asset_fields:
-            asset_view = asset_view.op('||')(case((a.has_key(name), func.jsonb_build_object(name, a[name])),
-                                                 else_=func.jsonb_build_object()))
+        asset_view = asset_view.op('||')(object_fields(a, asset_fields))
         keys = ('discovery', 'discovery_scan', 'discovery_errors', 'discovery_error_history',
                 's3_publications', 'candidates', 'litres_catalog', 'milli_catalog', 'publications', 'last_run')
         with transaction() as conn:
