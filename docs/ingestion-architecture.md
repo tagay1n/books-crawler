@@ -74,7 +74,8 @@ See [historical verification](archive/implementation-verification.md).
 
 ## Litres PDF code map
 
-`litres_pdf.py` retains acquisition orchestration and compatibility helper imports.
+`litres.py` owns stage orchestration; `litres_pdf.py` owns PDF metadata and page-image
+acquisition. Callers import helpers directly from their owning modules.
 `litres_browser.py` owns authenticated fetching, challenge fallback and response diagnostics.
 `litres_pdf_assembly.py` owns local image validation/encoding and atomic PDF assembly;
 `litres_pdf_config.py` validates PDF and browser settings. Keep transport out of assembly.

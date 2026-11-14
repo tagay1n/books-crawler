@@ -9,6 +9,8 @@ paths, environment limitations and superseded instructions; they are not runbook
 - [Implementation verification](implementation-verification.md): configuration,
   publication/tooling, Postgres migration/imports and Actions verification history.
   Unverified integration paths are explicitly recorded.
+- [Litres migration verification](litres-verification.md): retired command names,
+  legacy import counts and local finalization evidence.
 
 The scheduled-ingestion planning handoff was removed after checking its requirements
 against the current [operations guide](../scheduled-ingestion.md). Source scopes
