@@ -75,7 +75,7 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                 'finalized': sum(bool(v.get('finalized')) for v in items.values()),
                 'publications': manifest.data.get('publications', {}), 'catalog': manifest.data.get('milli_catalog', {}),
                 'publication_counts': {name: sum(s.get('status') == name for s in manifest.data.get('publications', {}).values())
-                                       for name in ('pending', 'duplicate', 'complete')}}
+                                       for name in ('pending', 'not_full', 'duplicate', 'complete')}}
     summary = dict(source='milli_kitaphana', command=command, id=uuid4().hex, started_at=now(), pages=0, downloaded=0, finalized=0, skipped=0, requests=0, network_retries=0, errors=[], stops=[])
     from . import milli_kitaphana_utils as utils
     with source_lock(directory, 'milli_kitaphana'), contextlib.ExitStack() as resources:
@@ -217,7 +217,7 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
             summary['backlog'] = manifest.status()
             publication_states = list(manifest.data.get('publications', {}).values())
             summary['publication_counts'] = {name: sum(s.get('status') == name for s in publication_states)
-                                             for name in ('pending', 'duplicate', 'complete')}
+                                             for name in ('pending', 'not_full', 'duplicate', 'complete')}
             summary['state_key'] = 'last_run'
             if started:
                 manifest.data['last_run'] = summary
@@ -232,6 +232,9 @@ def finalize_items(runtime, items, *, recheck=False):
     try:
         for key, item in items.items():
             try:
+                if item.get('access') == 'limited' or item.get('downloaded') == 'limited':
+                    summary['not_full_skipped'] = summary.get('not_full_skipped', 0) + 1
+                    continue
                 if (item.get('decrypted') or item.get('finalized')) and not recheck:
                     summary['skipped'] += 1
                     continue
@@ -267,12 +270,19 @@ def finalize_items(runtime, items, *, recheck=False):
                     output = Path(decrypt.decrypt_doc_parts(context))
                 if output.stat().st_size > settings.max_derived_pdf_bytes:
                     raise ValueError('Derived PDF exceeds configured size limit')
-                item['finalized'] = {'path': str(output), 'sha256': file_digests(output)[0], 'inputs': fingerprint}
+                item['finalized'] = {'path': str(output), 'sha256': file_digests(output)[0],
+                                     'inputs': fingerprint, 'complete': True}
                 summary['finalized'] += 1
                 update_records(manifest, {key: item}, url_prefix=operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru'))
                 manifest.checkpoint()
             except BudgetStop:
                 raise
+            except decrypt.LimitedBookError:
+                item.update(access='limited', limited_verified=True, downloaded='limited', decrypted=False)
+                item.pop('finalized', None)
+                update_records(manifest, {key: item}, url_prefix=operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru'))
+                manifest.checkpoint()
+                summary['not_full_skipped'] = summary.get('not_full_skipped', 0) + 1
             except Exception as error:
                 summary['errors'].append({'stage': 'finalize', 'record': key, 'error': type(error).__name__})
     finally:

@@ -30,13 +30,15 @@ def restore_inputs(data, directory):
     for key, record in data['records'].items():
         item = record['observations'][-1]['metadata']
         output = item.get('finalized', {})
+        if item.get('access') == 'limited' or item.get('downloaded') == 'limited':
+            continue
         if publication_complete(data, key, output.get('sha256')):
             continue
         if item.get('decrypted') and data.get('publications', {}).get(key, {}).get('status') != 'pending':
             # Legacy imports used this flag for completed publication. Missing
             # runner-local inputs must not restart those completed acquisitions.
             continue
-        if (output.get('path') and Path(output['path']).is_file()
+        if (output.get('complete') is True and output.get('path') and Path(output['path']).is_file()
                 and file_digests(Path(output['path']))[0] == output.get('sha256')):
             continue
         if item.get('downloaded') != 'full':
@@ -98,6 +100,14 @@ def publish_books(settings, data, directory, save, summary, budget, *, target='a
         for key, record in data['records'].items():
             item = record['observations'][-1]['metadata']
             output = item.get('finalized')
+            if item.get('access') == 'limited' or item.get('downloaded') == 'limited':
+                if output:
+                    steps = data.setdefault('publications', {}).setdefault(key, {})
+                    if steps.get('status') != 'not_full':
+                        steps.update(status='not_full', sha256=output.get('sha256'))
+                        save()
+                summary['not_full_skipped'] = summary.get('not_full_skipped', 0) + 1
+                continue
             if not output or publication_complete(data, key, output.get('sha256')):
                 continue
             try:
@@ -136,6 +146,14 @@ def publish_books(settings, data, directory, save, summary, budget, *, target='a
                     counter = 'catalog_reconciled' if own else 'duplicates'
                     summary[counter] = summary.get(counter, 0) + 1
                     continue
+                if output.get('complete') is not True or item.get('downloaded') != 'full':
+                    # Old flags or a nonempty preview PDF do not establish that
+                    # every advertised part was downloaded and validated.
+                    steps['reason'] = 'full_verification_required'
+                    save()
+                    summary['awaiting_full_verification'] = summary.get('awaiting_full_verification', 0) + 1
+                    continue
+                steps.pop('reason', None)
                 if client is None:
                     client = create_client(settings)
                     resources.callback(client.close)

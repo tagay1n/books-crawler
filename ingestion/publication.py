@@ -24,7 +24,7 @@ def artifacts(data, directory, *, direct_files_only=False):
         meta = observation[-1]['metadata'] if observation else record
         if data['source'] == 'milli_kitaphana':
             state = data.get('publications', {}).get(key, {})
-            if state.get('status') == 'duplicate' and state.get('sha256') == meta.get('finalized', {}).get('sha256'):
+            if state.get('status') in {'duplicate', 'not_full'} and state.get('sha256') == meta.get('finalized', {}).get('sha256'):
                 continue
         # Direct-only collection policies also exclude previously assembled
         # outputs; original document assets are projected separately below.

@@ -16,6 +16,10 @@ import copy
 import hashlib
 from unidecode import unidecode
 
+
+class LimitedBookError(ValueError):
+    """The decrypted provider manifest explicitly withholds full-text parts."""
+
 def _get_not_decrypted_docs(index):
     not_decrypted_docs = []
     for card_path, meta in index.items():
@@ -61,6 +65,10 @@ def decrypt_doc_parts(context):
         source_meta = json.load(file)
 
     parts = source_meta["parts"]
+    if not isinstance(parts, list) or not parts:
+        raise ValueError('Document metadata contains no book parts')
+    if any(not part.get('url') for part in parts):
+        raise LimitedBookError('Document metadata contains restricted book parts')
     if len(parts) != parts_count or sorted(num for num, _ in dec_part_paths) != list(range(parts_count)):
         raise ValueError('Encrypted book parts are missing or have duplicate indexes')
     with pymupdf.open() as acc:

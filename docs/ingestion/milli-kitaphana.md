@@ -44,8 +44,9 @@ cross-source identity is established only after a complete PDF has been assemble
 and its MD5 computed. Existing processed source records are skipped on later runs.
 
 `download` acquires encrypted metadata and all parts of non-limited books. Limited
-responses are recorded and skipped by later default downloads; `--recheck` can
-explicitly revisit them. Collection records are not downloaded. `finalize` decrypts
+responses confirmed by the decrypted manifest are recorded (`limited_verified`)
+and skipped by later default downloads; `--recheck` can explicitly revisit them.
+A parsed-page access label alone does not prevent an acquisition attempt. Collection records are not downloaded. `finalize` decrypts
 verified local inputs and assembles complete PDFs atomically without network
 access. PDF IDs are not regenerated, making repeated assembly of identical inputs
 stable. Failed records remain retryable while independent finalizations continue.
@@ -59,8 +60,16 @@ Publication computes and verifies the PDF hashes, then checks
 is marked `duplicate` in the progress publication state; it receives no PDF uploads
 or new upstream metadata. A completed source record is not processed again merely
 because its local files disappeared. Imported legacy `decrypted` completion flags
-are honored too, avoiding reacquisition of previously published books. `pending`, `duplicate` and `complete` counts
+are honored too, avoiding reacquisition of previously published books. `pending`, `not_full`, `duplicate` and `complete` counts
 are available in `publication_counts` (including `--summary-only`).
+
+For a new MD5, publication requires `downloaded: full` and a `complete: true`
+marker attached to the hashed PDF by successful full-part finalization. Known
+previews are skipped (`not_full`); old or ambiguous full flags remain pending with
+`full_verification_required` and are rebuilt/reacquired by `run` before publication.
+Network failures and corrupt/truncated inputs remain retryable errors rather than
+being permanently classified as restricted books. An existing catalog MD5 can
+still be skipped without uploading it again.
 
 For a new MD5, publication verifies the following destinations:
 
@@ -98,7 +107,8 @@ until both destination receipts exist. `run` performs both automatically.
 Manual verification used temporary encrypted two-part PDFs: two pages assembled,
 unchanged finalization skipped, reassembly produced identical bytes, and no provider
 requests occurred. Part ordering, password authentication and declared page counts
-are checked before publication. Simulated destinations covered known duplicates, new files,
+are checked before publication. Empty part lists are rejected and every advertised
+part must transfer successfully before acquisition is marked full. Simulated destinations covered known duplicates, new files,
 partial upload failures, staged publication and interrupted progress checkpoints.
 Rollback-only catalog verification confirmed pending Gemini state, metadata
 preservation, verified location projection and the MD5 trigger; no fixture rows

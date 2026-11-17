@@ -97,6 +97,7 @@ def download(limited, index_name, recheck=False):
                 meta.clear()
                 meta.update(original_meta)
                 meta['access'] = 'limited'
+                meta['limited_verified'] = True
                 require_runtime().summary['limited_skipped'] = require_runtime().summary.get('limited_skipped', 0) + 1
                 print(f"Ignoring limited document '{meta['title']}'")
                 continue
@@ -106,6 +107,7 @@ def download(limited, index_name, recheck=False):
             require_runtime().selected.add(card_path)
             require_runtime().summary["downloaded"] += 1
             meta["downloaded"] = "full"
+            meta.pop('limited_verified', None)
             meta["decrypted"] = False
 
         except KeyboardInterrupt:
@@ -328,6 +330,8 @@ def _download_by_code(context):
         source_meta = json.load(file)
 
     parts = source_meta["parts"]
+    if not isinstance(parts, list) or not parts:
+        raise ValueError('Document metadata contains no book parts')
 
     if any(not part.get("url") for part in parts):
         context['meta']['access'] = "limited"
@@ -338,7 +342,6 @@ def _download_by_code(context):
         # download the parts
         counter = itertools.count()
         context['progress'].main(f"Downloaded (0/{parts_count}) parts")
-        context['meta']['access'] = "open"
         enc_part_paths = pool.map(lambda en: _download_part_task(
             context, en[1], en[0], counter, parts_count), enumerate(parts)
         )
@@ -350,6 +353,9 @@ def _download_by_code(context):
             }
             for p in enc_part_paths if p
         ]
+    if len(context['meta']['enc_part_paths']) != parts_count:
+        raise ValueError('Not all advertised encrypted book parts were downloaded')
+    context['meta']['access'] = 'open'
     context['progress'].main(f"[bold green]Parts downloading complete[/bold green]")
 
 
