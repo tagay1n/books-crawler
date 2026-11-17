@@ -25,6 +25,7 @@ class Runtime:
         self.options = options
         self.settings, self.manifest, self.summary = settings, manifest, summary
         self.directory = manifest.directory
+        self.directory.mkdir(parents=True, exist_ok=True)
         self.config = settings.source_options
         self.budget = Budget(settings)
         self.finalization_budget = Budget(settings)

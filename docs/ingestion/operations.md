@@ -225,6 +225,11 @@ Binary values can use YAML `!!binary` or `{base64: ENCODED_VALUE}`. Values are
 decoded without printing them. Leave unused destination secrets null for local
 stages. Keep credential files out of Git; `config/local/` is already ignored.
 
+If a provider omits an intermediate TLS certificate, `network.additional_ca_certificates`
+can contain its public PEM certificate directly in this same YAML. The HTTP client
+adds it to the existing CA store and continues verifying certificates and hostnames.
+Use a certificate obtained from the issuer; this does not disable TLS verification.
+
 For compatibility, explicitly selected public/scheduled configurations without
 `standalone: true` retain `extends`, environment references and AWS/environment
 fallbacks. This does not affect the default private source configuration.

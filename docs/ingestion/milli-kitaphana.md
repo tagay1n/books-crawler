@@ -112,9 +112,8 @@ part must transfer successfully before acquisition is marked full. Simulated des
 partial upload failures, staged publication and interrupted progress checkpoints.
 Rollback-only catalog verification confirmed pending Gemini state, metadata
 preservation, verified location projection and the MD5 trigger; no fixture rows
-remained. These checks do not constitute a live book acquisition/upload or a run
-of the downstream GitHub/Gemini workflow. Live public-catalog probing still failed
-TLS certificate verification in this environment; verification remains enabled.
+remained. These controlled checks did not run the downstream GitHub/Gemini workflow.
+Later live verification below covers actual acquisition and Yandex publication.
 
 A read-only upstream schema inspection confirmed
 `monocorpus.library_upstream_metadata` has required `md5 text` and
@@ -148,9 +147,42 @@ Manual verification used isolated `/tmp/milli-cli-check` artifacts: repeated
 import, split, local encrypted PDF assembly with zero requests, and a second
 finalization that skipped the verified output. Placeholder publishing credentials
 were rejected. Original local settings were compared without printing values.
-No automated tests were added. Live provider downloads and remote publication
-require separate operational verification.
+No automated tests were added. Later live operational verification is recorded below.
 
-The bounded live catalog check reached the configured retry limit because the
-provider certificate could not be verified in this environment. TLS verification
-remains enabled. Live discovery/resume and acquisition remain unverified.
+The November 2026 live run found that the provider omitted the GlobalSign GCC R46
+AlphaSSL CA 2025 intermediate from its TLS chain. Supplying that public intermediate
+as `network.additional_ca_certificates` in the private source YAML restored verified
+HTTPS. Discovery then resumed and checkpointed new records in PostgreSQL. Keep
+`artifact_dir` pointed at existing Milli artifacts when reusing local encrypted
+inputs; the runtime creates a missing artifact directory for a fresh installation.
+
+Live verification on 2026-11-17 increased source records from 16,579 to 16,604.
+Restricted manifests were checkpointed and skipped. Three selected 1918 *Чаян*
+issues exposed a download-worker context propagation bug; using the shared
+`ConfiguredThreadPoolExecutor` fixed it. All advertised encrypted parts then
+downloaded (52,578,777 transfer bytes), and offline assembly produced complete
+14-, 16- and 16-page PDFs. Repeating the selected download made zero requests.
+
+Primary storage is Backblaze B2: bucket `ttdocs`, region `eu-central-003`, endpoint
+`https://s3.eu-central-003.backblazeb2.com`. Working credentials and this destination
+were saved only in the ignored private source YAML. Yandex Disk remains the second
+PDF destination.
+
+All three PDFs were uploaded to Yandex Disk under their canonical MD5 names;
+independent remote metadata checks matched MD5, size, resource ID and public
+sharing. Repeating Yandex publication uploaded nothing. Publication remained
+`pending`, without catalog or registry inserts, until Backblaze was configured.
+Resuming S3 publication then uploaded all three PDFs and registered all three
+documents and upstream JSON payloads with zero errors. Documents and MD5 registry
+counts both increased from 71,755 to 71,758, and upstream metadata rows increased
+from 7,885 to 7,888. Independent Backblaze GETs reproduced each PDF's MD5; HEAD
+metadata and sizes matched too. The catalog MD5 trigger was enabled and all three
+new hashes were present in its registry. Extraction/evaluation methods remain
+unset and catalog inclusion remains pending.
+
+PostgreSQL processing state now marks these three source records complete and
+retains both destination receipts. Repeating S3 publication uploaded nothing and
+registered no additional documents. The selected worker selection also lives in
+PostgreSQL (`selection:live-verification-1`); no local processing-state file was used.
+The remaining catalog scan and acquisition backlog can be continued with the normal
+source command; this was a bounded operational verification, not a complete crawl.

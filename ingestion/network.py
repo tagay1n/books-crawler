@@ -90,6 +90,20 @@ class HTTP:
     def __init__(self, settings, budget, summary):
         self.settings, self.budget, self.summary = settings, budget, summary
         self.session = requests.Session()
+        if settings.additional_ca_certificates:
+            import ssl
+            from requests.adapters import HTTPAdapter
+            context = ssl.create_default_context(cafile=requests.certs.where())
+            context.load_verify_locations(cadata=settings.additional_ca_certificates)
+
+            class CertificateAdapter(HTTPAdapter):
+                def init_poolmanager(self, *args, **kwargs):
+                    super().init_poolmanager(*args, ssl_context=context, **kwargs)
+
+                def proxy_manager_for(self, proxy, **kwargs):
+                    return super().proxy_manager_for(proxy, ssl_context=context, **kwargs)
+
+            self.session.mount('https://', CertificateAdapter())
         self.session.headers.update({"User-Agent": settings.user_agent,
                                      "Accept-Encoding": "identity"})
         self.last_request = None

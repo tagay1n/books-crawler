@@ -31,6 +31,7 @@ class Settings:
     publication_grace_seconds: float = 0
     database: dict = field(default_factory=dict, repr=False)
     file_only: bool = False
+    additional_ca_certificates: str | None = None
 
 
 def load_settings(path: Path | None, source: str = "magarif", *, profile: Path | None = None) -> Settings:
@@ -98,7 +99,11 @@ def load_settings(path: Path | None, source: str = "magarif", *, profile: Path |
 
     if not isinstance(network.get("user_agent"), str) or not network["user_agent"].strip():
         raise ValueError("network.user_agent must be a nonempty string")
+    additional_ca = network.get('additional_ca_certificates')
+    if additional_ca is not None and (not isinstance(additional_ca, str) or not additional_ca.strip()):
+        raise ValueError('network.additional_ca_certificates must contain PEM certificates')
     return Settings(
+        additional_ca_certificates=additional_ca,
         discovery_deadline_seconds=(number(limits, 'discovery_deadline_seconds')
                                     if 'discovery_deadline_seconds' in limits else None),
         publication_grace_seconds=(number(limits, 'publication_grace_seconds')

@@ -15,7 +15,7 @@ def compact_result(result, command, source=None):
     brief["error_count"] = len(result.get("errors", []))
     if result.get("errors"):
         brief["error_preview"] = [
-            {key: str(error[key]) for key in ("stage", "record", "error") if key in error}
+            {key: str(error[key]) for key in ("stage", "record", "error", "http_status") if key in error}
             if isinstance(error, dict) else {"error": str(error)}
             for error in result["errors"][:3]]
     if "sources" in result:

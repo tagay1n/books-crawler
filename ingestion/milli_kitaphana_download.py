@@ -1,5 +1,5 @@
 """Downloads Milli Kitaphana documents by scraping cards, performing key exchange, fetching encrypted parts, and updating the index with download state."""
-from .runtime_config import option as operational_option
+from .runtime_config import ConfiguredThreadPoolExecutor, option as operational_option
 
 import base64
 import copy
@@ -12,7 +12,6 @@ import re
 import string
 import zipfile
 from datetime import datetime, timedelta
-from multiprocessing.pool import ThreadPool
 from random import randbytes
 from urllib.parse import urlparse
 
@@ -117,7 +116,10 @@ def download(limited, index_name, recheck=False):
             from .network import BudgetStop
             if isinstance(e, BudgetStop):
                 raise
-            require_runtime().summary["errors"].append({"stage": "download", "error": type(e).__name__})
+            failure = {"stage": "download", "record": card_path, "error": type(e).__name__}
+            if isinstance(e, requests.HTTPError) and e.response is not None:
+                failure['http_status'] = e.response.status_code
+            require_runtime().summary["errors"].append(failure)
             import traceback
             print(f"Error: {e} {traceback.format_exc()}")
         finally:
@@ -338,13 +340,13 @@ def _download_by_code(context):
         return
 
     parts_count = len(parts)
-    with ThreadPool(processes=2) as pool:
+    with ConfiguredThreadPoolExecutor(max_workers=2) as pool:
         # download the parts
         counter = itertools.count()
         context['progress'].main(f"Downloaded (0/{parts_count}) parts")
-        enc_part_paths = pool.map(lambda en: _download_part_task(
+        enc_part_paths = list(pool.map(lambda en: _download_part_task(
             context, en[1], en[0], counter, parts_count), enumerate(parts)
-        )
+        ))
         context['meta']['enc_part_paths'] = [
             {
                 'num': p[0],
