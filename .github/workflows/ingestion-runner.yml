@@ -7,16 +7,20 @@ on:
         type: string
     secrets:
       DATABASE_URL:
-        required: true
+        required: false
       AWS_ACCESS_KEY_ID:
-        required: true
+        required: false
       AWS_SECRET_ACCESS_KEY:
-        required: true
+        required: false
       AWS_SESSION_TOKEN:
         required: false
       S3_BUCKET:
-        required: true
+        required: false
       LITRES_SID:
+        required: false
+      MILLI_KITAPHANA_DATABASE_URL:
+        required: false
+      MILLI_KITAPHANA_YANDEX_DISK_OAUTH_TOKEN:
         required: false
       MILLI_KITAPHANA_AES_RAW_KEY:
         required: false
@@ -46,11 +50,6 @@ jobs:
       AWS_ENDPOINT_URL_S3: ${{ vars.S3_ENDPOINT_URL }}
       AWS_DEFAULT_REGION: ${{ vars.AWS_DEFAULT_REGION || 'us-east-1' }}
       LITRES_SID: ${{ secrets.LITRES_SID }}
-      MILLI_KITAPHANA_AES_RAW_KEY: ${{ secrets.MILLI_KITAPHANA_AES_RAW_KEY }}
-      MILLI_KITAPHANA_AES_DEFAULT_IV: ${{ secrets.MILLI_KITAPHANA_AES_DEFAULT_IV }}
-      MILLI_KITAPHANA_AES_SALT: ${{ secrets.MILLI_KITAPHANA_AES_SALT }}
-      MILLI_KITAPHANA_PRIV_KEY: ${{ secrets.MILLI_KITAPHANA_PRIV_KEY }}
-      MILLI_KITAPHANA_SIG_PREFIX: ${{ secrets.MILLI_KITAPHANA_SIG_PREFIX }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -63,20 +62,37 @@ jobs:
       - name: Prepare source access
         env:
           SOURCE_SESSION_JSON: ${{ secrets.SOURCE_SESSION_JSON }}
+          MILLI_KITAPHANA_DATABASE_URL: ${{ secrets.MILLI_KITAPHANA_DATABASE_URL }}
+          MILLI_KITAPHANA_YANDEX_DISK_OAUTH_TOKEN: ${{ secrets.MILLI_KITAPHANA_YANDEX_DISK_OAUTH_TOKEN }}
+          MILLI_KITAPHANA_AES_RAW_KEY: ${{ secrets.MILLI_KITAPHANA_AES_RAW_KEY }}
+          MILLI_KITAPHANA_AES_DEFAULT_IV: ${{ secrets.MILLI_KITAPHANA_AES_DEFAULT_IV }}
+          MILLI_KITAPHANA_AES_SALT: ${{ secrets.MILLI_KITAPHANA_AES_SALT }}
+          MILLI_KITAPHANA_PRIV_KEY: ${{ secrets.MILLI_KITAPHANA_PRIV_KEY }}
+          MILLI_KITAPHANA_SIG_PREFIX: ${{ secrets.MILLI_KITAPHANA_SIG_PREFIX }}
+          MILLI_KITAPHANA_S3_BUCKET: ${{ vars.MILLI_KITAPHANA_S3_BUCKET }}
+          MILLI_KITAPHANA_S3_ENDPOINT_URL: ${{ vars.MILLI_KITAPHANA_S3_ENDPOINT_URL }}
+          MILLI_KITAPHANA_S3_REGION: ${{ vars.MILLI_KITAPHANA_S3_REGION }}
+          MILLI_KITAPHANA_YANDEX_DISK_TARGET_DIR: ${{ vars.MILLI_KITAPHANA_YANDEX_DISK_TARGET_DIR }}
         run: |
           .venv/bin/python - <<'PY'
           import os
           from pathlib import Path
           from ingestion.registry import SOURCES
           from ingestion.config import load_settings
-          from ingestion.automation import require_access
+          from ingestion.automation import require_access, prepare_source_config
           source = os.environ['SOURCE']
           if source not in SOURCES or source == 'common_crawl':
               raise SystemExit('Unsupported automation source')
-          for key in ('DATABASE_URL', 'S3_BUCKET', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY'):
-              if not os.environ.get(key):
-                  raise SystemExit(f'Missing required secret: {key}')
-          require_access(load_settings(Path(f'config/sources/{source}.yaml'), source), source)
+          if source == 'milli_kitaphana':
+              config_path = prepare_source_config(source, os.environ['RUNNER_TEMP'])
+          else:
+              config_path = Path(f'config/sources/{source}.yaml')
+              for key in ('DATABASE_URL', 'S3_BUCKET', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY'):
+                  if not os.environ.get(key):
+                      raise SystemExit(f'Missing required secret: {key}')
+              require_access(load_settings(config_path, source), source)
+          with Path(os.environ['GITHUB_ENV']).open('a', encoding='utf-8') as handle:
+              handle.write(f'INGESTION_CONFIG={config_path}\n')
           if source in {'miras', 'miras_periodicals'}:
               value = os.environ.get('SOURCE_SESSION_JSON')
               if not value:
@@ -99,7 +115,7 @@ jobs:
           if [[ "$SOURCE" == miras || "$SOURCE" == miras_periodicals ]]; then
             args+=(--session-file "$RUNNER_TEMP/source-session.json")
           fi
-          .venv/bin/python -u cli.py --summary-only "${progress_args[@]}" --config "config/sources/$SOURCE.yaml" \
+          .venv/bin/python -u cli.py --summary-only "${progress_args[@]}" --config "$INGESTION_CONFIG" \
             "${profile_args[@]}" run --source "$SOURCE" "${args[@]}" \
             > "$RUNNER_TEMP/ingestion-result.json"
       - name: Report setup or unexpected failure
@@ -110,4 +126,4 @@ jobs:
           fi
       - name: Remove session and private diagnostics
         if: always()
-        run: rm -f "$RUNNER_TEMP/source-session.json" "$RUNNER_TEMP/ingestion-result.json" "$RUNNER_TEMP/ingestion-errors.log"
+        run: rm -f "$RUNNER_TEMP/source-session.json" "$RUNNER_TEMP/source-config.yaml" "$RUNNER_TEMP/ingestion-result.json" "$RUNNER_TEMP/ingestion-errors.log"

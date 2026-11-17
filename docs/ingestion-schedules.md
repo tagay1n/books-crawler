@@ -1,6 +1,6 @@
 # Source schedules
 
-Generated UTC slots; generated triggers are **manual only**.
+Generated UTC slots; weekly sources (milli_kitaphana) are scheduled; other sources are **manual only**.
 
 | Source | Workflow | UTC cron slots |
 | --- | --- | --- |
@@ -24,7 +24,7 @@ Generated UTC slots; generated triggers are **manual only**.
 | litres | ingest-litres.yml | `14 5 8 * *`; `14 5 22 * *` |
 | magarif | ingest-magarif.yml | `31 15 8 * *`; `31 15 22 * *` |
 | magarif_vakyt | ingest-magarif-vakyt.yml | `48 1 9 * *`; `48 1 23 * *` |
-| milli_kitaphana | ingest-milli-kitaphana.yml | `18 11 9 * *`; `18 11 23 * *` |
+| milli_kitaphana | ingest-milli-kitaphana.yml | `17 6 * * 6` |
 | miras | ingest-miras.yml | `35 21 9 * *`; `35 21 23 * *` |
 | miras_periodicals | ingest-miras-periodicals.yml | `52 7 10 * *`; `52 7 24 * *` |
 | nizgar | ingest-nizgar.yml | `22 18 10 * *`; `22 18 24 * *` |

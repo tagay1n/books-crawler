@@ -4,6 +4,75 @@ from datetime import datetime
 from pathlib import Path
 
 
+MILLI_CRYPTO_SECRETS = {
+    'MILLI_KITAPHANA_AES_RAW_KEY': ('aes', 'raw_key'),
+    'MILLI_KITAPHANA_AES_DEFAULT_IV': ('aes', 'default_iv'),
+    'MILLI_KITAPHANA_AES_SALT': ('aes', 'salt'),
+    'MILLI_KITAPHANA_PRIV_KEY': ('priv_key',),
+    'MILLI_KITAPHANA_SIG_PREFIX': ('sig_prefix',),
+}
+
+
+def prepare_source_config(source, runner_temp, *, environment=None):
+    """Render individual Actions secrets into one ephemeral standalone YAML."""
+    import base64
+    import binascii
+    import yaml
+    from .config import load_settings, read_configuration
+    from .publication import configuration
+    if source != 'milli_kitaphana':
+        raise ValueError('Actions config rendering is currently supported for Milli only')
+    environment = os.environ if environment is None else environment
+
+    def required(name):
+        value = environment.get(name)
+        if not isinstance(value, str) or not value.strip():
+            raise ValueError(f'Missing required Actions value: {name}')
+        return value
+
+    template = Path(__file__).resolve().parents[1] / 'config/sources/milli_kitaphana.yaml'
+    data = read_configuration(template)
+    options = data['sources'][source]
+    data['standalone'] = True
+    data['database'] = {**data.get('database', {}), 'url': required('DATABASE_URL')}
+    data.setdefault('storage', {})['s3'] = {
+        'bucket': required('MILLI_KITAPHANA_S3_BUCKET'),
+        'endpoint_url': required('MILLI_KITAPHANA_S3_ENDPOINT_URL'),
+        'region': required('MILLI_KITAPHANA_S3_REGION'), 'prefix': '',
+        'access_key_id': required('AWS_ACCESS_KEY_ID'),
+        'secret_access_key': required('AWS_SECRET_ACCESS_KEY'), 'session_token': None}
+    options['database_url'] = required('MILLI_KITAPHANA_DATABASE_URL')
+    options['yandex']['disk'] = {
+        'oauth_token': required('MILLI_KITAPHANA_YANDEX_DISK_OAUTH_TOKEN'),
+        'target_dir': required('MILLI_KITAPHANA_YANDEX_DISK_TARGET_DIR')}
+    for name, keys in MILLI_CRYPTO_SECRETS.items():
+        try:
+            value = base64.b64decode(required(name), validate=True)
+        except (ValueError, binascii.Error):
+            raise ValueError(f'Actions secret {name} must be valid base64') from None
+        if not value:
+            raise ValueError(f'Actions secret {name} must not be empty')
+        target = options
+        for key in keys[:-1]:
+            target = target[key]
+        target[keys[-1]] = value
+    root = Path(runner_temp).resolve()
+    data['artifacts_root'] = str(root / 'ingestion')
+    options['artifact_dir'] = str(root / 'ingestion' / source)
+    path = root / 'source-config.yaml'
+    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    try:
+        with os.fdopen(descriptor, 'w', encoding='utf-8') as handle:
+            yaml.safe_dump(data, handle, allow_unicode=True, sort_keys=False)
+        settings = load_settings(path, source)
+        require_access(settings, source)
+        configuration(settings)
+    except Exception:
+        path.unlink(missing_ok=True)
+        raise
+    return path
+
+
 def require_access(settings, source):
     if source == 'litres':
         values = [settings.source_options.get('sid')]

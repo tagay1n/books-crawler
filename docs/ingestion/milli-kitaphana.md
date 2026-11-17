@@ -9,6 +9,32 @@ The original `.venv/bin/python cli.py --config config/local/milli_kitaphana.yaml
 Provider helpers live in `ingestion/milli_kitaphana_*.py`; the old source directory
 and standalone entry point have been removed.
 
+GitHub Actions uses `ingest-milli-kitaphana.yml`, with manual dispatch and the
+weekly cron `17 6 * * 6`: every Saturday at 09:17 Moscow / 06:17 UTC, including
+fifth Saturdays. It calls the same shared runner as other sources, with source
+concurrency, live logs, job summaries and a six-hour hosted-job timeout. No workflow
+is disabled as part of this setup. The generator preserves this weekly schedule
+from `config/ingestion-schedules.yaml`.
+
+GitHub uses ten individual Actions secrets and four ordinary variables, listed in
+[scheduled operations](../scheduled-ingestion.md#credentials-and-access). To rotate
+an individual value with GitHub CLI:
+
+```bash
+gh auth login --hostname github.com
+gh secret set SECRET_NAME --repo tagay1n/books-crawler
+gh variable set VARIABLE_NAME --repo tagay1n/books-crawler
+```
+
+The CLI prompts for the individual value; it can also read stdin. The five crypto
+secrets contain base64 values. Existing values with the same names are replaced.
+The one-time bulk setup helper was removed after credential setup was completed.
+The runner combines the individual values and public source template into a
+temporary standalone mode-0600 YAML and removes it on exit. No complete file is
+stored as a GitHub secret, and no private configuration is committed. The workflow must
+be present on the default branch for scheduled execution; deployment and a live
+Actions run have not been verified here. See [scheduled operations](../scheduled-ingestion.md).
+
 Configuration belongs under `sources.milli_kitaphana` in the selected operational
 YAML. The source command creates a missing private file from the public template;
 `cli.py configure --source milli_kitaphana` also prepares it without running ingestion.
@@ -113,7 +139,8 @@ stderr logs alongside a compact stdout result, including under GitHub Actions:
 ```
 
 The shared workflow enables these logs for Milli and skips the capped scheduled
-overlay for this source. GitHub's job timeout can still interrupt a run; PostgreSQL
+overlay for this source, rendering individual Actions values into one temporary
+configuration. GitHub's job timeout can still interrupt a run; PostgreSQL
 checkpoints let the next runner resume unfinished work. The workflow has not been
 deployed or dispatched by this change.
 

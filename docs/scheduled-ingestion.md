@@ -1,9 +1,11 @@
 # Scheduled ingestion operations
 
-Implementation is prepared locally. **No workflows have been deployed, enabled,
-run, or verified disabled on GitHub.** The 33 generated source workflows currently
-have `workflow_dispatch` only. Common Crawl remains available locally and has no
-workflow. The reusable `ingestion-runner.yml` accepts calls only.
+Milli Kitaphana is configured for manual dispatch and every Saturday at **06:17
+UTC / 09:17 Moscow**, including fifth Saturdays. This source-specific schedule
+was explicitly requested without disabling the workflow. Other 32 generated source
+workflows remain manual-only. No native GitHub enable/disable state was changed;
+deployment, secret setup and remote execution are not verified from this workspace.
+Common Crawl remains local-only; `ingestion-runner.yml` accepts calls only.
 
 ## Runtime and storage
 
@@ -72,14 +74,26 @@ improvement. This implementation deliberately adds no intermediate S3 persistenc
 
 Configure repository Actions secrets:
 
-- All sources: `DATABASE_URL`, `S3_BUCKET`, `AWS_ACCESS_KEY_ID`,
+- Sources other than Milli: `DATABASE_URL`, `S3_BUCKET`, `AWS_ACCESS_KEY_ID`,
   `AWS_SECRET_ACCESS_KEY`; optional `AWS_SESSION_TOKEN`.
 - Litres only: `LITRES_SID`. The runner's installed Chrome supports the existing
   browser helpers. Access challenges/expired credentials remain failures.
-- Milli only: `MILLI_KITAPHANA_AES_RAW_KEY`, `MILLI_KITAPHANA_AES_DEFAULT_IV`,
-  `MILLI_KITAPHANA_AES_SALT`, `MILLI_KITAPHANA_PRIV_KEY`,
-  `MILLI_KITAPHANA_SIG_PREFIX`. No legacy Yandex or upstream metadata credentials
-  are required for S3 ingestion.
+- Milli: ten individual secrets: `DATABASE_URL`, `AWS_ACCESS_KEY_ID`,
+  `AWS_SECRET_ACCESS_KEY`, `MILLI_KITAPHANA_DATABASE_URL`,
+  `MILLI_KITAPHANA_YANDEX_DISK_OAUTH_TOKEN`, `MILLI_KITAPHANA_AES_RAW_KEY`,
+  `MILLI_KITAPHANA_AES_DEFAULT_IV`, `MILLI_KITAPHANA_AES_SALT`,
+  `MILLI_KITAPHANA_PRIV_KEY`, `MILLI_KITAPHANA_SIG_PREFIX`. The five crypto
+  values are base64 strings. Four ordinary variables configure destination
+  settings: `MILLI_KITAPHANA_S3_BUCKET`, `MILLI_KITAPHANA_S3_ENDPOINT_URL`,
+  `MILLI_KITAPHANA_S3_REGION`, `MILLI_KITAPHANA_YANDEX_DISK_TARGET_DIR`.
+  Credential setup has been completed by the repository owner; the temporary bulk
+  setup helper was removed afterward. For future rotation, use `gh secret set NAME
+  --repo OWNER/REPO` or `gh variable set NAME --repo OWNER/REPO`, entering the value
+  interactively or through stdin. Shared database/AWS secrets are also used by
+  other workflows; supply the intended shared values.
+  The runner renders and validates one owner-only temporary standalone YAML;
+  the parser reads settings only from that file. The file is removed by the
+  `always()` cleanup step. No entire config file is stored in GitHub parameters.
 - Miras only: `MIRAS_SESSION_JSON`; Miras periodicals only:
   `MIRAS_PERIODICALS_SESSION_JSON`. Each contains its valid browser session export
   as documented in the respective [source guide](local-ingestion.md). Missing,
@@ -105,6 +119,12 @@ still applies. See its [source guide](ingestion/milli-kitaphana.md) for log fiel
 and console commands. This logging change has not been deployed or run on GitHub.
 
 ## Disabled rollout (required before adding schedules)
+
+The explicitly authorized Milli weekly schedule is an exception to the fleet-wide
+rollout procedure below. Generate it using the ordinary `generate` command; it
+persists the weekly configuration without disabling any workflow. Do not run
+`disable`, `verify` or `generate --scheduled` just to update Milli. The guarded
+fleet-wide rollout remains available for the other sources.
 
 GitHub native workflow state is external to YAML. Follow this order on the
 default branch; do not enable or dispatch a workflow as part of rollout:
@@ -159,9 +179,9 @@ scheduled nor manual starts. Disabling does not cancel an already active run.
 .venv/bin/python scripts/ingestion_workflows.py generate
 ```
 
-This safe default writes manual-only callers and the readable
-[source/schedule table](ingestion-schedules.md). It removes scheduled triggers
-from existing generated callers too. For any schedule update or new registry
+This default preserves explicitly configured `weekly` sources, writes manual-only
+callers for other sources and updates the readable
+[source/schedule table](ingestion-schedules.md). For a fleet-wide schedule update or new registry
 source, follow the full disabled rollout above: publish manual-only files, disable
 and verify the entire source fleet, generate schedules, publish, verify again,
 and let the user re-enable selected workflows. New sources therefore cannot
@@ -170,9 +190,9 @@ the generator refuses to silently delete stale callers.
 
 Slots span days 1–28, with nonzero minutes; both leap and ordinary Februaries get
 all starts. The final three days of long months intentionally have no nominal
-starts. Regeneration can move existing slots. Default 33-source coverage has 66
-distinct nominal starts; at maximum ingestion runtime that is 330 ingestion
-runner-hours monthly, plus setup/publication time. Actual use should be lower.
+monthly starts. Milli instead follows its weekly cron, giving four or five starts
+per month. The remaining 32 sources have 64 planned monthly starts, which remain
+manual-only until their fleet-wide rollout is authorized.
 
 GitHub runs schedules on the default branch and may delay or drop starts,
 especially during busy periods. Public-repository schedules may be automatically

@@ -2,6 +2,8 @@
 name: Ingest milli_kitaphana
 on:
   workflow_dispatch:
+  schedule:
+    - cron: '17 6 * * 6'
 permissions:
   contents: read
 concurrency:
@@ -16,8 +18,8 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-      S3_BUCKET: ${{ secrets.S3_BUCKET }}
+      MILLI_KITAPHANA_DATABASE_URL: ${{ secrets.MILLI_KITAPHANA_DATABASE_URL }}
+      MILLI_KITAPHANA_YANDEX_DISK_OAUTH_TOKEN: ${{ secrets.MILLI_KITAPHANA_YANDEX_DISK_OAUTH_TOKEN }}
       MILLI_KITAPHANA_AES_RAW_KEY: ${{ secrets.MILLI_KITAPHANA_AES_RAW_KEY }}
       MILLI_KITAPHANA_AES_DEFAULT_IV: ${{ secrets.MILLI_KITAPHANA_AES_DEFAULT_IV }}
       MILLI_KITAPHANA_AES_SALT: ${{ secrets.MILLI_KITAPHANA_AES_SALT }}

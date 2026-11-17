@@ -2,6 +2,8 @@
 # Source keys must exist in ingestion/registry.py; Common Crawl is excluded.
 runs_per_month: 2
 overrides: {}
+weekly:
+  milli_kitaphana: '17 6 * * 6' # Every Saturday, 09:17 Moscow / 06:17 UTC.
 # Example:
 # overrides:
 #   magarif: 1

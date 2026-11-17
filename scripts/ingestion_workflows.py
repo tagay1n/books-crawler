@@ -2,6 +2,7 @@
 """Generate thin workflows; guard scheduled rollout with GitHub native state."""
 import argparse
 import json
+import re
 import subprocess
 import sys
 from pathlib import Path
@@ -36,10 +37,20 @@ def verify_disabled(names):
 def schedules(names):
     config = yaml.safe_load((ROOT / 'config/ingestion-schedules.yaml').read_text())
     overrides = config.get('overrides', {})
+    weekly = config.get('weekly', {})
+    if not isinstance(weekly, dict) or set(weekly) - set(names):
+        raise ValueError('Weekly schedules contain unknown or excluded sources')
     if set(overrides) - set(names):
         raise ValueError('Schedule overrides contain unknown or excluded sources')
     result = {}
     for i, name in enumerate(names):
+        if name in weekly:
+            cron = weekly[name]
+            match = re.fullmatch(r'(\d{1,2}) (\d{1,2}) \* \* ([0-6])', str(cron))
+            if not match or int(match[1]) > 59 or int(match[2]) > 23:
+                raise ValueError('Weekly schedules must be minute hour * * weekday in UTC')
+            result[name] = [cron]
+            continue
         count = overrides.get(name, config['runs_per_month'])
         if type(count) is not int or not 1 <= count <= 28:
             raise ValueError('runs_per_month must be an integer in 1..28')
@@ -70,7 +81,9 @@ def workflow(source, crons, scheduled):
     if source == 'litres':
         secrets += ['LITRES_SID']
     if source == 'milli_kitaphana':
-        secrets += ['MILLI_KITAPHANA_' + s for s in
+        secrets = ['DATABASE_URL', 'AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY',
+                   'MILLI_KITAPHANA_DATABASE_URL', 'MILLI_KITAPHANA_YANDEX_DISK_OAUTH_TOKEN']
+        secrets += ['MILLI_KITAPHANA_' + name for name in
                     ('AES_RAW_KEY', 'AES_DEFAULT_IV', 'AES_SALT', 'PRIV_KEY', 'SIG_PREFIX')]
     lines += [f'      {s}: ${{{{ secrets.{s} }}}}' for s in secrets]
     if source in {'miras', 'miras_periodicals'}:
@@ -95,19 +108,23 @@ def main():
     if args.scheduled:
         verify_disabled(names)
     slots = schedules(names)
+    # Explicit weekly entries are individually authorized schedules. Keep them
+    # on regeneration without changing other workflows' native GitHub state.
+    weekly = set(yaml.safe_load((ROOT / 'config/ingestion-schedules.yaml').read_text()).get('weekly', {}))
     directory = ROOT / '.github/workflows'
     directory.mkdir(parents=True, exist_ok=True)
     obsolete = {p.name for p in directory.glob('ingest-*.yml')} - {filename(s) for s in names}
     if obsolete:
         raise ValueError('Retire obsolete source workflows explicitly: ' + ', '.join(sorted(obsolete)))
     table = ['# Source schedules', '',
-             'Generated UTC slots; generated triggers are ' + ('scheduled.' if args.scheduled else '**manual only**.'), '',
+             'Generated UTC slots; ' + ('all generated triggers are scheduled.' if args.scheduled else
+             'weekly sources (' + ', '.join(sorted(weekly)) + ') are scheduled; other sources are **manual only**.'), '',
              '| Source | Workflow | UTC cron slots |', '| --- | --- | --- |']
     for source in names:
-        (directory / filename(source)).write_text(workflow(source, slots[source], args.scheduled))
+        (directory / filename(source)).write_text(workflow(source, slots[source], args.scheduled or source in weekly))
         table.append(f"| {source} | {filename(source)} | {'; '.join('`' + c + '`' for c in slots[source])} |")
     (ROOT / 'docs/ingestion-schedules.md').write_text('\n'.join(table) + '\n')
-    print(f'Generated {len(names)} source workflows; scheduled={args.scheduled}.')
+    print(f'Generated {len(names)} source workflows; fleet_scheduled={args.scheduled}; weekly_sources={",".join(sorted(weekly)) or "none"}.')
 
 
 if __name__ == '__main__':
