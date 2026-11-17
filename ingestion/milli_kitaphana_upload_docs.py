@@ -63,11 +63,10 @@ def upload_doc(path_to_pdf, config, is_limited, *, md5=None):
         remote_path, remote_md5 = client.upload_or_replace(str(canonical), remote_dir, ConflictResolution.REPLACE_IF_DIFFERENT)
         if remote_md5 != digest:
             raise ValueError('Yandex upload MD5 does not match local PDF')
-        client.publish(remote_path)
-        info = client.get_meta(remote_path, fields=['md5', 'resource_id', 'public_key', 'public_url'])
-        if info['md5'] != digest or not all(info[key] for key in ('resource_id', 'public_key', 'public_url')):
-            raise ValueError('Yandex upload metadata is incomplete')
-        return {'path': remote_path.removeprefix('disk:'), **{key: info[key] for key in ('resource_id', 'public_key', 'public_url')}}
+        info = client.get_meta(remote_path, fields=['md5'])
+        if info['md5'] != digest:
+            raise ValueError('Yandex upload MD5 verification failed')
+        return {'path': remote_path.removeprefix('disk:')}
 
 
 def upload_s3(client, settings, path, md5, sha256, size):

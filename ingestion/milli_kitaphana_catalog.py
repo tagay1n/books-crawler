@@ -19,12 +19,12 @@ def document_status(database_url, md5, steps):
                     SELECT 1 FROM monocorpus.catalog_locations y
                     JOIN monocorpus.catalog_locations s ON s.md5=y.md5
                     WHERE y.md5=:md5 AND y.provider='yandex' AND y.purpose='source'
-                      AND y.resource_id=:resource_id AND s.provider='s3' AND s.purpose='primary'
+                      AND y.source_path=:path AND s.provider='s3' AND s.purpose='primary'
                       AND s.locator=:url
                 ) AND EXISTS (SELECT 1 FROM monocorpus.library_upstream_metadata WHERE md5=:md5)
                 THEN 'complete' ELSE 'duplicate'
             END
-        """), {'md5': md5, 'resource_id': yandex.get('resource_id'), 'url': s3.get('url')})
+        """), {'md5': md5, 'path': yandex.get('path'), 'url': s3.get('url')})
 
 
 def register_document(database_url, md5, steps, metadata):
@@ -39,12 +39,12 @@ def register_document(database_url, md5, steps, metadata):
             return False
         connection.execute(text("""
             INSERT INTO public.document
-                (md5,mime_type,ya_path,ya_resource_id,ya_public_url,ya_public_key,
+                (md5,mime_type,ya_path,
                  "full",sharing_restricted,document_url,primary_storage_size,
                  primary_storage_etag,primary_storage_verified_at)
-            VALUES (:md5,'application/pdf',:path,:resource_id,:public_url,:public_key,
+            VALUES (:md5,'application/pdf',:path,
                     true,false,:url,:size,:etag,CURRENT_TIMESTAMP)
-        """), {'md5': md5, **yandex, **s3})
+        """), {'md5': md5, 'path': yandex['path'], **s3})
         # Preserve any previously supplied raw context instead of overwriting it.
         statement = text("""
             INSERT INTO monocorpus.library_upstream_metadata(md5,payload_json)

@@ -142,8 +142,10 @@ still be skipped without uploading it again.
 
 For a new MD5, publication verifies the following destinations:
 
-- Yandex Disk: `<target_dir>/full/<md5>.pdf`, with verified MD5, resource ID and
-  public sharing information, matching the existing sync workflow's identity.
+- Yandex Disk: `<target_dir>/full/<md5>.pdf`, with verified MD5. Milli saves only
+  `ya_path` for this destination; it does not publish the file or set
+  `ya_resource_id`, `ya_public_url` or `ya_public_key`. Sharing and those fields
+  belong to the separate sync script. Existing values are preserved.
 - S3: the configured document bucket, key `<md5>.pdf`. This source uses the catalog's
   MD5 naming convention rather than the generic source/SHA-256 prefix layout.
 
@@ -255,6 +257,10 @@ registered no additional documents. The selected worker selection also lives in
 PostgreSQL (`selection:live-verification-1`); no local processing-state file was used.
 The remaining catalog scan and acquisition backlog can be continued with the normal
 source command; this was a bounded operational verification, not a complete crawl.
+That historical run published Yandex files and stored sharing/resource metadata.
+The current uploader leaves publishing to the other script and stores only the
+Yandex path; recovery matches that path and the S3 URL rather than a resource ID
+that can change when the separate script replaces a file.
 
 Database round trips are reduced without removing recovery boundaries. An
 unchanged repository save returns before opening a connection or checking the
