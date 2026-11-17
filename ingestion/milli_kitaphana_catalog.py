@@ -5,29 +5,26 @@ from sqlalchemy.dialects.postgresql import JSONB
 from .database import transaction
 
 
-def known_document(database_url, md5):
-    with transaction(database_url) as connection:
-        return connection.scalar(text(
-            "SELECT EXISTS (SELECT 1 FROM monocorpus.downloaded_documents WHERE md5=decode(:md5,'hex'))"
-        ), {'md5': md5})
-
-
-def registered_here(database_url, md5, steps):
-    """Recover catalog success when the independent progress save was interrupted."""
-    yandex = steps.get('yandex')
-    s3 = steps.get('s3')
-    if not isinstance(yandex, dict) or not isinstance(s3, dict):
-        return False
+def document_status(database_url, md5, steps):
+    """Decide new/duplicate/our recovered publication in one database snapshot."""
+    yandex, s3 = steps.get('yandex'), steps.get('s3')
+    yandex = yandex if isinstance(yandex, dict) else {}
+    s3 = s3 if isinstance(s3, dict) else {}
     with transaction(database_url) as connection:
         return connection.scalar(text("""
-            SELECT EXISTS (
-                SELECT 1 FROM monocorpus.catalog_locations y
-                JOIN monocorpus.catalog_locations s ON s.md5=y.md5
-                WHERE y.md5=:md5 AND y.provider='yandex' AND y.purpose='source'
-                  AND y.resource_id=:resource_id AND s.provider='s3' AND s.purpose='primary'
-                  AND s.locator=:url
-            ) AND EXISTS (SELECT 1 FROM monocorpus.library_upstream_metadata WHERE md5=:md5)
-        """), {'md5': md5, 'resource_id': yandex['resource_id'], 'url': s3['url']})
+            SELECT CASE
+                WHEN NOT EXISTS (SELECT 1 FROM monocorpus.downloaded_documents
+                                 WHERE md5=decode(:md5,'hex')) THEN 'new'
+                WHEN EXISTS (
+                    SELECT 1 FROM monocorpus.catalog_locations y
+                    JOIN monocorpus.catalog_locations s ON s.md5=y.md5
+                    WHERE y.md5=:md5 AND y.provider='yandex' AND y.purpose='source'
+                      AND y.resource_id=:resource_id AND s.provider='s3' AND s.purpose='primary'
+                      AND s.locator=:url
+                ) AND EXISTS (SELECT 1 FROM monocorpus.library_upstream_metadata WHERE md5=:md5)
+                THEN 'complete' ELSE 'duplicate'
+            END
+        """), {'md5': md5, 'resource_id': yandex.get('resource_id'), 'url': s3.get('url')})
 
 
 def register_document(database_url, md5, steps, metadata):

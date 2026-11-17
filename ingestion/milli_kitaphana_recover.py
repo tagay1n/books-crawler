@@ -376,7 +376,9 @@ def recover(report_path, workers=None, download=False, retry_failed=False, downl
         'started_at': datetime.now(timezone.utc).isoformat(), 'records': {}}))
     index = load_index_file()
     config = read_config()
-    targets = dict(list((k, v) for k, v in index.items() if unfinished(v))[:require_runtime().settings.max_items])
+    cap = require_runtime().settings.max_items
+    targets = dict(list((k, v) for k, v in index.items() if unfinished(v))[
+        :None if cap == float('inf') else cap])
     report["target_count"] = len(set(targets) | set(report["records"]))
     if retry_failed:
         for key, result in list(report["records"].items()):

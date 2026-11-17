@@ -69,6 +69,11 @@ This suppresses per-record progress and prints one compact JSON object with
 common counters, stop reasons, error counts, current queue counts and available
 state references. Full structured run summaries live in each source's Postgres
 `last_run` entry; processing no longer writes summary files.
+
+Add `--log-progress` to stream progress to stderr while keeping the compact JSON
+result on stdout. Milli emits structured, credential-free progress and 30-second
+heartbeats; its shared Actions runner enables this option. Without that option,
+`--summary-only` continues to suppress progress.
 Status remains read-only, and has no new report file to reference. `records`
 counts processed records for a run and retained records for status; run summaries
 also include `backlog_records` to make that distinction explicit.

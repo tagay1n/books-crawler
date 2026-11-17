@@ -38,8 +38,16 @@ it preserves newer database entries and leaves original files untouched.
 | recover.py | recover --source milli_kitaphana |
 | mark_existing_limited.py | mark-existing-limited --source milli_kitaphana |
 
-`discover` retains the Tatar, Arabic and collection queries, checkpoints pages,
-and obeys `--max-pages`. Discovery identifies previously seen source records;
+`discover` retains the Tatar, Arabic and collection queries and obeys
+`--max-pages`. Pages accumulate in memory; one atomic PostgreSQL checkpoint at
+the end of discovery saves observations and scan frontiers together, including
+partial results on a handled failure, explicit limit or normal interruption.
+A hard kill can require repeating discovery since the preceding saved frontier.
+`page_indexed` logs indicate in-memory progress; `discovery_checkpointed` confirms
+the database save. Bad cards are logged while other cards/pages continue. A page
+failure stops that query, leaves it retryable, and allows other queries and the
+download stage to proceed. Incomplete discovery never removes old records.
+Discovery identifies previously seen source records;
 cross-source identity is established only after a complete PDF has been assembled
 and its MD5 computed. Existing processed source records are skipped on later runs.
 
@@ -51,9 +59,70 @@ verified local inputs and assembles complete PDFs atomically without network
 access. PDF IDs are not regenerated, making repeated assembly of identical inputs
 stable. Failed records remain retryable while independent finalizations continue.
 
-`run` resumes prepared local work before fresh discovery/download. Page, download,
-finalization and publication limits bound each invocation. Repeat it to advance
-unfinished work; reaching a budget limit does not imply catalog completion.
+`run` resumes prepared local work before fresh discovery/download. Milli's source
+template and this workspace's private configuration disable processing caps:
+`max_pages`, `max_items`, `max_download_bytes`, `max_file_bytes`,
+`max_derived_pdf_bytes`, `soft_deadline_seconds` and `disk_reserve_bytes` are YAML
+`null`. There is no separate discovery deadline. Explicit positive values restore
+individual caps; `--limit` and `--max-pages` can still bound a manual invocation.
+Other sources retain their configured caps. Network timeouts/retries still apply.
+An existing process keeps the settings loaded at startup; restart to apply changes.
+
+After discovery, `run` processes each newly downloaded book through assembly and
+publication before downloading the next book. Individual download, assembly or
+publication errors remain retryable and do not prevent independent books from
+proceeding. Per-book acquisition, assembly and upload-receipt checkpoints remain;
+the catalog transaction still waits for both uploads. Standalone `download`
+continues to perform acquisition only. Source-lock or database failures can stop
+the run because safely saving work then requires restoring shared infrastructure.
+
+Milli stores only its latest processing observation per source record. The first
+mutating invocation after this change compacts older snapshots under the source
+writer lock; later observations replace previous snapshots. First/last seen fields,
+current parsed metadata, completion/restriction/duplicate decisions, unfinished
+inputs and upload receipts remain. Catalog upstream metadata is unaffected.
+Discovery scan state retains a scalar count and retry frontier instead of an array
+of every seen ID. Historical imported arrays are removed at the next discovery
+save. Count discrepancies leave the scan incomplete for a fresh attempt; counts
+alone do not prove unique coverage of a changing catalog across runs.
+
+The storage audit found about 34 MiB in Milli records and 2.8 MiB in Milli state,
+including historical snapshots and repeated scan inventories. Read-only compaction
+verification reduced 26,543 observations to 16,604 with identical latest metadata.
+The 16 KiB empty asset table remains required by the shared repository interface.
+Catalog tables used for publications, identities, contributions and extraction
+were preserved. Smaller payloads reduce future growth; PostgreSQL may reuse freed
+space without immediately shrinking database files.
+
+Normal commands emit timestamped JSON progress lines to stderr and the final
+result to stdout. Logs include a run ID, stages, indexed pages and discovery saves, download
+attempts and parts, confirmed restrictions, PDF assembly, MD5 decisions, upload
+receipts, catalog registration and error classes/HTTP status codes. A heartbeat
+every 30 seconds reports activity during long requests, database operations or
+assembly. Request logs omit query parameters, headers and bodies; helper tracebacks
+and crypto/session material remain suppressed. Errors include up to five code
+locations (filename, line and function), without exception messages or locals.
+Logs are console output, not local
+processing-state files.
+
+`--summary-only` retains its quiet behavior. Add `--log-progress` to keep live
+stderr logs alongside a compact stdout result, including under GitHub Actions:
+
+```bash
+.venv/bin/python -u cli.py milli_kitaphana --summary-only --log-progress
+```
+
+The shared workflow enables these logs for Milli and skips the capped scheduled
+overlay for this source. GitHub's job timeout can still interrupt a run; PostgreSQL
+checkpoints let the next runner resume unfinished work. The workflow has not been
+deployed or dispatched by this change.
+
+Summary `skipped` and `not_full_skipped` counters count stage visits, so the same
+source record can contribute more than once. `started_items` counts download
+attempts, including confirmed restricted books and failures. For example, 25
+attempts consisting of 21 restricted manifests and four HTTP failures correctly
+produce zero downloaded or finalized books; the final result retains failure
+records and HTTP status codes for retry/debugging.
 
 Publication computes and verifies the PDF hashes, then checks
 `monocorpus.downloaded_documents` before creating any remote object. A known MD5
@@ -186,3 +255,25 @@ registered no additional documents. The selected worker selection also lives in
 PostgreSQL (`selection:live-verification-1`); no local processing-state file was used.
 The remaining catalog scan and acquisition backlog can be continued with the normal
 source command; this was a bounded operational verification, not a complete crawl.
+
+Database round trips are reduced without removing recovery boundaries. An
+unchanged repository save returns before opening a connection or checking the
+source lease; checkpoint callbacks still run. Changed saves perform one mandatory
+ownership check after obtaining the transaction connection. Supplied-connection
+saves retain their own ownership check. Periodic lease checks during active work
+remain enabled.
+
+Publication determines registry membership and matching-location/metadata recovery
+in one catalog query. A cached hash checked before file hashing is not queried
+again in the same attempt when the verified hash agrees. Known duplicates and
+recovered publications save their terminal state once; new files still checkpoint
+pending hashes before uploads. The final catalog transaction independently
+rechecks MD5 membership to handle concurrent writers.
+
+Manual SQL instrumentation using session-local temporary tables confirmed zero
+SQL statements for unchanged/repeated saves and one ownership query plus one
+upsert for a changed row. A deliberately rejected write rolled back without
+advancing the baseline; temporary tables were removed. Read-only queries against
+the three published books confirmed recovered and duplicate classifications, and
+an unseen hash was classified new. The existing parser process was left running
+with its loaded code; these improvements apply on its next start.

@@ -1,4 +1,12 @@
 extends: ../defaults.yaml
+limits:
+  max_pages: null
+  max_items: null
+  max_download_bytes: null
+  max_file_bytes: null
+  max_derived_pdf_bytes: null
+  soft_deadline_seconds: null
+  disk_reserve_bytes: null
 sources:
   milli_kitaphana:
     aes:

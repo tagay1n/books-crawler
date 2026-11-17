@@ -1,4 +1,5 @@
 import json
+import sys
 from pathlib import Path
 from typing import Optional
 
@@ -18,9 +19,11 @@ app.add_typer(database_app, name="database")
 @app.callback()
 def main(ctx: typer.Context, config: Optional[Path] = typer.Option(None, "--config", help="Selected operational YAML file."),
          profile: Optional[Path] = typer.Option(None, "--profile", help="Public configuration overlay, e.g. config/scheduled.yaml."),
-         summary_only: bool = typer.Option(False, "--summary-only", help="Print one compact JSON result and suppress progress; run details are in Postgres.")):
+         summary_only: bool = typer.Option(False, "--summary-only", help="Print one compact JSON result and suppress progress unless --log-progress is set."),
+         log_progress: bool = typer.Option(False, "--log-progress", help="Write live progress to stderr, including with --summary-only.")):
     ctx.obj = config
     ctx.meta["summary_only"] = summary_only
+    ctx.meta['log_progress'] = log_progress
     ctx.meta["profile"] = profile
     if ctx.invoked_subcommand == 'database' and config is not None:
         from .config import read_configuration, resolve_environment
@@ -34,8 +37,14 @@ def main(ctx: typer.Context, config: Optional[Path] = typer.Option(None, "--conf
             fail(ctx, error, 'database')
 
 
-def progress(ctx):
-    return (lambda message: None) if ctx.meta.get("summary_only") else typer.echo
+def progress(ctx, source=None):
+    if ctx.meta.get('summary_only') and not ctx.meta.get('log_progress'):
+        return lambda message: None
+    if source == 'milli_kitaphana' or ctx.meta.get('log_progress'):
+        # Bind before native helpers redirect their noisy stdout/stderr.
+        from functools import partial
+        return partial(typer.echo, file=sys.stderr)
+    return typer.echo
 
 
 def emit_result(ctx, result, command, source=None, *, compact_default=False):
@@ -153,7 +162,7 @@ def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, ses
         session_file = session_file or settings.source_options.get('session')
         from dataclasses import replace
         options = replace(options, session_file=session_file)
-        result = run(settings, source, command, options=options, log=progress(ctx))
+        result = run(settings, source, command, options=options, log=progress(ctx, source))
         from .automation import job_summary
         job_summary(result, source, command)
         emit_result(ctx, result, command, source)

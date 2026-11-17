@@ -36,7 +36,7 @@ requests.packages.urllib3.disable_warnings(
 # URLS
 
 
-def download(limited, index_name, recheck=False):
+def download(limited, index_name, recheck=False, on_download=None):
     global_index_file = get_index_file_loc()
     worker_index_file = get_list_file_loc(index_name) if index_name else global_index_file
     worker_is_global = worker_index_file == global_index_file
@@ -53,6 +53,8 @@ def download(limited, index_name, recheck=False):
                                if meta.get('record_type') != 'collection' and not meta.get('broken')
                                and (not limited or meta.get('needs_full_download'))]
     print(f"Found {len(not_downloaded_docs)} not downloaded document(s) in the index")
+    runtime = require_runtime()
+    runtime.event('download_queue', candidates=len(not_downloaded_docs), max_items=runtime.settings.max_items)
     if not not_downloaded_docs:
         print("No docs for downloading, exiting...")
         return
@@ -61,8 +63,8 @@ def download(limited, index_name, recheck=False):
     config = read_config()
 
     for card_path, meta in not_downloaded_docs:
-        from .milli_kitaphana_utils import require_runtime
         require_runtime().budget.start_item()
+        runtime.event('download_started', record=card_path, attempt=runtime.budget.items)
         original_meta = copy.deepcopy(meta)
         try:
             _scrap_doc_card(card_path, meta, proxies=None)
@@ -80,6 +82,7 @@ def download(limited, index_name, recheck=False):
                 print(f"Replaced old card path '{existing_card_path}' with new '{card_path}' for download code '{download_code}'")
                 if not meta.get("broken", False) or meta.get("downloaded", None):
                     # if merged meta shows document downloading was not broken or downloaded then just proceed next,
+                    runtime.event('download_skipped', record=card_path, reason='existing_download_code')
                     continue
 
             context = {
@@ -98,6 +101,7 @@ def download(limited, index_name, recheck=False):
                 meta['access'] = 'limited'
                 meta['limited_verified'] = True
                 require_runtime().summary['limited_skipped'] = require_runtime().summary.get('limited_skipped', 0) + 1
+                runtime.event('download_skipped', record=card_path, reason='restricted_parts_confirmed')
                 print(f"Ignoring limited document '{meta['title']}'")
                 continue
 
@@ -108,6 +112,7 @@ def download(limited, index_name, recheck=False):
             meta["downloaded"] = "full"
             meta.pop('limited_verified', None)
             meta["decrypted"] = False
+            runtime.event('download_verified', record=card_path, parts=len(meta['enc_part_paths']))
 
         except KeyboardInterrupt:
             print("Interrupting....")
@@ -120,6 +125,8 @@ def download(limited, index_name, recheck=False):
             if isinstance(e, requests.HTTPError) and e.response is not None:
                 failure['http_status'] = e.response.status_code
             require_runtime().summary["errors"].append(failure)
+            from .milli_kitaphana_logging import error_fields
+            runtime.event('download_failed', record=card_path, **error_fields(e))
             import traceback
             print(f"Error: {e} {traceback.format_exc()}")
         finally:
@@ -129,6 +136,8 @@ def download(limited, index_name, recheck=False):
             with open_lock(global_index_file):
                 from .milli_kitaphana_utils import update_index
                 update_index({card_path: meta})
+        if on_download is not None and meta.get('downloaded') == 'full':
+            on_download(card_path)
 
 
 def _scrap_doc_card(card_path, meta, proxies):
@@ -373,6 +382,8 @@ def _download_part_task(context, part, num, counter, total):
         res = num, part_url, download_part(context, part_url)
 
     context['progress'].main(f"Downloaded ({next(counter) + 1}/{total}) parts")
+    require_runtime().event('part_downloaded', part=num + 1, total_parts=total,
+                            download_code=context['meta']['download_code'])
     return res
 
 

@@ -48,6 +48,7 @@ def _source_callback(source, run_command):
         config: Optional[Path] = typer.Option(None, "--config", help="Override this source's operational YAML."),
         profile: Optional[Path] = typer.Option(None, "--profile", help="Public configuration overlay."),
         summary_only: Optional[bool] = typer.Option(None, "--summary-only", help="Print one compact JSON result."),
+        log_progress: Optional[bool] = typer.Option(None, "--log-progress", help="Write live progress to stderr, including with --summary-only."),
         limit: Optional[int] = typer.Option(None, "--limit", help="Item limit for the default run."),
         max_pages: Optional[int] = typer.Option(None, "--max-pages", help="Page limit for the default run."),
         recheck: bool = typer.Option(False, "--recheck", help="Revalidate completed downloads in the default run."),
@@ -61,6 +62,8 @@ def _source_callback(source, run_command):
             ctx.meta["profile"] = profile
         if summary_only is not None:
             ctx.meta["summary_only"] = summary_only
+        if log_progress is not None:
+            ctx.meta['log_progress'] = log_progress
         if ctx.invoked_subcommand is None:
             run_command(ctx, source=source, limit=limit, max_pages=max_pages,
                         recheck=recheck, session_file=session_file)

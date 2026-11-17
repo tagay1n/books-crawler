@@ -90,14 +90,17 @@ def upload_s3(client, settings, path, md5, sha256, size):
             'etag': info.get('ETag'), 'bucket': bucket, 'key': key}
 
 
-def publish_books(settings, data, directory, save, summary, budget, *, target='all'):
+def publish_books(settings, data, directory, save, summary, budget, *, target='all', log=None, record_keys=None):
     from .publication import create_client
     from .milli_kitaphana_decrypt import _upstream_metadata
     config = settings.source_options
+    emit = log or (lambda *args, **kwargs: None)
     require_publication_config(config)
     with contextlib.ExitStack() as resources:
         client = None
-        for key, record in data['records'].items():
+        selected = data['records'] if record_keys is None else record_keys
+        for key in selected:
+            record = data['records'][key]
             item = record['observations'][-1]['metadata']
             output = item.get('finalized')
             if item.get('access') == 'limited' or item.get('downloaded') == 'limited':
@@ -110,24 +113,29 @@ def publish_books(settings, data, directory, save, summary, budget, *, target='a
                 continue
             if not output or publication_complete(data, key, output.get('sha256')):
                 continue
+            emit('publication_started', record=key, target=target)
             try:
                 budget.check()
                 path = Path(output['path'])
                 steps = data.setdefault('publications', {}).setdefault(key, {})
                 # The catalog may have committed before progress was saved and
                 # runner-local artifacts disappeared. Reconcile recorded hashes.
+                checked_md5 = None
                 if steps.get('sha256') == output['sha256'] and steps.get('md5'):
-                    if catalog.known_document(config['database_url'], steps['md5']):
+                    checked_md5 = steps['md5']
+                    status = catalog.document_status(config['database_url'], checked_md5, steps)
+                    if status != 'new':
                         budget.start_item()
-                        own = catalog.registered_here(config['database_url'], steps['md5'], steps)
-                        steps.update(status='complete' if own else 'duplicate', finished_at=now())
+                        steps.update(status=status, finished_at=now())
                         item['decrypted'] = True
                         save()
-                        counter = 'catalog_reconciled' if own else 'duplicates'
+                        counter = 'catalog_reconciled' if status == 'complete' else 'duplicates'
                         summary[counter] = summary.get(counter, 0) + 1
+                        emit('publication_checkpointed', record=key, md5=steps['md5'], status=steps['status'])
                         continue
                 if not path.is_file():
                     summary['awaiting_inputs'] = summary.get('awaiting_inputs', 0) + 1
+                    emit('publication_pending', record=key, reason='awaiting_inputs')
                     continue
                 budget.start_item()
                 sha, md5, size = file_digests(path)
@@ -136,15 +144,16 @@ def publish_books(settings, data, directory, save, summary, budget, *, target='a
                 if steps.get('sha256') != sha:
                     steps.clear()
                 steps.update(sha256=sha, md5=md5, status='pending')
-                save()
-                # Always consult the catalog before creating any remote object.
-                if catalog.known_document(config['database_url'], md5):
-                    own = catalog.registered_here(config['database_url'], md5, steps)
-                    steps.update(status='complete' if own else 'duplicate', finished_at=now())
+                # Reuse this attempt's lookup when the verified digest agrees.
+                if checked_md5 != md5:
+                    status = catalog.document_status(config['database_url'], md5, steps)
+                if status != 'new':
+                    steps.update(status=status, finished_at=now())
                     item['decrypted'] = True
                     save()
-                    counter = 'catalog_reconciled' if own else 'duplicates'
+                    counter = 'catalog_reconciled' if status == 'complete' else 'duplicates'
                     summary[counter] = summary.get(counter, 0) + 1
+                    emit('publication_checkpointed', record=key, md5=md5, status=steps['status'])
                     continue
                 if output.get('complete') is not True or item.get('downloaded') != 'full':
                     # Old flags or a nonempty preview PDF do not establish that
@@ -152,13 +161,17 @@ def publish_books(settings, data, directory, save, summary, budget, *, target='a
                     steps['reason'] = 'full_verification_required'
                     save()
                     summary['awaiting_full_verification'] = summary.get('awaiting_full_verification', 0) + 1
+                    emit('publication_pending', record=key, reason='full_verification_required')
                     continue
                 steps.pop('reason', None)
+                # Persist hashes and pending status before any external upload.
+                save()
                 if client is None:
                     client = create_client(settings)
                     resources.callback(client.close)
                 budget.check()
                 if target in {'all', 's3'} and not isinstance(steps.get('s3'), dict):
+                    emit('upload_started', record=key, md5=md5, destination='s3', size_bytes=size)
                     steps['s3'] = upload_s3(client, settings, path, md5, sha, size)
                     from .publication import PublishableArtifact, receipt_key, destination
                     artifact = PublishableArtifact(key, output.get('id', output['path']), path, sha,
@@ -170,15 +183,19 @@ def publish_books(settings, data, directory, save, summary, budget, *, target='a
                         'completed_at': now()}
                     save()
                     summary['s3_published'] = summary.get('s3_published', 0) + 1
+                    emit('upload_checkpointed', record=key, md5=md5, destination='s3')
                 budget.check()
                 if target in {'all', 'yandex'} and not isinstance(steps.get('yandex'), dict):
+                    emit('upload_started', record=key, md5=md5, destination='yandex', size_bytes=size)
                     steps['yandex'] = upload_doc(str(path), config, False, md5=md5)
                     save()
                     summary['yandex_published'] = summary.get('yandex_published', 0) + 1
+                    emit('upload_checkpointed', record=key, md5=md5, destination='yandex')
                 if not (isinstance(steps.get('s3'), dict) and isinstance(steps.get('yandex'), dict)):
                     continue
                 metadata = _upstream_metadata(item)
                 budget.check()
+                emit('catalog_registration_started', record=key, md5=md5)
                 created = catalog.register_document(config['database_url'], md5, steps, metadata)
                 steps.update(status='complete' if created else 'duplicate', finished_at=now())
                 item['decrypted'] = True
@@ -187,7 +204,10 @@ def publish_books(settings, data, directory, save, summary, budget, *, target='a
                 summary[counter] = summary.get(counter, 0) + 1
                 if created:
                     summary['upstream_metadata_saved'] = summary.get('upstream_metadata_saved', 0) + 1
+                emit('publication_checkpointed', record=key, md5=md5, status=steps['status'])
             except BudgetStop:
                 raise
             except Exception as error:
+                from .milli_kitaphana_logging import error_fields
+                emit('publication_failed', record=key, **error_fields(error))
                 summary.setdefault('errors', []).append({'stage': 'publication', 'record': key, 'error': type(error).__name__})

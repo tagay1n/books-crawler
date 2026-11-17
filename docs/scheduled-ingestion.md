@@ -96,6 +96,14 @@ download, assembly, publication and backlog counters, duration, failure count an
 allowlisted stop reasons, with no error messages, URLs or session data. Setup
 failures receive a fallback summary.
 
+Milli enables `--log-progress` with `--summary-only`: its credential-free JSON
+progress goes to the live Actions log on stderr, while the final compact result
+stays in the temporary stdout file. Other sources continue to capture private
+stderr diagnostics for cleanup. Milli uses its source template's unlimited
+processing caps without `config/scheduled.yaml`; the six-hour Actions job timeout
+still applies. See its [source guide](ingestion/milli-kitaphana.md) for log fields
+and console commands. This logging change has not been deployed or run on GitHub.
+
 ## Disabled rollout (required before adding schedules)
 
 GitHub native workflow state is external to YAML. Follow this order on the

@@ -71,6 +71,13 @@ class Repository:
         records, assets, state = groups
         data = {'schema_version': 1, 'source': self.source, **state, 'records': records, 'assets': assets}
         self.baseline = copy.deepcopy(data)
+        if self.source == 'milli_kitaphana':
+            # Processing state is a current snapshot; upstream context lives in
+            # the catalog. The detached baseline lets the next save persist this
+            # one-time compaction under the source writer lock.
+            for record in records.values():
+                if len(record.get('observations', [])) > 1:
+                    record['observations'] = record['observations'][-1:]
         return data
 
     def load_status(self):
@@ -117,30 +124,36 @@ class Repository:
                 'records': record_data, 'assets': asset_data, '_historical_results': history_count}
 
     def save(self, data, connection=None):
-        assert_ownership(owner=self.owner)
         if self.baseline is None:
             raise RuntimeError('Load repository before saving')
         changes = []
+        for table, group in zip(self.tables, ('records', 'assets', None)):
+            current = data[group] if group else {k:v for k,v in data.items() if k not in {'records','assets','source','schema_version'}}
+            previous = self.baseline[group] if group else {k:v for k,v in self.baseline.items() if k not in {'records','assets','source','schema_version'}}
+            changed = {k:v for k,v in current.items() if k not in previous or v != previous[k]}
+            removed = previous.keys() - current.keys()
+            if changed or removed:
+                changes.append((table, group, changed, removed))
+        if not changes:
+            return
+
         def write(conn):
-            for table, group in zip(self.tables, ('records', 'assets', None)):
-                current = data[group] if group else {k:v for k,v in data.items() if k not in {'records','assets','source','schema_version'}}
-                previous = self.baseline[group] if group else {k:v for k,v in self.baseline.items() if k not in {'records','assets','source','schema_version'}}
-                changed = {k:v for k,v in current.items() if k not in previous or v != previous[k]}
+            for table, group, changed, removed in changes:
                 rows = [{'key':encode_string(k), 'payload':transform(v, encode_string)} for k,v in changed.items()]
                 for start in range(0, len(rows), 250):
                     statement = insert(table).values(rows[start:start+250])
                     conn.execute(statement.on_conflict_do_update(index_elements=['key'], set_={'payload':statement.excluded.payload}))
-                removed = previous.keys() - current.keys()
                 if removed:
                     conn.execute(delete(table).where(table.c.key.in_([encode_string(k) for k in removed])))
-                changes.append((group, changed, removed))
         if connection is None:
-            with transaction() as conn:
+            # The transaction performs the single mandatory ownership check.
+            with transaction(owner=self.owner) as conn:
                 write(conn)
         else:
+            assert_ownership(owner=self.owner)
             write(connection)
         # Preserve detached baselines without copying unchanged histories at every checkpoint.
-        for group, changed, removed in changes:
+        for table, group, changed, removed in changes:
             previous = self.baseline[group] if group else self.baseline
             previous.update(copy.deepcopy(changed))
             for key in removed:

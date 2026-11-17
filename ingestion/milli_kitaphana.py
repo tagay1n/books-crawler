@@ -21,12 +21,13 @@ def directory_for(settings):
 
 
 class Runtime:
-    def __init__(self, settings, manifest, summary, options):
+    def __init__(self, settings, manifest, summary, options, progress=None):
         self.options = options
         self.settings, self.manifest, self.summary = settings, manifest, summary
         self.directory = manifest.directory
         self.directory.mkdir(parents=True, exist_ok=True)
         self.config = settings.source_options
+        self.event = progress.emit if progress is not None else lambda *args, **kwargs: None
         self.budget = Budget(settings)
         self.finalization_budget = Budget(settings)
         self.http = HTTP(settings, self.budget, summary)
@@ -58,8 +59,14 @@ class Runtime:
             if params:
                 url = requests.Request('GET', url, params=params).prepare().url
             def fetch():
-                with self.http.request(method, url, headers=headers, data=data) as response:
-                    return self.http.buffer_response(response, self.directory)
+                from .milli_kitaphana_logging import error_fields
+                self.event('request_started', method=method, path=urlsplit(url).path)
+                try:
+                    with self.http.request(method, url, headers=headers, data=data) as response:
+                        return self.http.buffer_response(response, self.directory)
+                except requests.RequestException as error:
+                    self.event('request_failed', **error_fields(error))
+                    raise
             return self.http.retry(fetch)
 
 
@@ -79,14 +86,35 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                                        for name in ('pending', 'not_full', 'duplicate', 'complete')}}
     summary = dict(source='milli_kitaphana', command=command, id=uuid4().hex, started_at=now(), pages=0, downloaded=0, finalized=0, skipped=0, requests=0, network_retries=0, errors=[], stops=[])
     from . import milli_kitaphana_utils as utils
-    with source_lock(directory, 'milli_kitaphana'), contextlib.ExitStack() as resources:
+    from .milli_kitaphana_logging import Progress, error_fields
+    if log is print:
+        import sys
+        from functools import partial
+        log = partial(print, file=sys.stderr, flush=True)
+    with Progress(log, summary, settings) as progress, source_lock(directory, 'milli_kitaphana'), contextlib.ExitStack() as resources:
+        progress.phase('load_postgres_state')
         manifest = Manifest(directory, 'milli_kitaphana', checkpoint=checkpoint)
-        runtime = resources.enter_context(bound_runtime(utils.RUNTIME, Runtime(settings, manifest, summary, options)))
+        progress.emit('state_loaded', records=len(manifest.data['records']))
+        runtime = resources.enter_context(bound_runtime(utils.RUNTIME, Runtime(settings, manifest, summary, options, progress)))
         publication_budget = Budget(settings, publication=True)
         items = records(manifest)
         def commit():
             update_records(manifest, items, url_prefix=operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru'))
             manifest.checkpoint()
+        def stop(error):
+            summary['stops'].append(str(error))
+            progress.emit('budget_stop', reason=str(error))
+        def process_downloaded(key):
+            progress.phase('process_downloaded_book')
+            try:
+                finalize_items(runtime, records(manifest, [key]))
+                publish_books(settings, manifest.data, directory, manifest.save,
+                              summary, publication_budget, log=runtime.event,
+                              record_keys=[key])
+            except BudgetStop as error:
+                stop(error)
+            finally:
+                progress.phase('download')
         started = False
         try:
             from . import milli_kitaphana_download as downloader
@@ -126,22 +154,27 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                     if command == 'run':
                         from .milli_kitaphana_upload_docs import publish_books, restore_inputs
                         # Drain local publication backlog before fresh network work.
+                        progress.phase('resume_publication')
                         try:
                             publish_books(settings, manifest.data, directory, manifest.save,
-                                          summary, publication_budget)
+                                          summary, publication_budget, log=runtime.event)
                         except BudgetStop as error:
-                            summary['stops'].append(str(error))
+                            stop(error)
+                        progress.phase('restore_inputs')
                         restore_inputs(manifest.data, directory)
                         items = records(manifest)
                         commit()
+                        progress.phase('resume_finalization')
                         try:
                             finalize_items(runtime, items)
                         except BudgetStop as error:
-                            summary['stops'].append(str(error))
+                            stop(error)
+                        progress.phase('publish_resumed_pdfs')
                         publish_books(settings, manifest.data, directory, manifest.save,
-                                      summary, publication_budget)
+                                      summary, publication_budget, log=runtime.event)
                         items = records(manifest)
                     if command in {'discover', 'run'}:
+                        progress.phase('discovery')
                         try:
                             from .runtime_config import discovery_window
                             with discovery_window(settings):
@@ -149,34 +182,38 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                         except BudgetStop as error:
                             if command != 'run':
                                 raise
-                            summary['stops'].append(str(error))
+                            stop(error)
                         items = utils.load_index_file()
-                        commit()
                     if command in {'download', 'run'}:
+                        progress.phase('download')
                         try:
-                            downloader.download(options.limited, options.index_name, recheck=recheck)
+                            downloader.download(options.limited, options.index_name, recheck=recheck,
+                                                on_download=process_downloaded if command == 'run' else None)
                         except BudgetStop as error:
                             if command != 'run':
                                 raise
-                            summary['stops'].append(str(error))
+                            stop(error)
                         items = utils.load_index_file()
                         commit()
                     if command in {'finalize', 'run'}:
+                        progress.phase('finalization')
                         try:
                             finalize_items(runtime, items, recheck=recheck)
                         except BudgetStop as error:
                             if command != 'run':
                                 raise
-                            summary['stops'].append(str(error))
+                            stop(error)
                         except (ValueError, OSError, RuntimeError) as error:
                             if command != 'run':
                                 raise
                             summary['errors'].append({'stage': 'finalize', 'error': type(error).__name__})
                     if command in {'publish', 'run'}:
+                        progress.phase('publication')
                         from .milli_kitaphana_upload_docs import publish_books
                         publish_books(settings, manifest.data, directory, manifest.save,
                                       summary, publication_budget,
-                                      target='all' if command == 'run' else runtime.options.target)
+                                      target='all' if command == 'run' else runtime.options.target,
+                                      log=runtime.event)
                         items = records(manifest)
                     options = runtime.options.maintenance
                     if command == 'split':
@@ -191,8 +228,9 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                         from .milli_kitaphana_mark_existing_limited import mark_existing_limited
                         mark_existing_limited(); items = utils.load_index_file()
         except BudgetStop as error:
-            summary['stops'].append(str(error))
+            stop(error)
         except Exception as error:
+            progress.emit('stage_failed', **error_fields(error))
             message = str(error)
             # Local stages do not require publication credentials.
             values = []
@@ -209,6 +247,7 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                 if value: message = message.replace(str(value), '[redacted]')
             summary['errors'].append({'stage': command, 'error': message})
         finally:
+            progress.phase('save_postgres_state')
             # Helpers checkpoint their own updates, including partial progress.
             if started and command in {'discover', 'download', 'run', 'publish', 'recover', 'merge-index', 'mark-existing-limited'}:
                 items = utils.load_index_file()
@@ -266,6 +305,7 @@ def finalize_items(runtime, items, *, recheck=False):
                     raise
                 runtime.budget.check()
                 context = {'meta': item, 'config': runtime.config, 'work_dir': str(directory / item['download_code'])}
+                runtime.event('finalization_started', record=key, parts=len(item['enc_part_paths']))
                 from .milli_kitaphana_progress_wrapper import ProgressWrapper
                 with ProgressWrapper(context, key):
                     output = Path(decrypt.decrypt_doc_parts(context))
@@ -276,6 +316,7 @@ def finalize_items(runtime, items, *, recheck=False):
                 summary['finalized'] += 1
                 update_records(manifest, {key: item}, url_prefix=operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru'))
                 manifest.checkpoint()
+                runtime.event('pdf_checkpointed', record=key, size_bytes=output.stat().st_size)
             except BudgetStop:
                 raise
             except decrypt.LimitedBookError:
@@ -284,7 +325,10 @@ def finalize_items(runtime, items, *, recheck=False):
                 update_records(manifest, {key: item}, url_prefix=operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru'))
                 manifest.checkpoint()
                 summary['not_full_skipped'] = summary.get('not_full_skipped', 0) + 1
+                runtime.event('finalization_skipped', record=key, reason='restricted_parts_confirmed')
             except Exception as error:
                 summary['errors'].append({'stage': 'finalize', 'record': key, 'error': type(error).__name__})
+                from .milli_kitaphana_logging import error_fields
+                runtime.event('finalization_failed', record=key, **error_fields(error))
     finally:
         runtime.offline = False

@@ -88,12 +88,20 @@ jobs:
       - name: Run shared CLI
         run: |
           args=()
+          progress_args=()
+          profile_args=()
+          if [[ "$SOURCE" == milli_kitaphana ]]; then
+            progress_args+=(--log-progress)
+          else
+            profile_args+=(--profile config/scheduled.yaml)
+            exec 2> "$RUNNER_TEMP/ingestion-errors.log"
+          fi
           if [[ "$SOURCE" == miras || "$SOURCE" == miras_periodicals ]]; then
             args+=(--session-file "$RUNNER_TEMP/source-session.json")
           fi
-          .venv/bin/python cli.py --summary-only --config "config/sources/$SOURCE.yaml" \
-            --profile config/scheduled.yaml run --source "$SOURCE" "${args[@]}" \
-            > "$RUNNER_TEMP/ingestion-result.json" 2>&1
+          .venv/bin/python -u cli.py --summary-only "${progress_args[@]}" --config "config/sources/$SOURCE.yaml" \
+            "${profile_args[@]}" run --source "$SOURCE" "${args[@]}" \
+            > "$RUNNER_TEMP/ingestion-result.json"
       - name: Report setup or unexpected failure
         if: ${{ always() && failure() }}
         run: |
@@ -102,4 +110,4 @@ jobs:
           fi
       - name: Remove session and private diagnostics
         if: always()
-        run: rm -f "$RUNNER_TEMP/source-session.json" "$RUNNER_TEMP/ingestion-result.json"
+        run: rm -f "$RUNNER_TEMP/source-session.json" "$RUNNER_TEMP/ingestion-result.json" "$RUNNER_TEMP/ingestion-errors.log"

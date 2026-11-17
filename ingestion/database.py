@@ -56,10 +56,10 @@ def engine(database_url=None):
 
 
 @contextmanager
-def transaction(database_url=None):
+def transaction(database_url=None, *, owner=None):
     try:
-        assert_ownership()
         with engine(database_url).begin() as connection:
+            assert_ownership(owner=owner)
             yield connection
     except SQLAlchemyError:
         raise RuntimeError('Postgres operation failed; transaction rolled back (connection details suppressed)') from None

@@ -13,10 +13,10 @@ import base64
 class Settings:
     artifacts_root: Path
     archive_url: str
-    max_pages: int
-    max_items: int
-    max_download_bytes: int
-    max_file_bytes: int
+    max_pages: int | float
+    max_items: int | float
+    max_download_bytes: int | float
+    max_file_bytes: int | float
     disk_reserve_bytes: int
     soft_deadline_seconds: float
     connect_timeout_seconds: float
@@ -25,7 +25,7 @@ class Settings:
     retry_attempts: int
     source_options: dict = field(default_factory=dict, repr=False)
     s3: dict = field(default_factory=dict, repr=False)
-    max_derived_pdf_bytes: int = field(kw_only=True)
+    max_derived_pdf_bytes: int | float = field(kw_only=True)
     user_agent: str = field(kw_only=True)
     discovery_deadline_seconds: float | None = None
     publication_grace_seconds: float = 0
@@ -92,6 +92,17 @@ def load_settings(path: Path | None, source: str = "magarif", *, profile: Path |
 
     def number(mapping, key, integer=False):
         value = mapping.get(key)
+        # Milli supports explicit null workload caps. Other sources retain their
+        # existing positive-number contract. Infinity keeps shared comparisons
+        # and budget accounting intact without inventing a very large cap.
+        if source == 'milli_kitaphana' and mapping is limits and key in limits and value is None:
+            if key == 'disk_reserve_bytes':
+                return 0
+            if key == 'discovery_deadline_seconds':
+                return None
+            if key in {'max_pages', 'max_items', 'max_download_bytes', 'max_file_bytes',
+                       'max_derived_pdf_bytes', 'soft_deadline_seconds'}:
+                return float('inf')
         valid = type(value) is int if integer else type(value) in (int, float)
         if not valid or not 0 < value < float("inf"):
             raise ValueError(f"{key} must be a positive {'integer' if integer else 'finite number'}.")
@@ -119,9 +130,7 @@ def load_settings(path: Path | None, source: str = "magarif", *, profile: Path |
         **{key: number(network, key) for key in (
             "connect_timeout_seconds", "read_timeout_seconds", "pacing_seconds")},
         retry_attempts=number(network, "retry_attempts", True),
-        max_derived_pdf_bytes=number(
-            {"max_derived_pdf_bytes": limits.get("max_derived_pdf_bytes")},
-            "max_derived_pdf_bytes", True),
+        max_derived_pdf_bytes=number(limits, "max_derived_pdf_bytes", True),
     )
 
 

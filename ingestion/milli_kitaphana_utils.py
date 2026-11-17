@@ -118,11 +118,9 @@ def get_not_downloaded_docs(index, limited):
 
 @contextmanager
 def open_lock(index_file=None, wait_seconds=None):
-    """The source's Postgres lease covers writers; serialize provider workers."""
+    """Serialize in-memory edits; persistence verifies the Postgres lease."""
     runtime = require_runtime()
     with runtime.state_lock:
-        from .database import assert_ownership
-        assert_ownership(owner=runtime.budget.database_owner)
         yield
 
 

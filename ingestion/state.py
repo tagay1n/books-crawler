@@ -90,6 +90,8 @@ class Manifest:
             record.pop("imported_acquisition_complete", None)
             history.append({"id": uuid4().hex, "observed_at": now(), "fingerprint": fingerprint,
                             "parser_version": parser_version, "metadata": metadata})
+            if self.repository.source == 'milli_kitaphana':
+                del history[:-1]
             if "pdf" in record:
                 record["pdf"]["status"] = "incomplete"
             if "package_pdf" in record:
