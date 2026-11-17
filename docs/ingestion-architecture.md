@@ -21,7 +21,7 @@ uses verified local inputs without credentials/network, records recipe/input
 provenance, and atomically publishes derived outputs. Run composes the local
 stages and automatic S3 publication at committed checkpoints. Review and legacy
 publication targets remain explicit, except Milli Kitaphana's `run`, which also
-publishes S3-completed PDFs to Yandex Disk and stores upstream metadata. Status is read-only.
+uses its MD5-gated publication coordinator for S3, Yandex Disk and atomic catalog/upstream-metadata registration. Status is read-only.
 The manifest owns record state; any compatibility index is a projection.
 
 Other providers currently combining acquisition and assembly retain their

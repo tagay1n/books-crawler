@@ -34,7 +34,7 @@ def job_summary(result, source, command):
              f"Outcome: {'FAILED' if failed else 'partial (budget stop)' if result.get('stops') else 'completed'}", '',
              '| Metric | Value |', '| --- | --- |']
     for key in ('pages', 'records', 'downloaded', 'finalized', 'pdf_assembled', 'skipped',
-                'yandex_published', 'upstream_metadata_saved',
+                'yandex_published', 'upstream_metadata_saved', 'duplicates', 'catalog_registered', 'catalog_reconciled',
                 's3_published', 's3_skipped', 'attempted_download_bytes'):
         lines.append(f'| {key} | {count(result.get(key, 0))} |')
     lines.append(f"| failures | {len(result.get('errors', []))} |")

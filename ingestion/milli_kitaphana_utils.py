@@ -94,6 +94,8 @@ def dump_index(idx, index_file=None):
 def get_not_downloaded_docs(index, limited):
     not_downloaded_docs = []
     for card_path, meta in index.items():
+        if meta.get('access') == 'limited' and not limited:
+            continue
         if meta.get("record_type") == "collection":
             continue
         if meta.get("broken", False):

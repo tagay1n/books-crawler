@@ -263,6 +263,11 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
         from .automation import require_access
         require_access(settings, source)
     target = options.target
+    if source == 'milli_kitaphana' and command in {'run', 'publish'}:
+        # Decide MD5 identity before uploading, then register both destinations.
+        publication.configuration(settings)
+        return _run_local(settings, source, command, recheck=recheck,
+                          log=log, options=options)
     remote = command == 'run' or (command == 'publish' and target == 's3')
     if command == 'status':
         data = Repository(source).load_status()
@@ -315,13 +320,6 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
                                 upload_budget or Budget(settings, publication=True), available_only=command == 'run')
         except BudgetStop as error:
             summary['stops'].append(str(error))
-        if source == 'milli_kitaphana' and command == 'run':
-            from .milli_kitaphana_upload_docs import publish_books
-            try:
-                publish_books(settings, data, directory, lambda: repository.save(data),
-                              summary, Budget(settings, publication=True), require_s3=True)
-            except BudgetStop as error:
-                summary['stops'].append(str(error))
         inventory = list(publication.artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True))
         summary['s3'] = dict(current_artifacts=len(inventory),
                              pending_artifacts=sum(not publication.completed(data, a, settings) for a in inventory),

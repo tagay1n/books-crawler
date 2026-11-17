@@ -27,6 +27,7 @@ class Runtime:
         self.directory = manifest.directory
         self.config = settings.source_options
         self.budget = Budget(settings)
+        self.finalization_budget = Budget(settings)
         self.http = HTTP(settings, self.budget, summary)
         def guard(response, *args, **kwargs):
             from urllib.parse import urljoin, urlsplit
@@ -72,12 +73,15 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
         items = records(manifest)
         return {**manifest.status(), 'acquired': sum(v.get('downloaded') == 'full' for v in items.values()),
                 'finalized': sum(bool(v.get('finalized')) for v in items.values()),
-                'publications': manifest.data.get('publications', {}), 'catalog': manifest.data.get('milli_catalog', {})}
+                'publications': manifest.data.get('publications', {}), 'catalog': manifest.data.get('milli_catalog', {}),
+                'publication_counts': {name: sum(s.get('status') == name for s in manifest.data.get('publications', {}).values())
+                                       for name in ('pending', 'duplicate', 'complete')}}
     summary = dict(source='milli_kitaphana', command=command, id=uuid4().hex, started_at=now(), pages=0, downloaded=0, finalized=0, skipped=0, requests=0, network_retries=0, errors=[], stops=[])
     from . import milli_kitaphana_utils as utils
     with source_lock(directory, 'milli_kitaphana'), contextlib.ExitStack() as resources:
         manifest = Manifest(directory, 'milli_kitaphana', checkpoint=checkpoint)
         runtime = resources.enter_context(bound_runtime(utils.RUNTIME, Runtime(settings, manifest, summary, options)))
+        publication_budget = Budget(settings, publication=True)
         items = records(manifest)
         def commit():
             update_records(manifest, items, url_prefix=operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru'))
@@ -118,6 +122,24 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                 else:
                     started = True
                     commit()
+                    if command == 'run':
+                        from .milli_kitaphana_upload_docs import publish_books, restore_inputs
+                        # Drain local publication backlog before fresh network work.
+                        try:
+                            publish_books(settings, manifest.data, directory, manifest.save,
+                                          summary, publication_budget)
+                        except BudgetStop as error:
+                            summary['stops'].append(str(error))
+                        restore_inputs(manifest.data, directory)
+                        items = records(manifest)
+                        commit()
+                        try:
+                            finalize_items(runtime, items)
+                        except BudgetStop as error:
+                            summary['stops'].append(str(error))
+                        publish_books(settings, manifest.data, directory, manifest.save,
+                                      summary, publication_budget)
+                        items = records(manifest)
                     if command in {'discover', 'run'}:
                         try:
                             from .runtime_config import discovery_window
@@ -139,13 +161,21 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                         items = utils.load_index_file()
                         commit()
                     if command in {'finalize', 'run'}:
-                        finalize_items(runtime, items, recheck=recheck)
-                    if command == 'publish':
-                        if runtime.options.target != 'yandex':
-                            raise ValueError('Milli supports only --target yandex')
+                        try:
+                            finalize_items(runtime, items, recheck=recheck)
+                        except BudgetStop as error:
+                            if command != 'run':
+                                raise
+                            summary['stops'].append(str(error))
+                        except (ValueError, OSError, RuntimeError) as error:
+                            if command != 'run':
+                                raise
+                            summary['errors'].append({'stage': 'finalize', 'error': type(error).__name__})
+                    if command in {'publish', 'run'}:
                         from .milli_kitaphana_upload_docs import publish_books
                         publish_books(settings, manifest.data, directory, manifest.save,
-                                      summary, Budget(settings, publication=True))
+                                      summary, publication_budget,
+                                      target='all' if command == 'run' else runtime.options.target)
                         items = records(manifest)
                     options = runtime.options.maintenance
                     if command == 'split':
@@ -179,11 +209,15 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
             summary['errors'].append({'stage': command, 'error': message})
         finally:
             # Helpers checkpoint their own updates, including partial progress.
-            if started and command in {'discover', 'download', 'run', 'recover', 'merge-index', 'mark-existing-limited'}:
+            if started and command in {'discover', 'download', 'run', 'publish', 'recover', 'merge-index', 'mark-existing-limited'}:
                 items = utils.load_index_file()
             if started:
                 commit()
             summary.update(records=len(items), finished_at=now(), attempted_download_bytes=runtime.budget.bytes, started_items=runtime.budget.items)
+            summary['backlog'] = manifest.status()
+            publication_states = list(manifest.data.get('publications', {}).values())
+            summary['publication_counts'] = {name: sum(s.get('status') == name for s in publication_states)
+                                             for name in ('pending', 'duplicate', 'complete')}
             summary['state_key'] = 'last_run'
             if started:
                 manifest.data['last_run'] = summary
@@ -197,40 +231,49 @@ def finalize_items(runtime, items, *, recheck=False):
     runtime.offline = True
     try:
         for key, item in items.items():
-            if (item.get('decrypted') or item.get('finalized')) and not recheck:
-                summary['skipped'] += 1
-                continue
-            if not item.get('enc_part_paths'):
-                if item.get('downloaded') == 'full' and not item.get('decrypted'):
-                    summary['awaiting_inputs'] = summary.get('awaiting_inputs', 0) + 1
-                previous = item.get('finalized', {})
-                if previous.get('path') and Path(previous['path']).is_file() and file_digests(Path(previous['path']))[0] == previous['sha256']:
+            try:
+                if (item.get('decrypted') or item.get('finalized')) and not recheck:
                     summary['skipped'] += 1
-                continue
-            inputs = []
-            for part in item['enc_part_paths']:
-                inputs.append(Path(part['enc_unzip_dir']) / 'enc.dat')
-            inputs.append(directory / item['download_code'] / 'part0_encrypted/enc.dat')
-            if not all(p.is_file() for p in inputs):
-                summary['awaiting_inputs'] = summary.get('awaiting_inputs', 0) + 1
-                continue
-            fingerprint = hashlib.sha256(json.dumps({'recipe': 1, 'inputs': [(str(p), file_digests(p)[0]) for p in inputs], 'title': item.get('title'), 'author': item.get('author')}, sort_keys=True).encode()).hexdigest()
-            previous = item.get('finalized', {})
-            if not recheck and previous.get('inputs') == fingerprint and Path(previous['path']).is_file() and file_digests(Path(previous['path']))[0] == previous['sha256']:
-                summary['skipped'] += 1
-                continue
-            if key not in runtime.selected:
-                runtime.budget.start_item()
-            runtime.budget.check()
-            context = {'meta': item, 'config': runtime.config, 'work_dir': str(directory / item['download_code'])}
-            from .milli_kitaphana_progress_wrapper import ProgressWrapper
-            with ProgressWrapper(context, key):
-                output = Path(decrypt.decrypt_doc_parts(context))
-            if output.stat().st_size > settings.max_derived_pdf_bytes:
-                raise ValueError('Derived PDF exceeds configured size limit')
-            item['finalized'] = {'path': str(output), 'sha256': file_digests(output)[0], 'inputs': fingerprint}
-            summary['finalized'] += 1
-            update_records(manifest, {key: item}, url_prefix=operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru'))
-            manifest.checkpoint()
+                    continue
+                if not item.get('enc_part_paths'):
+                    if item.get('downloaded') == 'full' and not item.get('decrypted'):
+                        summary['awaiting_inputs'] = summary.get('awaiting_inputs', 0) + 1
+                    previous = item.get('finalized', {})
+                    if previous.get('path') and Path(previous['path']).is_file() and file_digests(Path(previous['path']))[0] == previous['sha256']:
+                        summary['skipped'] += 1
+                    continue
+                inputs = []
+                for part in item['enc_part_paths']:
+                    inputs.append(Path(part['enc_unzip_dir']) / 'enc.dat')
+                inputs.append(directory / item['download_code'] / 'part0_encrypted/enc.dat')
+                if not all(p.is_file() for p in inputs):
+                    summary['awaiting_inputs'] = summary.get('awaiting_inputs', 0) + 1
+                    continue
+                fingerprint = hashlib.sha256(json.dumps({'recipe': 2, 'inputs': [(str(p), file_digests(p)[0]) for p in inputs], 'title': item.get('title'), 'author': item.get('author')}, sort_keys=True).encode()).hexdigest()
+                previous = item.get('finalized', {})
+                if not recheck and previous.get('inputs') == fingerprint and Path(previous['path']).is_file() and file_digests(Path(previous['path']))[0] == previous['sha256']:
+                    summary['skipped'] += 1
+                    continue
+                try:
+                    runtime.finalization_budget.start_item()
+                except BudgetStop as error:
+                    if str(error) == 'download item cap':
+                        raise BudgetStop('finalization item cap') from None
+                    raise
+                runtime.budget.check()
+                context = {'meta': item, 'config': runtime.config, 'work_dir': str(directory / item['download_code'])}
+                from .milli_kitaphana_progress_wrapper import ProgressWrapper
+                with ProgressWrapper(context, key):
+                    output = Path(decrypt.decrypt_doc_parts(context))
+                if output.stat().st_size > settings.max_derived_pdf_bytes:
+                    raise ValueError('Derived PDF exceeds configured size limit')
+                item['finalized'] = {'path': str(output), 'sha256': file_digests(output)[0], 'inputs': fingerprint}
+                summary['finalized'] += 1
+                update_records(manifest, {key: item}, url_prefix=operational_option('milli_kitaphana', 'url_https_kitap_tatar_ru'))
+                manifest.checkpoint()
+            except BudgetStop:
+                raise
+            except Exception as error:
+                summary['errors'].append({'stage': 'finalize', 'record': key, 'error': type(error).__name__})
     finally:
         runtime.offline = False

@@ -70,13 +70,13 @@ def download(limited, index_name, recheck=False):
             download_code = meta['download_code']
             if (existing_card_path := code_to_card_path.get(download_code, None)) and existing_card_path != card_path:
                 # here if item with such download code already exists in the index
-                existing_meta = index_part[existing_card_path]
+                existing_meta = copy.deepcopy(global_index[existing_card_path])
                 # update item iterating right now, but remain 'doc_card_url'
-                del existing_meta['doc_card_url']
+                existing_meta.pop('doc_card_url', None)
                 meta.update(existing_meta)
 
                 # delete old meta item because it contains obsolete links
-                del index_part[existing_card_path]
+                index_part.pop(existing_card_path, None)
                 code_to_card_path[download_code] = card_path
                 print(f"Replaced old card path '{existing_card_path}' with new '{card_path}' for download code '{download_code}'")
                 if not meta.get("broken", False) or meta.get("downloaded", None):
@@ -96,6 +96,8 @@ def download(limited, index_name, recheck=False):
             if meta["access"] != "open":
                 meta.clear()
                 meta.update(original_meta)
+                meta['access'] = 'limited'
+                require_runtime().summary['limited_skipped'] = require_runtime().summary.get('limited_skipped', 0) + 1
                 print(f"Ignoring limited document '{meta['title']}'")
                 continue
 

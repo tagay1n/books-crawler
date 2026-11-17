@@ -22,6 +22,10 @@ def artifacts(data, directory, *, direct_files_only=False):
     for key, record in data['records'].items():
         observation = record.get('observations', [])
         meta = observation[-1]['metadata'] if observation else record
+        if data['source'] == 'milli_kitaphana':
+            state = data.get('publications', {}).get(key, {})
+            if state.get('status') == 'duplicate' and state.get('sha256') == meta.get('finalized', {}).get('sha256'):
+                continue
         # Direct-only collection policies also exclude previously assembled
         # outputs; original document assets are projected separately below.
         if direct_files_only or meta.get('acquisition_policy') == 'direct_files_only':
@@ -92,9 +96,23 @@ def completed(data, artifact, settings):
             and receipt.get('sha256') == artifact.sha256 and artifact.sha256 is not None)
 
 
-def publish(settings, data, directory, save, summary, budget, *, available_only=False):
+def create_client(settings):
+    """Use the same configured credentials, endpoint and transfer timeouts everywhere."""
     from boto3 import Session
     from botocore.config import Config
+    config = configuration(settings)
+    credentials = ({'aws_access_key_id': config['access_key_id'],
+                    'aws_secret_access_key': config['secret_access_key'],
+                    'aws_session_token': config.get('session_token') or None}
+                   if settings.file_only or config.get('access_key_id') else {})
+    return Session(**credentials).client('s3', endpoint_url=config.get('endpoint_url') or None,
+                              region_name=config.get('region') or None, config=Config(
+                                  connect_timeout=settings.connect_timeout_seconds,
+                                  read_timeout=settings.read_timeout_seconds,
+                                  retries={'max_attempts': settings.retry_attempts, 'mode': 'standard'}))
+
+
+def publish(settings, data, directory, save, summary, budget, *, available_only=False):
     from botocore.exceptions import ClientError, BotoCoreError
     from boto3.exceptions import S3UploadFailedError
     from .files import file_digests
@@ -102,15 +120,7 @@ def publish(settings, data, directory, save, summary, budget, *, available_only=
     inventory = list(artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True))
     if available_only and not any(a.path.is_file() and not completed(data, a, settings) for a in inventory):
         return
-    credentials = ({'aws_access_key_id': config['access_key_id'],
-                    'aws_secret_access_key': config['secret_access_key'],
-                    'aws_session_token': config.get('session_token') or None}
-                   if settings.file_only or config.get('access_key_id') else {})
-    client = Session(**credentials).client('s3', endpoint_url=config.get('endpoint_url') or None,
-                              region_name=config.get('region') or None, config=Config(
-                                  connect_timeout=settings.connect_timeout_seconds,
-                                  read_timeout=settings.read_timeout_seconds,
-                                  retries={'max_attempts': settings.retry_attempts, 'mode': 'standard'}))
+    client = create_client(settings)
     try:
         receipts = data.setdefault('s3_publications', {})
         for artifact in inventory:

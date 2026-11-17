@@ -13,7 +13,6 @@ from .milli_kitaphana_progress_wrapper import ProgressWrapper
 import json
 import base64
 import copy
-from .milli_kitaphana_upload_docs import upload_doc, persist_upstream_metadata
 import hashlib
 from unidecode import unidecode
 
@@ -27,18 +26,12 @@ def _get_not_decrypted_docs(index):
 
 
 def _upstream_metadata(meta):
-    upstream_metadata = copy.deepcopy(meta)
-    for field in (
-        "finalized",
-        "downloaded",
-        "decrypted",
-        "enc_part_paths",
-        "format_url",
-        "decryption_key",
-        "decryption_key_iv",
-    ):
-        upstream_metadata.pop(field, None)
-    return upstream_metadata
+    # Only source claims belong in Gemini context; never include credentials,
+    # filesystem paths, acquisition flags or publication recovery state.
+    fields = ('title', 'author', 'publish_year', 'lang', 'collection', 'tags',
+              'properties_raw', 'classification', 'integrated_description',
+              'doc_url', 'doc_card_url', 'download_code', 'url', 'access', 'record_type')
+    return {field: copy.deepcopy(meta[field]) for field in fields if field in meta}
 
 
 def _remove_decryption_recovery_fields(meta):
@@ -68,12 +61,20 @@ def decrypt_doc_parts(context):
         source_meta = json.load(file)
 
     parts = source_meta["parts"]
+    if len(parts) != parts_count or sorted(num for num, _ in dec_part_paths) != list(range(parts_count)):
+        raise ValueError('Encrypted book parts are missing or have duplicate indexes')
     with pymupdf.open() as acc:
-        for num, path in dec_part_paths:
+        for num, path in sorted(dec_part_paths):
             # open the encrypted pdf part
             with pymupdf.open(path) as pdf_doc:
                 password = f"rbooks2-{source_meta['fingerprint'].split('-')[-1]}-{num+1}"
-                pdf_doc.authenticate(password)
+                if pdf_doc.needs_pass and not pdf_doc.authenticate(password):
+                    raise ValueError('PDF part password verification failed')
+                if pdf_doc.page_count <= 0:
+                    raise ValueError('PDF part is empty')
+                expected_pages = parts[num].get('pagesCount')
+                if isinstance(expected_pages, int) and pdf_doc.page_count != expected_pages:
+                    raise ValueError('PDF part page count differs from source metadata')
                 # add the pages to the accumulator
                 acc.insert_pdf(pdf_doc)
 
@@ -99,7 +100,7 @@ def decrypt_doc_parts(context):
         file_name = _build_output_filename(scribed_metadata)
         output_path = os.path.normpath(os.path.join(context["work_dir"], file_name))
         with open(output_path + ".part", "wb") as file:
-            file.write(acc.write())
+            file.write(acc.write(no_new_id=True))
         os.replace(output_path + ".part", output_path)
 
         return output_path
