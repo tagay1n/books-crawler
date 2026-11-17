@@ -15,7 +15,7 @@ import re
 from rich import print
 from requests.exceptions import RequestException
 from .network import BudgetStop
-from .milli_kitaphana_logging import error_fields
+from .milli_kitaphana_logging import provider_failure
 
 
 def index():
@@ -144,10 +144,7 @@ def _create_index(base_params, description):
 
 
 def _failure(runtime, description, page, error, **fields):
-    failure = {'stage': 'discovery', 'scan': description, 'page': page,
-               **fields, **error_fields(error)}
-    runtime.summary['errors'].append(failure)
-    runtime.event('discovery_failed', **{key: value for key, value in failure.items() if key != 'stage'})
+    provider_failure(runtime, 'discovery', error, scan=description, page=page, **fields)
 
 
 def _parse_book_card(book_card):

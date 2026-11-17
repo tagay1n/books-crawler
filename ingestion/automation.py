@@ -100,13 +100,15 @@ def job_summary(result, source, command):
         return value if type(value) in (int, float, bool) else 'unavailable'
     failed = bool(result.get('errors'))
     lines = [f'## Ingestion: {source}', '',
-             f"Outcome: {'FAILED' if failed else 'partial (budget stop)' if result.get('stops') else 'completed'}", '',
+             f"Outcome: {'FAILED' if failed else 'partial (budget stop)' if result.get('stops') else 'completed with warnings' if result.get('warnings') else 'completed'}", '',
              '| Metric | Value |', '| --- | --- |']
     for key in ('pages', 'records', 'downloaded', 'finalized', 'pdf_assembled', 'skipped',
                 'yandex_published', 'upstream_metadata_saved', 'duplicates', 'catalog_registered', 'catalog_reconciled',
                 's3_published', 's3_skipped', 'attempted_download_bytes'):
         lines.append(f'| {key} | {count(result.get(key, 0))} |')
     lines.append(f"| failures | {len(result.get('errors', []))} |")
+    if 'warnings' in result:
+        lines.append(f"| warnings | {len(result['warnings'])} |")
     start, end = result.get('started_at'), result.get('finished_at')
     if start and end:
         seconds = (datetime.fromisoformat(end) - datetime.fromisoformat(start)).total_seconds()

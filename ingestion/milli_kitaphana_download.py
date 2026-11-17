@@ -121,12 +121,8 @@ def download(limited, index_name, recheck=False, on_download=None):
             from .network import BudgetStop
             if isinstance(e, BudgetStop):
                 raise
-            failure = {"stage": "download", "record": card_path, "error": type(e).__name__}
-            if isinstance(e, requests.HTTPError) and e.response is not None:
-                failure['http_status'] = e.response.status_code
-            require_runtime().summary["errors"].append(failure)
-            from .milli_kitaphana_logging import error_fields
-            runtime.event('download_failed', record=card_path, **error_fields(e))
+            from .milli_kitaphana_logging import provider_failure
+            provider_failure(runtime, 'download', e, record=card_path)
             import traceback
             print(f"Error: {e} {traceback.format_exc()}")
         finally:

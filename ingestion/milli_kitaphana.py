@@ -84,7 +84,7 @@ def execute(settings, command, *, recheck=False, log=print, options=None, checkp
                 'publications': manifest.data.get('publications', {}), 'catalog': manifest.data.get('milli_catalog', {}),
                 'publication_counts': {name: sum(s.get('status') == name for s in manifest.data.get('publications', {}).values())
                                        for name in ('pending', 'not_full', 'duplicate', 'complete')}}
-    summary = dict(source='milli_kitaphana', command=command, id=uuid4().hex, started_at=now(), pages=0, downloaded=0, finalized=0, skipped=0, requests=0, network_retries=0, errors=[], stops=[])
+    summary = dict(source='milli_kitaphana', command=command, id=uuid4().hex, started_at=now(), pages=0, downloaded=0, finalized=0, skipped=0, requests=0, network_retries=0, errors=[], warnings=[], stops=[])
     from . import milli_kitaphana_utils as utils
     from .milli_kitaphana_logging import Progress, error_fields
     if log is print:

@@ -102,6 +102,14 @@ the catalog transaction still waits for both uploads. Standalone `download`
 continues to perform acquisition only. Source-lock or database failures can stop
 the run because safely saving work then requires restoring shared infrastructure.
 
+Provider HTTP 5xx failures after the configured retries are nonfatal warnings in
+discovery and acquisition. Failed books and incomplete scan frontiers remain
+retryable on the next run; they are not marked processed or restricted. Live logs,
+the compact result, PostgreSQL `last_run` and the Actions summary retain these
+warnings. A run with only these warnings exits successfully. Other failures,
+including HTTP 4xx, authentication, storage, database and assembly failures,
+remain errors and produce a failing exit code.
+
 Milli stores only its latest processing observation per source record. The first
 mutating invocation after this change compacts older snapshots under the source
 writer lock; later observations replace previous snapshots. First/last seen fields,

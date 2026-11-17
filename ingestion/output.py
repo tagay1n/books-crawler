@@ -18,6 +18,12 @@ def compact_result(result, command, source=None):
             {key: str(error[key]) for key in ("stage", "record", "error", "http_status") if key in error}
             if isinstance(error, dict) else {"error": str(error)}
             for error in result["errors"][:3]]
+    if 'warnings' in result:
+        brief['warning_count'] = len(result['warnings'])
+        if result['warnings']:
+            brief['warning_preview'] = [
+                {key: str(warning[key]) for key in ('stage', 'record', 'scan', 'page', 'error', 'http_status', 'retryable')
+                 if key in warning} for warning in result['warnings'][:3]]
     if "sources" in result:
         brief["source_count"] = len(result["sources"])
     if result.get("error"):

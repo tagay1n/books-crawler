@@ -6,6 +6,8 @@ import threading
 import time
 import traceback
 
+from requests import HTTPError
+
 from .state import now
 
 
@@ -24,6 +26,18 @@ def error_fields(error):
     elif response is not None:
         fields['http_status'] = response.status_code
     return {key: value for key, value in fields.items() if value is not None}
+
+
+def provider_failure(runtime, stage, error, **fields):
+    """Keep exhausted provider 5xx requests visible without failing the run."""
+    details = error_fields(error)
+    deferred = isinstance(error, HTTPError) and 500 <= details.get('http_status', 0) < 600
+    failure = {'stage': stage, **fields, **details}
+    if deferred:
+        failure['retryable'] = True
+    runtime.summary.setdefault('warnings' if deferred else 'errors', []).append(failure)
+    runtime.event(f"{stage}_{'deferred' if deferred else 'failed'}",
+                  **{key: value for key, value in failure.items() if key != 'stage'})
 
 
 class Progress:
@@ -72,5 +86,6 @@ class Progress:
         self.thread.join(timeout=1)
         self.emit('run_finished', elapsed_seconds=round(time.monotonic() - self.started),
                   error_count=len(self.summary['errors']) + int(error is not None),
+                  warning_count=len(self.summary.get('warnings', [])),
                   stops=self.summary['stops'], **self.counters(),
                   **(error_fields(error) if error is not None else {}))
