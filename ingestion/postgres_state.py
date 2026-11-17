@@ -1,7 +1,7 @@
 """JSONB repositories retaining the existing manifest and provider payloads."""
 import copy
 import base64
-from sqlalchemy import MetaData, Table, Column, Text, LargeBinary, CheckConstraint, select, text, delete, func, case
+from sqlalchemy import MetaData, Table, Column, Text, select, text, delete, func, case
 from sqlalchemy.dialects.postgresql import JSONB, insert
 from .database import transaction, assert_ownership, _owner
 from .registry import SOURCES
@@ -47,13 +47,6 @@ def tables(source):
 
 
 bookkeeping = Table('bookkeeping', _metadata, Column('key', Text, primary_key=True), Column('payload', JSONB, nullable=False))
-
-# Membership represents a successfully stored document, across all sources.
-downloaded_documents = Table(
-    'downloaded_documents', _metadata,
-    Column('md5', LargeBinary, primary_key=True),
-    CheckConstraint('octet_length(md5) = 16', name='downloaded_documents_md5_length'),
-)
 
 
 def initialize():

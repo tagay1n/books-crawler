@@ -133,30 +133,46 @@ inputs; assemblies still need their input files in the artifact workspace. See
 
 ## Shared downloaded-document registry
 
-`ingestion.downloaded_documents` is a source-independent set of successfully
-stored files. Its only column is `md5 BYTEA PRIMARY KEY`, constrained to exactly
-16 bytes. Convert hexadecimal MD5 strings to binary before inserting or looking
-them up. No size, source, metadata or timestamp columns are stored here.
-`database init` includes this additive table without changing schema version 1.
+The catalog database owns `monocorpus.downloaded_documents`, a source-independent,
+append-only set of document MD5s. Its only column is `md5 BYTEA PRIMARY KEY`,
+constrained to exactly 16 bytes. No size, source, metadata or timestamp columns
+are stored here. The former progress-side `ingestion.downloaded_documents` table
+is removed, and progress `database init` no longer creates it. Schema version 1
+for processing state is unchanged.
 
-The legacy baseline is copied once from the separate catalog database's
-`monocorpus.catalog_documents.md5`. Only validated hashes are copied; existing
-registry entries are preserved. No synthetic source records, ongoing
-synchronization or permanent migration command are introduced. Legacy catalog
-changes after that snapshot are not automatically reflected in the registry.
+The catalog DDL is maintained in
+[`scripts/sql/catalog-md5-registry.sql`](../scripts/sql/catalog-md5-registry.sql).
+Apply it to the catalog database in a transaction; it takes a short catalog-write
+lock, installs the registry and trigger, and backfills current catalog hashes.
+It is safe to reapply without deleting historical registry entries. Initial moves
+must also preserve all hashes from the old registry before that table is dropped.
 
-The one-time import completed with 71,755 source rows and distinct hashes, zero
-invalid or missing hashes, and 71,755 inserted registry entries. A repeat pass
-inserted zero rows. Table storage measured 3,784,704 bytes and its primary-key
-index 2,932,736 bytes (6,717,440 bytes total, about 6.4 MiB). Progress database size
-increased from 65,631,935 to 72,357,567 bytes; schema version remained 1. The
-catalog was read in a read-only snapshot; destination DDL, insertion and coverage
-verification committed together. The temporary migration script was removed.
+`catalog_document_md5_registry` runs after document inserts and updates of `md5`.
+It validates the hexadecimal MD5, decodes it, and inserts it with conflict-ignore
+semantics in the same transaction as the document write. A trigger failure rolls
+back the document write. Updates retain the old hash and append the new hash;
+document deletions never remove registry entries. The narrow security-definer
+function fixes its search path and fully qualifies registry access; public direct
+execution is revoked. The preexisting catalog privacy trigger remains intact.
 
-Crawler duplicate lookup and registration of newly stored documents are not yet
-wired into processing. Populating this table alone does not change download or
-publication behavior. Per-source progress, metadata and publication receipts
-remain in their existing tables.
+This guarantees catalog-to-registry transactionality; external S3/Yandex uploads
+still require their own recovery handling. No synchronization workflow is needed.
+Crawler duplicate lookup remains a separate, unimplemented integration. Lookups
+will use the catalog connection, not processing-state storage. Existing per-source
+progress, metadata and publication receipts remain unchanged.
+
+The original baseline import contained 71,755 distinct valid hashes with zero
+missing entries and zero additions on a repeat import. The subsequent move copies
+the union of that historical registry and current catalog hashes, verifies it via
+a fresh connection, and only then drops the old table without `CASCADE`.
+
+The move completed with 71,755 registry entries and no lost historical hashes.
+Total registry storage remained 6,717,440 bytes including its index; catalog
+database size measured 620,107,455 bytes afterward. Rollback-only verification
+covered insertion, repeated hashes, MD5 changes, deletion retention, trigger
+failure and transaction rollback. The catalog privacy trigger was preserved,
+and a fresh progress connection confirmed the old table was absent. The
+temporary move script was removed after verification.
 
 ## Migration history
 
