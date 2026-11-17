@@ -6,6 +6,7 @@ import yaml
 
 from .registry import PILOT_SOURCES, SOURCES
 import os
+import base64
 
 
 @dataclass(frozen=True)
@@ -28,6 +29,8 @@ class Settings:
     user_agent: str = field(kw_only=True)
     discovery_deadline_seconds: float | None = None
     publication_grace_seconds: float = 0
+    database: dict = field(default_factory=dict, repr=False)
+    file_only: bool = False
 
 
 def load_settings(path: Path | None, source: str = "magarif", *, profile: Path | None = None) -> Settings:
@@ -37,6 +40,16 @@ def load_settings(path: Path | None, source: str = "magarif", *, profile: Path |
         raise ValueError("Select an operational YAML file with --config; examples are never loaded automatically.")
     path = path.expanduser().resolve()
     data = read_configuration(path)
+    file_only = data.get('standalone') is True
+    if file_only:
+        database = data.get('database')
+        if not isinstance(database, dict):
+            raise ValueError(f'Set the database mapping in {path}')
+        url = database.get('url')
+        if url is not None and (not isinstance(url, str) or not url.strip() or url == '<SET ME>'):
+            raise ValueError(f'Set database.url to a PostgreSQL URL in {path}')
+    if file_only and profile is not None:
+        raise ValueError('Standalone source configuration cannot use --profile')
     if profile is not None:
         profile = profile.expanduser().resolve()
         overlay = read_configuration(profile)
@@ -92,6 +105,7 @@ def load_settings(path: Path | None, source: str = "magarif", *, profile: Path |
                                    if 'publication_grace_seconds' in limits else 0),
         user_agent=network["user_agent"],
         artifacts_root=root.resolve(), archive_url=archive_url,
+        database=data.get('database', {}), file_only=file_only,
         s3=(data.get("storage") or {}).get("s3", {}),
         source_options=deferred_environment({**selected, "_config_dir": str(path.parent), "_source": source}, f"sources.{source}"),
         **{key: number(limits, key, True) for key in (
@@ -123,6 +137,19 @@ def read_configuration(path, ancestors=()):
         raise ValueError(f"Invalid YAML configuration in {path}") from None
     if not isinstance(data, dict):
         raise ValueError(f"Configuration must be a YAML mapping: {path}")
+    if data.get('standalone') is True:
+        if 'extends' in data:
+            raise ValueError(f'Standalone configuration cannot use extends: {path}')
+        def check(value, key):
+            if isinstance(value, dict):
+                if set(value) == {'env'}:
+                    raise ValueError(f'Set {key} directly in {path}; environment references are disabled')
+                for name, child in value.items():
+                    check(child, f'{key}.{name}')
+            elif isinstance(value, list):
+                for child in value:
+                    check(child, key)
+        check(data, 'configuration')
     parent = data.pop("extends", None)
     if parent is not None:
         if not isinstance(parent, str) or not parent.strip():
@@ -133,6 +160,11 @@ def read_configuration(path, ancestors=()):
 
 def resolve_environment(value, key="configuration"):
     if isinstance(value, dict):
+        if set(value) == {'base64'}:
+            try:
+                return base64.b64decode(value['base64'], validate=True)
+            except (ValueError, TypeError):
+                raise ValueError(f'Set {key}.base64 to a valid base64-encoded value in the source YAML') from None
         if set(value) == {"env"}:
             name = value["env"]
             if not isinstance(name, str) or not name or name not in os.environ:
@@ -148,7 +180,7 @@ class EnvironmentMapping(dict):
     """Resolve credential references only when their stage reads them."""
     def __getitem__(self, key):
         value = super().__getitem__(key)
-        return resolve_environment(value, self._key + '.' + str(key)) if isinstance(value, dict) and set(value) == {'env'} else value
+        return resolve_environment(value, self._key + '.' + str(key)) if isinstance(value, dict) and set(value) in ({'env'}, {'base64'}) else value
 
     def get(self, key, default=None):
         return self[key] if key in self else default
@@ -156,7 +188,7 @@ class EnvironmentMapping(dict):
 
 def deferred_environment(value, key):
     if isinstance(value, dict):
-        if set(value) == {'env'}:
+        if set(value) in ({'env'}, {'base64'}):
             return value
         result = EnvironmentMapping({k: deferred_environment(v, key + '.' + str(k)) for k, v in value.items()})
         result._key = key

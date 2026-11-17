@@ -1,19 +1,21 @@
 # Milli Kitaphana unified pipeline
 
 Use `.venv/bin/python cli.py milli_kitaphana` to run the pipeline with
-`config/sources/milli_kitaphana.yaml`. Select a stage with, for example,
+`config/local/milli_kitaphana.yaml`. Select a stage with, for example,
 `.venv/bin/python cli.py milli_kitaphana status` or
 `.venv/bin/python cli.py milli_kitaphana download --limit 1`.
 Override configuration with `milli_kitaphana --config PATH [COMMAND]`.
-The original `.venv/bin/python cli.py --config config/sources/milli_kitaphana.yaml COMMAND --source milli_kitaphana` syntax remains supported.
+The original `.venv/bin/python cli.py --config config/local/milli_kitaphana.yaml COMMAND --source milli_kitaphana` syntax remains supported.
 Provider helpers live in `ingestion/milli_kitaphana_*.py`; the old source directory
 and standalone entry point have been removed.
 
 Configuration belongs under `sources.milli_kitaphana` in the selected operational
-YAML. Copy the placeholder section from `ingestion.example.yaml`. Existing key
-names (`priv_key`, `sig_prefix`, `aes`, `yandex.disk`, `database_url`) are retained.
-Configuration values are never loaded from a source-local file. Never commit real
-credentials. The optional `limited_database_url` is the read connection for the
+YAML. The source command creates a missing private file from the public template;
+`cli.py configure --source milli_kitaphana` also prepares it without running ingestion.
+Existing key names (`priv_key`, `sig_prefix`, `aes`, `yandex.disk`, `database_url`)
+are retained. Store all values directly in this complete private file, without
+`extends` or environment references. Binary `priv_key`, `sig_prefix`, and the three
+`aes` values use YAML `!!binary` or `{base64: ENCODED_VALUE}`. Never commit credentials. The optional `limited_database_url` is the read connection for the
 `mark-existing-limited` maintenance command; `database_url` remains the upstream
 metadata insert connection.
 
@@ -47,8 +49,11 @@ its upstream bibliographic metadata into PostgreSQL. Each destination step has
 its own saved receipt; rerunning skips completed steps for the same PDF hash.
 `run` requires S3 settings, provider access values, Yandex Disk token/target
 directory and the upstream metadata database connection before starting.
-Progress and receipts use `DATABASE_URL`; upstream metadata uses
-`MILLI_KITAPHANA_DATABASE_URL` with the shipped configuration.
+Progress and receipts use top-level `database.url`; upstream metadata uses
+`sources.milli_kitaphana.database_url`. Both URLs can point to the same PostgreSQL
+service when it has the required schemas and permissions. S3 access credentials,
+region, endpoint and document bucket belong in `storage.s3` in this same file.
+No shell exports, `.env` file or AWS credential file is needed.
 
 The default download pass fetches complete, non-limited books. It downloads the
 encrypted metadata first to check access, and skips book parts when any part is
@@ -68,6 +73,23 @@ PostgreSQL using the existing clients. Each destination step is checkpointed per
 record. A process failure after a remote operation but before its checkpoint can
 require destination inspection before retrying, especially for insert-only SQL.
 The same caveat applies to automatic publication during `run`.
+
+A read-only upstream schema inspection confirmed
+`monocorpus.library_upstream_metadata` has required `md5 text` and
+`payload_json jsonb` columns, insert permission, no user triggers or row security,
+and checks requiring a lowercase 32-character hexadecimal MD5 and a JSON object.
+The primary key is `md5`: the current plain insert rejects an existing hash.
+Insert planning succeeded over TLS without executing a write. No ingestion
+progress tables were present in that inspected database; configure progress
+storage separately via `database.url` and initialize it explicitly.
+
+The separate progress database was subsequently verified over TLS in a read-only
+transaction: schema version 1, `ingestion.bookkeeping`, and all three
+`ingestion.milli_kitaphana_{records,assets,state}` tables were present. Each has
+required `key text` and `payload jsonb` columns with a primary key on `key`.
+Read/insert/update/delete and advisory-lock permissions were available; repository
+upsert/delete planning succeeded without execution. No user triggers or row
+security were enabled on those tables. No database changes were made by the check.
 
 `split` stores named worker selections in Postgres. `--dest` explicitly exports
 JSON in addition; filters belong under `sources.milli_kitaphana.split_filter`.

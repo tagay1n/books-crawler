@@ -82,11 +82,16 @@ acquisition. Callers import helpers directly from their owning modules.
 
 ## Operational configuration
 
-Source-first CLI commands select `config/sources/<source>.yaml` automatically;
-`--config` overrides that choice. Command-first CLI commands require an explicit
-configuration. Shared values live in
-`config/defaults.yaml`; source-specific options, including native helper options,
-are always passed in `Settings.source_options`. Do not introduce operational
+Source-first CLI commands select a complete ignored `config/local/<source>.yaml`.
+Missing files are created from the public templates with owner-only permissions;
+existing files are not overwritten. `standalone: true` rejects environment
+references, inheritance and overlays. `Settings.database` configures an invocation-
+local database context, and S3 clients receive explicit YAML credentials. No
+implicit environment/AWS credential fallback is used in this mode. `--config`
+overrides the selected file. Public `config/sources` templates and scheduled
+configurations retain legacy inheritance/environment support when explicitly
+selected. Source-specific options, including native helper options, are always
+passed in `Settings.source_options`. Do not introduce operational
 literal defaults in Python. Add public values to the selected YAML instead;
 retain parser/protocol constants and intentional library defaults in code.
 

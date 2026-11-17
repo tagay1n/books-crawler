@@ -22,6 +22,16 @@ def main(ctx: typer.Context, config: Optional[Path] = typer.Option(None, "--conf
     ctx.obj = config
     ctx.meta["summary_only"] = summary_only
     ctx.meta["profile"] = profile
+    if ctx.invoked_subcommand == 'database' and config is not None:
+        from .config import read_configuration, resolve_environment
+        from .database import configured_database
+        try:
+            data = read_configuration(config)
+            database = resolve_environment(data.get('database', {}), 'database')
+            if data.get('standalone') or database:
+                ctx.with_resource(configured_database(database))
+        except (ValueError, OSError) as error:
+            fail(ctx, error, 'database')
 
 
 def progress(ctx):
@@ -73,6 +83,17 @@ def sources_command(ctx: typer.Context, details: bool = typer.Option(False, "--d
         typer.echo(name)
 
 
+@app.command('configure')
+def configure_command(source: str = typer.Option(..., '--source')):
+    """Create a complete private source YAML without overwriting an existing file."""
+    from .local_config import create_source_config
+    try:
+        typer.echo(str(create_source_config(source)))
+    except (ValueError, OSError) as error:
+        typer.echo(f'Error: {error}', err=True)
+        raise typer.Exit(1)
+
+
 @app.command("inspect")
 def inspect_command(ctx: typer.Context, url: str = typer.Argument(..., help="Public page or document URL to inspect."),
                     output_dir: Path = typer.Option(Path("__artifacts/inspections"), "--output-dir"),
@@ -94,7 +115,7 @@ def inspect_command(ctx: typer.Context, url: str = typer.Argument(..., help="Pub
 
 @app.command()
 def probe(ctx: typer.Context, source: str = typer.Option(..., "--source"),
-          session_file: Path = typer.Option(..., "--session-file", help="Miras-only cookie and user-agent JSON from your verified browser.")):
+          session_file: Optional[Path] = typer.Option(None, "--session-file", help="Legacy Miras session export; standalone YAML uses sources.miras.session.")):
     """Check Miras HTTP access with exported cookies and acquire one sample PDF."""
     from .registry import PILOT_SOURCES
     from .config import load_settings
@@ -102,6 +123,11 @@ def probe(ctx: typer.Context, source: str = typer.Option(..., "--source"),
         if source not in PILOT_SOURCES:
             raise ValueError(f"Unknown access pilot: {source}. Available: {', '.join(PILOT_SOURCES)}")
         settings = load_settings(ctx.obj, source)
+        if settings.file_only and session_file is not None:
+            raise ValueError('Store browser session credentials in sources.miras.session in the source YAML')
+        session_file = session_file or settings.source_options.get('session')
+        if session_file is None:
+            raise ValueError('Set sources.miras.session in the source configuration')
         from .miras_session import run_cookie_probe
         result = run_cookie_probe(settings, session_file, log=progress(ctx))
         emit_result(ctx, result, "probe", source)
@@ -122,6 +148,9 @@ def execute(ctx, command, source, limit=None, max_pages=None, recheck=False, ses
         from .config import load_settings
         from .core import restricted_settings, run
         settings = restricted_settings(load_settings(ctx.obj, source, profile=ctx.meta.get('profile')), limit, max_pages)
+        if settings.file_only and session_file is not None:
+            raise ValueError('Store browser session credentials in sources.<source>.session in the source YAML')
+        session_file = session_file or settings.source_options.get('session')
         from dataclasses import replace
         options = replace(options, session_file=session_file)
         result = run(settings, source, command, options=options, log=progress(ctx))

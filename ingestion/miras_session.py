@@ -15,6 +15,8 @@ from .state import Manifest, now, source_lock
 
 
 def read_json(path):
+    if isinstance(path, dict):
+        return None, path
     path = path.expanduser().resolve()
     with path.open("rb") as handle:
         data = handle.read(256 * 1024 + 1)

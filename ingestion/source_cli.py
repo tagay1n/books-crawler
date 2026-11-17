@@ -55,7 +55,8 @@ def _source_callback(source, run_command):
     ):
         ctx.obj = config if config is not None else ctx.obj
         if ctx.obj is None:
-            ctx.obj = Path(__file__).resolve().parents[1] / "config" / "sources" / f"{source}.yaml"
+            from .local_config import create_source_config
+            ctx.obj = create_source_config(source)
         if profile is not None:
             ctx.meta["profile"] = profile
         if summary_only is not None:
@@ -77,7 +78,7 @@ def register_source_commands(app, run_command):
         source_app = typer.Typer(
             invoke_without_command=True, no_args_is_help=False,
             pretty_exceptions_show_locals=False,
-            help=f"Run {source} using config/sources/{source}.yaml, or select a stage.",
+            help=f"Run {source} using config/local/{source}.yaml, or select a stage.",
         )
         source_app.callback()(_source_callback(source, run_command))
         stages = (*descriptor.commands, "probe") if source in PILOT_SOURCES else descriptor.commands

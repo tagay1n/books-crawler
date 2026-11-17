@@ -15,7 +15,7 @@ def require_access(settings, source):
         require_publication_config(config)
     else:
         return
-    if any(not isinstance(value, str) or not value.strip() or value == '<SET ME>' for value in values):
+    if any(not isinstance(value, (str, bytes)) or not value.strip() or value == '<SET ME>' for value in values):
         raise ValueError(f'Missing access credentials for {source}')
 
 

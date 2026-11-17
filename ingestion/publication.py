@@ -72,6 +72,12 @@ def configuration(settings):
     if (not isinstance(config, dict) or not isinstance(config.get('bucket'), str)
             or not config['bucket'].strip() or config['bucket'].startswith('<')):
         raise ValueError('Configure storage.s3.bucket before run or publish --target s3')
+    if settings.file_only or config.get('access_key_id') or config.get('secret_access_key'):
+        for key in ('access_key_id', 'secret_access_key'):
+            if not isinstance(config.get(key), str) or not config[key].strip() or config[key] == '<SET ME>':
+                raise ValueError(f'Set storage.s3.{key} in the source configuration file')
+    if settings.file_only and (not isinstance(config.get('region'), str) or not config['region'].strip()):
+        raise ValueError('Set storage.s3.region in the source configuration file')
     return config
 
 
@@ -96,7 +102,11 @@ def publish(settings, data, directory, save, summary, budget, *, available_only=
     inventory = list(artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True))
     if available_only and not any(a.path.is_file() and not completed(data, a, settings) for a in inventory):
         return
-    client = Session().client('s3', endpoint_url=config.get('endpoint_url') or None,
+    credentials = ({'aws_access_key_id': config['access_key_id'],
+                    'aws_secret_access_key': config['secret_access_key'],
+                    'aws_session_token': config.get('session_token') or None}
+                   if settings.file_only or config.get('access_key_id') else {})
+    client = Session(**credentials).client('s3', endpoint_url=config.get('endpoint_url') or None,
                               region_name=config.get('region') or None, config=Config(
                                   connect_timeout=settings.connect_timeout_seconds,
                                   read_timeout=settings.read_timeout_seconds,

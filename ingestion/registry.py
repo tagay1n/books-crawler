@@ -127,7 +127,8 @@ def source_locations(source, *, symbols=False, module=None, symbol=None):
                 helpers=[str(path.relative_to(root)) for path in sorted(
                     (root / 'ingestion').glob(adapter_module + '_*.py'))
                          if path.stem not in adapter_modules],
-                guide=f'docs/ingestion/{guide}.md', config=f'config/sources/{source}.yaml')
+                guide=f'docs/ingestion/{guide}.md', config=f'config/local/{source}.yaml',
+                template=f'config/sources/{source}.yaml')
     if symbols or module is not None or symbol is not None:
         from .navigation import symbol_map
         locations['symbols'] = symbol_map(root, [locations['adapter'], *locations['helpers']],

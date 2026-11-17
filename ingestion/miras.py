@@ -41,7 +41,7 @@ def prepare_http(http, session_file):
     from .miras_session import load_session, read_json
 
     try:
-        _, session = read_json(Path(session_file))
+        _, session = read_json(session_file if isinstance(session_file, dict) else Path(session_file))
     except OSError:
         raise SourceAccessError("Cannot read the Miras --session-file export.") from None
     except ValueError as error:

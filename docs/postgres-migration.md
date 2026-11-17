@@ -6,17 +6,18 @@ worker-index files, lock files, automatic index backups or run-summary files are
 written by processing commands. Existing JSON files are never
 automatically imported and database failures never fall back to them.
 
-Set `DATABASE_URL` in the process environment using a secret manager or a shell
-prompt; do not put credentials in YAML or Git. PostgreSQL URLs retain their SSL
-query parameters. Prefer certificate verification with the provider CA when
-configuring production access. Rotate any credentials previously shared in chat.
+Set `database.url` in the complete private `config/local/<source>.yaml` file.
+Database pool size and timeouts also live in its `database` mapping. Select that
+same file for schema administration; credentials remain out of Git.
+PostgreSQL URLs retain their SSL query parameters.
 
 ```bash
-read -r -s -p 'Database URL: ' DATABASE_URL
-export DATABASE_URL
-.venv/bin/python cli.py database init
-.venv/bin/python cli.py database status
+.venv/bin/python cli.py --config config/local/milli_kitaphana.yaml database init
+.venv/bin/python cli.py --config config/local/milli_kitaphana.yaml database status
 ```
+
+Legacy administration without `--config` still accepts `DATABASE_URL`; standalone
+source files never fall back to it.
 
 `init` explicitly creates the version-1 schema and tables and can be repeated.
 `status`, normal source status commands, and `sources` do not initialize tables.

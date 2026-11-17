@@ -17,7 +17,9 @@ def configured(function):
         deadline_token = _deadlines.set((started + settings.soft_deadline_seconds,
                                         started + settings.soft_deadline_seconds + settings.publication_grace_seconds))
         try:
-            return function(settings, *args, **kwargs)
+            from .database import configured_database
+            with configured_database(settings.database if settings.file_only or settings.database else None):
+                return function(settings, *args, **kwargs)
         finally:
             _settings.reset(token)
             _deadlines.reset(deadline_token)

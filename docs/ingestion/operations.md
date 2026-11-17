@@ -1,15 +1,17 @@
 # Shared configuration and operation
 
-Set `DATABASE_URL` and initialize Postgres before ingestion; see
+Set `database.url` in the private source YAML and initialize Postgres before ingestion; see
 [setup, legacy imports and fresh-runner recovery](../postgres-migration.md).
 Processing state and run summaries live in Postgres. Disk holds document
 artifacts and explicit exports. Older file-based recovery examples describe
 archived snapshots and are not the current source of progress.
 
 Use the repository virtual environment and its existing `requirements.txt`.
-Review the selected `config/sources/<source>.yaml`, its shared defaults, paths and limits,
-then use its source subcommand. With no stage, this runs the pipeline using
-`config/sources/<source>.yaml`:
+Use one complete private file, `config/local/<source>.yaml`, for all source settings,
+credentials, database access, S3 access, paths and limits. Source commands create a
+missing file from the public template without overwriting existing files. Fill its
+null credential fields before running. You can prepare it explicitly with
+`cli.py configure --source NAME`. With no stage, the source command runs the pipeline:
 
 ```bash
 .venv/bin/python cli.py milli_kitaphana
@@ -26,26 +28,26 @@ name. Source groups accept `--config`, `--profile` and `--summary-only`; the roo
 versions of these options also work. An explicit source-level `--config` takes
 precedence over the root option. The default configuration path is anchored to the
 repository, even when invoking `cli.py` from another working directory. Explicit
-paths remain relative to the working directory. Private overrides are selected
-explicitly, never automatically.
+paths remain relative to the working directory. Standalone files reject `--profile`,
+`extends` and environment references so the selected YAML is the complete configuration.
 
 The original command-first syntax remains supported and requires an explicit
 configuration:
 
 ```bash
 .venv/bin/python cli.py sources
-.venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml status --source magarif
-.venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml discover --source magarif --max-pages 2
-.venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml download --source magarif --limit 1
-.venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml run --source magarif --max-pages 2 --limit 1
+.venv/bin/python cli.py --summary-only --config config/local/magarif.yaml status --source magarif
+.venv/bin/python cli.py --summary-only --config config/local/magarif.yaml discover --source magarif --max-pages 2
+.venv/bin/python cli.py --summary-only --config config/local/magarif.yaml download --source magarif --limit 1
+.venv/bin/python cli.py --summary-only --config config/local/magarif.yaml run --source magarif --max-pages 2 --limit 1
 ```
 
 `sources`, `inspect` and command help do not need configuration. Command-first acquisition and status commands require
 `--config` before the command name; source-first commands infer it as above. Relative artifact paths resolve against the
-YAML file's directory. `DATABASE_URL` supplies the shared state connection; source settings remain in YAML, and
-example files are never selected automatically. Miras network commands require
-`--session-file` from an ordinary verified browser, shared with `miras_periodicals`;
-Litres instead reads SID from sources.litres.sid in operational YAML; see [its guide](litres.md). Milli Kitaphana needs its configured cryptographic access values; see [its guide](milli-kitaphana.md). `--session-file` is rejected for other sources. `status` does not read
+YAML file's directory. `database.url` supplies the shared state connection.
+Miras stores the verified browser export mapping under `sources.<source>.session`
+(`format`, `origin`, `user_agent`, `cookies`) in the same YAML. Litres reads SID
+from `sources.litres.sid` in that YAML; see [its guide](litres.md). Milli Kitaphana needs its configured cryptographic access values; see [its guide](milli-kitaphana.md). `--session-file` is rejected for other sources. `status` does not read
 a session file or make network requests.
 
 Only the selected source needs a `sources.<source>.archive_url` configuration
@@ -58,8 +60,8 @@ For compact machine-readable output, put the global `--summary-only` option
 before the command name:
 
 ```bash
-.venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml discover --source magarif
-.venv/bin/python cli.py --summary-only --config config/sources/magarif.yaml status --source magarif
+.venv/bin/python cli.py --summary-only --config config/local/magarif.yaml discover --source magarif
+.venv/bin/python cli.py --summary-only --config config/local/magarif.yaml status --source magarif
 .venv/bin/python cli.py --summary-only inspect https://tuganzhir.org/archive/ --max-links 8
 ```
 
@@ -204,25 +206,28 @@ documents to S3; [scheduled workflows](../scheduled-ingestion.md) use the same C
 
 ## Per-source configuration
 
-Use `cli.py <source> [stage]` or `--config config/sources/<source>.yaml COMMAND --source <source>`. Each registered
-source has a tracked configuration containing public operational values only.
-`config/defaults.yaml` holds shared budgets, network settings and S3 destination
-settings. Set `S3_BUCKET` when publishing; AWS credentials use the standard SDK
-credential chain. `DATABASE_URL` continues to select progress storage.
+Use `cli.py <source> [stage]`. Its default is the ignored file
+`config/local/<source>.yaml`; `--config PATH` can select another complete file.
+The CLI creates missing files with owner-only permissions (`0600`) from
+`config/sources/<source>.yaml` and `config/defaults.yaml`, flattening those templates
+into a single file. Those public templates are not reread during processing.
+Existing private files are never overwritten or automatically merged.
 
-`extends` names one parent YAML file, relative to the declaring file. Mappings
-merge recursively; lists and scalar values replace inherited values, including
-explicit nulls. Cycles and invalid mappings fail with a configuration error.
-Operational relative paths resolve against the selected file's directory,
-including values inherited from defaults. They do not resolve against the shell
-working directory. The shipped artifact root accounts for this directory layout.
+Private files have `standalone: true`. Store secrets directly in them. Environment
+references, `extends` and `--profile` are rejected in this mode. `database.url`
+selects progress storage; `database.pool_size`, `pool_timeout_seconds` and
+`connect_timeout_seconds` configure the connection pool. `storage.s3` contains
+`bucket`, `region`, `endpoint_url`, `prefix`, `access_key_id`, `secret_access_key`
+and optional `session_token`. Neither `DATABASE_URL` nor the AWS credential chain
+supplies missing credentials in standalone mode.
 
-Use `{env: VARIABLE_NAME}` for secrets and deployment-specific values. Shared
-non-secret values resolve when loading; source references and S3 credentials
-resolve when accessed so local stages do not require unused publication secrets.
-Missing variables report their name and configuration key without their value.
-Environment references supply strings; numeric settings should use YAML numbers.
-No general shell substitution or `${...}` interpolation is performed.
+Binary values can use YAML `!!binary` or `{base64: ENCODED_VALUE}`. Values are
+decoded without printing them. Leave unused destination secrets null for local
+stages. Keep credential files out of Git; `config/local/` is already ignored.
+
+For compatibility, explicitly selected public/scheduled configurations without
+`standalone: true` retain `extends`, environment references and AWS/environment
+fallbacks. This does not affect the default private source configuration.
 
 Provider helpers read invocation-local `sources.<source>.operational` settings,
 grouped by helper module. Configured URLs and allowed origins control native
@@ -231,15 +236,17 @@ or HTML parsers. Parser versions, regexes, format signatures, protocol details a
 language-admission rules remain implementation constants. Library defaults remain
 implicit where no application override is needed.
 
-Combined files remain supported; `ingestion.example.yaml` demonstrates the current
-shape. Existing private files need the newly explicit operational settings and
-`limits.max_derived_pdf_bytes`. For a source-specific private override, place it in
-ignored `config/local/<source>.yaml`, extend `../sources/<source>.yaml`, and override
-only the relevant values. Relative paths still resolve against that private file.
-Never commit credentials. The obsolete local `ingestion.yaml` has been removed; use per-source files instead.
+CLI page/item limits still restrict configured caps. Source listing and help need
+no credentials. Database inspection can select the same source file:
 
-CLI page/item limits still restrict configured caps. Source listing and database
-inspection remain configuration-free. See [scheduled operations](../scheduled-ingestion.md) for the Actions rollout.
+```bash
+.venv/bin/python cli.py --config config/local/milli_kitaphana.yaml database init
+.venv/bin/python scripts/ingestion_overview.py --database --source milli_kitaphana
+```
+
+The overview selects each source's private file; `--config PATH` overrides it for
+one `--source`. See [scheduled operations](../scheduled-ingestion.md) for the
+legacy Actions configuration.
 
 ## S3 publication
 
@@ -257,12 +264,15 @@ storage:
     endpoint_url: https://your-s3-compatible-endpoint
     region: us-east-1
     prefix: books
+    access_key_id: YOUR_ACCESS_KEY
+    secret_access_key: YOUR_SECRET_KEY
+    session_token: null
 ```
 
-Endpoint and region are optional for AWS. Credentials use boto3's standard
-credential chain, including `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, and
-optional `AWS_SESSION_TOKEN`; do not put credentials in YAML. `DATABASE_URL`
-continues to select authoritative progress and upstream metadata storage.
+Endpoint is optional for AWS; set the region explicitly. Credentials are read
+from this same YAML, including an optional session token. `database.url` selects
+progress storage; provider-specific upstream metadata connections remain under
+`sources.<source>.database_url`.
 
 `ingestion/publication.py` projects native source state into
 `PublishableArtifact` values. Extend that projection for new output layouts;

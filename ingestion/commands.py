@@ -22,7 +22,7 @@ class CommandOptions:
     index_name: str | None = None
     maintenance: dict = field(default_factory=dict)
     recheck: bool = False
-    session_file: Path | None = None
+    session_file: Path | dict | None = field(default=None, repr=False)
 
 
 def capabilities(source):
