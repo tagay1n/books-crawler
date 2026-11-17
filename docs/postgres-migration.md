@@ -131,6 +131,33 @@ Fresh workers recover progress from Postgres. `run` restores missing unpublished
 inputs; assemblies still need their input files in the artifact workspace. See
 [scheduled recovery](scheduled-ingestion.md#runtime-and-storage).
 
+## Shared downloaded-document registry
+
+`ingestion.downloaded_documents` is a source-independent set of successfully
+stored files. Its only column is `md5 BYTEA PRIMARY KEY`, constrained to exactly
+16 bytes. Convert hexadecimal MD5 strings to binary before inserting or looking
+them up. No size, source, metadata or timestamp columns are stored here.
+`database init` includes this additive table without changing schema version 1.
+
+The legacy baseline is copied once from the separate catalog database's
+`monocorpus.catalog_documents.md5`. Only validated hashes are copied; existing
+registry entries are preserved. No synthetic source records, ongoing
+synchronization or permanent migration command are introduced. Legacy catalog
+changes after that snapshot are not automatically reflected in the registry.
+
+The one-time import completed with 71,755 source rows and distinct hashes, zero
+invalid or missing hashes, and 71,755 inserted registry entries. A repeat pass
+inserted zero rows. Table storage measured 3,784,704 bytes and its primary-key
+index 2,932,736 bytes (6,717,440 bytes total, about 6.4 MiB). Progress database size
+increased from 65,631,935 to 72,357,567 bytes; schema version remained 1. The
+catalog was read in a read-only snapshot; destination DDL, insertion and coverage
+verification committed together. The temporary migration script was removed.
+
+Crawler duplicate lookup and registration of newly stored documents are not yet
+wired into processing. Populating this table alone does not change download or
+publication behavior. Per-source progress, metadata and publication receipts
+remain in their existing tables.
+
 ## Migration history
 
 The Aiven migration was applied on 2026-11-06. Import counts, backup locations and
