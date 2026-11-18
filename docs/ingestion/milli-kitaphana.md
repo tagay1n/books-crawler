@@ -185,11 +185,29 @@ For a new MD5, publication verifies the following destinations:
   MD5 naming convention rather than the generic source/SHA-256 prefix layout.
 
 Only after both PDFs are confirmed does a single catalog transaction create the
-pending document through `public.document`, record the verified storage locations,
+pending document through `monocorpus.catalog_upsert('document', ...)`, record the verified storage locations,
 and insert parsed-page JSON into `monocorpus.library_upstream_metadata`. The
 catalog's trigger adds the MD5 registry entry in that transaction. Existing catalog
 records and extracted metadata are preserved. Prefill leaves Gemini extraction and
 evaluation pending; it does not promote page claims into extracted bibliography.
+
+The upsert uses conflict key `md5` and an explicit empty `update_fields` allowlist
+(`ARRAY[]::text[]`): Milli inserts new documents and preserves every field of an
+existing document, including Yandex sharing/identity, derived artifacts, review
+decisions and storage details. It does not perform a broad update through the
+legacy `document` view.
+
+Publication shares Manzara's per-MD5 storage lock:
+`pg_try_advisory_lock(hashtext('monocorpus'), hashtext('catalog-document-storage:' || md5))`.
+The explicit `monocorpus` namespace matches Manzara's `current_schema()` even though
+the crawler's connection defaults to `public`. One reserved catalog session owns
+the lock from the final duplicate/recovery check through uploads, catalog commit
+and progress checkpoint. Catalog SQL uses short transactions on that same session;
+no catalog transaction stays open during remote work. Session probes guard remote
+writes and a lost session cannot be replaced with a reconnected, unlocked session.
+Busy documents produce retryable warnings without uploads or completion flags.
+Unrelated MD5s remain independent; publication no longer locks the whole catalog
+table. The same lock also guards recovery after a lost progress checkpoint.
 
 Upstream metadata is stored only in catalog PostgreSQL, never as a ZIP or S3
 metadata artifact. Its payload retains title, author, raw page properties, year,
@@ -305,8 +323,9 @@ saves retain their own ownership check. Periodic lease checks during active work
 remain enabled.
 
 Publication determines registry membership and matching-location/metadata recovery
-in one catalog query. A cached hash checked before file hashing is not queried
-again in the same attempt when the verified hash agrees. Known duplicates and
+in one catalog query under the document lock, after hashing available local inputs.
+When local inputs disappeared, recorded hashes allow a locked recovery lookup.
+Known duplicates and
 recovered publications save their terminal state once; new files still checkpoint
 pending hashes before uploads. The final catalog transaction independently
 rechecks MD5 membership to handle concurrent writers.
