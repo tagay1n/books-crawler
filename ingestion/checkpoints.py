@@ -6,6 +6,6 @@ class Checkpoint:
         self.after_commit = after_commit
 
     def __call__(self, repository, data):
-        repository.save(data)
+        record_keys, asset_keys = repository.save(data)
         if self.after_commit is not None:
-            self.after_commit(repository, data)
+            self.after_commit(repository, data, record_keys, asset_keys)

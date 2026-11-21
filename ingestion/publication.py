@@ -17,9 +17,13 @@ class PublishableArtifact:
     provenance: dict
 
 
-def artifacts(data, directory, *, direct_files_only=False):
+def _selected_items(items, keys):
+    return items.items() if keys is None else ((key, items[key]) for key in keys if key in items)
+
+
+def artifacts(data, directory, *, direct_files_only=False, record_keys=None, asset_keys=None):
     """Project native state without modifying provider payloads."""
-    for key, record in data['records'].items():
+    for key, record in _selected_items(data['records'], record_keys):
         observation = record.get('observations', [])
         meta = observation[-1]['metadata'] if observation else record
         if data['source'] == 'milli_kitaphana':
@@ -51,7 +55,7 @@ def artifacts(data, directory, *, direct_files_only=False):
             path = path if path.is_absolute() else directory / path
             yield PublishableArtifact(key, output.get('id', output['path']), path,
                                       output.get('sha256'), {**provenance, 'result': output})
-    for key, asset in data['assets'].items():
+    for key, asset in _selected_items(data['assets'], asset_keys):
         if (not asset.get('current', True) or asset.get('status') != 'downloaded'
                 or asset.get('kind') == 'page_image' or not asset.get('results')):
             continue
@@ -71,11 +75,16 @@ def receipt_key(artifact):
     return hashlib.sha256((artifact.record + '\n' + artifact.identity).encode()).hexdigest()
 
 
+def _require_bucket(config):
+    bucket = config.get('bucket') if isinstance(config, dict) else None
+    if not isinstance(bucket, str) or not bucket.strip() or bucket.lstrip().startswith('<'):
+        raise ValueError('Configure storage.s3.bucket before run or publish --target s3')
+    return bucket
+
+
 def configuration(settings):
     config = settings.s3
-    if (not isinstance(config, dict) or not isinstance(config.get('bucket'), str)
-            or not config['bucket'].strip() or config['bucket'].startswith('<')):
-        raise ValueError('Configure storage.s3.bucket before run or publish --target s3')
+    _require_bucket(config)
     if settings.file_only or config.get('access_key_id') or config.get('secret_access_key'):
         for key in ('access_key_id', 'secret_access_key'):
             if not isinstance(config.get(key), str) or not config[key].strip() or config[key] == '<SET ME>':
@@ -86,14 +95,30 @@ def configuration(settings):
 
 
 def destination(settings):
-    config = configuration(settings)
-    return {k: config.get(k, '') for k in ('bucket', 'endpoint_url', 'prefix')}
+    config = settings.s3
+    return {'bucket': _require_bucket(config), 'endpoint_url': config.get('endpoint_url', ''),
+            'prefix': config.get('prefix', '')}
 
 
-def completed(data, artifact, settings):
+def completed(data, artifact, receipt_destination):
     receipt = data.get('s3_publications', {}).get(receipt_key(artifact), {})
-    return (receipt.get('destination') == destination(settings)
+    return (receipt.get('destination') == receipt_destination
             and receipt.get('sha256') == artifact.sha256 and artifact.sha256 is not None)
+
+
+def artifact_counts(settings, data, directory):
+    try:
+        receipt_destination = destination(settings)
+    except ValueError:
+        receipt_destination = None
+    counts = {'published_artifacts': len(data.get('s3_publications', {})), 'current_artifacts': 0}
+    if receipt_destination is not None:
+        counts['pending_artifacts'] = 0
+    for artifact in artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True):
+        counts['current_artifacts'] += 1
+        if receipt_destination is not None and not completed(data, artifact, receipt_destination):
+            counts['pending_artifacts'] += 1
+    return counts
 
 
 def create_client(settings):
@@ -112,13 +137,15 @@ def create_client(settings):
                                   retries={'max_attempts': settings.retry_attempts, 'mode': 'standard'}))
 
 
-def publish(settings, data, directory, save, summary, budget, *, available_only=False):
+def publish(settings, data, directory, save, summary, budget, *, available_only=False,
+            record_keys=None, asset_keys=None):
     from botocore.exceptions import ClientError, BotoCoreError
     from boto3.exceptions import S3UploadFailedError
     from .files import file_digests
-    config = configuration(settings)
-    inventory = list(artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True))
-    if available_only and not any(a.path.is_file() and not completed(data, a, settings) for a in inventory):
+    receipt_destination = destination(settings)
+    inventory = list(artifacts(data, directory, record_keys=record_keys, asset_keys=asset_keys,
+                               direct_files_only=settings.source_options.get('direct_files_only') is True))
+    if available_only and not any(a.path.is_file() and not completed(data, a, receipt_destination) for a in inventory):
         return
     client = create_client(settings)
     try:
@@ -127,7 +154,7 @@ def publish(settings, data, directory, save, summary, budget, *, available_only=
             if available_only and not artifact.path.is_file():
                 continue
             budget.check()
-            if completed(data, artifact, settings) and (artifact.path.suffix.lower() != '.md' or not artifact.path.is_file()):
+            if completed(data, artifact, receipt_destination) and (artifact.path.suffix.lower() != '.md' or not artifact.path.is_file()):
                 receipts[receipt_key(artifact)]['provenance'] = artifact.provenance
                 summary['s3_skipped'] = summary.get('s3_skipped', 0) + 1
                 continue
@@ -153,20 +180,20 @@ def publish(settings, data, directory, save, summary, budget, *, available_only=
                 objects = []
                 for path, name, digest, length in files:
                     budget.check()
-                    key = '/'.join(p for p in (config.get('prefix', '').strip('/'), data['source'], bundle, name) if p)
+                    key = '/'.join(p for p in (receipt_destination['prefix'].strip('/'), data['source'], bundle, name) if p)
                     exists = False
                     try:
-                        head = client.head_object(Bucket=config['bucket'], Key=key)
+                        head = client.head_object(Bucket=receipt_destination['bucket'], Key=key)
                         exists = head['ContentLength'] == length and head.get('Metadata', {}).get('sha256') == digest
                     except ClientError as error:
                         if str(error.response['Error']['Code']) not in {'404', 'NoSuchKey', 'NotFound'}:
                             raise
                     if not exists:
-                        client.upload_file(str(path), config['bucket'], key, ExtraArgs={
+                        client.upload_file(str(path), receipt_destination['bucket'], key, ExtraArgs={
                             'Metadata': {'sha256': digest},
                             'ContentType': mimetypes.guess_type(name)[0] or 'application/octet-stream'})
                     objects.append({'key': key, 'sha256': digest, 'size': length})
-                receipts[receipt_key(artifact)] = {'destination': destination(settings), 'sha256': sha,
+                receipts[receipt_key(artifact)] = {'destination': receipt_destination, 'sha256': sha,
                     'record': artifact.record, 'artifact': artifact.identity, 'provenance': artifact.provenance,
                     'objects': objects, 'completed_at': now()}
                 if data['source'] == 'common_crawl':
@@ -182,9 +209,10 @@ def publish(settings, data, directory, save, summary, budget, *, available_only=
 def restore_missing(settings, data, directory):
     """Invalidate only missing, unpublished inputs; retain acquisition history."""
     inventory = list(artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True))
-    settled = {a.record for a in inventory if completed(data, a, settings)}
+    receipt_destination = destination(settings)
+    settled = {a.record for a in inventory if completed(data, a, receipt_destination)}
     missing = {a.record for a in inventory
-               if not completed(data, a, settings) and not a.path.is_file()}
+               if not completed(data, a, receipt_destination) and not a.path.is_file()}
     source = data['source']
     # Incomplete assemblies have no publishable artifact yet. Their recorded
     # acquisition flags cannot establish that inputs survived an ephemeral runner.

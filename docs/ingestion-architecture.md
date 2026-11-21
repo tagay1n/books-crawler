@@ -53,11 +53,15 @@ with a total preview limit of 1–100. Full evidence stays in PostgreSQL.
 The overview processes sources individually. It uses SQL counts, projected scan
 state and streamed errors. Detailed error groups report message and count, ordered
 by descending count and then message. Snapshot paths inspect archived state.
-Compact CLI results include S3 counts and up to three 500-character error previews.
-Nested provider fields also share a bounded preview budget with omission indicators.
+Compact CLI summaries and the `database last-run` summary object fit within 8 KiB
+of UTF-8 JSON. Catalog progress and publication counts replace provider inventories.
+Each severity has a full count and up to three previews, with diagnostic messages
+limited to 500 characters and further shortened if the byte budget requires it.
 Status uses one read-only PostgreSQL snapshot projected to latest observations/results,
 with a SQL aggregate for historical result counts; it establishes no write baseline.
-The same snapshot serves provider status and publication counts.
+The same snapshot serves provider status and publication counts. S3 status matches
+receipts by destination and digest. It reports pending artifacts when the bucket,
+endpoint and prefix can be resolved from configuration.
 `ingestion/paths.py` resolves source directories for native runtimes and all core stages,
 including Common Crawl's custom artifact directory during status.
 
@@ -68,11 +72,12 @@ and detailed source listings remain lazy; detailed listings also report reposito
 paths. See the [adapter interface](adapter-interface.md) for hook signatures.
 
 `ingestion/checkpoints.py` coordinates explicit progress commits and post-commit work.
-Pass the coordinator through runtimes/manifests; use `Manifest.checkpoint()` for progress
-boundaries. `Manifest.save()` and `Repository.save()` only persist state. Receipt and
-explicit import writes must use persistence-only saves. The core injects S3 publication
-only for `run`, retaining one upload budget across its checkpoints; standalone publication
-still reconciles receipts and pending outputs. Never call publication from repository saves.
+Pass the coordinator through runtimes/manifests and use `Manifest.checkpoint()` for
+progress boundaries. `Repository.save()` returns upserted record and asset keys for
+the post-commit callback. During `run`, the first callback and final pass reconcile
+the full S3 inventory. Intermediate callbacks inspect the upserted keys and share
+the run's upload budget. Standalone publication reconciles the full inventory.
+Use persistence-only saves for receipts and explicit imports.
 See [historical verification](archive/implementation-verification.md).
 
 ## Litres PDF code map

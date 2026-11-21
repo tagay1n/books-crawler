@@ -27,7 +27,7 @@ from .milli_kitaphana_progress_wrapper import ProgressWrapper
 from rich import print
 
 from .milli_kitaphana_decrypt import _decrypt_file
-from .milli_kitaphana_utils import download_part, dump_index, get_index_file_loc, get_list_file_loc, get_not_downloaded_docs, get_part_paths, is_valid_encrypted_part, open_lock, load_index_file, read_config, require_runtime, request
+from .milli_kitaphana_utils import download_part, get_index_file_loc, get_list_file_loc, get_not_downloaded_docs, get_part_paths, is_valid_encrypted_part, open_lock, load_index_file, read_config, require_runtime, request, update_index
 
 # Disable SSL warnings
 requests.packages.urllib3.disable_warnings(
@@ -61,6 +61,7 @@ def download(limited, index_name, recheck=False, on_download=None):
 
     print(f"About to download {len(not_downloaded_docs)} document(s)")
     config = read_config()
+    selection_changed = not worker_is_global and list(index_part) != runtime.manifest.data[worker_index_file]
 
     for card_path, meta in not_downloaded_docs:
         require_runtime().budget.start_item()
@@ -77,7 +78,9 @@ def download(limited, index_name, recheck=False, on_download=None):
                 meta.update(existing_meta)
 
                 # delete old meta item because it contains obsolete links
-                index_part.pop(existing_card_path, None)
+                removed = index_part.pop(existing_card_path, None)
+                if not worker_is_global and removed is not None:
+                    selection_changed = True
                 code_to_card_path[download_code] = card_path
                 print(f"Replaced old card path '{existing_card_path}' with new '{card_path}' for download code '{download_code}'")
                 if not meta.get("broken", False) or meta.get("downloaded", None):
@@ -126,12 +129,11 @@ def download(limited, index_name, recheck=False, on_download=None):
             import traceback
             print(f"Error: {e} {traceback.format_exc()}")
         finally:
-            if not worker_is_global:
-                dump_index(idx=index_part, index_file=worker_index_file)
-
             with open_lock(global_index_file):
-                from .milli_kitaphana_utils import update_index
+                if selection_changed:
+                    runtime.manifest.data[worker_index_file] = list(index_part)
                 update_index({card_path: meta})
+                selection_changed = False
         if on_download is not None and meta.get('downloaded') == 'full':
             on_download(card_path)
 

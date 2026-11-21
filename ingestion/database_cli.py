@@ -9,6 +9,7 @@ from sqlalchemy import select, text
 from sqlalchemy.dialects.postgresql import insert
 from .config import load_database_configuration
 from .database import configured_database, transaction, source_lock
+from .output import compact_json
 from .postgres_state import Repository, bookkeeping, initialize
 from .state import now
 
@@ -177,7 +178,7 @@ def inspection_result(ctx, source, operation):
     try:
         if ctx.obj is None:
             ctx.with_resource(configured_database(load_database_configuration(source=source)))
-        typer.echo(json.dumps(operation(), ensure_ascii=False, separators=(',', ':')))
+        typer.echo(compact_json(operation()))
     except (OSError, ValueError, RuntimeError) as error:
         typer.echo(json.dumps({'error': str(error)[:500]}))
         raise typer.Exit(1)

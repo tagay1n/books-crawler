@@ -273,12 +273,7 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
         data = Repository(source).load_status()
         result = _run_local(settings, source, command, recheck=recheck, session_file=session_file,
                             log=log, options=options, status_data=data)
-        result['s3'] = {'published_artifacts': len(data.get('s3_publications', {}))}
-        if settings.s3:
-            directory = source_directory(settings, source)
-            inventory = list(publication.artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True))
-            result['s3']['current_artifacts'] = len(inventory)
-            result['s3']['pending_artifacts'] = sum(not publication.completed(data, a, settings) for a in inventory)
+        result['s3'] = publication.artifact_counts(settings, data, source_directory(settings, source))
         return result
     if not remote:
         return _run_local(settings, source, command, recheck=recheck, session_file=session_file, log=log, options=options)
@@ -292,15 +287,20 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
             if publication.restore_missing(settings, data, directory):
                 repository.save(data)
         uploads = dict(errors=[], stops=[])
-        def checkpoint(repository, data):
+        def checkpoint(repository, data, record_keys, asset_keys):
             nonlocal upload_budget
             if data['source'] != source:
                 return
             if upload_budget is None:
                 upload_budget = Budget(settings, publication=True)
+                # Reconcile any previously pending output at the first commit.
+                record_keys = asset_keys = None
+            elif not record_keys and not asset_keys:
+                return
             try:
                 publication.publish(settings, data, directory, lambda: repository.save(data), uploads,
-                                    upload_budget, available_only=True)
+                                    upload_budget, available_only=True,
+                                    record_keys=record_keys, asset_keys=asset_keys)
             except BudgetStop as error:
                 if str(error) not in uploads['stops']:
                     uploads['stops'].append(str(error))
@@ -320,10 +320,7 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
                                 upload_budget or Budget(settings, publication=True), available_only=command == 'run')
         except BudgetStop as error:
             summary['stops'].append(str(error))
-        inventory = list(publication.artifacts(data, directory, direct_files_only=settings.source_options.get('direct_files_only') is True))
-        summary['s3'] = dict(current_artifacts=len(inventory),
-                             pending_artifacts=sum(not publication.completed(data, a, settings) for a in inventory),
-                             published_artifacts=len(data.get('s3_publications', {})))
+        summary['s3'] = publication.artifact_counts(settings, data, directory)
         summary['backlog'] = Manifest(directory, source, data=data).status()
         summary['discovery'] = data.get('discovery', {})
         if source == 'litres':

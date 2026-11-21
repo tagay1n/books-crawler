@@ -124,6 +124,7 @@ class Repository:
                 'records': record_data, 'assets': asset_data, '_historical_results': history_count}
 
     def save(self, data, connection=None):
+        """Persist changes and return the ordered record and asset upsert keys."""
         if self.baseline is None:
             raise RuntimeError('Load repository before saving')
         changes = []
@@ -135,7 +136,7 @@ class Repository:
             if changed or removed:
                 changes.append((table, group, changed, removed))
         if not changes:
-            return
+            return (), ()
 
         def write(conn):
             for table, group, changed, removed in changes:
@@ -153,8 +154,12 @@ class Repository:
             assert_ownership(owner=self.owner)
             write(connection)
         # Preserve detached baselines without copying unchanged histories at every checkpoint.
+        upserted = {}
         for table, group, changed, removed in changes:
             previous = self.baseline[group] if group else self.baseline
             previous.update(copy.deepcopy(changed))
             for key in removed:
                 del previous[key]
+            if group is not None:
+                upserted[group] = tuple(changed)
+        return upserted.get('records', ()), upserted.get('assets', ())

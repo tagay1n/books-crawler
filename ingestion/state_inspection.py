@@ -99,19 +99,25 @@ def errors(source, limit):
 def last_run(source):
     table = tables(source)[2]
     payload = table.c.payload
-    errors = func.coalesce(func.jsonb_path_query_array(payload['errors'], cast('$[0 to 2]', JSONPATH)),
-                           func.jsonb_build_array())
-    projection = payload.op('-')('errors').op('||')(func.jsonb_build_object('errors', errors))
+    errors, warnings = [case((func.jsonb_typeof(payload[field]) == 'array', payload[field]),
+                            else_=func.jsonb_build_array()) for field in ('errors', 'warnings')]
+    first_three = cast('$[0 to 2]', JSONPATH)
+    projection = payload.op('-')('errors').op('-')('warnings')
+    warning_count = case((payload.has_key('warnings'), func.jsonb_array_length(warnings)))
     with transaction() as conn:
-        row = conn.execute(select(projection, func.coalesce(func.jsonb_array_length(payload['errors']), 0))
+        row = conn.execute(select(projection, func.jsonb_path_query_array(errors, first_three),
+                                  func.jsonb_array_length(errors),
+                                  func.jsonb_path_query_array(warnings, first_three), warning_count)
                            .where(table.c.key == 'last_run', func.jsonb_typeof(payload) == 'object',
                                   payload != func.jsonb_build_object())).first()
     if row is None:
         return {'source': source, 'last_run': None}
-    run = transform(row[0], decode_string)
-    result = compact_result(run, run.get('command', 'unknown'), source)
-    if not run.get('error'):
-        result['error_count'] = row[1]
+    run, errors, error_count, warnings, warning_count = row
+    run = transform({**run, 'errors': errors}, decode_string)
+    if warning_count is not None:
+        run['warnings'] = transform(warnings, decode_string)
+    result = compact_result(run, run.get('command', 'unknown'), source,
+                            diagnostic_counts={'error': error_count, 'warning': warning_count})
     return {'source': source, 'last_run': result}
 
 

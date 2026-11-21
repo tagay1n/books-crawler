@@ -32,6 +32,7 @@ implementation lives outside the provider's filename prefix.
 .venv/bin/python cli.py sources --details --source litres
 .venv/bin/python cli.py sources --source litres --module litres_text --symbol _markdown_output_name
 rg -n '^def select_tatar\(' ingestion/kfu.py
+git grep -n -e 'catalog_registered' -- ingestion/ scripts/ docs/ingestion/milli-kitaphana.md
 ```
 
 | Task | Open first |

@@ -91,13 +91,14 @@ def upload_s3(client, settings, path, md5, sha256, size):
 
 
 def publish_books(settings, data, directory, save, summary, budget, *, target='all', log=None, record_keys=None):
-    from .publication import create_client
+    from .publication import PublishableArtifact, create_client, destination, receipt_key
     from .milli_kitaphana_decrypt import _upstream_metadata
     config = settings.source_options
     emit = log or (lambda *args, **kwargs: None)
     require_publication_config(config)
     with contextlib.ExitStack() as resources:
         client = None
+        receipt_destination = None
         selected = data['records'] if record_keys is None else record_keys
         for key in selected:
             record = data['records'][key]
@@ -174,11 +175,12 @@ def publish_books(settings, data, directory, save, summary, budget, *, target='a
                         emit('upload_started', record=key, md5=md5, destination='s3', size_bytes=size)
                         steps['s3'] = upload_s3(client, settings, path, md5, sha, size)
                         operation.check()
-                        from .publication import PublishableArtifact, receipt_key, destination
+                        if receipt_destination is None:
+                            receipt_destination = destination(settings)
                         artifact = PublishableArtifact(key, output.get('id', output['path']), path, sha,
                                                       {'observation_id': record['observations'][-1]['id'], 'result': output})
                         data.setdefault('s3_publications', {})[receipt_key(artifact)] = {
-                            'destination': destination(settings), 'sha256': sha, 'record': key,
+                            'destination': receipt_destination, 'sha256': sha, 'record': key,
                             'artifact': artifact.identity, 'provenance': artifact.provenance,
                             'objects': [{'key': steps['s3']['key'], 'sha256': sha, 'size': size}],
                             'completed_at': now()}

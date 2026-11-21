@@ -7,7 +7,7 @@ import typer
 from click import Choice
 
 from .commands import CommandOptions, REVIEW_ACTIONS, option_choices, validate_capabilities
-from .output import compact_result
+from .output import compact_json, compact_result
 from .registry import SOURCES, source_locations
 
 
@@ -47,8 +47,9 @@ def progress(ctx, source=None):
 def emit_result(ctx, result, command, source=None, *, compact_default=False):
     compact = ctx.meta.get("summary_only", False)
     if compact:
-        result = compact_result(result, command, source)
-    formatting = {"separators": (",", ":")} if compact or compact_default else {"indent": 2}
+        typer.echo(compact_json(compact_result(result, command, source)))
+        return
+    formatting = {"separators": (",", ":")} if compact_default else {"indent": 2}
     typer.echo(json.dumps(result, ensure_ascii=False, **formatting))
 
 
