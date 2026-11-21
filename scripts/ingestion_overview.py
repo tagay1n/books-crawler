@@ -18,7 +18,7 @@ def main():
                         help="Include scan counts, asset formats and grouped discovery errors without dumping records.")
     parser.add_argument("--database", action="store_true", help="Read authoritative Postgres state instead of local snapshots.")
     parser.add_argument("--source", action="append", help="Select database sources (repeatable).")
-    parser.add_argument('--config', type=Path, help='Complete source YAML; requires one --source.')
+    parser.add_argument('--config', type=Path, help='YAML providing database settings; requires one --source.')
     args = parser.parse_args()
     if args.config and (not args.database or not args.source or len(args.source) != 1):
         parser.error('--config requires --database and exactly one --source')
@@ -39,12 +39,9 @@ def main():
     for path in sorted(paths):
         try:
             if args.database:
-                from ingestion.config import load_settings
+                from ingestion.config import load_database_configuration
                 from ingestion.database import configured_database
-                from ingestion.local_config import source_config_path
-                selected = args.config or source_config_path(path.name)
-                settings = load_settings(selected, path.name)
-                with configured_database(settings.database if settings.file_only or settings.database else None):
+                with configured_database(load_database_configuration(args.config, source=path.name)):
                     result = database_overview(path.name, details=args.details)
             else:
                 result = snapshot_overview(json.loads(path.read_text(encoding="utf-8")), details=args.details)

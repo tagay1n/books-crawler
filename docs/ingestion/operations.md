@@ -247,16 +247,20 @@ language-admission rules remain implementation constants. Library defaults remai
 implicit where no application override is needed.
 
 CLI page/item limits still restrict configured caps. Source listing and help need
-no credentials. Database inspection can select the same source file:
+no credentials. Read-only `database records`, `record`, `errors`, `last-run`, and
+the database overview choose an explicit `--config` first, then an existing
+`config/local/<source>.yaml`. With no selected file they use `DATABASE_URL`.
+Inspection reads the database settings without validating acquisition settings or
+creating a source file. A selected standalone file supplies its own `database.url`.
 
 ```bash
-.venv/bin/python cli.py --config config/local/milli_kitaphana.yaml database init
+.venv/bin/python cli.py --config config/local/milli_kitaphana.yaml database records --source milli_kitaphana --limit 3
 .venv/bin/python scripts/ingestion_overview.py --database --source milli_kitaphana
 ```
 
-The overview selects each source's private file; `--config PATH` overrides it for
-one `--source`. See [scheduled operations](../scheduled-ingestion.md) for the
-legacy Actions configuration.
+The overview selects configuration per source. Its `--config PATH` requires one
+`--source`. See [scheduled operations](../scheduled-ingestion.md) for the legacy
+Actions configuration.
 
 ## S3 publication
 

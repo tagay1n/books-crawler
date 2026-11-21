@@ -7,7 +7,8 @@ from typing import Annotated
 import typer
 from sqlalchemy import select, text
 from sqlalchemy.dialects.postgresql import insert
-from .database import transaction, source_lock
+from .config import load_database_configuration
+from .database import configured_database, transaction, source_lock
 from .postgres_state import Repository, bookkeeping, initialize
 from .state import now
 
@@ -172,41 +173,43 @@ def import_command(source: str = typer.Option(...,'--source'), paths: list[Path]
     typer.echo(json.dumps(report,ensure_ascii=False))
 
 
-def inspection_result(operation):
+def inspection_result(ctx, source, operation):
     try:
+        if ctx.obj is None:
+            ctx.with_resource(configured_database(load_database_configuration(source=source)))
         typer.echo(json.dumps(operation(), ensure_ascii=False, separators=(',', ':')))
-    except (ValueError, RuntimeError) as error:
+    except (OSError, ValueError, RuntimeError) as error:
         typer.echo(json.dumps({'error': str(error)[:500]}))
         raise typer.Exit(1)
 
 
 @app.command('record')
-def record_command(source: str = typer.Option(..., '--source'), key: str = typer.Option(..., '--key'),
+def record_command(ctx: typer.Context, source: str = typer.Option(..., '--source'), key: str = typer.Option(..., '--key'),
                    assets: int = typer.Option(0, '--assets', min=0, max=100),
                    field: list[str] = typer.Option([], '--field', help='Select metadata fields; repeatable.')):
     """Inspect one record without observation/result histories; optional asset preview."""
     from .state_inspection import record
-    inspection_result(lambda: record(source, key, assets, field))
+    inspection_result(ctx, source, lambda: record(source, key, assets, field))
 
 
 @app.command('errors')
-def errors_command(source: str = typer.Option(..., '--source'), limit: int = typer.Option(10, '--limit', min=1, max=100)):
+def errors_command(ctx: typer.Context, source: str = typer.Option(..., '--source'), limit: int = typer.Option(10, '--limit', min=1, max=100)):
     """Inspect bounded active, historical and last-run diagnostics."""
     from .state_inspection import errors
-    inspection_result(lambda: errors(source, limit))
+    inspection_result(ctx, source, lambda: errors(source, limit))
 
 
 @app.command('last-run')
-def last_run_command(source: str = typer.Option(..., '--source')):
+def last_run_command(ctx: typer.Context, source: str = typer.Option(..., '--source')):
     """Read the compact last-run summary."""
     from .state_inspection import last_run
-    inspection_result(lambda: last_run(source))
+    inspection_result(ctx, source, lambda: last_run(source))
 
 
 @app.command('records')
-def records_command(source: str = typer.Option(..., '--source'),
+def records_command(ctx: typer.Context, source: str = typer.Option(..., '--source'),
                     limit: int = typer.Option(10, '--limit', min=1, max=100),
                     after: str | None = typer.Option(None, '--after', help='Continue after a returned record key.')):
     """List record keys, titles and completion hints without loading histories."""
     from .state_inspection import records
-    inspection_result(lambda: records(source, limit, after))
+    inspection_result(ctx, source, lambda: records(source, limit, after))

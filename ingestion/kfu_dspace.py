@@ -282,8 +282,8 @@ def validate_pdf(path):
 
 
 def download(http, manifest, summary, log, recheck, *, selected_records=None):
-    from .core import download as download_originals
     keys = ("url", "label", "extension", "filename_raw", "viewer_url", "source_asset_key",
             "source_unsupported_code", "source_unsupported_reason")
-    language_reviews.refresh(http, manifest, PARSER_VERSION, keys)
-    download_originals(http, manifest, summary, log, recheck, extensions={".pdf"}, validate_file=validate_pdf)
+    language_reviews.download_reviewed_originals(
+        http, manifest, summary, log, recheck,
+        parser_version=PARSER_VERSION, descriptor_keys=keys, extensions={".pdf"}, validate_file=validate_pdf)

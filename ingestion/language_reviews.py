@@ -59,6 +59,14 @@ def refresh(http, manifest, parser_version, descriptor_keys):
             manifest.observe(metadata, assets, parser_version, record_key=key)
 
 
+def download_reviewed_originals(http, manifest, summary, log, recheck, *,
+                                parser_version, descriptor_keys, extensions, validate_file=None):
+    from .core import download
+
+    refresh(http, manifest, parser_version, descriptor_keys)
+    download(http, manifest, summary, log, recheck, extensions=extensions, validate_file=validate_file)
+
+
 def validate_acquisition(http, asset):
     review = asset.get("language_review")
     if review and review != http.language_reviews.get(asset["url"]):

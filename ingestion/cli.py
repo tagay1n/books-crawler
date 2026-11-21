@@ -26,13 +26,10 @@ def main(ctx: typer.Context, config: Optional[Path] = typer.Option(None, "--conf
     ctx.meta['log_progress'] = log_progress
     ctx.meta["profile"] = profile
     if ctx.invoked_subcommand == 'database' and config is not None:
-        from .config import read_configuration, resolve_environment
+        from .config import load_database_configuration
         from .database import configured_database
         try:
-            data = read_configuration(config)
-            database = resolve_environment(data.get('database', {}), 'database')
-            if data.get('standalone') or database:
-                ctx.with_resource(configured_database(database))
+            ctx.with_resource(configured_database(load_database_configuration(config)))
         except (ValueError, OSError) as error:
             fail(ctx, error, 'database')
 

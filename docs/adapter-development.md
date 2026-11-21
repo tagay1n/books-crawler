@@ -6,7 +6,6 @@ verification with `.venv/bin/python`. Read only the files relevant to the task.
 ## Start with bounded state
 
 ```bash
-.venv/bin/python cli.py sources --details --source magarif
 .venv/bin/python scripts/ingestion_overview.py --database --source magarif
 .venv/bin/python cli.py database records --source magarif --limit 10
 .venv/bin/python cli.py database record --source magarif --key RECORD_KEY --assets 3
@@ -14,35 +13,25 @@ verification with `.venv/bin/python`. Read only the files relevant to the task.
 .venv/bin/python cli.py database last-run --source magarif
 ```
 
-PostgreSQL is authoritative. These database views are read-only, need no operational
-YAML, and bound their previews. Use `--field title --field url` to select metadata;
-use `next_after` with `--after` to page records. Read individual evidence only when
-summaries identify a concrete question. Never dump private configs or full manifests.
-File arguments to the overview inspect archived snapshots only. Database overviews
-use SQL counts, projected scan state and streamed errors rather than loading record
-or asset histories. Detailed error groups are lists of `{message, count}` ordered
-by frequency and message; previews bound both text and group counts and report
-omissions with `_truncation`.
-Record inspection projects latest metadata and asset fields in SQL. Error views
-stream classification identities, count histories in SQL and fetch only selected
-entries. Last-run views fetch at most three errors while retaining the full count.
+PostgreSQL is authoritative. Start with the overview, then select a view for the
+specific question. These commands use the [same database selection rules](ingestion/operations.md#per-source-configuration).
+Use `--field title --field url` to select metadata and `next_after` with `--after`
+to page records. File arguments to the overview inspect archived snapshots.
+Read individual evidence only when a summary calls for it. Never dump private
+configs or full manifests. See [implementation contracts](ingestion-architecture.md#bounded-inspection-routing-and-checkpoints)
+for preview limits and SQL projections.
 
 ## Find the code
 
-`cli.py sources --details --source NAME` includes repository paths for the adapter,
-provider helpers, source guide and configuration without importing providers.
-Add `--symbols` to include definition names and line numbers for the selected
-source. It implies `--details` and requires `--source`. Maps include at most 16
-files, 40 adapter definitions and 12 definitions per helper; omission counts
-identify where a targeted follow-up read is needed.
-Use `--module litres_text` (or `ingestion/litres_text.py`) to select a module and
-`--symbol _markdown_output_name` to match a case-sensitive name substring. Both
-imply `--symbols`; filters run before file and definition limits, so they can
-locate definitions omitted from the unfiltered map. Filtered maps distinguish
-`files_filtered` from `files_omitted`.
+Select one source to find its adapter, helper, guide and configuration paths.
+Narrow provider definition lookups with `--module` and `--symbol` before opening
+the matched lines. Use `rg -n` in the shared module or other adapter when the
+implementation lives outside the provider's filename prefix.
 
 ```bash
+.venv/bin/python cli.py sources --details --source litres
 .venv/bin/python cli.py sources --source litres --module litres_text --symbol _markdown_output_name
+rg -n '^def select_tatar\(' ingestion/kfu.py
 ```
 
 | Task | Open first |
@@ -75,7 +64,15 @@ is insufficient. Tatkniga and Internet Archive retain provider-specific admissio
 
 ## Verify changes
 
-Use a dedicated ignored artifact root and explicit `config/sources/<source>.yaml`.
+Use a dedicated ignored configuration and artifact root. For example, prepare
+`config/local/magarif.verify.yaml` with a scratch `database.url` and set
+`artifacts_root: ../../__artifacts/verify-magarif` in that file.
+
+```bash
+.venv/bin/python cli.py magarif --config config/local/magarif.verify.yaml --summary-only discover --max-pages 1
+.venv/bin/python cli.py magarif --config config/local/magarif.verify.yaml --summary-only download --limit 1
+```
+
 For acquisition changes: discover, acquire a bounded original, inspect format and
 language, then repeat to verify skipping. Check resume/failure behavior when those
 paths change. Serialize writers for the same source. Do not run bulk acquisition

@@ -222,6 +222,6 @@ def prepare_http(http, session_file):
 
 
 def download(http, manifest, summary, log, recheck, *, selected_records=None):
-    from .core import download as download_originals
-    language_reviews.refresh(http, manifest, PARSER_VERSION, DESCRIPTORS)
-    download_originals(http, manifest, summary, log, recheck, extensions=FORMATS)
+    language_reviews.download_reviewed_originals(
+        http, manifest, summary, log, recheck,
+        parser_version=PARSER_VERSION, descriptor_keys=DESCRIPTORS, extensions=FORMATS)

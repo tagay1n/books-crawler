@@ -328,10 +328,6 @@ def run(settings, source, command, *, recheck=False, session_file=None, log=prin
         summary['discovery'] = data.get('discovery', {})
         if source == 'litres':
             summary['discovery'] = data.get('litres_catalog', {})
-        elif source == 'milli_kitaphana':
-            scans = data.get('milli_catalog', {}).values()
-            summary['discovery'] = dict(scans=len(data.get('milli_catalog', {})),
-                                        complete_scans=sum(bool(s.get('complete')) for s in scans))
         summary.update(finished_at=now(), state_key='last_run')
         data['last_run'] = summary
         repository.save(data)

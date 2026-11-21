@@ -186,12 +186,6 @@ def restore_missing(settings, data, directory):
     missing = {a.record for a in inventory
                if not completed(data, a, settings) and not a.path.is_file()}
     source = data['source']
-    if source == 'milli_kitaphana':
-        from .milli_kitaphana_upload_docs import publication_complete
-        # S3 alone does not settle a Milli book: another runner still needs
-        # local bytes until Yandex and upstream metadata are committed too.
-        pending = [a for a in inventory if not publication_complete(data, a.record, a.sha256)]
-        missing.update(a.record for a in pending if not a.path.is_file())
     # Incomplete assemblies have no publishable artifact yet. Their recorded
     # acquisition flags cannot establish that inputs survived an ephemeral runner.
     for key, record in data['records'].items():
@@ -203,19 +197,12 @@ def restore_missing(settings, data, directory):
             inputs = meta.get('inputs', [])
             if not inputs or any(not Path(p['path']).is_file() for p in inputs):
                 missing.add(key)
-        if source == 'milli_kitaphana' and meta.get('downloaded'):
-            parts = meta.get('enc_part_paths', [])
-            paths = [Path(p['enc_unzip_dir']) / 'enc.dat' for p in parts]
-            if meta.get('download_code'):
-                paths.append(directory / meta['download_code'] / 'part0_encrypted/enc.dat')
-            if not paths or any(not p.is_file() for p in paths):
-                missing.add(key)
     for key in missing:
         record = data['records'][key]
         if source == 'common_crawl':
             record.pop('path_to_file', None)
             record['s3_restore_required'] = True
-        elif source in {'litres', 'milli_kitaphana'}:
+        elif source == 'litres':
             import copy
             record.setdefault('s3_recovery_evidence', []).append(copy.deepcopy(record['observations'][-1]['metadata']))
             meta = record['observations'][-1]['metadata']

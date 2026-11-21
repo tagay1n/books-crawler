@@ -41,7 +41,8 @@ Keep verification manual/CLI-based; do not add automated tests.
 .venv/bin/python scripts/ingestion_overview.py --database --source magarif
 ```
 
-These database commands are read-only and do not need operational YAML. Record views
+These database commands are read-only and use the shared
+[database selection rules](ingestion/operations.md#per-source-configuration). Record views
 omit histories and bound metadata; `--field title --field url` selects metadata fields.
 `_truncation` reports omitted fields/items/characters and preview-budget stops.
 `--assets` selects up to 100 candidate asset previews, subject to the displayed preview
@@ -49,7 +50,9 @@ budget. Record listing returns complete keys, bounded titles and completion hint
 use its `next_after` value with `--after` to continue. CLI limits range from 1–100.
 Error views distinguish active discovery, historical discovery and last-run errors,
 with a total preview limit of 1–100. Full evidence stays in PostgreSQL.
-The overview processes sources individually; snapshot paths inspect archived state only.
+The overview processes sources individually. It uses SQL counts, projected scan
+state and streamed errors. Detailed error groups report message and count, ordered
+by descending count and then message. Snapshot paths inspect archived state.
 Compact CLI results include S3 counts and up to three 500-character error previews.
 Nested provider fields also share a bounded preview budget with omission indicators.
 Status uses one read-only PostgreSQL snapshot projected to latest observations/results,

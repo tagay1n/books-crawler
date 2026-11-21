@@ -190,6 +190,25 @@ def resolve_environment(value, key="configuration"):
     return value
 
 
+def load_database_configuration(path=None, *, source=None):
+    """Select database settings without loading acquisition or publication settings."""
+    if path is None and source in SOURCES:
+        from .local_config import source_config_path
+        local = source_config_path(source)
+        if local.exists():
+            path = local
+    if path is None:
+        return None
+    data = read_configuration(path)
+    database = resolve_environment(data.get('database', {}), 'database')
+    if not isinstance(database, dict):
+        raise ValueError('Database configuration must be a mapping')
+    url = database.get('url')
+    if url is not None and (not isinstance(url, str) or not url.strip() or url == '<SET ME>'):
+        raise ValueError('Set database.url to a PostgreSQL URL in the source configuration file')
+    return database if data.get('standalone') is True or database else None
+
+
 class EnvironmentMapping(dict):
     """Resolve credential references only when their stage reads them."""
     def __getitem__(self, key):
